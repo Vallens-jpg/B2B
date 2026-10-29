@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 66" fill="none">
+  <!-- ===== Grup logo mark ===== -->
+  <!-- Ikan/paket kuning -->
+  <path d="M14 24 C13 15 19 9 26 6.5 L32 13 C27.5 16 26.5 20 26 24 Z" fill="#ffcf00"/>
+  <!-- Daun hijau -->
+  <path d="M33 24 C33 13 41 6.5 49 6.5 C49 15.5 42 23 33 24 Z" fill="#35b45a"/>
+  <path d="M34.5 21.5 C37.5 16.5 41.5 13 45.5 10.5" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round"/>
+  <!-- Botol biru -->
+  <rect x="50" y="6" width="7.5" height="18" rx="3.2" fill="#173a7c"/>
+  <rect x="51.2" y="2.5" width="5" height="4.5" rx="1.2" fill="#173a7c"/>
+  <!-- Tepi keranjang (hijau) -->
+  <rect x="8" y="23.2" width="49" height="6" rx="3" fill="#21a94e"/>
+  <!-- Badan keranjang (biru tua) -->
+  <path d="M11.5 29.2 L53.5 29.2 L47.3 45 Q46.4 47 44.2 47 L20.8 47 Q18.6 47 17.7 45 Z" fill="#173a7c"/>
+  <g stroke="#ffffff" stroke-width="4.2" stroke-linecap="round">
+    <path d="M24 34 L26.6 41.5"/>
+    <path d="M32.5 34 L32.5 41.5"/>
+    <path d="M41 34 L38.4 41.5"/>
+  </g>
+
+  <!-- ===== Teks pada mark ===== -->
+  <text x="32.5" y="59" text-anchor="middle" font-family="Arial, 'Segoe UI', sans-serif" font-weight="800" font-size="13.5" fill="#12315e">Staplr</text>
+
+  <!-- ===== Titik kuning + nama ===== -->
+  <circle cx="80" cy="41" r="6" fill="#f2c318"/>
+  <text x="94" y="50" font-family="Arial, 'Segoe UI', sans-serif" font-weight="800" font-size="30" fill="#12315e">Staplr</text>
+</svg>

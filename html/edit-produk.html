@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staplr - Edit Produk</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+
+  body {
+    min-height: 100vh;
+    position: relative;
+    background: linear-gradient(135deg, #0d3b6e 0%, #0e5e57 35%, #158a4e 70%, #2aa63c 100%);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Dekorasi lingkaran latar */
+  .deco {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .deco-1 {
+    width: 900px;
+    height: 900px;
+    top: -450px;
+    left: -200px;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+  }
+
+  .deco-2 {
+    width: 500px;
+    height: 500px;
+    top: 60px;
+    right: -80px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: transparent;
+  }
+
+  .deco-3 {
+    width: 320px;
+    height: 320px;
+    bottom: -60px;
+    left: 60px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+  }
+
+  .deco-4 {
+    width: 700px;
+    height: 700px;
+    bottom: -350px;
+    right: -150px;
+    background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%);
+  }
+
+  /* ===== Header / logo ===== */
+  .header {
+    padding: 22px 60px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .logo-icon-img {
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+  }
+
+  .logo-name {
+    font-size: 26px;
+    font-weight: 800;
+    color: #12315e;
+    position: relative;
+    padding-left: 14px;
+  }
+
+  .logo-name::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #f2b70a;
+  }
+
+  /* ===== Card form ===== */
+  .wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    padding-bottom: 40px;
+  }
+
+  .card {
+    background: #ffffff;
+    width: 640px;
+    max-width: 92%;
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    padding: 40px 44px;
+  }
+
+  .card h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #12315e;
+    margin-bottom: 8px;
+  }
+
+  .card .sub {
+    color: #64748b;
+    font-size: 15px;
+    margin-bottom: 28px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 44px;
+    row-gap: 26px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: #16355f;
+    margin-bottom: 9px;
+  }
+
+  .field select,
+  .field input {
+    width: 100%;
+    padding: 13px 16px;
+    font-size: 15px;
+    color: #1e293b;
+    border: 1px solid #d6dce5;
+    border-radius: 10px;
+    background: #ffffff;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .field select:focus,
+  .field input:focus {
+    border-color: #2aa63c;
+  }
+
+  .select-wrap {
+    position: relative;
+  }
+
+  .select-wrap::after {
+    content: "";
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-70%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid #64748b;
+    border-bottom: 2px solid #64748b;
+    pointer-events: none;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-top: 36px;
+  }
+
+  .btn-batal {
+    background: #ffffff;
+    border: 1px solid #d6dce5;
+    color: #16355f;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 13px 30px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .btn-batal:hover {
+    background: #f1f4f9;
+  }
+
+  .btn-simpan {
+    background: #16295c;
+    color: #ffffff;
+    border: none;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 13px 30px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .btn-simpan:hover {
+    background: #1d3572;
+  }
+
+  a.btn-link {
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+
+  <div class="deco deco-1"></div>
+  <div class="deco deco-2"></div>
+  <div class="deco deco-3"></div>
+  <div class="deco deco-4"></div>
+
+  <!-- Header logo -->
+  <header class="header">
+    <svg class="logo-icon-img" viewBox="0 0 64 64">
+      <path d="M14 26h36l-5 18H19z" fill="#1b3f8f"/>
+      <path d="M24 12c2 6 4 8 4 8l4-10 5 9s3-3 4-8c1 6-2 12-2 12l-13 1s-3-6-2-12z" fill="#2e9e4f"/>
+      <path d="M36 8l8 4-4 7-7-4z" fill="#f2b70a"/>
+      <text x="12" y="58" font-size="13" font-weight="bold" fill="#12315e" font-family="Arial">Staplr</text>
+    </svg>
+    <span class="logo-name">Staplr</span>
+  </header>
+
+  <!-- Form card -->
+  <main class="wrapper">
+    <div class="card">
+      <h1>Edit Produk</h1>
+      <p class="sub">Perbarui detail produk Anda.</p>
+
+      <form>
+        <div class="form-grid">
+          <div class="field">
+            <label for="jenis">Jenis Produk</label>
+            <div class="select-wrap">
+              <select id="jenis">
+                <option selected>Telur Ayam Ras</option>
+                <option>Telur Ayam Kampung</option>
+                <option>Telur Puyuh</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="grade">Grade</label>
+            <div class="select-wrap">
+              <select id="grade">
+                <option selected>A</option>
+                <option>B</option>
+                <option>C</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="harga">Harga Partai</label>
+            <input type="text" id="harga" value="Rp 25.000">
+          </div>
+
+          <div class="field">
+            <label for="stok">Stok</label>
+            <input type="text" id="stok" value="1.200 kg">
+          </div>
+
+          <div class="field">
+            <label for="minimal">Minimal Pembelian</label>
+            <input type="text" id="minimal" value="10 kg">
+          </div>
+
+          <div class="field">
+            <label for="satuan">Satuan</label>
+            <div class="select-wrap">
+              <select id="satuan">
+                <option selected>kg</option>
+                <option>gram</option>
+                <option>tray</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <a class="btn-link" href="produk.html"><button type="button" class="btn-batal">Batal</button></a>
+          <button type="submit" class="btn-simpan">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+</body>
+</html>
