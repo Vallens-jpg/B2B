@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staplr - Masuk</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="split-container">
+    <!-- Left Hero Section -->
+    <div class="hero-section">
+      <!-- Decorative Background Circles -->
+      <div class="hero-circles">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+      </div>
+
+      <div class="hero-content-wrapper">
+        <!-- Top Logo Header -->
+        <header class="brand-header">
+          <img src="Logo/logo staplr.png" alt="Staplr Logo" class="brand-logo-img">
+          <div class="brand-title-group">
+            <span class="brand-dot"></span>
+            <span class="brand-name">Staplr</span>
+          </div>
+        </header>
+
+        <!-- Main Hero Body -->
+        <main class="hero-body">
+          <span class="hero-badge">PLATFORM TERPERCAYA</span>
+          <h1 class="hero-title">Selamat Datang<br>kembali</h1>
+          <p class="hero-description">
+            Daftarkan akun Anda dan mulai bertransaksi dengan cepat, aman, dan transparan.
+          </p>
+
+          <ul class="hero-features">
+            <li class="feature-item">
+              <span class="check-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span>Transaksi aman dan terverifikasi</span>
+            </li>
+            <li class="feature-item">
+              <span class="check-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span>Pendaftaran selesai dalam 2 menit</span>
+            </li>
+            <li class="feature-item">
+              <span class="check-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span>Dukungan pelanggan setiap hari</span>
+            </li>
+          </ul>
+        </main>
+      </div>
+    </div>
+
+    <!-- Right Form Section -->
+    <div class="form-section">
+      <div class="auth-card">
+        <h2 class="auth-card-title">Masuk</h2>
+        <p class="auth-card-subtitle">Silakan masuk untuk melanjutkan ke akun Anda.</p>
+
+        <!-- Role Selector Tabs -->
+        <div class="role-tabs" id="roleTabs">
+          <button type="button" class="role-tab-btn active" data-role="pembeli">
+            <span class="tab-dot"></span> Pembeli
+          </button>
+          <button type="button" class="role-tab-btn" data-role="perusahaan">
+            <span class="tab-dot" style="display: none;"></span> Perusahaan
+          </button>
+        </div>
+
+        <!-- Login Form -->
+        <form action="#" method="POST" id="loginForm">
+          <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" class="form-input" placeholder="nama@email.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Kata Sandi</label>
+            <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+            <div class="forgot-wrapper">
+              <a href="lupa-sandi.html" class="forgot-link">Lupa Kata Sandi?</a>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit-primary">Masuk</button>
+        </form>
+
+        <div class="auth-footer">
+          Belum punya akun? <a href="#" class="link-highlight">Daftar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Navigation Toolbar to switch between the 3 visual design states -->
+
+  <script>
+    // Tab switching interactivity
+    const tabBtns = document.querySelectorAll('.role-tab-btn');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => {
+          b.classList.remove('active');
+          const dot = b.querySelector('.tab-dot');
+          if (dot) dot.style.display = 'none';
+        });
+        btn.classList.add('active');
+        const activeDot = btn.querySelector('.tab-dot');
+        if (activeDot) activeDot.style.display = 'inline-block';
+      });
+    });
+  </script>
+</body>
+</html>

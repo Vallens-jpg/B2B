@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staplr - Profil Pengguna</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ==========================================================================
+       Halaman Profil Pengguna Styles
+       ========================================================================== */
+    body.profil-page-body {
+      background-color: #FAF6ED;
+      min-height: 100vh;
+      font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif);
+      color: #111827;
+      margin: 0;
+      padding: 0;
+      padding-bottom: 6rem;
+    }
+
+    .profil-main-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 2.75rem 2rem 0 2rem;
+    }
+
+    /* 2-Column Grid Layout */
+    .profil-grid-layout {
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    /* Left Card: Avatar & Summary */
+    .profil-avatar-card {
+      background-color: #ffffff;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .profil-gradient-circle {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #22c55e 0%, #15803d 55%, #064e3b 100%);
+      margin-bottom: 1.5rem;
+      box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .profil-business-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #111827;
+      margin: 0 0 0.35rem 0;
+    }
+
+    .profil-business-email {
+      font-size: 0.885rem;
+      color: #6B7280;
+      font-weight: 500;
+      margin: 0;
+    }
+
+    /* Right Column: Forms & Actions */
+    .profil-forms-column {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .profil-card {
+      background-color: #ffffff;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 2rem 2.25rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .profil-section-heading {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #111827;
+      margin: 0 0 1.5rem 0;
+    }
+
+    /* Form Grid Rows */
+    .form-row-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .form-group-item.full-width {
+      margin-bottom: 0;
+    }
+
+    .profil-input-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .profil-input-field {
+      width: 100%;
+      background-color: #ffffff;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-size: 0.885rem;
+      color: #111827;
+      font-family: inherit;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .profil-input-field:focus {
+      border-color: #94A3B8;
+      box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.15);
+    }
+
+    /* Select Dropdown */
+    .profil-select-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .profil-select-field {
+      width: 100%;
+      background-color: #ffffff;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 0.75rem 2.5rem 0.75rem 1rem;
+      font-size: 0.885rem;
+      color: #111827;
+      font-family: inherit;
+      outline: none;
+      box-sizing: border-box;
+      appearance: none;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .profil-select-field:focus {
+      border-color: #94A3B8;
+      box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.15);
+    }
+
+    .profil-select-arrow {
+      position: absolute;
+      right: 1rem;
+      pointer-events: none;
+      width: 18px;
+      height: 18px;
+      stroke: #6B7280;
+      stroke-width: 2.2;
+      fill: none;
+    }
+
+    /* Bottom Action Buttons */
+    .profil-action-buttons {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.25rem;
+    }
+
+    .btn-profil-batal {
+      background-color: #ffffff;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 0.75rem 2rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #111827;
+      text-decoration: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-profil-batal:hover {
+      background-color: #F8FAFC;
+      border-color: #CBD5E1;
+    }
+
+    .btn-profil-simpan {
+      background-color: #152C4E;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 0.75rem 1.85rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background-color 0.15s ease;
+    }
+
+    .btn-profil-simpan:hover {
+      background-color: #0F203A;
+    }
+
+    /* Responsive */
+    @media (max-width: 860px) {
+      .profil-grid-layout {
+        grid-template-columns: 1fr;
+      }
+      .profil-avatar-card {
+        padding: 2rem;
+      }
+      .form-row-two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="profil-page-body">
+
+  <!-- Navbar Header -->
+  <header class="dashboard-navbar">
+    <div class="navbar-inner">
+      <a href="dashboard.html" class="brand-header" style="text-decoration: none;">
+        <img src="Logo/logo staplr.png" alt="Staplr Logo" class="brand-logo-img">
+        <div class="brand-title-group">
+          <span class="brand-dot"></span>
+          <span class="brand-name">Staplr</span>
+        </div>
+      </a>
+
+      <nav class="nav-pills-container">
+        <a href="dashboard.html" class="nav-pill-item">
+          <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor"/>
+          </svg>
+          Dashboard
+        </a>
+        <a href="pesanan.html" class="nav-pill-item">
+          <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor"/>
+            <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-linecap="round"/>
+          </svg>
+          Pesanan
+        </a>
+        <a href="daftar-dispute.html" class="nav-pill-item">
+          <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor"/>
+            <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
+          </svg>
+          Dispute
+        </a>
+        <a href="permintaan-disetujui.html" class="nav-pill-item">
+          <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor"/>
+            <path d="M8 12l3 3 5-5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Permintaan Disetujui
+        </a>
+      </nav>
+
+      <div class="navbar-actions notif-dropdown-wrapper">
+        <button type="button" class="notification-bell-btn" id="notifBellBtn" onclick="toggleNotificationDropdown(event)" aria-label="Notifikasi">
+          <svg class="bell-icon" viewBox="0 0 24 24">
+            <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
+          </svg>
+          <span class="notification-badge-red" id="notifBadgeRed">3</span>
+        </button>
+        <a href="profil.html" class="user-profile-capsule" style="text-decoration: none;">
+          <div class="user-avatar-circle">AD</div>
+          <span class="user-name-text">Buyer</span>
+        </a>
+
+        <!-- Notification Popover Card -->
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-header">
+            <span class="notif-title">Notifikasi</span>
+            <button type="button" class="notif-mark-read" onclick="markAllAsRead(event)">Tandai semua dibaca</button>
+          </div>
+
+          <div class="notif-list">
+            <a href="permintaan-disetujui.html" class="notif-item unread">
+              <div class="notif-icon-circle green">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                </svg>
+              </div>
+              <div class="notif-content">
+                <div class="notif-item-top">
+                  <span class="notif-item-title">Permintaan Disetujui</span>
+                  <span class="notif-time">· 5m</span>
+                </div>
+                <p class="notif-item-body">Permintaan pengadaan telur dari PT Telur Makmur telah disetujui.</p>
+              </div>
+            </a>
+
+            <a href="diskusi-dispute.html" class="notif-item unread">
+              <div class="notif-icon-circle green">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+              </div>
+              <div class="notif-content">
+                <div class="notif-item-top">
+                  <span class="notif-item-title">Pesan Baru di Dispute #DSP-9021</span>
+                  <span class="notif-item-badge-red">1</span>
+                </div>
+                <p class="notif-item-body">Seller: "Kami sudah mengirim bukti foto ulang..."</p>
+              </div>
+            </a>
+
+            <a href="daftar-dispute.html" class="notif-item">
+              <div class="notif-icon-circle yellow">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="12" cy="12" r="10" stroke="#111827"/>
+                  <line x1="12" y1="8" x2="12" y2="12" stroke="#111827"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16" stroke="#111827"/>
+                </svg>
+              </div>
+              <div class="notif-content">
+                <div class="notif-item-top">
+                  <span class="notif-item-title dark">Dispute Disetujui · 3j</span>
+                </div>
+                <p class="notif-item-body">Dispute #DSP-8812 telah disetujui. Dana pengembalian sedang diproses.</p>
+              </div>
+            </a>
+          </div>
+
+          <div class="notif-footer">
+            <a href="notifikasi.html" class="notif-footer-link">Lihat Semua Notifikasi</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="profil-main-container">
+    <div class="profil-grid-layout">
+
+      <!-- Left Column: Avatar & Business Summary Card -->
+      <aside class="profil-avatar-card">
+        <div class="profil-gradient-circle"></div>
+        <h2 class="profil-business-name" id="displayBusinessName">Catering Berkah</h2>
+        <p class="profil-business-email" id="displayEmail">buyer@gmail.com</p>
+      </aside>
+
+      <!-- Right Column: Form Sections & Actions -->
+      <section class="profil-forms-column">
+
+        <!-- 1. Informasi Usaha Card -->
+        <div class="profil-card">
+          <h2 class="profil-section-heading">Informasi Usaha</h2>
+
+          <div class="form-row-two-col">
+            <div class="form-group-item">
+              <label for="namaUsaha" class="profil-input-label">Nama Usaha</label>
+              <input type="text" id="namaUsaha" class="profil-input-field" value="Catering Berkah">
+            </div>
+            <div class="form-group-item">
+              <label for="emailUsaha" class="profil-input-label">Email</label>
+              <input type="email" id="emailUsaha" class="profil-input-field" value="buyer@gmail.com">
+            </div>
+          </div>
+
+          <div class="form-row-two-col">
+            <div class="form-group-item">
+              <label for="nomorTelepon" class="profil-input-label">Nomor Telepon</label>
+              <input type="text" id="nomorTelepon" class="profil-input-field" value="+00000000">
+            </div>
+            <div class="form-group-item">
+              <label for="kotaUsaha" class="profil-input-label">Kota</label>
+              <input type="text" id="kotaUsaha" class="profil-input-field" value="Jakarta Timur">
+            </div>
+          </div>
+
+          <div class="form-group-item full-width">
+            <label for="alamatLengkap" class="profil-input-label">Alamat Lengkap</label>
+            <input type="text" id="alamatLengkap" class="profil-input-field" value="Jl. Raya Industri No. 123">
+          </div>
+        </div>
+
+        <!-- 2. Pengaturan Rekening Bank Card -->
+        <div class="profil-card">
+          <h2 class="profil-section-heading">Pengaturan Rekening Bank</h2>
+
+          <div class="form-row-two-col">
+            <div class="form-group-item">
+              <label for="namaBank" class="profil-input-label">Nama Bank</label>
+              <div class="profil-select-wrap">
+                <select id="namaBank" class="profil-select-field">
+                  <option value="Bank BCA" selected>Bank BCA</option>
+                  <option value="Bank Mandiri">Bank Mandiri</option>
+                  <option value="Bank BNI">Bank BNI</option>
+                  <option value="Bank BRI">Bank BRI</option>
+                </select>
+                <svg class="profil-select-arrow" viewBox="0 0 24 24">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="form-group-item">
+              <label for="nomorRekening" class="profil-input-label">Nomor Rekening</label>
+              <input type="text" id="nomorRekening" class="profil-input-field" value="00-000-00">
+            </div>
+          </div>
+
+          <div class="form-group-item full-width">
+            <label for="atasNamaRekening" class="profil-input-label">Atas Nama Rekening</label>
+            <input type="text" id="atasNamaRekening" class="profil-input-field" value="Catering Berkah">
+          </div>
+        </div>
+
+        <!-- Bottom Action Buttons -->
+        <div class="profil-action-buttons">
+          <a href="dashboard.html" class="btn-profil-batal">Batal</a>
+          <button type="button" class="btn-profil-simpan" onclick="simpanProfil()">
+            Simpan Perubahan
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Floating Navigation for Prototype Walkthrough -->
+
+  <script>
+    function simpanProfil() {
+      const nama = document.getElementById('namaUsaha').value.trim();
+      const email = document.getElementById('emailUsaha').value.trim();
+
+      if (nama) {
+        document.getElementById('displayBusinessName').innerText = nama;
+      }
+      if (email) {
+        document.getElementById('displayEmail').innerText = email;
+      }
+
+      alert('Perubahan profil berhasil disimpan!');
+    }
+
+    // Dropdown notification helpers
+    function toggleNotificationDropdown(e) {
+      if (e) e.stopPropagation();
+      const dd = document.getElementById('notifDropdown');
+      if (dd) {
+        dd.classList.toggle('show');
+      }
+    }
+
+    function markAllAsRead(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const badgeRed = document.getElementById('notifBadgeRed');
+      if (badgeRed) badgeRed.style.display = 'none';
+
+      document.querySelectorAll('.notif-item.unread').forEach(item => {
+        item.classList.remove('unread');
+      });
+    }
+
+    document.addEventListener('click', function (e) {
+      const dd = document.getElementById('notifDropdown');
+      const btn = document.getElementById('notifBellBtn');
+      if (dd && dd.classList.contains('show')) {
+        if (!dd.contains(e.target) && !btn.contains(e.target)) {
+          dd.classList.remove('show');
+        }
+      }
+    });
+  </script>
+</body>
+</html>

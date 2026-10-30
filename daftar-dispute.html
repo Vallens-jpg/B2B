@@ -1,0 +1,597 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staplr - Daftar Dispute</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ==========================================================================
+       Daftar Dispute Styles
+       ========================================================================== */
+    body.dispute-list-body {
+      background-color: #FAF6ED;
+      min-height: 100vh;
+      font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif);
+      color: #111827;
+      margin: 0;
+      padding: 0;
+      padding-bottom: 6rem;
+    }
+
+    .dispute-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 2.25rem 2.5rem 0 2.5rem;
+    }
+
+    /* Top Title & Search Header */
+    .dispute-header-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .dispute-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .dispute-page-title {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+
+    .dispute-page-subtitle {
+      font-size: 0.925rem;
+      color: #6B7280;
+      margin: 0;
+    }
+
+    /* Search Input */
+    .dispute-search-wrap {
+      position: relative;
+      width: 360px;
+      display: flex;
+      align-items: center;
+    }
+
+    .dispute-search-icon {
+      position: absolute;
+      left: 1.1rem;
+      width: 18px;
+      height: 18px;
+      stroke: #9CA3AF;
+      stroke-width: 2.2;
+      fill: none;
+      pointer-events: none;
+    }
+
+    .dispute-search-input {
+      width: 100%;
+      background-color: #ffffff;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 0.85rem 1.1rem 0.85rem 2.75rem;
+      font-size: 0.885rem;
+      color: #111827;
+      font-family: inherit;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .dispute-search-input::placeholder {
+      color: #9CA3AF;
+    }
+
+    .dispute-search-input:focus {
+      border-color: #94A3B8;
+      box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.15);
+    }
+
+    /* Filter Pills */
+    .dispute-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.75rem;
+    }
+
+    .dispute-filter-pill {
+      background-color: #ffffff;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 9999px;
+      padding: 0.5rem 1.25rem;
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: #374151;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+
+    .dispute-filter-pill:hover {
+      background-color: #F8FAFC;
+      border-color: #CBD5E1;
+    }
+
+    .dispute-filter-pill.active {
+      background-color: #152C4E;
+      border-color: #152C4E;
+      color: #ffffff;
+    }
+
+    /* Dispute Cards List */
+    .dispute-cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+    }
+
+    .dispute-card {
+      background-color: #ffffff;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 1.35rem 1.75rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      transition: box-shadow 0.15s ease, transform 0.1s ease;
+    }
+
+    .dispute-card:hover {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+      transform: translateY(-1px);
+    }
+
+    /* Card Left Info */
+    .dispute-card-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .dispute-order-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .dispute-order-id {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.01em;
+    }
+
+    /* Status Badges */
+    .dispute-badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+
+    .dispute-badge-amber {
+      background-color: #FEF3C7;
+      color: #B45309;
+    }
+
+    .dispute-badge-blue {
+      background-color: #EFF6FF;
+      color: #2563EB;
+    }
+
+    .dispute-badge-green {
+      background-color: #DEF7EC;
+      color: #03543F;
+    }
+
+    .dispute-card-seller {
+      font-size: 0.885rem;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .dispute-card-date {
+      font-size: 0.78rem;
+      color: #6B7280;
+    }
+
+    /* Card Right Info */
+    .dispute-card-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .dispute-amount-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.2rem;
+    }
+
+    .dispute-amount-val {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.01em;
+    }
+
+    .dispute-amount-label {
+      font-size: 0.75rem;
+      color: #6B7280;
+      font-weight: 500;
+    }
+
+    .btn-dispute-diskusi {
+      background-color: #152C4E;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.65rem 1.4rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background-color 0.15s ease;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn-dispute-diskusi:hover {
+      background-color: #0F203A;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .dispute-header-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .dispute-search-wrap {
+        width: 100%;
+      }
+      .dispute-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .dispute-card-right {
+        width: 100%;
+        justify-content: space-between;
+        border-top: 1px solid #F1F5F9;
+        padding-top: 0.85rem;
+        margin-top: 0.25rem;
+      }
+      .dispute-amount-group {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body class="dispute-list-body">
+
+  <!-- Navbar Header -->
+  <header class="dashboard-navbar">
+    <div class="navbar-inner">
+      <a href="dashboard.html" class="brand-header" style="text-decoration: none;">
+        <img src="Logo/logo staplr.png" alt="Staplr Logo" class="brand-logo-img">
+        <div class="brand-title-group">
+          <span class="brand-dot"></span>
+          <span class="brand-name">Staplr</span>
+        </div>
+      </a>
+
+      <nav class="nav-pills-container">
+        <a href="dashboard.html" class="nav-pill-item">
+          <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor"/>
+          </svg>
+          Dashboard
+        </a>
+        <a href="pesanan.html" class="nav-pill-item">
+          <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor"/>
+            <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-linecap="round"/>
+          </svg>
+          Pesanan
+        </a>
+        <a href="daftar-dispute.html" class="nav-pill-item active">
+          <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor"/>
+            <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
+          </svg>
+          Dispute
+        </a>
+        <a href="permintaan-disetujui.html" class="nav-pill-item">
+          <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor"/>
+            <path d="M8 12l3 3 5-5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Permintaan Disetujui
+        </a>
+      </nav>
+
+      <div class="navbar-actions notif-dropdown-wrapper">
+        <button type="button" class="notification-bell-btn" id="notifBellBtn" onclick="toggleNotificationDropdown(event)" aria-label="Notifikasi">
+          <svg class="bell-icon" viewBox="0 0 24 24">
+            <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
+          </svg>
+          <span class="notification-badge-red" id="notifBadgeRed">3</span>
+        </button>
+        <a href="profil.html" class="user-profile-capsule">
+          <div class="user-avatar-circle">AD</div>
+          <span class="user-name-text">Buyer</span>
+        </a>
+
+        <!-- Notification Popover Card -->
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-header">
+            <span class="notif-title">Notifikasi</span>
+            <button type="button" class="notif-mark-read" onclick="markAllAsRead(event)">Tandai semua dibaca</button>
+          </div>
+
+          <div class="notif-list">
+            <!-- Item 1: Permintaan Disetujui -->
+            <a href="permintaan-disetujui.html" class="notif-item unread">
+              <div class="notif-icon-circle green">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <polyline points="9 15 12 18 15 15"/>
+                </svg>
+              </div>
+              <div class="notif-content">
+                <div class="notif-item-top">
+                  <span class="notif-item-title">Permintaan Disetujui</span>
+                  <span class="notif-time">· 5m</span>
+                </div>
+                <p class="notif-item-body">Permintaan pengadaan telur dari PT Telur Makmur telah disetujui.</p>
+              </div>
+            </a>
+
+            <!-- Item 2: Pesan Baru di Dispute #DSP-9021 -->
+            <a href="diskusi-dispute.html" class="notif-item unread">
+              <div class="notif-icon-circle green">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  <line x1="9" y1="9" x2="15" y2="9"/>
+                  <line x1="9" y1="13" x2="13" y2="13"/>
+                </svg>
+              </div>
+              <div class="notif-content">
+                <div class="notif-item-top">
+                  <span class="notif-item-title">Pesan Baru di Dispute #DSP-9021</span>
+                  <span class="notif-item-badge-red" id="notifBadgeItem">1</span>
+                </div>
+                <p class="notif-item-body">Seller: "Kami sudah mengirim bukti foto ulang..."</p>
+              </div>
+            </a>
+
+            <!-- Item 3: Dispute Disetujui -->
+            <a href="daftar-dispute.html" class="notif-item">
+              <div class="notif-icon-circle yellow">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="10" stroke="#111827"/>
+                  <line x1="12" y1="8" x2="12" y2="12" stroke="#111827"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16" stroke="#111827"/>
+                </svg>
+              </div>
+              <div class="notif-content">
+                <div class="notif-item-top">
+                  <span class="notif-item-title dark">Dispute Disetujui · 3j</span>
+                </div>
+                <p class="notif-item-body">Dispute #DSP-8812 telah disetujui. Dana pengembalian sedang diproses.</p>
+              </div>
+            </a>
+          </div>
+
+          <div class="notif-footer">
+            <a href="notifikasi.html" class="notif-footer-link">Lihat Semua Notifikasi</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dispute-container">
+
+    <!-- Top Header & Search -->
+    <div class="dispute-header-row">
+      <div class="dispute-title-wrap">
+        <h1 class="dispute-page-title">Daftar Dispute</h1>
+        <p class="dispute-page-subtitle">Kelola dan tindak lanjuti sengketa pesanan Anda.</p>
+      </div>
+
+      <div class="dispute-search-wrap">
+        <svg class="dispute-search-icon" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          type="text"
+          id="disputeSearchInput"
+          class="dispute-search-input"
+          placeholder="Cari nomor pesanan atau nama penjual..."
+          oninput="filterDisputes()"
+        >
+      </div>
+    </div>
+
+    <!-- Filter Pills -->
+    <div class="dispute-filter-row">
+      <button type="button" class="dispute-filter-pill active" onclick="setFilter('dibuka', this)">Dibuka</button>
+      <button type="button" class="dispute-filter-pill" onclick="setFilter('menunggu_tanggapan', this)">Menunggu Tanggapan</button>
+      <button type="button" class="dispute-filter-pill" onclick="setFilter('ditinjau_admin', this)">Ditinjau Admin</button>
+      <button type="button" class="dispute-filter-pill" onclick="setFilter('diputuskan', this)">Diputuskan</button>
+      <button type="button" class="dispute-filter-pill" onclick="setFilter('ditutup', this)">Ditutup</button>
+    </div>
+
+    <!-- Dispute Cards List -->
+    <div class="dispute-cards-list" id="disputeCardsContainer">
+
+      <!-- Card 1: #ORD-8921 -->
+      <article class="dispute-card" data-order="#ORD-8921" data-seller="PT Telur Makmur" data-status="menunggu_tanggapan">
+        <div class="dispute-card-left">
+          <div class="dispute-order-header">
+            <span class="dispute-order-id">#ORD-8921</span>
+            <span class="dispute-badge dispute-badge-amber">MENUNGGU TANGGAPAN</span>
+          </div>
+          <div class="dispute-card-seller">Penjual: PT Telur Makmur</div>
+          <div class="dispute-card-date">Dibuat: 12 Oktober 2023 • 14:30 WIB</div>
+        </div>
+
+        <div class="dispute-card-right">
+          <div class="dispute-amount-group">
+            <span class="dispute-amount-val">Rp 1.250.000</span>
+            <span class="dispute-amount-label">Total Dispute</span>
+          </div>
+          <a href="diskusi-dispute.html?order=ORD-8921&amount=Rp%201.250.000&seller=PT%20Telur%20Makmur" class="btn-dispute-diskusi">
+            Diskusi
+          </a>
+        </div>
+      </article>
+
+      <!-- Card 2: #ORD-8910 -->
+      <article class="dispute-card" data-order="#ORD-8910" data-seller="Mitra Unggas Sejahtera" data-status="dibuka">
+        <div class="dispute-card-left">
+          <div class="dispute-order-header">
+            <span class="dispute-order-id">#ORD-8910</span>
+            <span class="dispute-badge dispute-badge-blue">DALAM PROSES</span>
+          </div>
+          <div class="dispute-card-seller">Penjual: Mitra Unggas Sejahtera</div>
+          <div class="dispute-card-date">Dibuat: 10 Oktober 2023 • 09:15 WIB</div>
+        </div>
+
+        <div class="dispute-card-right">
+          <div class="dispute-amount-group">
+            <span class="dispute-amount-val">Rp 850.000</span>
+            <span class="dispute-amount-label">Total Dispute</span>
+          </div>
+          <a href="diskusi-dispute.html?order=ORD-8910&amount=Rp%20850.000&seller=Mitra%20Unggas%20Sejahtera" class="btn-dispute-diskusi">
+            Diskusi
+          </a>
+        </div>
+      </article>
+
+      <!-- Card 3: #ORD-8895 -->
+      <article class="dispute-card" data-order="#ORD-8895" data-seller="Tunas Farm" data-status="ditutup">
+        <div class="dispute-card-left">
+          <div class="dispute-order-header">
+            <span class="dispute-order-id">#ORD-8895</span>
+            <span class="dispute-badge dispute-badge-green">SELESAI</span>
+          </div>
+          <div class="dispute-card-seller">Penjual: Tunas Farm</div>
+          <div class="dispute-card-date">Dibuat: 05 Oktober 2023 • 11:40 WIB</div>
+        </div>
+
+        <div class="dispute-card-right">
+          <div class="dispute-amount-group">
+            <span class="dispute-amount-val">Rp 450.000</span>
+            <span class="dispute-amount-label">Total Dispute</span>
+          </div>
+          <a href="diskusi-dispute.html?order=ORD-8895&amount=Rp%20450.000&seller=Tunas%20Farm" class="btn-dispute-diskusi">
+            Diskusi
+          </a>
+        </div>
+      </article>
+
+    </div>
+
+  </main>
+
+  <!-- Floating Navigation for Prototype Walkthrough -->
+
+  <script>
+    let activeFilter = 'dibuka';
+
+    function setFilter(filter, btnEl) {
+      activeFilter = filter;
+      document.querySelectorAll('.dispute-filter-pill').forEach(btn => btn.classList.remove('active'));
+      btnEl.classList.add('active');
+      filterDisputes();
+    }
+
+    function filterDisputes() {
+      const q = document.getElementById('disputeSearchInput').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.dispute-card');
+
+      cards.forEach(card => {
+        const orderId = card.getAttribute('data-order').toLowerCase();
+        const seller = card.getAttribute('data-seller').toLowerCase();
+        const status = card.getAttribute('data-status');
+
+        let matchesSearch = !q || orderId.includes(q) || seller.includes(q);
+        // By default show matching search
+        let matchesFilter = true;
+        if (activeFilter !== 'dibuka') {
+          matchesFilter = (status === activeFilter);
+        }
+
+        if (matchesSearch && matchesFilter) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function toggleNotificationDropdown(e) {
+      if (e) e.stopPropagation();
+      const dd = document.getElementById('notifDropdown');
+      if (dd) {
+        dd.classList.toggle('show');
+      }
+    }
+
+    function markAllAsRead(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const badgeRed = document.getElementById('notifBadgeRed');
+      if (badgeRed) badgeRed.style.display = 'none';
+
+      const badgeItem = document.getElementById('notifBadgeItem');
+      if (badgeItem) badgeItem.style.display = 'none';
+
+      document.querySelectorAll('.notif-item.unread').forEach(item => {
+        item.classList.remove('unread');
+      });
+    }
+
+    document.addEventListener('click', function (e) {
+      const dd = document.getElementById('notifDropdown');
+      const btn = document.getElementById('notifBellBtn');
+      if (dd && dd.classList.contains('show')) {
+        if (!dd.contains(e.target) && !btn.contains(e.target)) {
+          dd.classList.remove('show');
+        }
+      }
+    });
+  </script>
+</body>
+</html>

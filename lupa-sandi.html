@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staplr - Lupa Kata Sandi</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="forgot-page-container">
+    <!-- Top Left Brand Header -->
+    <header class="brand-header forgot-header">
+      <img src="Logo/logo staplr.png" alt="Staplr Logo" class="brand-logo-img">
+      <div class="brand-title-group">
+        <span class="brand-dot"></span>
+        <span class="brand-name">Staplr</span>
+      </div>
+    </header>
+
+    <!-- Background Decorative Circles -->
+    <div class="bg-circles-p2">
+      <div class="p2-circle-top-left"></div>
+      <div class="p2-circle-top-right"></div>
+      <div class="p2-circle-bottom-left"></div>
+      <div class="p2-circle-bottom-right"></div>
+    </div>
+
+    <!-- Centered Modal Card -->
+    <div class="modal-card">
+      <h2 class="auth-card-title">Lupa Kata Sandi</h2>
+      <p class="auth-card-subtitle">Masukkan email dan kata sandi baru Anda.</p>
+
+      <form action="#" method="POST" id="forgotForm">
+        <div class="form-group">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" id="email" class="form-input" placeholder="nama@email.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="new-password" class="form-label">Kata Sandi Baru</label>
+          <input type="password" id="new-password" class="form-input" placeholder="••••••••" required>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm-password" class="form-label">Konfirmasi Kata Sandi</label>
+          <input type="password" id="confirm-password" class="form-input" placeholder="••••••••" required>
+        </div>
+
+        <!-- Action Buttons: Batal & Simpan -->
+        <div class="action-buttons-group">
+          <a href="index.html" class="btn-secondary">Batal</a>
+          <button type="submit" class="btn-primary-flex">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Floating Navigation Toolbar to switch between the 3 visual design states -->
+
+</body>
+</html>

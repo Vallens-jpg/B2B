@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staplr - Invoice Pembayaran</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ==========================================================================
+       Invoice Pembayaran Specific Styles
+       ========================================================================== */
+    .inv-body {
+      background-color: var(--bg-dashboard);
+      min-height: 100vh;
+      padding-bottom: 6rem;
+    }
+
+    /* Navbar – reuse detail-navbar but no bell */
+    .inv-navbar {
+      background-color: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0.85rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Main wrapper */
+    .inv-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 2.5rem 0 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ===================== SUCCESS BANNER ===================== */
+    .inv-success-banner {
+      background-color: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .inv-success-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .inv-success-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background-color: #d1fae5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .inv-success-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: #059669;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    .inv-success-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 0.2rem;
+    }
+
+    .inv-success-sub {
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+
+    .inv-lunas-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1.5px solid #059669;
+      color: #059669;
+      font-size: 0.825rem;
+      font-weight: 800;
+      padding: 0.45rem 1rem;
+      border-radius: 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .inv-lunas-badge svg {
+      width: 14px;
+      height: 14px;
+      stroke: #059669;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    /* ===================== BODY GRID ===================== */
+    .inv-body-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    /* ===================== LEFT: INVOICE CARD ===================== */
+    .inv-left-card {
+      background-color: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 1.75rem 2rem;
+    }
+
+    /* Invoice header */
+    .inv-header-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .inv-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary-navy);
+      line-height: 1.1;
+      margin-bottom: 0.3rem;
+    }
+
+    .inv-number {
+      font-size: 0.875rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .inv-brand-right {
+      text-align: right;
+    }
+
+    .inv-brand-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary-navy);
+      letter-spacing: -0.02em;
+    }
+
+    .inv-brand-sub {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    /* Meta row */
+    .inv-meta-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .inv-meta-label {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      margin-bottom: 0.3rem;
+      font-weight: 500;
+    }
+
+    .inv-meta-value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    /* Section title */
+    .inv-section-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Table */
+    .inv-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.25rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .inv-table thead tr {
+      background-color: #f8fafc;
+    }
+
+    .inv-table th {
+      font-size: 0.775rem;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+
+    .inv-table th.right,
+    .inv-table td.right {
+      text-align: right;
+    }
+
+    .inv-table th.center,
+    .inv-table td.center {
+      text-align: center;
+    }
+
+    .inv-table td {
+      padding: 1rem 1rem 0.9rem 1rem;
+      font-size: 0.9rem;
+      color: #1f2937;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .inv-product-name {
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 0.2rem;
+    }
+
+    .inv-product-sub {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      font-weight: 400;
+    }
+
+    /* Subtotal & Total rows */
+    .inv-subtotal-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-top: 1px solid #f1f5f9;
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+
+    .inv-total-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 0 0.5rem 0;
+      border-top: 2px solid #e5e7eb;
+      margin-top: 0.25rem;
+    }
+
+    .inv-total-label {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #111827;
+    }
+
+    .inv-total-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.01em;
+    }
+
+    /* Footer note */
+    .inv-footer-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .inv-footer-note svg {
+      width: 20px;
+      height: 20px;
+      stroke: #94a3b8;
+      stroke-width: 1.8;
+      fill: none;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    .inv-footer-note-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 0.2rem;
+    }
+
+    .inv-footer-note-sub {
+      font-size: 0.82rem;
+      color: #94a3b8;
+    }
+
+    /* ===================== RIGHT: DETAIL PEMBAYARAN ===================== */
+    .inv-right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .inv-detail-card {
+      background-color: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 1.4rem 1.5rem;
+    }
+
+    .inv-detail-title {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-size: 1rem;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 1.25rem;
+    }
+
+    .inv-detail-title svg {
+      width: 20px;
+      height: 20px;
+      stroke: #374151;
+      stroke-width: 1.8;
+      fill: none;
+    }
+
+    .inv-total-dibayar-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .inv-total-dibayar-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.1rem;
+    }
+
+    /* BCA row */
+    .inv-bank-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 0.7rem 0.9rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .inv-bank-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .inv-bank-logo-wrap {
+      width: 36px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+    }
+
+    .inv-bank-info-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1.2;
+    }
+
+    .inv-bank-info-type {
+      font-size: 0.78rem;
+      color: #94a3b8;
+    }
+
+    .inv-bank-check {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1.5px solid #059669;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .inv-bank-check svg {
+      width: 13px;
+      height: 13px;
+      stroke: #059669;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    /* Info rows */
+    .inv-info-block {
+      margin-bottom: 1rem;
+    }
+
+    .inv-info-label {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .inv-info-value {
+      font-size: 0.925rem;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    /* Verified note */
+    .inv-verified-note {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: #64748b;
+      padding-top: 0.85rem;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .inv-verified-note svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+    }
+
+    /* Action Buttons */
+    .inv-btn-download {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      background-color: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      padding: 1rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      box-shadow: 0 6px 18px rgba(21, 44, 78, 0.2);
+    }
+
+    .inv-btn-download:hover {
+      background-color: var(--primary-navy-hover);
+    }
+
+    .inv-btn-download svg {
+      width: 18px;
+      height: 18px;
+      stroke: #ffffff;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .inv-btn-print {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      background-color: #ffffff;
+      color: #111827;
+      border: 1.5px solid #d1d5db;
+      padding: 1rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .inv-btn-print:hover {
+      background-color: #f8fafc;
+    }
+
+    .inv-btn-print svg {
+      width: 18px;
+      height: 18px;
+      stroke: #374151;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .inv-cek-link {
+      display: block;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #111827;
+      text-decoration: none;
+      padding: 0.4rem 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .inv-cek-link:hover {
+      opacity: 0.7;
+    }
+
+    @media (max-width: 900px) {
+      .inv-body-grid {
+        grid-template-columns: 1fr;
+      }
+      .inv-container {
+        padding: 1.5rem 1.25rem 0 1.25rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .inv-meta-row {
+        grid-template-columns: 1fr;
+        gap: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body class="inv-body">
+
+  <!-- Top Navigation Header -->
+  <header class="inv-navbar">
+    <a id="backLink" href="pembayaran.html" class="back-btn-circle" aria-label="Kembali">
+      <svg class="back-arrow-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+    <h1 class="detail-page-heading">Invoice Pembayaran</h1>
+    <div class="navbar-actions">
+      <div class="user-profile-capsule">
+        <div class="user-avatar-circle">AD</div>
+        <span class="user-name-text">Buyer</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="inv-container">
+
+    <!-- Success Banner -->
+    <div class="inv-success-banner">
+      <div class="inv-success-left">
+        <div class="inv-success-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="inv-success-title">Pembayaran berhasil!</div>
+          <div class="inv-success-sub">Terima kasih. Pembayaran Anda telah diterima dan invoice siap diunduh.</div>
+        </div>
+      </div>
+      <div class="inv-lunas-badge">
+        <svg viewBox="0 0 24 24">
+          <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        LUNAS
+      </div>
+    </div>
+
+    <!-- Body Grid -->
+    <div class="inv-body-grid">
+
+      <!-- LEFT: Invoice Document -->
+      <div class="inv-left-card">
+
+        <!-- Invoice Header -->
+        <div class="inv-header-row">
+          <div>
+            <div class="inv-title">Invoice</div>
+            <div class="inv-number" id="invNumber">INV/STP/20261007/001</div>
+          </div>
+          <div class="inv-brand-right">
+            <div class="inv-brand-name">Staplr.</div>
+            <div class="inv-brand-sub">Bukti pembayaran resmi</div>
+          </div>
+        </div>
+
+        <!-- Meta -->
+        <div class="inv-meta-row">
+          <div>
+            <div class="inv-meta-label">Ditagihkan kepada</div>
+            <div class="inv-meta-value">Buyer</div>
+          </div>
+          <div>
+            <div class="inv-meta-label">Tanggal invoice</div>
+            <div class="inv-meta-value" id="invDate">07 Oktober 2026</div>
+          </div>
+          <div>
+            <div class="inv-meta-label">Metode pembayaran</div>
+            <div class="inv-meta-value">Transfer Bank BCA</div>
+          </div>
+        </div>
+
+        <!-- Rincian tagihan -->
+        <div class="inv-section-title">Rincian tagihan</div>
+        <table class="inv-table">
+          <thead>
+            <tr>
+              <th>Deskripsi</th>
+              <th class="center">Qty/kg</th>
+              <th class="right">Harga</th>
+              <th class="right">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="inv-product-name" id="invProductName">Pembayaran pesanan produk</div>
+                <div class="inv-product-sub">Sesuai tagihan pesanan</div>
+              </td>
+              <td class="center" id="invQty">2</td>
+              <td class="right" id="invPrice">Rp 500.000</td>
+              <td class="right" id="invSubtotal">Rp 500.000</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Subtotal -->
+        <div class="inv-subtotal-row">
+          <span>Subtotal tagihan</span>
+          <span id="invSubtotalBottom">Rp 500.000</span>
+        </div>
+
+        <!-- Total -->
+        <div class="inv-total-row">
+          <span class="inv-total-label">Total tagihan</span>
+          <span class="inv-total-value" id="invTotal">Rp 500.000</span>
+        </div>
+
+        <!-- Footer Note -->
+        <div class="inv-footer-note">
+          <svg viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" stroke-linejoin="round"/>
+            <path d="M14 2v6h6M9 13h6M9 17h4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <div class="inv-footer-note-title">Simpan invoice ini sebagai bukti pembayaran.</div>
+            <div class="inv-footer-note-sub">Invoice diterbitkan secara elektronik dan sah tanpa tanda tangan.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Detail Pembayaran -->
+      <div class="inv-right-col">
+
+        <div class="inv-detail-card">
+          <!-- Title -->
+          <div class="inv-detail-title">
+            <svg viewBox="0 0 24 24">
+              <rect x="2" y="5" width="20" height="14" rx="2" stroke-linejoin="round"/>
+              <path d="M2 10h20" stroke-linecap="round"/>
+            </svg>
+            Detail pembayaran
+          </div>
+
+          <!-- Total Dibayar -->
+          <div class="inv-total-dibayar-label">Total Dibayar</div>
+          <div class="inv-total-dibayar-value" id="detailTotal">Rp 500.000</div>
+
+          <!-- BCA Row -->
+          <div class="inv-bank-row">
+            <div class="inv-bank-left">
+              <div class="inv-bank-logo-wrap">
+                <!-- BCA Logo -->
+                <svg viewBox="0 0 52 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:44px;height:18px;">
+                  <rect width="52" height="20" rx="3" fill="#005BAA"/>
+                  <text x="5" y="14.5" font-family="Arial, sans-serif" font-size="10.5" font-weight="900" fill="#FFFFFF" letter-spacing="0.5">BCA</text>
+                </svg>
+              </div>
+              <div>
+                <div class="inv-bank-info-name">BCA</div>
+                <div class="inv-bank-info-type">Transfer bank</div>
+              </div>
+            </div>
+            <div class="inv-bank-check">
+              <svg viewBox="0 0 24 24">
+                <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Rekening -->
+          <div class="inv-info-block">
+            <div class="inv-info-label">Nomor rekening tujuan</div>
+            <div class="inv-info-value">88012 3456 7890 1234</div>
+          </div>
+
+          <!-- Waktu -->
+          <div class="inv-info-block">
+            <div class="inv-info-label">Waktu pembayaran</div>
+            <div class="inv-info-value" id="waktuPembayaran">07 Oktober 2026, 14:12 WIB</div>
+          </div>
+
+          <!-- Verified -->
+          <div class="inv-verified-note">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2z" fill="#d1fae5" stroke="#10b981" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M9 12l2 2 4-4" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Pembayaran telah diverifikasi oleh Staplr.
+          </div>
+        </div>
+
+        <!-- Download Button -->
+        <button class="inv-btn-download" onclick="unduhInvoice()">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="7 10 12 15 17 10" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="12" y1="15" x2="12" y2="3" stroke-linecap="round"/>
+          </svg>
+          Unduh Invoice (PDF)
+        </button>
+
+        <!-- Print Button -->
+        <button class="inv-btn-print" onclick="window.print()">
+          <svg viewBox="0 0 24 24">
+            <polyline points="6 9 6 2 18 2 18 9" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="6" y="14" width="12" height="8" stroke-linejoin="round"/>
+          </svg>
+          Cetak Invoice
+        </button>
+
+        <!-- Cek Detail Pesanan -->
+        <a href="status-pesanan.html" id="cekDetailLink" class="inv-cek-link">
+          Cek Detail Pesanan &rarr;
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Navigation -->
+
+  <script>
+    // ---- URL Params ----
+    const urlParams   = new URLSearchParams(window.location.search);
+    const subtotal    = urlParams.get('subtotal') || 'Rp 500.000';
+    const sellerParam = urlParams.get('seller')   || '1';
+    const product     = urlParams.get('product')  || 'Telur Ayam Grade A';
+    const qty         = urlParams.get('qty')       || '2';
+    const price       = urlParams.get('price')     || 'Rp 500.000';
+
+    // Fill invoice values
+    document.getElementById('invSubtotal').innerText       = subtotal;
+    document.getElementById('invSubtotalBottom').innerText = subtotal;
+    document.getElementById('invTotal').innerText          = subtotal;
+    document.getElementById('detailTotal').innerText       = subtotal;
+    document.getElementById('invPrice').innerText          = subtotal;
+    document.getElementById('invQty').innerText            = qty.replace(/\s*kg/i, '').trim() || '2';
+
+    // Invoice date = today
+    const today = new Date();
+    const bulanId = ['Januari','Februari','Maret','April','Mei','Juni',
+                     'Juli','Agustus','September','Oktober','November','Desember'];
+    const tglStr = today.getDate() + ' ' + bulanId[today.getMonth()] + ' ' + today.getFullYear();
+    document.getElementById('invDate').innerText = tglStr;
+
+    // Waktu pembayaran = now
+    const jam  = String(today.getHours()).padStart(2, '0');
+    const mnt  = String(today.getMinutes()).padStart(2, '0');
+    document.getElementById('waktuPembayaran').innerText =
+      tglStr + ', ' + jam + ':' + mnt + ' WIB';
+
+    // Invoice number with today's date YYYYMMDD
+    const mm   = String(today.getMonth() + 1).padStart(2, '0');
+    const dd   = String(today.getDate()).padStart(2, '0');
+    document.getElementById('invNumber').innerText =
+      'INV/STP/' + today.getFullYear() + mm + dd + '/001';
+
+    // Back link
+    const backQ =
+      '?seller='   + encodeURIComponent(sellerParam) +
+      '&product='  + encodeURIComponent(product) +
+      '&qty='      + encodeURIComponent(qty) +
+      '&price='    + encodeURIComponent(price) +
+      '&subtotal=' + encodeURIComponent(subtotal);
+    document.getElementById('backLink').href = 'pembayaran.html' + backQ;
+
+    // Cek detail link
+    document.getElementById('cekDetailLink').href =
+      'detail-pesanan.html' +
+      '?seller='  + encodeURIComponent(sellerParam) +
+      '&product=' + encodeURIComponent(product) +
+      '&price='   + encodeURIComponent(price) +
+      '&qty='     + encodeURIComponent(qty) +
+      '&subtotal='+ encodeURIComponent(subtotal);
+
+    // Unduh Invoice
+    function unduhInvoice() {
+      window.print();
+    }
+  </script>
+</body>
+</html>

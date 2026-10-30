@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staplr - Pembayaran Transfer Bank</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ==========================================================================
+       Pembayaran Transfer Bank Specific Styles
+       ========================================================================== */
+    .pb-body {
+      background-color: var(--bg-dashboard);
+      min-height: 100vh;
+      padding-bottom: 6rem;
+    }
+
+    .pb-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 2.5rem 0 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    /* -------- Left Column -------- */
+    .pb-left {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Timer Card */
+    .pb-timer-card {
+      background-color: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 1.25rem 1.4rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .pb-timer-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background-color: #1f2937;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .pb-timer-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: #ffffff;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .pb-timer-content {
+      flex: 1;
+    }
+
+    .pb-timer-title {
+      font-size: 0.975rem;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 0.3rem;
+    }
+
+    .pb-timer-countdown {
+      font-size: 0.975rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 0.2rem;
+    }
+
+    .pb-timer-date {
+      font-size: 0.82rem;
+      color: #64748b;
+    }
+
+    /* Total Tagihan Card */
+    .pb-total-card {
+      background-color: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 1.35rem 1.4rem;
+    }
+
+    .pb-total-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.65rem;
+    }
+
+    .pb-total-value {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.02em;
+    }
+
+    /* Bank & Rekening Card */
+    .pb-bank-card {
+      background-color: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 1.35rem 1.4rem;
+    }
+
+    .pb-bank-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Bank Dropdown */
+    .pb-bank-select-wrapper {
+      position: relative;
+      margin-bottom: 1.25rem;
+    }
+
+    .pb-bank-select-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      background-color: #ffffff;
+    }
+
+    .pb-bank-select-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .pb-bank-logo {
+      height: 20px;
+      width: auto;
+    }
+
+    .pb-bank-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .pb-chevron {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: #111827;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .pb-chevron svg {
+      width: 14px;
+      height: 14px;
+      stroke: #ffffff;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    /* Rekening Section */
+    .pb-rekening-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .pb-rekening-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .pb-rekening-number {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: 0.01em;
+      line-height: 1.25;
+    }
+
+    .pb-salin-btn {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      background-color: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      padding: 0.75rem 1.1rem;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: background-color 0.2s ease;
+      white-space: nowrap;
+      min-width: 110px;
+    }
+
+    .pb-salin-btn:hover {
+      background-color: var(--primary-navy-hover);
+    }
+
+    .pb-salin-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: #ffffff;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    /* Invoice Button */
+    .pb-invoice-btn {
+      width: 100%;
+      padding: 1.1rem;
+      background-color: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(21, 44, 78, 0.2);
+    }
+
+    .pb-invoice-btn:hover {
+      background-color: var(--primary-navy-hover);
+    }
+
+    /* -------- Right Column -------- */
+    .pb-cara-card {
+      background-color: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 1.5rem 1.6rem;
+    }
+
+    .pb-cara-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 1.1rem;
+    }
+
+    /* Tabs */
+    .pb-tabs {
+      display: flex;
+      border-bottom: 1.5px solid #e5e7eb;
+      margin-bottom: 1.25rem;
+      gap: 0;
+    }
+
+    .pb-tab-btn {
+      flex: 1;
+      padding: 0.65rem 0.5rem;
+      background: none;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #94a3b8;
+      cursor: pointer;
+      text-align: center;
+      border-bottom: 2.5px solid transparent;
+      margin-bottom: -1.5px;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .pb-tab-btn.active {
+      color: #2563eb;
+      border-bottom-color: #2563eb;
+    }
+
+    .pb-tab-btn:hover:not(.active) {
+      color: #475569;
+    }
+
+    /* Steps */
+    .pb-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .pb-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .pb-step:last-child {
+      border-bottom: none;
+    }
+
+    .pb-step-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background-color: #f1f5f9;
+      color: #475569;
+      font-size: 0.8rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    .pb-step-text {
+      font-size: 0.9rem;
+      color: #374151;
+      line-height: 1.55;
+    }
+
+    .pb-step-text strong {
+      font-weight: 700;
+      color: #111827;
+    }
+
+    /* Security note */
+    .pb-security-note {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 1.1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #f1f5f9;
+      font-size: 0.82rem;
+      color: #64748b;
+    }
+
+    .pb-security-note svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* BCA logo SVG inline */
+    .bca-logo-svg {
+      height: 20px;
+    }
+
+    /* Tab content */
+    .pb-tab-content {
+      display: none;
+    }
+
+    .pb-tab-content.active {
+      display: block;
+    }
+
+    /* Copied toast */
+    .pb-toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(4rem);
+      background-color: #111827;
+      color: #ffffff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 999;
+      pointer-events: none;
+    }
+
+    .pb-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 900px) {
+      .pb-container {
+        grid-template-columns: 1fr;
+        padding: 1.5rem 1.25rem 0 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body class="pb-body">
+
+  <!-- Top Navigation Header -->
+  <header class="detail-navbar">
+    <a id="backLink" href="konfirmasi-pesanan.html" class="back-btn-circle" aria-label="Kembali">
+      <svg class="back-arrow-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+    <h1 class="detail-page-heading">Pembayaran Tranfer Bank</h1>
+    <div class="navbar-actions">
+      <button type="button" class="notification-bell-btn" aria-label="Notifikasi">
+        <svg class="bell-icon" viewBox="0 0 24 24">
+          <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
+        </svg>
+        <span class="notification-badge-red">3</span>
+      </button>
+      <div class="user-profile-capsule">
+        <div class="user-avatar-circle">AD</div>
+        <span class="user-name-text">Buyer</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="pb-container">
+
+    <!-- Left Column -->
+    <div class="pb-left">
+
+      <!-- Batas Waktu Pembayaran -->
+      <div class="pb-timer-card">
+        <div class="pb-timer-icon">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 7v5l3 3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="pb-timer-content">
+          <div class="pb-timer-title">Batas Waktu Pembayaran</div>
+          <div class="pb-timer-countdown">Selesaikan Dalam : <span id="timerDisplay">23 Jam 59 Menit</span></div>
+          <div class="pb-timer-date" id="timerDeadline">(08/10/2026, 14:00 WIB)</div>
+        </div>
+      </div>
+
+      <!-- Total Tagihan -->
+      <div class="pb-total-card">
+        <div class="pb-total-label">Total Tagihan</div>
+        <div class="pb-total-value" id="totalTagihan">Rp 500.000</div>
+      </div>
+
+      <!-- Bank Tujuan & Rekening -->
+      <div class="pb-bank-card">
+        <div class="pb-bank-label">Bank Tujuan</div>
+
+        <div class="pb-bank-select-wrapper">
+          <div class="pb-bank-select-box">
+            <div class="pb-bank-select-left">
+              <!-- BCA Logo inline SVG -->
+              <svg class="bca-logo-svg" viewBox="0 0 60 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="60" height="20" rx="3" fill="#005BAA"/>
+                <text x="6" y="14.5" font-family="Arial, sans-serif" font-size="10" font-weight="900" fill="#FFFFFF" letter-spacing="0.5">BCA</text>
+              </svg>
+              <span class="pb-bank-name">BCA</span>
+            </div>
+            <div class="pb-chevron">
+              <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="pb-rekening-label">Nomor Rekening</div>
+        <div class="pb-rekening-row">
+          <div class="pb-rekening-number" id="nomorRekening">88012 3456 7890<br>1234</div>
+          <button class="pb-salin-btn" id="salinBtn" onclick="salinRekening()">
+            <svg viewBox="0 0 24 24">
+              <rect x="9" y="9" width="13" height="13" rx="2" stroke-linejoin="round"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke-linejoin="round"/>
+            </svg>
+            Salin Nomor<br>Rekening
+          </button>
+        </div>
+      </div>
+
+      <!-- Invoice Pembayaran -->
+      <button class="pb-invoice-btn" onclick="bukaInvoice()">
+        Invoice Pembayaran
+      </button>
+
+    </div>
+
+    <!-- Right Column: Cara Pembayaran -->
+    <div class="pb-cara-card">
+      <div class="pb-cara-title">Cara Pembayaran</div>
+
+      <!-- Tabs -->
+      <div class="pb-tabs" role="tablist">
+        <button class="pb-tab-btn active" role="tab" onclick="switchTab(this, 'atm')">ATM BCA</button>
+        <button class="pb-tab-btn" role="tab" onclick="switchTab(this, 'mbca')">m-BCA</button>
+        <button class="pb-tab-btn" role="tab" onclick="switchTab(this, 'klik')">KlikBCA</button>
+      </div>
+
+      <!-- ATM BCA Steps -->
+      <div class="pb-tab-content active" id="tab-atm">
+        <div class="pb-steps">
+          <div class="pb-step">
+            <div class="pb-step-num">1</div>
+            <div class="pb-step-text">Masukkan Kartu ATM BCA &amp; PIN.</div>
+          </div>
+          <div class="pb-step">
+            <div class="pb-step-num">2</div>
+            <div class="pb-step-text">Pilih menu <strong>Transaksi Lainnya &gt; Transfer &gt; Ke Rek BCA</strong>.</div>
+          </div>
+          <div class="pb-step">
+            <div class="pb-step-num">3</div>
+            <div class="pb-step-text">Masukkan nomor Rekening &nbsp;<strong>88012 3456 7890 1234</strong>.</div>
+          </div>
+          <div class="pb-step">
+            <div class="pb-step-num">4</div>
+            <div class="pb-step-text">Pastikan jumlah tagihan sudah benar, lalu tekan <strong>Ya</strong>.</div>
+          </div>
+          <div class="pb-step">
+            <div class="pb-step-num">5</div>
+            <div class="pb-step-text">Simpan struk transaksi sebagai bukti pembayaran yang sah.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- m-BCA Steps -->
+      <div class="pb-tab-content" id="tab-mbca">
+        <div class="pb-steps">
+          <div class="pb-step">
+            <div class="pb-step-num">1</div>
+            <div class="pb-step-text">Buka aplikasi <strong>myBCA</strong> dan login dengan PIN.</div>
+          </div>
+          <div class="pb-step">
+            <div class="pb-step-num">2</div>
+            <div class="pb-step-text">Pilih menu <strong>Transfer &gt; Ke Rekening BCA</strong>.</div>
+          </div>
+          <div class="pb-step">
+            <div class="pb-step-num">3</div>
+            <div class="pb-step-text">Masukkan nomor rekening <strong>88012 3456 7890 1234</strong>.</div>
+          </div>
+          <div class="pb-step">
+            <div class="pb-step-num">4</div>
+            <div class="pb-step-text">Masukkan nominal sesuai tagihan, lalu konfirmasi.</div>
+          </div>
+          <div class="pb-step">
+            <div class="pb-step-num">5</div>
+            <div class="pb-step-text">Simpan bukti transfer sebagai bukti pembayaran yang sah.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KlikBCA Steps -->
+      <div class="pb-tab-content" id="tab-klik">
+        <div class="pb-steps">
+          <div class="pb-step">
+            <div class="pb-step-num">1</div>
+            <div class="pb-step-text">Login ke <strong>KlikBCA</strong> dengan User ID dan PIN.</div>
+          </div>
+          <div class="pb-step">
+            <div class="pb-step-num">2</div>
+            <div class="pb-step-text">Pilih menu <strong>Transfer Dana &gt; Transfer ke Rekening BCA</strong>.</div>
+          </div>
+          <div class="pb-step">
+            <div class="pb-step-num">3</div>
+            <div class="pb-step-text">Masukkan nomor rekening <strong>88012 3456 7890 1234</strong>.</div>
+          </div>
+          <div class="pb-step">
+            <div class="pb-step-num">4</div>
+            <div class="pb-step-text">Masukkan nominal sesuai tagihan dan klik <strong>Lanjutkan</strong>.</div>
+          </div>
+          <div class="pb-step">
+            <div class="pb-step-num">5</div>
+            <div class="pb-step-text">Masukkan <strong>Kode Otentikasi KeyBCA</strong> dan konfirmasi.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Note -->
+      <div class="pb-security-note">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2z" fill="#d1fae5" stroke="#10b981" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M9 12l2 2 4-4" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Pembayaran aman dan terenkripsi oleh sistem Staplr.
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div class="pb-toast" id="toast">Nomor rekening disalin!</div>
+
+  <!-- Floating Navigation -->
+
+  <script>
+    // ---- Read URL params ----
+    const urlParams = new URLSearchParams(window.location.search);
+    const subtotalParam = urlParams.get('subtotal') || 'Rp 500.000';
+    const sellerParam   = urlParams.get('seller')   || '1';
+    const productParam  = urlParams.get('product')  || 'Telur Ayam Grade A';
+    const qtyParam      = urlParams.get('qty')      || '2 kg';
+    const priceParam    = urlParams.get('price')    || 'Rp 250.000';
+
+    // Set total tagihan from order
+    document.getElementById('totalTagihan').innerText = subtotalParam;
+
+    // Back link preserves query
+    const backQuery =
+      '?seller='   + encodeURIComponent(sellerParam) +
+      '&product='  + encodeURIComponent(productParam) +
+      '&qty='      + encodeURIComponent(qtyParam) +
+      '&price='    + encodeURIComponent(priceParam) +
+      '&subtotal=' + encodeURIComponent(subtotalParam);
+    document.getElementById('backLink').href = 'konfirmasi-pesanan.html' + backQuery;
+
+    // ---- Countdown Timer (24 hours from now) ----
+    const deadline = new Date();
+    deadline.setHours(deadline.getHours() + 24);
+
+    // Show static deadline date like in the design
+    const deadlineStr = deadline.toLocaleDateString('id-ID', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    }).replace(/\//g, '/') + ', ' + deadline.toLocaleTimeString('id-ID', {
+      hour: '2-digit', minute: '2-digit'
+    }) + ' WIB';
+    document.getElementById('timerDeadline').innerText = '(' + deadlineStr + ')';
+
+    function updateTimer() {
+      const now  = new Date();
+      const diff = deadline - now;
+      if (diff <= 0) {
+        document.getElementById('timerDisplay').innerText = '00 Jam 00 Menit';
+        return;
+      }
+      const hours   = Math.floor(diff / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      document.getElementById('timerDisplay').innerText =
+        String(hours).padStart(2, '0') + ' Jam ' + String(minutes).padStart(2, '0') + ' Menit';
+    }
+    updateTimer();
+    setInterval(updateTimer, 60000);
+
+    // ---- Tab Switch ----
+    function switchTab(btn, tabId) {
+      // deactivate all tabs & content
+      document.querySelectorAll('.pb-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.pb-tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    // ---- Salin Rekening ----
+    function salinRekening() {
+      const nomor = '880123456789001234'.replace(/\s/g, '');
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(nomor);
+      }
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    // ---- Invoice Pembayaran ----
+    function bukaInvoice() {
+      window.location.href = 'invoice-pembayaran.html' +
+        '?seller='   + encodeURIComponent(sellerParam) +
+        '&product='  + encodeURIComponent(productParam) +
+        '&price='    + encodeURIComponent(priceParam) +
+        '&qty='      + encodeURIComponent(qtyParam) +
+        '&subtotal=' + encodeURIComponent(subtotalParam);
+    }
+  </script>
+</body>
+</html>

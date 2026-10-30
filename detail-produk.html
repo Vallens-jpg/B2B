@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staplr - Detail Produk</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dp-body">
+
+  <!-- Top Navigation Header -->
+  <header class="detail-navbar">
+    <a id="backLink" href="detail-penjual.html?id=1" class="back-btn-circle" aria-label="Kembali">
+      <svg class="back-arrow-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+    <h1 class="detail-page-heading">Detail Produk</h1>
+    <div class="navbar-actions">
+      <button type="button" class="notification-bell-btn" aria-label="Notifikasi">
+        <svg class="bell-icon" viewBox="0 0 24 24">
+          <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
+        </svg>
+        <span class="notification-badge-red">3</span>
+      </button>
+      <div class="user-profile-capsule">
+        <div class="user-avatar-circle">AD</div>
+        <span class="user-name-text">Buyer</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dp-container">
+    <!-- Left: Product Image -->
+    <div class="dp-image-box">
+      <img id="productImg" src="images/prod_grade_a.png" alt="Produk" class="dp-cover-img">
+    </div>
+
+    <!-- Right: Product Info -->
+    <div class="dp-info-column">
+      <span class="dp-badge-pill">Detail Produk</span>
+      <h2 id="productTitle" class="dp-product-title">Telur Ayam Grade A</h2>
+      <div id="productPrice" class="dp-product-price">Rp 50.000 <span>/ kg</span></div>
+
+      <!-- Tentang Produk Card -->
+      <div class="dp-card">
+        <h3 class="dp-card-title">Tentang produk</h3>
+        <p class="dp-about-desc">
+          Telur ayam ras segar dari peternak terverifikasi, dikemas rapi dan siap kirim dalam partai besar.
+        </p>
+        <div class="dp-info-row">
+          <span class="dp-info-label">Ketersediaan &amp; kondisi</span>
+          <span class="dp-info-value">Konfirmasi ke peternak</span>
+        </div>
+        <div class="dp-info-row">
+          <span class="dp-info-label">Pengiriman / pengambilan</span>
+          <span class="dp-info-value">Diskusikan dengan peternak</span>
+        </div>
+        <div class="dp-info-row">
+          <span class="dp-info-label">Metode pembayaran</span>
+          <span class="dp-info-value">Pastikan metode yang diterima</span>
+        </div>
+      </div>
+
+      <!-- Lokasi Produk Card -->
+      <div class="dp-card">
+        <h3 class="dp-card-title">Lokasi produk</h3>
+        <div class="dp-map-box">
+          <span class="dp-map-dot"></span>
+        </div>
+        <div class="dp-seller-row">
+          <div id="sellerInitial" class="dp-seller-avatar">U</div>
+          <div>
+            <div class="dp-seller-label">Lokasi penjual</div>
+            <div id="sellerAddress" class="dp-seller-address">Jl. Peternakan Raya No. 12</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RFQ Button -->
+      <a id="rfqLink" href="ajukan-permintaan.html?seller=1" class="btn-rfq-primary">Ajukan Permintaan (RFQ)</a>
+    </div>
+  </main>
+
+  <!-- Floating Navigation -->
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const sellerId = urlParams.get('seller') || '1';
+    const productName = urlParams.get('product') || 'Telur Ayam Ras Grade A';
+    const productPrice = urlParams.get('price') || 'Rp 28.000';
+
+    const sellersInfo = {
+      '1': { name: 'PT Telur Makmur', address: 'Jl. Peternakan Raya No. 12', initial: 'U' },
+      '2': { name: 'Mitra Unggas Sejahtera', address: 'Jl. Raya Blitar No. 45', initial: 'U' },
+      '3': { name: 'Tunas Farm', address: 'Jl. Peternakan Dramaga No. 7', initial: 'U' },
+      '4': { name: 'Berkah Telur Utama', address: 'Jl. Kenanga No. 21', initial: 'U' },
+      '5': { name: 'Ternak Mandiri', address: 'Jl. Puncak Raya No. 3', initial: 'U' },
+      '6': { name: 'Sinar Jaya Poultry', address: 'Jl. Cihampelas No. 88', initial: 'U' }
+    };
+
+    // Nama tampil di halaman detail (Title Case rapi)
+    const displayTitle = productName
+      .split(' ')
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+      .join(' ');
+
+    const productImages = {
+      'Telur Omega': 'images/prod_omega.png',
+      'Telur Ayam Kampung': 'images/prod_kampung.png',
+      'Telur Ayam Ras Grade A': 'images/prod_grade_a.png',
+      'Telur Ayam Ras Grade B': 'images/prod_grade_b.png',
+      'Telur Ayam Ras Grade C': 'images/prod_grade_c.png',
+      'Telur ayam': 'images/prod_grade_a.png'
+    };
+
+    const seller = sellersInfo[sellerId] || sellersInfo['1'];
+
+    document.getElementById('productTitle').innerText = displayTitle;
+    document.getElementById('productPrice').innerHTML = `${productPrice} <span>/ kg</span>`;
+    document.getElementById('productImg').src = productImages[productName] || 'images/prod_grade_a.png';
+    document.getElementById('productImg').alt = displayTitle;
+    document.getElementById('sellerAddress').innerText = seller.address;
+    document.getElementById('sellerInitial').innerText = seller.initial;
+    document.getElementById('backLink').href = `detail-penjual.html?id=${sellerId}`;
+
+    document.getElementById('rfqLink').href =
+      `ajukan-permintaan.html?seller=${sellerId}` +
+      `&product=${encodeURIComponent(productName)}` +
+      `&price=${encodeURIComponent(productPrice)}`;
+  </script>
+</body>
+</html>

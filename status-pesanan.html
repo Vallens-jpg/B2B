@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staplr - Status Pesanan</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="sp-body">
+
+  <!-- Top Navigation Header -->
+  <header class="detail-navbar">
+    <a id="backLink" href="dashboard.html" class="back-btn-circle" aria-label="Kembali">
+      <svg class="back-arrow-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+    <h1 class="detail-page-heading">Status Pesanan</h1>
+    <div class="navbar-actions">
+      <button type="button" class="notification-bell-btn" aria-label="Notifikasi">
+        <svg class="bell-icon" viewBox="0 0 24 24">
+          <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
+        </svg>
+        <span class="notification-badge-red">3</span>
+      </button>
+      <div class="user-profile-capsule">
+        <div class="user-avatar-circle">AD</div>
+        <span class="user-name-text">Buyer</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="sp-container">
+    <!-- Alert Banner -->
+    <div class="sp-alert-banner" id="alertBanner">
+      <div class="sp-alert-title" id="alertTitle"><span>&#9203;</span> Menunggu Persetujuan Penjual</div>
+      <p class="sp-alert-desc" id="alertDesc">
+        Permintaan Anda telah dikirim ke <strong id="bannerCompany">PT Telur Makmur</strong>.
+        Penjual sedang meninjau pesanan dan ketersediaan stok Anda. Anda akan mendapat notifikasi
+        untuk melanjutkan pembayaran setelah di-acc.
+      </p>
+    </div>
+
+    <div class="sp-inner">
+      <!-- Detail Pesanan Card -->
+      <div class="sp-detail-card">
+        <div class="sp-card-head">
+          <span class="sp-card-head-title">Detail Pesanan</span>
+          <span class="sp-ringkasan-badge">Ringkasan</span>
+        </div>
+
+        <div class="sp-row">
+          <span class="sp-row-label">Nilai Pesanan</span>
+          <span id="orderValue" class="sp-row-value strong">Rp 500.000</span>
+        </div>
+        <div class="sp-row">
+          <span class="sp-row-label">Metode Pembayaran</span>
+          <span class="sp-row-value">Menunggu konfirmasi</span>
+        </div>
+        <div class="sp-row">
+          <span class="sp-row-label">Alamat Pengiriman</span>
+          <span class="sp-row-value">Belum dikonfirmasi</span>
+        </div>
+        <div class="sp-row">
+          <span class="sp-row-label">Nomor Pesanan</span>
+          <span id="orderNumber" class="sp-row-value">#ORD-2026-103</span>
+        </div>
+        <div class="sp-row">
+          <span class="sp-row-label">Perusahaan</span>
+          <span id="orderCompany" class="sp-row-value">PT Jaya Makmur</span>
+        </div>
+        <div class="sp-row">
+          <span class="sp-row-label">Item Pesanan</span>
+          <span id="orderItem" class="sp-row-value">Telur Ayam (2 Peti) – Rp 500.000</span>
+        </div>
+        <div class="sp-row">
+          <span class="sp-row-label">Jadwal Kirim</span>
+          <span class="sp-row-value">12 Okt 2027</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="sp-actions">
+        <a href="dashboard.html" id="cancelReqLink" class="btn-batalkan">Batalkan Permintaan</a>
+        <div class="sp-review-group">
+          <a href="permintaan-disetujui.html" id="reviewBtn" class="btn-tinjau-active">Tinjau Pesanan</a>
+          <span id="reviewCaption" class="sp-review-caption">Menunggu persetujuan penjual</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Floating Navigation -->
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const sellerId = urlParams.get('seller') || '1';
+    const productName = urlParams.get('product') || 'Telur ayam';
+    const productPrice = urlParams.get('price') || 'Rp 250.000';
+    const qty = urlParams.get('qty') || '2 kg';
+    const subtotal = urlParams.get('subtotal') || 'Rp 500.000';
+
+    const sellersMap = {
+      '1': 'PT Telur Makmur',
+      '2': 'Mitra Unggas Sejahtera',
+      '3': 'Tunas Farm',
+      '4': 'Berkah Telur Utama',
+      '5': 'Ternak Mandiri',
+      '6': 'Sinar Jaya Poultry'
+    };
+
+    // Default persis seperti desain; dinamis bila dibuka dari alur RFQ
+    const hasParams = urlParams.get('seller') || urlParams.get('product');
+    const company = sellersMap[sellerId] || 'PT Telur Makmur';
+
+    document.getElementById('bannerCompany').innerText =
+      hasParams ? company : 'PT Telur Makmur';
+    document.getElementById('orderCompany').innerText =
+      hasParams ? company : 'PT Jaya Makmur';
+    document.getElementById('orderValue').innerText = subtotal;
+    document.getElementById('orderItem').innerText =
+      hasParams
+        ? `${productName} (${qty}) – ${subtotal}`
+        : 'Telur Ayam (2 Peti) – Rp 500.000';
+    document.getElementById('orderNumber').innerText =
+      hasParams
+        ? `#ORD-2026-${String(Math.floor(Math.random() * 900) + 100)}`
+        : '#ORD-2026-103';
+
+    // Tombol kembali ke halaman sebelumnya (alur sekarang)
+    document.getElementById('backLink').href =
+      hasParams ? 'ajukan-permintaan.html' : 'dashboard.html';
+
+    // ==== Status persetujuan penjual ====
+    // state=approved  -> penjual sudah menyetujui, tombol Tinjau Pesanan aktif
+    const state = urlParams.get('state');
+
+    if (state === 'approved') {
+      const companyShown = hasParams ? company : 'PT Telur Makmur';
+
+      // Banner hijau "Disetujui"
+      document.getElementById('alertBanner').classList.add('sp-banner-approved');
+      document.getElementById('alertTitle').innerHTML =
+        '<span>&#9989;</span> Permintaan Disetujui Penjual';
+      document.getElementById('alertDesc').innerHTML =
+        `Permintaan Anda telah disetujui oleh <strong>${companyShown}</strong>. ` +
+        'Penjual telah mengonfirmasi ketersediaan stok. Silakan ajukan pesanan untuk melanjutkan ke tahap pembayaran.';
+
+      // Batalkan permintaan tidak lagi tampil setelah disetujui
+      document.getElementById('cancelReqLink').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

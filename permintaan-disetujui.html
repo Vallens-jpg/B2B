@@ -1,0 +1,670 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staplr - Permintaan Disetujui</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ==========================================================================
+       Permintaan Disetujui Page Styles
+       ========================================================================== */
+    body.pd-disetujui-body {
+      background-color: #FAF6ED;
+      min-height: 100vh;
+      font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif);
+      color: #111827;
+      margin: 0;
+      padding: 0;
+      padding-bottom: 6rem;
+    }
+
+    .pd-page-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 2.25rem 2.5rem 0 2.5rem;
+    }
+
+    /* Top Title & Search Header */
+    .pd-header-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .pd-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .pd-main-heading {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+
+    .pd-sub-heading {
+      font-size: 0.925rem;
+      color: #6B7280;
+      margin: 0;
+    }
+
+    /* Search Input */
+    .pd-search-wrap {
+      position: relative;
+      width: 320px;
+      display: flex;
+      align-items: center;
+    }
+
+    .pd-search-icon {
+      position: absolute;
+      left: 1.15rem;
+      width: 17px;
+      height: 17px;
+      stroke: #9CA3AF;
+      stroke-width: 2.2;
+      fill: none;
+      pointer-events: none;
+    }
+
+    .pd-search-input {
+      width: 100%;
+      background-color: #ffffff;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 9999px;
+      padding: 0.75rem 1.1rem 0.75rem 2.85rem;
+      font-size: 0.885rem;
+      color: #111827;
+      font-family: inherit;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .pd-search-input::placeholder {
+      color: #9CA3AF;
+    }
+
+    .pd-search-input:focus {
+      border-color: #94A3B8;
+      box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.15);
+    }
+
+    /* Metric Summary Cards */
+    .pd-metrics-row {
+      display: flex;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .pd-metric-card {
+      background-color: #ffffff;
+      border: 1px solid #E5E7EB;
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      width: 240px;
+      box-sizing: border-box;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .pd-metric-label {
+      font-size: 0.825rem;
+      color: #6B7280;
+      font-weight: 600;
+    }
+
+    .pd-metric-val {
+      font-size: 2.15rem;
+      font-weight: 800;
+      color: #111827;
+      line-height: 1.1;
+      margin: 0.35rem 0 0.45rem 0;
+    }
+
+    .pd-metric-sub {
+      font-size: 0.75rem;
+      color: #6B7280;
+      font-weight: 500;
+    }
+
+    /* Main Table Card */
+    .pd-table-card {
+      background-color: #ffffff;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
+      padding: 2rem 2.25rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .pd-table-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 1.75rem;
+    }
+
+    .pd-table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .pd-data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .pd-data-table th {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #6B7280;
+      padding-bottom: 1rem;
+      border-bottom: 1.5px solid #F1F5F9;
+      white-space: nowrap;
+    }
+
+    .pd-data-table td {
+      padding: 1.15rem 0;
+      border-bottom: 1px solid #F1F5F9;
+      vertical-align: middle;
+      font-size: 0.9rem;
+      color: #111827;
+    }
+
+    .pd-data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Table Columns Specifics */
+    .col-no {
+      font-weight: 700;
+      color: #111827;
+      width: 130px;
+    }
+
+    .col-peternak {
+      width: 220px;
+    }
+
+    .peternak-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .peternak-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #152C4E;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .peternak-name {
+      font-weight: 600;
+      color: #111827;
+      line-height: 1.3;
+    }
+
+    .col-produk {
+      font-weight: 600;
+      width: 180px;
+    }
+
+    .col-jumlah {
+      font-weight: 600;
+      width: 110px;
+    }
+
+    .col-total {
+      font-weight: 600;
+      width: 150px;
+    }
+
+    .col-status {
+      width: 120px;
+    }
+
+    .badge-disetujui {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ffffff;
+      border: 1.5px solid #F59E0B;
+      color: #B45309;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 9999px;
+    }
+
+    .col-aksi {
+      width: 140px;
+      text-align: right;
+    }
+
+    .btn-ajukan-pesanan {
+      background-color: #152C4E;
+      color: #ffffff;
+      border: none;
+      border-radius: 9999px;
+      padding: 0.55rem 1.25rem;
+      font-size: 0.825rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+      white-space: nowrap;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background-color 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-ajukan-pesanan:hover {
+      background-color: #0F203A;
+      transform: translateY(-1px);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .pd-metrics-row {
+        flex-direction: column;
+      }
+      .pd-metric-card {
+        width: 100%;
+      }
+      .pd-header-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .pd-search-wrap {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .pd-page-container {
+        padding: 1.25rem 1rem 0 1rem;
+      }
+      .pd-table-card {
+        padding: 1.25rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body class="pd-disetujui-body">
+
+  <!-- Navbar Header -->
+  <header class="dashboard-navbar">
+    <div class="navbar-inner">
+      <a href="dashboard.html" class="brand-header" style="text-decoration: none;">
+        <img src="Logo/logo staplr.png" alt="Staplr Logo" class="brand-logo-img">
+        <div class="brand-title-group">
+          <span class="brand-dot"></span>
+          <span class="brand-name">Staplr</span>
+        </div>
+      </a>
+
+      <nav class="nav-pills-container">
+        <a href="dashboard.html" class="nav-pill-item">
+          <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor"/>
+          </svg>
+          Dashboard
+        </a>
+        <a href="pesanan.html" class="nav-pill-item">
+          <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor"/>
+            <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-linecap="round"/>
+          </svg>
+          Pesanan
+        </a>
+        <a href="daftar-dispute.html" class="nav-pill-item">
+          <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor"/>
+            <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
+          </svg>
+          Dispute
+        </a>
+        <a href="permintaan-disetujui.html" class="nav-pill-item active">
+          <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor"/>
+            <path d="M8 12l3 3 5-5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Permintaan Disetujui
+        </a>
+      </nav>
+
+      <div class="navbar-actions notif-dropdown-wrapper">
+        <button type="button" class="notification-bell-btn" id="notifBellBtn" onclick="toggleNotificationDropdown(event)" aria-label="Notifikasi">
+          <svg class="bell-icon" viewBox="0 0 24 24">
+            <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
+          </svg>
+          <span class="notification-badge-red" id="notifBadgeRed">3</span>
+        </button>
+        <a href="profil.html" class="user-profile-capsule">
+          <div class="user-avatar-circle">AD</div>
+          <span class="user-name-text">Buyer</span>
+        </a>
+
+        <!-- Notification Popover Card -->
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-header">
+            <span class="notif-title">Notifikasi</span>
+            <button type="button" class="notif-mark-read" onclick="markAllAsRead(event)">Tandai semua dibaca</button>
+          </div>
+
+          <div class="notif-list">
+            <!-- Item 1: Permintaan Disetujui -->
+            <a href="permintaan-disetujui.html" class="notif-item unread">
+              <div class="notif-icon-circle green">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <polyline points="9 15 12 18 15 15"/>
+                </svg>
+              </div>
+              <div class="notif-content">
+                <div class="notif-item-top">
+                  <span class="notif-item-title">Permintaan Disetujui</span>
+                  <span class="notif-time">· 5m</span>
+                </div>
+                <p class="notif-item-body">Permintaan pengadaan telur dari PT Telur Makmur telah disetujui.</p>
+              </div>
+            </a>
+
+            <!-- Item 2: Pesan Baru di Dispute #DSP-9021 -->
+            <a href="diskusi-dispute.html" class="notif-item unread">
+              <div class="notif-icon-circle green">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  <line x1="9" y1="9" x2="15" y2="9"/>
+                  <line x1="9" y1="13" x2="13" y2="13"/>
+                </svg>
+              </div>
+              <div class="notif-content">
+                <div class="notif-item-top">
+                  <span class="notif-item-title">Pesan Baru di Dispute #DSP-9021</span>
+                  <span class="notif-item-badge-red" id="notifBadgeItem">1</span>
+                </div>
+                <p class="notif-item-body">Seller: "Kami sudah mengirim bukti foto ulang..."</p>
+              </div>
+            </a>
+
+            <!-- Item 3: Dispute Disetujui -->
+            <a href="daftar-dispute.html" class="notif-item">
+              <div class="notif-icon-circle yellow">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="10" stroke="#111827"/>
+                  <line x1="12" y1="8" x2="12" y2="12" stroke="#111827"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16" stroke="#111827"/>
+                </svg>
+              </div>
+              <div class="notif-content">
+                <div class="notif-item-top">
+                  <span class="notif-item-title dark">Dispute Disetujui · 3j</span>
+                </div>
+                <p class="notif-item-body">Dispute #DSP-8812 telah disetujui. Dana pengembalian sedang diproses.</p>
+              </div>
+            </a>
+          </div>
+
+          <div class="notif-footer">
+            <a href="notifikasi.html" class="notif-footer-link">Lihat Semua Notifikasi</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="pd-page-container">
+
+    <!-- Top Header: Title & Search -->
+    <div class="pd-header-row">
+      <div class="pd-title-group">
+        <h1 class="pd-main-heading">Permintaan Disetujui</h1>
+        <p class="pd-sub-heading">Kelola permintaan yang sudah disetujui dan siap diproses lebih lanjut.</p>
+      </div>
+
+      <div class="pd-search-wrap">
+        <svg class="pd-search-icon" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          type="text"
+          id="permintaanSearch"
+          class="pd-search-input"
+          placeholder="Cari permintaan"
+          oninput="searchPermintaan()"
+        >
+      </div>
+    </div>
+
+    <!-- Summary Metrics -->
+    <div class="pd-metrics-row">
+      <div class="pd-metric-card">
+        <span class="pd-metric-label">Total permintaan</span>
+        <div class="pd-metric-val">12</div>
+        <span class="pd-metric-sub">3 permintaan baru hari ini</span>
+      </div>
+
+      <div class="pd-metric-card">
+        <span class="pd-metric-label">Disetujui</span>
+        <div class="pd-metric-val">8</div>
+        <span class="pd-metric-sub">Siap diproses pembayaran</span>
+      </div>
+    </div>
+
+    <!-- Main Table Card -->
+    <div class="pd-table-card">
+      <h2 class="pd-table-title">Daftar permintaan disetujui</h2>
+
+      <div class="pd-table-wrapper">
+        <table class="pd-data-table">
+          <thead>
+            <tr>
+              <th class="col-no">No. Permintaan</th>
+              <th class="col-peternak">Peternak</th>
+              <th class="col-produk">Produk</th>
+              <th class="col-jumlah">Jumlah</th>
+              <th class="col-total">Total</th>
+              <th class="col-status">Status</th>
+              <th class="col-aksi">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="permintaanTableBody">
+
+            <!-- Row 1 -->
+            <tr class="permintaan-row" data-id="PRJ-2401" data-peternak="PT Telur Makmur" data-produk="Telur Ayam Grade A">
+              <td class="col-no">PRJ-2401</td>
+              <td class="col-peternak">
+                <div class="peternak-cell">
+                  <div class="peternak-avatar">TM</div>
+                  <span class="peternak-name">PT Telur Makmur</span>
+                </div>
+              </td>
+              <td class="col-produk">Telur Ayam Grade A</td>
+              <td class="col-jumlah">500 kg</td>
+              <td class="col-total">Rp 9.000.000</td>
+              <td class="col-status">
+                <span class="badge-disetujui">Disetujui</span>
+              </td>
+              <td class="col-aksi">
+                <a href="ajukan-pesanan.html?seller=1&product=Telur%20Ayam%20Grade%20A&qty=500%20kg&subtotal=Rp%209.000.000" class="btn-ajukan-pesanan">
+                  Ajukan Pesanan
+                </a>
+              </td>
+            </tr>
+
+            <!-- Row 2 -->
+            <tr class="permintaan-row" data-id="PRJ-2402" data-peternak="Mitra Unggas Sejahtera" data-produk="Telur Ayam Grade B">
+              <td class="col-no">PRJ-2402</td>
+              <td class="col-peternak">
+                <div class="peternak-cell">
+                  <div class="peternak-avatar">MU</div>
+                  <span class="peternak-name">Mitra Unggas Sejahtera</span>
+                </div>
+              </td>
+              <td class="col-produk">Telur Ayam Grade B</td>
+              <td class="col-jumlah">300 kg</td>
+              <td class="col-total">Rp 4.800.000</td>
+              <td class="col-status">
+                <span class="badge-disetujui">Disetujui</span>
+              </td>
+              <td class="col-aksi">
+                <a href="ajukan-pesanan.html?seller=2&product=Telur%20Ayam%20Grade%20B&qty=300%20kg&subtotal=Rp%204.800.000" class="btn-ajukan-pesanan">
+                  Ajukan Pesanan
+                </a>
+              </td>
+            </tr>
+
+            <!-- Row 3 -->
+            <tr class="permintaan-row" data-id="PRJ-2403" data-peternak="Tunas Farm" data-produk="Telur Ayam Grade C">
+              <td class="col-no">PRJ-2403</td>
+              <td class="col-peternak">
+                <div class="peternak-cell">
+                  <div class="peternak-avatar">TF</div>
+                  <span class="peternak-name">Tunas Farm</span>
+                </div>
+              </td>
+              <td class="col-produk">Telur Ayam Grade C</td>
+              <td class="col-jumlah">200 kg</td>
+              <td class="col-total">Rp 2.800.000</td>
+              <td class="col-status">
+                <span class="badge-disetujui">Disetujui</span>
+              </td>
+              <td class="col-aksi">
+                <a href="ajukan-pesanan.html?seller=3&product=Telur%20Ayam%20Grade%20C&qty=200%20kg&subtotal=Rp%202.800.000" class="btn-ajukan-pesanan">
+                  Ajukan Pesanan
+                </a>
+              </td>
+            </tr>
+
+            <!-- Row 4 -->
+            <tr class="permintaan-row" data-id="PRJ-2404" data-peternak="Berkah Telur Utama" data-produk="Telur Ayam Kampung">
+              <td class="col-no">PRJ-2404</td>
+              <td class="col-peternak">
+                <div class="peternak-cell">
+                  <div class="peternak-avatar">BT</div>
+                  <span class="peternak-name">Berkah Telur Utama</span>
+                </div>
+              </td>
+              <td class="col-produk">Telur Ayam Kampung</td>
+              <td class="col-jumlah">150 kg</td>
+              <td class="col-total">Rp 3.750.000</td>
+              <td class="col-status">
+                <span class="badge-disetujui">Disetujui</span>
+              </td>
+              <td class="col-aksi">
+                <a href="ajukan-pesanan.html?seller=4&product=Telur%20Ayam%20Kampung&qty=150%20kg&subtotal=Rp%203.750.000" class="btn-ajukan-pesanan">
+                  Ajukan Pesanan
+                </a>
+              </td>
+            </tr>
+
+            <!-- Row 5 -->
+            <tr class="permintaan-row" data-id="PRJ-2405" data-peternak="Ternak Mandiri" data-produk="Telur Omega">
+              <td class="col-no">PRJ-2405</td>
+              <td class="col-peternak">
+                <div class="peternak-cell">
+                  <div class="peternak-avatar">TK</div>
+                  <span class="peternak-name">Ternak Mandiri</span>
+                </div>
+              </td>
+              <td class="col-produk">Telur Omega</td>
+              <td class="col-jumlah">100 kg</td>
+              <td class="col-total">Rp 3.200.000</td>
+              <td class="col-status">
+                <span class="badge-disetujui">Disetujui</span>
+              </td>
+              <td class="col-aksi">
+                <a href="ajukan-pesanan.html?seller=5&product=Telur%20Omega&qty=100%20kg&subtotal=Rp%203.200.000" class="btn-ajukan-pesanan">
+                  Ajukan Pesanan
+                </a>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Floating Navigation for Prototype Walkthrough -->
+
+  <script>
+    function searchPermintaan() {
+      const q = document.getElementById('permintaanSearch').value.toLowerCase().trim();
+      const rows = document.querySelectorAll('.permintaan-row');
+
+      rows.forEach(row => {
+        const id = row.getAttribute('data-id').toLowerCase();
+        const peternak = row.getAttribute('data-peternak').toLowerCase();
+        const produk = row.getAttribute('data-produk').toLowerCase();
+
+        if (!q || id.includes(q) || peternak.includes(q) || produk.includes(q)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    function toggleNotificationDropdown(e) {
+      if (e) e.stopPropagation();
+      const dd = document.getElementById('notifDropdown');
+      if (dd) {
+        dd.classList.toggle('show');
+      }
+    }
+
+    function markAllAsRead(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const badgeRed = document.getElementById('notifBadgeRed');
+      if (badgeRed) badgeRed.style.display = 'none';
+
+      const badgeItem = document.getElementById('notifBadgeItem');
+      if (badgeItem) badgeItem.style.display = 'none';
+
+      document.querySelectorAll('.notif-item.unread').forEach(item => {
+        item.classList.remove('unread');
+      });
+    }
+
+    document.addEventListener('click', function (e) {
+      const dd = document.getElementById('notifDropdown');
+      const btn = document.getElementById('notifBellBtn');
+      if (dd && dd.classList.contains('show')) {
+        if (!dd.contains(e.target) && !btn.contains(e.target)) {
+          dd.classList.remove('show');
+        }
+      }
+    });
+  </script>
+</body>
+</html>
