@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <!-- Versi statis (HTML + CSS saja) dari halaman Staplr -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lupa Kata Sandi - Staplr</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="lupa-sandi.css">
+</head>
+
+<body>
+  <div class="auth-page">
+    <div class="auth-bg">
+      <img src="images/farm-original.jpg" alt="Peternakan ayam" class="auth-bg-image">
+      <div class="auth-bg-overlay"></div>
+    </div>
+
+    <div class="auth-left">
+      <a class="brand" href="index.html">
+        <img src="images/logo-staplr.png" alt="Staplr" class="brand-logo">
+        <div class="brand-text">
+          <span class="brand-dot">•</span> Staplr
+        </div>
+      </a>
+
+      <div class="left-content">
+        <div class="trusted-badge">
+          <span>PLATFORM TERPERCAYA</span>
+        </div>
+        <div>
+          <h1 class="left-heading">Atur Ulang Kata Sandi</h1>
+          <p class="left-subtitle">
+            Lakukan verifikasi email, masukkan kode OTP, lalu buat kata sandi baru untuk mengamankan akun Anda.
+          </p>
+        </div>
+      </div>
+
+      <div></div>
+    </div>
+
+    <div class="auth-right">
+      <div class="form-card">
+        <div class="form-card-inner">
+          <div class="form-header">
+            <h2 class="form-title">Lupa Kata Sandi</h2>
+            <p class="form-subtitle" id="step-subtitle">Buat kata sandi baru untuk akun Anda</p>
+          </div>
+
+          <div class="step-indicator">
+            <div class="step-dot active" id="dot-1"></div>
+            <div class="step-dot active" id="dot-2"></div>
+            <div class="step-dot active" id="dot-3"></div>
+          </div>
+
+          <div class="form-grid hidden" id="step-1">
+            <div class="field">
+              <label class="field-label" for="email">Email Terdaftar</label>
+              <input class="field-input" id="email" type="email" placeholder="Masukkan alamat email" required>
+            </div>
+            <button class="cta-btn" type="button" id="send-otp">Kirim Kode OTP</button>
+          </div>
+
+          <div class="form-grid hidden" id="step-2">
+            <div class="field">
+              <label class="field-label">Kode OTP</label>
+              <div class="otp-grid">
+                <input class="otp-input" maxlength="1">
+                <input class="otp-input" maxlength="1">
+                <input class="otp-input" maxlength="1">
+                <input class="otp-input" maxlength="1">
+                <input class="otp-input" maxlength="1">
+                <input class="otp-input" maxlength="1">
+              </div>
+            </div>
+            <button class="cta-btn" type="button" id="verify-otp">Verifikasi OTP</button>
+            <button class="cta-btn secondary" type="button" id="resend-otp">Kirim Ulang Kode</button>
+          </div>
+
+          <div class="form-grid" id="step-3">
+            <div class="field">
+              <label class="field-label" for="new-password">Kata Sandi Baru</label>
+              <input class="field-input" id="new-password" type="password" placeholder="Masukkan kata sandi baru" required>
+            </div>
+            <div class="field">
+              <label class="field-label" for="confirm-password">Konfirmasi Kata Sandi Baru</label>
+              <input class="field-input" id="confirm-password" type="password" placeholder="Ulangi kata sandi baru" required>
+            </div>
+            <a class="cta-btn" href="login.html">Simpan Kata Sandi</a>
+          </div>
+
+          <div class="form-footer">
+            <a href="login.html">Kembali ke Halaman Masuk</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+</body>
+
+</html>

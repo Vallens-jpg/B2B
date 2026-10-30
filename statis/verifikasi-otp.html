@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <!-- Versi statis (HTML + CSS saja) dari halaman Staplr -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifikasi OTP Email - Staplr</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="verifikasi-otp.css">
+</head>
+
+<body>
+  <div class="auth-page">
+    <div class="auth-bg">
+      <img src="images/farm-original.jpg" alt="Peternakan ayam" class="auth-bg-image">
+      <div class="auth-bg-overlay"></div>
+    </div>
+
+    <div class="auth-left">
+      <a class="brand" href="index.html">
+        <img src="images/logo-staplr.png" alt="Staplr" class="brand-logo">
+        <div class="brand-text">
+          <span class="brand-dot">•</span> Staplr
+        </div>
+      </a>
+
+      <div class="left-content">
+        <div class="trusted-badge">
+          <span>PLATFORM TERPERCAYA</span>
+        </div>
+        <div>
+          <h1 class="left-heading">Verifikasi Akun</h1>
+          <p class="left-subtitle">
+            Keamanan akun Anda penting. Silakan verifikasi email Anda untuk melanjutkan proses pendaftaran.
+          </p>
+        </div>
+      </div>
+
+      <div></div>
+    </div>
+
+    <div class="auth-right">
+      <div class="form-card">
+        <div class="form-card-inner">
+          <div class="form-header">
+            <h2 class="form-title">Verifikasi OTP Email</h2>
+            <p class="form-subtitle">Kami telah mengirim kode OTP ke <span class="email-highlight">email Anda</span></p>
+          </div>
+
+          <div class="form-grid" id="otpForm">
+            <div class="field">
+              <label class="field-label">Masukkan Kode Verifikasi</label>
+              <div class="otp-grid">
+                <input class="otp-input" maxlength="1">
+                <input class="otp-input" maxlength="1">
+                <input class="otp-input" maxlength="1">
+                <input class="otp-input" maxlength="1">
+                <input class="otp-input" maxlength="1">
+                <input class="otp-input" maxlength="1">
+              </div>
+            </div>
+            <a class="cta-btn" href="dashboard.html">Verifikasi & Masuk</a>
+            <button class="cta-btn secondary" type="button">Kirim Ulang Kode OTP</button>
+          </div>
+
+          <div class="form-footer">
+            <a href="daftar.html">Kembali ke Pendaftaran</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+</body>
+
+</html>

@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staplr - Platform B2B Pasokan Telur Ayam Partai Besar</title>
+  <meta name="description" content="Pasokan telur ayam partai besar lebih mudah dan transparan. Hubungkan bisnis Anda langsung dengan peternak terverifikasi.">
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet Utama -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========================================================
+       1. FITUR: NAVBAR / HEADER
+       ======================================================== -->
+  <header class="navbar-wrapper">
+    <div class="container navbar-container">
+      
+      <!-- Brand Logo Sesuai Figma -->
+      <a href="#beranda" class="navbar-brand" aria-label="Staplr Beranda">
+        <img src="images/logo-staplr.png" alt="Staplr Sembako" class="brand-logo-img">
+        <div class="brand-name">
+          <span class="yellow-dot">•</span> Staplr
+        </div>
+      </a>
+
+      <!-- Menu Navigasi Desktop -->
+      <nav class="navbar-navigation" aria-label="Navigasi Utama">
+        <ul class="nav-links">
+          <li class="nav-item">
+            <a href="#beranda" class="nav-link active">
+              Beranda
+              <span class="active-indicator"></span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#layanan" class="nav-link">Layanan</a>
+          </li>
+          <li class="nav-item">
+            <a href="#keunggulan" class="nav-link">Keunggulan</a>
+          </li>
+          <li class="nav-item">
+            <a href="#produk" class="nav-link">Produk</a>
+          </li>
+        </ul>
+        <!-- Tombol Auth khusus Mobile (tersembunyi di desktop) -->
+        <div class="mobile-auth-btns">
+          <a href="#masuk" class="btn btn-outline-dark">Masuk</a>
+          <a href="#daftar" class="btn btn-primary-yellow">Daftar</a>
+        </div>
+      </nav>
+
+      <!-- Tombol Aksi Pengguna (Auth) -->
+      <div class="navbar-actions">
+        <a href="#masuk" class="btn btn-outline-dark">Masuk</a>
+        <a href="#daftar" class="btn btn-primary-yellow">Daftar</a>
+      </div>
+
+      <!-- Hamburger Menu Mobile Toggle -->
+      <button class="mobile-menu-toggle" id="menuToggle" aria-label="Buka navigasi mobile">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+    </div>
+  </header>
+
+
+  <!-- ========================================================
+       2. FITUR: HERO SECTION (LP - 1)
+       ======================================================== -->
+  <section class="hero-section" id="beranda">
+    <!-- Gambar Latar Belakang Peternakan -->
+    <div class="hero-bg-container">
+      <img src="images/hero-farm.jpg" alt="Peternakan Telur Ayam Modern" class="hero-bg-image">
+      <div class="hero-dark-overlay"></div>
+    </div>
+
+    <div class="container hero-container">
+      <div class="hero-content-col">
+        
+        <!-- Label Kategori / Badge -->
+        <div class="hero-badge">
+          <span class="badge-text">PLATFORM B2B TELUR AYAM</span>
+        </div>
+
+        <!-- Headline Utama -->
+        <h1 class="hero-title">
+          Pasokan Telur Ayam<br>
+          Partai Besar, Lebih<br>
+          Mudah & Transparan.
+        </h1>
+
+        <!-- Deskripsi / Nilai Keunggulan -->
+        <p class="hero-subtitle">
+          Hubungkan bisnis Anda langsung dengan peternak terverifikasi. Ajukan penawaran, kelola pesanan, dan cairkan dana dalam satu platform yang aman.
+        </p>
+
+        <!-- Grup Tombol Aksi Hero -->
+        <div class="hero-cta-group">
+          <a href="#produk" class="btn btn-hero-white">Jelajahi Produk</a>
+          <a href="#layanan" class="btn btn-hero-glass">Pelajari Layanan</a>
+        </div>
+
+        <!-- Statistik Key Metrics -->
+        <div class="hero-stats-group">
+          
+          <!-- Metrik 1 -->
+          <div class="stat-card">
+            <div class="stat-number">500+</div>
+            <div class="stat-label">Peternak Mitra</div>
+          </div>
+
+          <div class="stat-divider"></div>
+
+          <!-- Metrik 2 -->
+          <div class="stat-card">
+            <div class="stat-number">2.000+</div>
+            <div class="stat-label">Transaksi Selesai</div>
+          </div>
+
+          <div class="stat-divider"></div>
+
+          <!-- Metrik 3 -->
+          <div class="stat-card">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">Dukungan Pelanggan</div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ========================================================
+       3. FITUR: LAYANAN UTAMA SECTION (LP - 2)
+       ======================================================== -->
+  <section class="services-section" id="layanan">
+    <div class="container services-container">
+      
+      <!-- Bagian Judul Seksi -->
+      <div class="services-header-area">
+        <div class="section-pill-badge">LAYANAN UTAMA</div>
+        <h2 class="section-heading">Layanan Utama</h2>
+        <p class="section-subheading">
+          Semua kebutuhan transaksi telur ayam partai besar Anda, dari penawaran hingga pencairan dana.
+        </p>
+      </div>
+
+      <!-- Grid 4 Kartu Layanan -->
+      <div class="services-cards-grid">
+        
+        <!-- Fitur 1: Penawaran (RFQ) -->
+        <div class="service-card" id="card-rfq">
+          <div class="service-card-icon-box">
+            <!-- Icon Dokumen RFQ -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <h3 class="service-card-title">Penawaran (RFQ)</h3>
+          <p class="service-card-description">
+            Ajukan permintaan harga dan terima penawaran kompetitif dari banyak peternak sekaligus.
+          </p>
+        </div>
+
+        <!-- Fitur 2: Manajemen Pesanan -->
+        <div class="service-card" id="card-order-management">
+          <div class="service-card-icon-box">
+            <!-- Icon Box / Package -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </div>
+          <h3 class="service-card-title">Manajemen Pesanan</h3>
+          <p class="service-card-description">
+            Pantau status pesanan, jadwal kirim, dan DP secara real-time dalam satu dasbor.
+          </p>
+        </div>
+
+        <!-- Fitur 3: Pencairan Dana Aman -->
+        <div class="service-card" id="card-escrow">
+          <div class="service-card-icon-box">
+            <!-- Icon Shield Security & Check -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <polyline points="9 12 11 14 15 10"></polyline>
+            </svg>
+          </div>
+          <h3 class="service-card-title">Pencairan Dana Aman</h3>
+          <p class="service-card-description">
+            Dana dilindungi sistem dan dicairkan ke rekening Anda setelah transaksi terkonfirmasi.
+          </p>
+        </div>
+
+        <!-- Fitur 4: Retur & Dispute -->
+        <div class="service-card" id="card-dispute">
+          <div class="service-card-icon-box">
+            <!-- Icon Currency / Dispute Resolution -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon">
+              <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+              <circle cx="12" cy="12" r="2"></circle>
+              <path d="M6 12h.01M18 12h.01"></path>
+            </svg>
+          </div>
+          <h3 class="service-card-title">Retur & Dispute</h3>
+          <p class="service-card-description">
+            Ajukan komplain dengan bukti foto atau video dan selesaikan sengketa secara adil.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- ========================================================
+           4. FITUR: BANNER CALL TO ACTION (CTA)
+           ======================================================== -->
+      <div class="cta-banner-wrapper">
+        <div class="cta-banner-inner">
+          <div class="cta-banner-text-box">
+            <h3 class="cta-banner-heading">Siap mengembangkan bisnis Anda?</h3>
+            <p class="cta-banner-subheading">Daftar gratis dan mulai bertransaksi hari ini.</p>
+          </div>
+          <div class="cta-banner-action-box">
+            <a href="#daftar" class="btn btn-banner-white">Daftar Sekarang</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================
+       5. FITUR: KEUNGGULAN SISTEM SECTION (LP - 3)
+       ======================================================== -->
+  <section class="features-section" id="keunggulan">
+    <!-- Grid Polkadot Matriks Penuh Sesuai Contoh Gambar -->
+    <div class="features-dot-grid"></div>
+
+    <!-- Ornamen Garis Lingkaran Konsentris Abstrak Sesuai Figma -->
+    <div class="features-ambient-bg">
+      <div class="ambient-ring ring-1"></div>
+      <div class="ambient-ring ring-2"></div>
+      <div class="ambient-ring ring-3"></div>
+      <div class="ambient-glow glow-top-left"></div>
+    </div>
+
+    <div class="container features-container">
+      
+      <!-- Kolom Kiri: Informasi & Penjelasan Keunggulan -->
+      <div class="features-info-col">
+        <div class="section-pill-badge badge-yellow">KEUNGGULAN SISTEM</div>
+        <h2 class="features-heading">
+          Keunggulan Sistem<br>
+          Staplr
+        </h2>
+        <p class="features-description">
+          Dibangun untuk transaksi partai besar yang menuntut kepastian: harga jelas, pembayaran aman, dan proses yang bisa dilacak.
+        </p>
+        <div class="features-action">
+          <a href="#daftar" class="btn btn-features-white">Cek Sekarang</a>
+        </div>
+      </div>
+
+      <!-- Kolom Kanan: Grid 2x2 Kartu Glassmorphism Keunggulan -->
+      <div class="features-cards-grid">
+        
+        <!-- Kartu 1: Transaksi Aman -->
+        <div class="feature-glass-card" id="feat-transaksi-aman">
+          <div class="feature-check-icon">
+            <svg viewBox="0 0 24 24" fill="none" class="check-svg">
+              <circle cx="12" cy="12" r="10" fill="#F59E0B" />
+              <path d="M8 12L10.5 14.5L16 9" stroke="#111827" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Transaksi Aman</h3>
+          <p class="feature-card-desc">
+            Dana ditahan sistem hingga barang diterima sesuai pesanan.
+          </p>
+        </div>
+
+        <!-- Kartu 2: Harga Transparan -->
+        <div class="feature-glass-card" id="feat-harga-transparan">
+          <div class="feature-check-icon">
+            <svg viewBox="0 0 24 24" fill="none" class="check-svg">
+              <circle cx="12" cy="12" r="10" fill="#F59E0B" />
+              <path d="M8 12L10.5 14.5L16 9" stroke="#111827" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Harga Transparan</h3>
+          <p class="feature-card-desc">
+            Bandingkan penawaran dan lihat rincian biaya tanpa biaya tersembunyi.
+          </p>
+        </div>
+
+        <!-- Kartu 3: Pelacakan Real-time -->
+        <div class="feature-glass-card" id="feat-pelacakan-realtime">
+          <div class="feature-check-icon">
+            <svg viewBox="0 0 24 24" fill="none" class="check-svg">
+              <circle cx="12" cy="12" r="10" fill="#F59E0B" />
+              <path d="M8 12L10.5 14.5L16 9" stroke="#111827" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Pelacakan Real-time</h3>
+          <p class="feature-card-desc">
+            Status pesanan, pengiriman, dan pembayaran terpantau setiap saat.
+          </p>
+        </div>
+
+        <!-- Kartu 4: Mitra Terverifikasi -->
+        <div class="feature-glass-card" id="feat-mitra-terverifikasi">
+          <div class="feature-check-icon">
+            <svg viewBox="0 0 24 24" fill="none" class="check-svg">
+              <circle cx="12" cy="12" r="10" fill="#F59E0B" />
+              <path d="M8 12L10.5 14.5L16 9" stroke="#111827" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Mitra Terverifikasi</h3>
+          <p class="feature-card-desc">
+            Setiap peternak dan pembeli melewati proses verifikasi akun.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================
+       6. FITUR: JELAJAHI PRODUK / LISTING SECTION
+       ======================================================== -->
+  <section class="products-section" id="produk">
+    <div class="container products-container">
+      
+      <!-- Baris Atas: Judul, Subtitle, & Kolom Pencarian -->
+      <div class="products-header-row">
+        <div class="products-title-col">
+          <h2 class="products-heading">Jelajahi Produk</h2>
+          <p class="products-subheading">Temukan telur ayam berkualitas langsung dari peternak terverifikasi.</p>
+        </div>
+        <div class="products-search-col">
+          <div class="search-input-wrapper">
+            <input type="text" placeholder="Cari produk..." class="search-input" id="productSearch">
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Kategori Kancing / Pills -->
+      <div class="products-filter-bar">
+        <button class="filter-btn active" data-filter="all">Semua</button>
+        <button class="filter-btn" data-filter="kampung">Telur Ayam Kampung</button>
+        <button class="filter-btn" data-filter="omega">Telur Omega</button>
+        <button class="filter-btn" data-filter="grade-a">Grade A</button>
+        <button class="filter-btn" data-filter="grade-b">Grade B</button>
+        <button class="filter-btn" data-filter="grade-c">Grade C</button>
+      </div>
+
+      <!-- Grid 5 Kartu Produk Sesuai Figma Listing -->
+      <div class="products-grid" id="productsGrid">
+        
+        <!-- Produk 1: Telur Ayam Kampung -->
+        <div class="product-card" data-category="kampung"
+             data-name="Telur Ayam Kampung"
+             data-img="images/prod-kampung.png"
+             data-price="Rp 45.000 / kg"
+             data-about="Telur ayam kampung segar hasil peternakan lokal. Cangkang lebih tebal, kuning telur lebih kaya, cocok untuk kebutuhan restoran, katering, usaha kuliner maupun grosir."
+             data-stock="Tersedia untuk partai besar"
+             data-location="Solo, Jawa Tengah">
+          <div class="product-img-box">
+            <img src="images/prod-kampung.png" alt="Telur Ayam Kampung" class="product-img">
+          </div>
+          <div class="product-info-body">
+            <span class="product-badge badge-premium">
+              <span class="badge-dot">•</span> Premium
+            </span>
+            <h3 class="product-title">Telur Ayam Kampung</h3>
+            <p class="product-location">Solo, Jawa Tengah</p>
+            <div class="product-price">
+              Rp 45.000 <span class="price-unit">/ kg</span>
+            </div>
+            <button type="button" class="btn btn-product-detail btn-open-detail">Lihat Detail</button>
+          </div>
+        </div>
+
+        <!-- Produk 2: Telur Omega -->
+        <div class="product-card" data-category="omega"
+             data-name="Telur Omega"
+             data-img="images/prod-omega.png"
+             data-price="Rp 40.000 / kg"
+             data-about="Telur Omega kaya akan Omega-3 yang baik untuk kesehatan. Cocok untuk kebutuhan usaha yang mengutamakan nilai tambah produk."
+             data-stock="Tersedia untuk partai besar"
+             data-location="Solo, Jawa Tengah">
+          <div class="product-img-box">
+            <img src="images/prod-omega.png" alt="Telur Omega" class="product-img">
+          </div>
+          <div class="product-info-body">
+            <span class="product-badge badge-premium">
+              <span class="badge-dot">•</span> Premium
+            </span>
+            <h3 class="product-title">Telur Omega</h3>
+            <p class="product-location">Solo, Jawa Tengah</p>
+            <div class="product-price">
+              Rp 40.000 <span class="price-unit">/ kg</span>
+            </div>
+            <button type="button" class="btn btn-product-detail btn-open-detail">Lihat Detail</button>
+          </div>
+        </div>
+
+        <!-- Produk 3: Telur Ayam Ras Grade A -->
+        <div class="product-card" data-category="grade-a"
+             data-name="Telur Ayam Ras Grade A"
+             data-img="images/prod-grade-a.png"
+             data-price="Rp 28.000 / kg"
+             data-about="Telur ayam ras Grade A dengan ukuran seragam, bersih dan berkualitas. Sangat ideal untuk grosir, pasar, restoran dan industri makanan."
+             data-stock="Tersedia untuk partai besar"
+             data-location="Solo, Jawa Tengah">
+          <div class="product-img-box">
+            <img src="images/prod-grade-a.png" alt="Telur Ayam Ras Grade A" class="product-img">
+          </div>
+          <div class="product-info-body">
+            <span class="product-badge badge-grade-a">
+              <span class="badge-dot">•</span> Grade A
+            </span>
+            <h3 class="product-title">Telur Ayam Ras Grade A</h3>
+            <p class="product-location">Solo, Jawa Tengah</p>
+            <div class="product-price">
+              Rp 28.000 <span class="price-unit">/ kg</span>
+            </div>
+            <button type="button" class="btn btn-product-detail btn-open-detail">Lihat Detail</button>
+          </div>
+        </div>
+
+        <!-- Produk 4: Telur Ayam Ras Grade B -->
+        <div class="product-card" data-category="grade-b"
+             data-name="Telur Ayam Ras Grade B"
+             data-img="images/prod-grade-b.png"
+             data-price="Rp 25.000 / kg"
+             data-about="Telur ayam ras Grade B tetap segar dan layak konsumsi. Cocok untuk kebutuhan usaha dengan efisiensi biaya."
+             data-stock="Tersedia untuk partai besar"
+             data-location="Solo, Jawa Tengah">
+          <div class="product-img-box">
+            <img src="images/prod-grade-b.png" alt="Telur Ayam Ras Grade B" class="product-img">
+          </div>
+          <div class="product-info-body">
+            <span class="product-badge badge-grade-b">
+              <span class="badge-dot">•</span> Grade B
+            </span>
+            <h3 class="product-title">Telur Ayam Ras Grade B</h3>
+            <p class="product-location">Solo, Jawa Tengah</p>
+            <div class="product-price">
+              Rp 25.000 <span class="price-unit">/ kg</span>
+            </div>
+            <button type="button" class="btn btn-product-detail btn-open-detail">Lihat Detail</button>
+          </div>
+        </div>
+
+        <!-- Produk 5: Telur Ayam Ras Grade C -->
+        <div class="product-card" data-category="grade-c"
+             data-name="Telur Ayam Ras Grade C"
+             data-img="images/prod-grade-c.png"
+             data-price="Rp 21.000 / kg"
+             data-about="Telur ayam ras Grade C untuk kebutuhan olahan makanan skala besar dengan harga lebih kompetitif."
+             data-stock="Tersedia untuk partai besar"
+             data-location="Solo, Jawa Tengah">
+          <div class="product-img-box">
+            <img src="images/prod-grade-c.png" alt="Telur Ayam Ras Grade C" class="product-img">
+          </div>
+          <div class="product-info-body">
+            <span class="product-badge badge-grade-c">
+              <span class="badge-dot">•</span> Grade C
+            </span>
+            <h3 class="product-title">Telur Ayam Ras Grade C</h3>
+            <p class="product-location">Solo, Jawa Tengah</p>
+            <div class="product-price">
+              Rp 21.000 <span class="price-unit">/ kg</span>
+            </div>
+            <button type="button" class="btn btn-product-detail btn-open-detail">Lihat Detail</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================
+       7. FITUR: FOOTER
+       ======================================================== -->
+  <footer class="footer-section">
+    <div class="container footer-container">
+      
+      <!-- Bagian Atas Footer (3 Kolom Informasi) -->
+      <div class="footer-top-grid">
+        
+        <!-- Kolom 1: Profil Brand Staplr dengan Logo Resmi Sembako -->
+        <div class="footer-col footer-brand-col">
+          <div class="footer-brand-header">
+            <img src="images/logo-staplr.png" alt="Staplr Logo" class="footer-logo-img">
+            <div class="footer-brand-title">
+              <span class="yellow-dot">•</span> Staplr
+            </div>
+          </div>
+          <a href="https://staplr.com" class="footer-domain-link">Staplr.com</a>
+          <p class="footer-about-text">
+            Platform B2B jual beli telur ayam partai besar yang aman, transparan, dan terpercaya untuk peternak dan pembeli.
+          </p>
+        </div>
+
+        <!-- Kolom 2: Navigasi Jelajah Halaman -->
+        <div class="footer-col footer-links-col">
+          <h4 class="footer-col-heading">Jelajah</h4>
+          <ul class="footer-links-list">
+            <li><a href="#beranda" class="footer-nav-link">Beranda</a></li>
+            <li><a href="#layanan" class="footer-nav-link">Layanan</a></li>
+            <li><a href="#keunggulan" class="footer-nav-link">Keunggulan</a></li>
+            <li><a href="#produk" class="footer-nav-link">Produk</a></li>
+          </ul>
+        </div>
+
+        <!-- Kolom 3: Kontak & Informasi Lokasi Sesuai Figma -->
+        <div class="footer-col footer-contact-col">
+          <h4 class="footer-col-heading">Kontak</h4>
+          <div class="footer-contact-list">
+            <p class="contact-item">staplrindonesia@gmail.com</p>
+            <p class="contact-item">+62 85666895</p>
+            <p class="contact-item">Solo, Jawa Tengah</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Garis Pemisah & Bagian Hak Cipta Bawah Sesuai Figma -->
+      <div class="footer-bottom-bar">
+        <div class="footer-copyright">
+          &copy; 2026 Staplr. Seluruh hak cipta dilindungi.
+        </div>
+        <div class="footer-legal-links">
+          <a href="#privasi" class="footer-legal-link">Kebijakan Privasi</a>
+          <span class="legal-divider">&middot;</span>
+          <a href="#syarat" class="footer-legal-link">Syarat &amp; Ketentuan</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Modal Detail Produk -->
+  <div class="product-detail-overlay" id="productDetailOverlay">
+    <div class="product-detail-modal" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
+      <button class="modal-close-btn" id="modalCloseBtn" aria-label="Tutup detail produk">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="modal-grid">
+        <div class="modal-image-wrap">
+          <img src="" alt="" class="modal-product-img" id="modalProductImg">
+        </div>
+        <div class="modal-content-wrap">
+          <h3 class="modal-product-title" id="detailModalTitle"></h3>
+          <div class="modal-product-price" id="modalProductPrice"></div>
+
+          <div class="modal-section">
+            <h4 class="modal-section-title">Tentang Produk</h4>
+            <p class="modal-section-text" id="modalProductAbout"></p>
+          </div>
+
+          <div class="modal-info-list">
+            <div class="modal-info-item">
+              <span class="modal-info-label">Ketersediaan</span>
+              <span class="modal-info-value" id="modalProductStock"></span>
+            </div>
+            <div class="modal-info-item">
+              <span class="modal-info-label">Kondisi</span>
+              <span class="modal-info-value">Konfirmasi ke perusahaan</span>
+            </div>
+            <div class="modal-info-item">
+              <span class="modal-info-label">Pengiriman & Pengambilan</span>
+              <span class="modal-info-value">Diskusikan dengan perusahaan</span>
+            </div>
+            <div class="modal-info-item">
+              <span class="modal-info-label">Metode Pembayaran</span>
+              <span class="modal-info-value">Transfer Rekening</span>
+            </div>
+            <div class="modal-info-item">
+              <span class="modal-info-label">Lokasi Produk</span>
+              <span class="modal-info-value" id="modalProductLocation"></span>
+            </div>
+          </div>
+
+          <a href="#daftar" class="btn btn-ajukan-penawaran">Ajukan Penawaran</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script Interaktivitas Ringan (Toggle Mobile & Smooth Scroll) -->
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.querySelector('.navbar-navigation');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const navLinksList = document.querySelector('.nav-links');
+    const sections = document.querySelectorAll('section[id]');
+
+    // ── Hamburger Toggle ──────────────────────────────────────────────
+    if (menuToggle) {
+      menuToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('nav-open');
+        menuToggle.classList.toggle('active');
+      });
+    }
+
+    // ── Sliding Yellow Indicator ──────────────────────────────────────
+    const sliderEl = document.createElement('span');
+    sliderEl.className = 'nav-slider-indicator';
+    navLinksList.appendChild(sliderEl);
+
+    function updateSlider() {
+      const activeLink = document.querySelector('.nav-link.active');
+      if (!activeLink) { sliderEl.style.opacity = '0'; return; }
+      const navRect = navLinksList.getBoundingClientRect();
+      const linkRect = activeLink.getBoundingClientRect();
+      sliderEl.style.left  = (linkRect.left - navRect.left) + 'px';
+      sliderEl.style.width = linkRect.width + 'px';
+      sliderEl.style.opacity = '1';
+    }
+
+    window.addEventListener('load', updateSlider);
+    updateSlider();
+
+    // ── Nav Link Click: Active + Slider + Close Mobile Menu ──────────
+    navLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        navLinks.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+        updateSlider();
+        // Tutup mobile menu dengan animasi smooth
+        if (navMenu.classList.contains('nav-open')) {
+          navMenu.classList.remove('nav-open');
+          menuToggle.classList.remove('active');
+        }
+      });
+    });
+
+    // ── Scroll Spy ────────────────────────────────────────────────────
+    window.addEventListener('scroll', () => {
+      const scrollY = window.pageYOffset;
+      sections.forEach(current => {
+        const sectionHeight = current.offsetHeight;
+        const sectionTop = current.offsetTop - 80;
+        const sectionId = current.getAttribute('id');
+        if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+          navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${sectionId}`) {
+              link.classList.add('active');
+            }
+          });
+          updateSlider();
+        }
+      });
+    });
+    // Filter Kategori Produk & Pencarian Real-time
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const productCards = document.querySelectorAll('.product-card');
+    const searchInput = document.getElementById('productSearch');
+
+    function filterProducts() {
+      const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+      const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+      productCards.forEach(card => {
+        const category = card.getAttribute('data-category');
+        const title = card.querySelector('.product-title').textContent.toLowerCase();
+        const matchesCategory = (activeFilter === 'all' || category === activeFilter);
+        const matchesSearch = title.includes(searchQuery);
+
+        if (matchesCategory && matchesSearch) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        filterProducts();
+      });
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener('input', filterProducts);
+    }
+
+    // Modal Detail Produk
+    const detailOverlay = document.getElementById('productDetailOverlay');
+    const detailCloseBtn = document.getElementById('modalCloseBtn');
+    const openDetailBtns = document.querySelectorAll('.btn-open-detail');
+
+    const modalImg = document.getElementById('modalProductImg');
+    const modalTitle = document.getElementById('detailModalTitle');
+    const modalPrice = document.getElementById('modalProductPrice');
+    const modalAbout = document.getElementById('modalProductAbout');
+    const modalStock = document.getElementById('modalProductStock');
+    const modalLocation = document.getElementById('modalProductLocation');
+
+    function openProductDetail(card) {
+      if (!card) return;
+      modalImg.src = card.getAttribute('data-img') || '';
+      modalImg.alt = card.getAttribute('data-name') || 'Gambar Produk';
+      modalTitle.textContent = card.getAttribute('data-name') || '';
+      modalPrice.textContent = card.getAttribute('data-price') || '';
+      modalAbout.textContent = card.getAttribute('data-about') || '';
+      modalStock.textContent = card.getAttribute('data-stock') || '';
+      modalLocation.textContent = card.getAttribute('data-location') || 'Solo, Jawa Tengah';
+      detailOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeProductDetail() {
+      detailOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    openDetailBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.product-card');
+        openProductDetail(card);
+      });
+    });
+
+    if (detailCloseBtn) {
+      detailCloseBtn.addEventListener('click', closeProductDetail);
+    }
+
+    if (detailOverlay) {
+      detailOverlay.addEventListener('click', (e) => {
+        if (e.target === detailOverlay) {
+          closeProductDetail();
+        }
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && detailOverlay && detailOverlay.classList.contains('active')) {
+        closeProductDetail();
+      }
+    });
+  </script>
+</body>
+</html>

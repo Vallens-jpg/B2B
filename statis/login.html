@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <!-- Versi statis (HTML + CSS saja) dari halaman Staplr -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masuk - Staplr</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+  <div class="auth-page">
+    <div class="auth-bg">
+      <img src="images/farm-original.jpg" alt="Peternakan ayam" class="auth-bg-image">
+      <div class="auth-bg-overlay"></div>
+    </div>
+
+    <div class="auth-left">
+      <a class="brand" href="index.html">
+        <img src="images/logo-staplr.png" alt="Staplr" class="brand-logo">
+        <div class="brand-text">
+          <span class="brand-dot">•</span> Staplr
+        </div>
+      </a>
+
+      <div class="left-content">
+        <div class="trusted-badge">
+          <span>PLATFORM TERPERCAYA</span>
+        </div>
+        <div>
+          <h1 class="left-heading">Selamat Datang</h1>
+          <p class="left-subtitle">
+            Pasokan telur ayam partai besar lebih mudah, aman, dan transparan langsung dari peternak terverifikasi.
+          </p>
+        </div>
+        <div class="benefit-list">
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <span class="benefit-text">Harga grosir transparan & kompetitif</span>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <span class="benefit-text">Transaksi aman dengan sistem terproteksi</span>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <span class="benefit-text">Jaringan peternak terverifikasi di seluruh Indonesia</span>
+          </div>
+        </div>
+      </div>
+
+      <div></div>
+    </div>
+
+    <div class="auth-right">
+      <div class="form-card">
+        <div class="form-card-inner">
+          <div class="form-header">
+            <h2 class="form-title">Masuk Akun</h2>
+            <p class="form-subtitle">Masuk untuk mengelola transaksi Anda</p>
+          </div>
+
+          <div class="tab-switcher">
+            <button class="tab-btn active" type="button" data-type="pembeli">Pembeli</button>
+            <button class="tab-btn" type="button" data-type="perusahaan">Perusahaan</button>
+          </div>
+
+          <div class="form-grid" id="loginForm">
+            <div class="field">
+              <label class="field-label" for="email">Email</label>
+              <input class="field-input" id="email" type="email" placeholder="Masukkan alamat email" required>
+            </div>
+            <div class="field">
+              <label class="field-label" for="password">Kata Sandi</label>
+              <input class="field-input" id="password" type="password" placeholder="Masukkan kata sandi" required>
+            </div>
+            <div class="row-between">
+              <label class="checkbox">
+                <input type="checkbox">
+                <span>Ingat saya</span>
+              </label>
+              <a href="lupa-sandi.html">Lupa kata sandi?</a>
+            </div>
+            <a class="cta-btn" href="dashboard.html">Masuk</a>
+          </div>
+
+          <div class="form-footer">
+            Belum punya akun? <a href="daftar.html">Daftar Sekarang</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</body>
+
+</html>

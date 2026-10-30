@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="id"><head>
+  <!-- Versi statis (HTML + CSS saja) dari dashboard perusahaan Staplr -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Perusahaan - Staplr B2B</title>
+  <meta name="description" content="Dashboard manajemen stok, pesanan, dan produk telur ayam partai besar Staplr.">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+
+  <!-- Backdrop Mobile Drawer -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- ==========================================================================
+       1. SIDEBAR (FIGMA EXACT DESIGN)
+       ========================================================================== -->
+  <aside class="sidebar" id="sidebar">
+    <!-- Brand Logo -->
+    <a href="index.html" class="sidebar-brand" title="Kembali ke Beranda Staplr">
+      <img src="images/logo-staplr-transparent.png" alt="Staplr Icon" class="sidebar-brand-icon">
+      <div class="sidebar-brand-name">
+        <span class="sidebar-brand-dot">•</span> Staplr
+      </div>
+    </a>
+
+    <!-- Navigation Menu (7 Items Sesuai Figma) -->
+    <nav class="sidebar-nav">
+      <!-- 1. Dashboard -->
+      <a href="dashboard.html" class="sidebar-link" id="navDashboard">
+        <span class="sidebar-icon">
+          <!-- House / Home Icon -->
+          <svg viewBox="0 0 24 24">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </span>
+        <span>Dashboard</span>
+      </a>
+
+      <!-- 2. Produk (Figma "Produk 1") -->
+      <a href="dashboard-produk.html" class="sidebar-link" id="navProduk">
+        <span class="sidebar-icon">
+          <!-- Package / Box Icon -->
+          <svg viewBox="0 0 24 24">
+            <line x1="16.5" y1="9.4" x2="7.55" y2="4.24"></line>
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+        </span>
+        <span>Produk</span>
+      </a>
+
+      <!-- 3. Permintaan -->
+      <a href="dashboard-permintaan.html" class="sidebar-link" id="navPermintaan">
+        <span class="sidebar-icon">
+          <!-- Price Tag Icon -->
+          <svg viewBox="0 0 24 24">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+          </svg>
+        </span>
+        <span>Permintaan</span>
+      </a>
+
+      <!-- 4. Pesanan (Terhubung langsung ke tampilan Pesanan) -->
+      <a href="dashboard-pesanan.html" class="sidebar-link active" id="navPesanan">
+        <span class="sidebar-icon">
+          <!-- Shopping Bag / Order Icon -->
+          <svg viewBox="0 0 24 24">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+        </span>
+        <span>Pesanan</span>
+      </a>
+
+      <!-- 5. Dispute -->
+      <a href="dashboard-dispute.html" class="sidebar-link" id="navDispute">
+        <span class="sidebar-icon">
+          <!-- Shield Alert Icon -->
+          <svg viewBox="0 0 24 24">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </span>
+        <span>Dispute</span>
+      </a>
+
+      <!-- 6. Keuangan -->
+      <a href="dashboard-keuangan.html" class="sidebar-link" id="navKeuangan">
+        <span class="sidebar-icon">
+          <!-- Wallet / Card Icon -->
+          <svg viewBox="0 0 24 24">
+            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+            <line x1="1" y1="10" x2="23" y2="10"></line>
+            <line x1="16" y1="15" x2="18" y2="15"></line>
+          </svg>
+        </span>
+        <span>Keuangan</span>
+      </a>
+
+      <!-- 7. Riwayat -->
+      <a href="dashboard-riwayat.html" class="sidebar-link" id="navRiwayat">
+        <span class="sidebar-icon">
+          <!-- History / Clock Icon -->
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </span>
+        <span>Riwayat</span>
+      </a>
+    </nav>
+
+    <!-- Footer Sidebar: Link Landing Page -->
+    <div class="sidebar-footer">
+      <a href="index.html" class="sidebar-back-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Ke Landing Page</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ==========================================================================
+       2. MAIN CONTENT AREA
+       ========================================================================== -->
+  <div class="main-wrapper">
+    <!-- Header Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-toggle-btn" id="mobileToggle" aria-label="Buka Menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <h1 class="topbar-title" id="pageTitle">Daftar Pesanan</h1>
+      </div>
+
+      <!-- Profil Sesuai Figma -->
+      <div class="topbar-right">
+        <a href="dashboard-profil.html" class="profile-pill" id="profilePill" title="Kelola Profil">
+          <div class="profile-avatar"></div>
+          <span class="profile-name">Profil</span>
+        </a>
+
+        <!-- Profile Dropdown -->
+        <div class="profile-dropdown" id="profileDropdown">
+          <div class="dropdown-header">
+            <div class="dropdown-user-name">CV Telur Makmur Bersama</div>
+            <div class="dropdown-user-role">Mitra Peternak Terverifikasi</div>
+          </div>
+          <a href="dashboard-profil.html" class="dropdown-item" id="dropdownProfil">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Profil Akun
+          </a>
+          <a href="login.html" class="dropdown-item logout">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Keluar
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="dashboard-body">
+
+      <!-- ======================================================================
+           VIEW A: DASHBOARD METRICS & CHARTS (S-1, S-2, S-3, S-4)
+           ====================================================================== -->
+      <div id="dashboardViewContainer" style="display: none;">
+        <!-- Row of 4 Metric Cards -->
+        <section class="metric-grid" aria-label="Ringkasan Metrik">
+          <!-- Card 1: Stok Produk (Figma S-1) -->
+          <article class="metric-card active" data-metric="stok" role="button" tabindex="0">
+            <div class="metric-card-header">
+              <span class="metric-label">Stok Produk</span>
+              <span class="metric-active-dot"></span>
+            </div>
+            <div class="metric-value">18.400</div>
+            <div class="metric-subtext">butir tersedia</div>
+          </article>
+
+          <!-- Card 2: Pesanan Baru (Figma S-2) -->
+          <article class="metric-card" data-metric="pesanan-baru" role="button" tabindex="0">
+            <div class="metric-card-header">
+              <span class="metric-label">Pesanan Baru</span>
+              <span class="metric-active-dot"></span>
+            </div>
+            <div class="metric-value">60</div>
+            <div class="metric-subtext">pesanan minggu ini</div>
+          </article>
+
+          <!-- Card 3: Pesanan Diproses (Figma S-3) -->
+          <article class="metric-card" data-metric="pesanan-proses" role="button" tabindex="0">
+            <div class="metric-card-header">
+              <span class="metric-label">Pesanan Diproses</span>
+              <span class="metric-active-dot"></span>
+            </div>
+            <div class="metric-value">12</div>
+            <div class="metric-subtext">sedang diproses</div>
+          </article>
+
+          <!-- Card 4: Pendapatan Minggu Ini (Figma S-4) -->
+          <article class="metric-card" data-metric="pendapatan" role="button" tabindex="0">
+            <div class="metric-card-header">
+              <span class="metric-label">Pendapatan Minggu Ini</span>
+              <span class="metric-active-dot"></span>
+            </div>
+            <div class="metric-value">Rp 36.000.000</div>
+            <div class="metric-subtext">7 hari terakhir</div>
+          </article>
+        </section>
+
+        <!-- Dynamic Content Area (Switches S-1, S-2, S-3, S-4) -->
+        <div class="main-panel-container" id="mainPanelContainer" style="margin-top: 20px;">
+        <section class="chart-panel">
+          <header class="chart-panel-header">
+            <div class="chart-title-wrap">
+              <h2 class="chart-title">Stok produk</h2>
+              <p class="chart-subtitle">Total stok tersedia</p>
+            </div>
+            <div class="chart-total-stat">18.400 butir</div>
+          </header>
+          <div class="chart-box">
+            <div class="chart-plot-area">
+              <div class="chart-y-axis"><div class="y-axis-tick">12.000</div><div class="y-axis-tick">8.000</div><div class="y-axis-tick">4.000</div><div class="y-axis-tick">0</div></div>
+              <div class="chart-grid-lines"><div class="grid-line "></div><div class="grid-line "></div><div class="grid-line "></div><div class="grid-line baseline"></div></div>
+              <div class="chart-bars-layer">
+          <div class="chart-bar-col" style="width: 52px;">
+            <div class="chart-bar-pillar" style="height: 11.6667%; width: 100%;">
+              <span class="chart-bar-val">1.400</span>
+              <div class="bar-tooltip">Telur Omega: 1.400</div>
+            </div>
+          </div>
+        
+          <div class="chart-bar-col" style="width: 52px;">
+            <div class="chart-bar-pillar" style="height: 83.3333%; width: 100%;">
+              <span class="chart-bar-val">10.000</span>
+              <div class="bar-tooltip">Telur A: 10.000</div>
+            </div>
+          </div>
+        
+          <div class="chart-bar-col" style="width: 52px;">
+            <div class="chart-bar-pillar" style="height: 25%; width: 100%;">
+              <span class="chart-bar-val">3.000</span>
+              <div class="bar-tooltip">Telur B: 3.000</div>
+            </div>
+          </div>
+        
+          <div class="chart-bar-col" style="width: 52px;">
+            <div class="chart-bar-pillar" style="height: 33.3333%; width: 100%;">
+              <span class="chart-bar-val">4.000</span>
+              <div class="bar-tooltip">Telur C: 4.000</div>
+            </div>
+          </div>
+        </div>
+            </div>
+            <div class="chart-x-axis"><div class="x-axis-label" style="width: 52px;">Telur Omega</div><div class="x-axis-label" style="width: 52px;">Telur A</div><div class="x-axis-label" style="width: 52px;">Telur B</div><div class="x-axis-label" style="width: 52px;">Telur C</div></div>
+          </div>
+        </section>
+      </div>
+      </div>
+
+      <!-- ======================================================================
+           VIEW B: MANAJEMEN PRODUK VIEW (FIGMA "PRODUK 1")
+           ====================================================================== -->
+      <div id="productViewContainer" class="product-mgmt-view" style="display: none;">
+        <div class="product-mgmt-card">
+          <header class="product-mgmt-header">
+            <div class="product-mgmt-title-wrap">
+              <h2 class="product-mgmt-title">Daftar Produk</h2>
+              <p class="product-mgmt-subtitle">Kelola produk, harga, dan stok yang Anda jual.</p>
+            </div>
+            <button class="btn-add-product">
+              <span>+</span> Tambah Produk Baru
+            </button>
+          </header>
+
+          <div class="table-wrap view-scroll" data-fill-scroll="">
+            <table class="products-table">
+              <thead>
+                <tr>
+                  <th>JENIS PRODUK</th>
+                  <th>GRADE</th>
+                  <th>HARGA SATUAN</th>
+                  <th>STOK</th>
+                  <th>MINIMAL ORDER</th>
+                  <th>SATUAN</th>
+                  <th>AKSI</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableBody">
+                <!-- Rendered dynamically by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <footer class="product-mgmt-footer">
+            <div class="product-count-info" id="productCountInfo">Menampilkan 1-3 dari 3 produk</div>
+          </footer>
+        </div>
+      </div>
+
+      <!-- ======================================================================
+           VIEW C: MANAJEMEN PESANAN VIEW (DASHBOARD S-3 STYLE)
+           ====================================================================== -->
+      <div id="pesananViewContainer" class="pesanan-view" style="display: flex;">
+
+        <!-- Sub-View 1: Daftar Pesanan -->
+        <div id="pesananListView" class="pesanan-list-view" style="display: flex;">
+
+          <div class="pesanan-toolbar">
+            <div class="pesanan-search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="7"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="pesananSearchInput" placeholder="Cari ID Order / Nama Pembeli..." autocomplete="off">
+            </div>
+            <a href="dashboard-pesanan-baru.html" class="btn-pesanan-new">
+              <span>+</span> Buat Pesanan Baru
+            </a>
+          </div>
+
+          <div class="pesanan-tabs">
+            <button class="pesanan-tab active" type="button">Semua</button>
+            <button class="pesanan-tab" type="button">Menunggu Persetujuan</button>
+            <button class="pesanan-tab" type="button">Menunggu Pembayaran</button>
+            <button class="pesanan-tab" type="button">Dikirim</button>
+            <button class="pesanan-tab" type="button">Selesai</button>
+            <button class="pesanan-tab" type="button">Dibatalkan</button>
+          </div>
+
+          <section class="pesanan-table-card">
+            <div class="table-wrap pesanan-scroll view-scroll" data-fill-scroll="" style="max-height: 421px;">
+              <table class="pesanan-table">
+                <thead>
+                  <tr>
+                    <th>ID ORDER</th>
+                    <th>PEMBELI</th>
+                    <th>PRODUK</th>
+                    <th>QTY</th>
+                    <th>HARGA SATUAN</th>
+                    <th>JADWAL KIRIM</th>
+                    <th>STATUS</th>
+                    <th>AKSI</th>
+                  </tr>
+                </thead>
+                <tbody id="pesananTableBody"><tr><td class="pesanan-id">#ORD-2027-001</td><td>Rira W.</td><td>Telur Ayam</td><td>2</td><td class="pesanan-harga">Rp 250.000</td><td>12 Okt 2027</td><td><span class="pesanan-status menunggu-persetujuan"><span class="status-dot"></span>Menunggu Persetujuan</span></td><td><div class="pesanan-aksi"><button class="btn-pesanan-tolak" type="button">Tolak</button><button class="btn-pesanan-setujui" type="button">Setujui</button></div></td></tr><tr><td class="pesanan-id">#ORD-2027-003</td><td>Rira W.</td><td>Telur Ayam</td><td>2</td><td class="pesanan-harga">Rp 250.000</td><td>12 Okt 2027</td><td><span class="pesanan-status menunggu-persetujuan"><span class="status-dot"></span>Menunggu Persetujuan</span></td><td><div class="pesanan-aksi"><button class="btn-pesanan-tolak" type="button">Tolak</button><button class="btn-pesanan-setujui" type="button">Setujui</button></div></td></tr><tr><td class="pesanan-id">#ORD-2027-002</td><td>Rania</td><td>Telur Ayam</td><td>3</td><td class="pesanan-harga">Rp 300.000</td><td>17 Okt 2027</td><td><span class="pesanan-status dikirim"><span class="status-dot"></span>Dikirim</span></td><td><div class="pesanan-aksi"><a href="dashboard-pesanan-detail.html" class="btn-pesanan-detail">Detail</a></div></td></tr></tbody>
+              </table>
+            </div>
+
+            <footer class="pesanan-list-footer">
+              <span class="pesanan-count" id="pesananCountInfo">Menampilkan 1-3 dari 3 pesanan</span>
+            </footer>
+          </section>
+        </div>
+
+        <!-- Sub-View 2: Form / Detail Pesanan -->
+        <div id="pesananFormView" class="pesanan-form-view" style="display: none;">
+          <header class="pesanan-form-head">
+            <h2 class="pesanan-form-title" id="pesananFormTitle">Detail Pesanan Baru</h2>
+            <a href="dashboard-pesanan.html" class="btn-pesanan-back">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              Kembali
+            </a>
+          </header>
+
+          <div class="pesanan-form-layout">
+            <div class="pesanan-form-main">
+
+              <section class="pesanan-card">
+                <label class="pesanan-label" for="pesananPembeli">Pembeli <span class="req">*</span></label>
+                <select class="pesanan-input" id="pesananPembeli">
+                  <option>Arga Dwi</option>
+                  <option>Rira W.</option>
+                  <option>Rania</option>
+                  <option>PT Boga Jaya</option>
+                  <option>CV Sembako</option>
+                </select>
+              </section>
+
+              <section class="pesanan-card">
+                <div class="pesanan-item-head">
+                  <h3 class="pesanan-card-title">Item pesanan</h3>
+                  <button class="btn-pesanan-additem" type="button" id="pesananAddItemBtn">+ Tambah Item</button>
+                </div>
+
+                <div class="pesanan-item-labels">
+                  <span>Produk <span class="req">*</span></span>
+                  <span>Qty</span>
+                  <span>Harga satuan <span class="req">*</span></span>
+                  <span>Subtotal</span>
+                  <span></span>
+                </div>
+
+                <div id="pesananItems"></div>
+              </section>
+
+              <section class="pesanan-card">
+                <h3 class="pesanan-card-title">Pengiriman &amp; pembayaran</h3>
+                <div class="pesanan-ship-grid">
+                  <div class="pesanan-field">
+                    <label class="pesanan-label" for="pesananJadwal">Jadwal kirim <span class="req">*</span></label>
+                    <div class="pesanan-date-wrap">
+                      <input class="pesanan-input pesanan-date-display" id="pesananJadwalDisplay" type="text" value="12 Okt 2027" readonly="">
+                      <input class="pesanan-date-input" id="pesananJadwal" type="date" value="2027-10-12">
+                    </div>
+                  </div>
+                  <div class="pesanan-field">
+                    <label class="pesanan-label" for="pesananPembayaran">Pembayaran</label>
+                    <input class="pesanan-input" id="pesananPembayaran" type="text" placeholder="Rp.">
+                  </div>
+                </div>
+                <div class="pesanan-field">
+                  <label class="pesanan-label" for="pesananCatatan">Catatan pesanan</label>
+                  <textarea class="pesanan-textarea" id="pesananCatatan">Kirim produk secepatnya</textarea>
+                </div>
+              </section>
+
+            </div>
+
+            <aside class="pesanan-summary-card">
+              <h3 class="pesanan-summary-title">Ringkasan pesanan</h3>
+              <div class="pesanan-summary-row">
+                <span id="pesananSummaryStatusLabel">Status awal pesanan</span>
+                <span class="pesanan-status menunggu-persetujuan" id="pesananSummaryStatus"><span class="status-dot"></span>Menunggu Persetujuan</span>
+              </div>
+              <div class="pesanan-summary-row">
+                <span>Jumlah item</span>
+                <strong id="pesananSummaryQty">2 produk</strong>
+              </div>
+              <div class="pesanan-summary-row">
+                <span>Total pesanan</span>
+                <strong id="pesananSummaryTotal">Rp 500.000</strong>
+              </div>
+              <div class="pesanan-summary-divider"></div>
+              <div class="pesanan-summary-row pembayaran">
+                <span>Pembayaran</span>
+                <strong id="pesananSummaryBayar">Rp 500.000</strong>
+              </div>
+              <a href="dashboard-pesanan-detail.html" class="btn-pesanan-proses" id="pesananProsesBtn">Proses pesanan</a>
+            </aside>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================================
+           VIEW D: PENAWARAN (RFQ) VIEW
+           ====================================================================== -->
+      <div id="penawaranViewContainer" class="penawaran-view" style="display: none;">
+
+        <!-- Sub-View 1: Daftar Permintaan (List) -->
+        <div id="rfqListView">
+          <div class="rfq-card">
+            <header class="rfq-header">
+              <div>
+                <h2 class="rfq-title">Permintaan (RFQ)</h2>
+                <p class="rfq-subtitle">Kelola permintaan, tindaklanjut harga dari pembeli</p>
+              </div>
+            </header>
+
+            <!-- Filter Tabs -->
+            <div class="rfq-filter-tabs">
+              <button class="rfq-tab active" id="rfqTabSemua">Semua</button>
+              <button class="rfq-tab">Perlu Dibalas <span class="rfq-tab-count">(1)</span></button>
+              <button class="rfq-tab">Terkirim <span class="rfq-tab-count">(1)</span></button>
+              <button class="rfq-tab">Disetujui <span class="rfq-tab-count">(1)</span></button>
+              <button class="rfq-tab">Kedaluwarsa</button>
+              <button class="rfq-tab">Ditolak</button>
+            </div>
+
+            <!-- Search -->
+            <div class="rfq-search-wrap">
+              <svg class="rfq-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" class="rfq-search-input" id="rfqSearchInput" placeholder="Cari no. RFQ...">
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrap view-scroll" data-fill-scroll="">
+              <table class="orders-table" id="rfqTable">
+                <thead>
+                  <tr>
+                    <th>NO RFQ</th>
+                    <th>TGL MASUK</th>
+                    <th>PEMBELI</th>
+                    <th>RINGKAS PRODUK</th>
+                    <th>TOTAL PERMINTAAN</th>
+                    <th>STATUS</th>
+                    <th>AKSI</th>
+                  </tr>
+                </thead>
+                <tbody id="rfqTableBody">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <footer class="product-mgmt-footer">
+              <div class="product-count-info" id="rfqCountInfo">Menampilkan 1-3 dari 3 RFQ</div>
+            </footer>
+          </div>
+        </div>
+
+        <!-- Sub-View 2: Detail Permintaan (RFQ Detail) -->
+        <div id="rfqFormView" style="display: none;">
+
+          <div class="rfq-detail-header">
+            <div>
+              <h2 class="rfq-detail-heading" id="rfqDetailHeading">Permintaan</h2>
+              <div class="rfq-detail-sub" id="rfqFormSubtitle">RFQ #RFQ-2027-001</div>
+            </div>
+            <a href="dashboard-permintaan.html" class="rfq-back-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              Kembali ke Daftar Permintaan
+            </a>
+          </div>
+
+          <div class="rfq-detail-grid">
+            <!-- Left: Informasi & Item -->
+            <div class="rfq-detail-main">
+
+              <section class="rfq-dcard">
+                <h3 class="rfq-dcard-title">Informasi Permintaan</h3>
+
+                <div class="rfq-dfield-row">
+                  <div class="rfq-dfield">
+                    <label class="rfq-dlabel" for="rfqFormNomor">Nomor RFQ</label>
+                    <input class="rfq-dinput" id="rfqFormNomor" type="text" value="#RFQ-2027-001" readonly="">
+                  </div>
+                  <div class="rfq-dfield">
+                    <label class="rfq-dlabel" for="rfqFormPembeli">Pembeli</label>
+                    <input class="rfq-dinput" id="rfqFormPembeli" type="text" value="Riky W." readonly="">
+                  </div>
+                </div>
+
+                <div class="rfq-dfield">
+                  <label class="rfq-dlabel" for="rfqFormCatatan">Catatan Pembeli</label>
+                  <textarea class="rfq-dtextarea" id="rfqFormCatatan" rows="2">Kirim secepatnya</textarea>
+                </div>
+              </section>
+
+              <section class="rfq-dcard">
+                <div class="rfq-dcard-head">
+                  <h3 class="rfq-dcard-title">Item Permintaan</h3>
+                  <button class="rfq-add-item" type="button" id="rfqAddItemBtn">+ Tambah Item</button>
+                </div>
+
+                <div class="rfq-item-head">
+                  <span>Produk <span class="req">*</span></span>
+                  <span>Qty <span class="req">*</span></span>
+                  <span>Harga Satuan <span class="req">*</span></span>
+                  <span></span>
+                </div>
+
+                <div id="itemHargaBody">
+                  <div class="rfq-item-row" id="item-row-0">
+                    <select class="rfq-dinput item-produk">
+                      <option>Telur Ayam</option>
+                      <option>Telur Omega</option>
+                      <option>Telur Ayam Kampung</option>
+                    </select>
+                    <input class="rfq-dinput item-qty" type="text" value="500 Kg">
+                    <input class="rfq-dinput item-harga" type="text" value="Rp 23.000">
+                    <button class="rfq-item-hapus" type="button">Hapus</button>
+                  </div>
+                </div>
+
+                <div class="rfq-item-subtotal">
+                  <span>Subtotal Item</span>
+                  <strong id="rfqSubtotal">Rp 11.500.000</strong>
+                </div>
+              </section>
+
+            </div>
+
+            <!-- Right: Ringkasan -->
+            <aside class="rfq-dcard rfq-summary-card">
+              <h3 class="rfq-dcard-title">Ringkasan Permintaan</h3>
+
+              <div class="rfq-sum-row">
+                <span class="label">Subtotal Item</span>
+                <span class="value" id="rfqSummarySubtotal">Rp 11.500.000</span>
+              </div>
+              <div class="rfq-sum-row">
+                <span class="label">Biaya Pengiriman</span>
+                <span class="value" id="rfqSummaryKirim">Rp 200.000</span>
+              </div>
+              <div class="rfq-sum-row">
+                <span class="label">Fee (3%)</span>
+                <span class="value" id="rfqSummaryFee">Rp 342.000</span>
+              </div>
+
+              <div class="rfq-sum-total">
+                <span>Total</span>
+                <strong id="rfqSummaryTotal">Rp 11.742.000</strong>
+              </div>
+
+              <div class="rfq-sum-actions" id="rfqExistingActions">
+                <a href="dashboard-permintaan.html" class="rfq-btn-setujui">Setujui</a>
+                <a href="dashboard-permintaan.html" class="rfq-btn-tolak">Tolak</a>
+              </div>
+
+              <a href="dashboard-permintaan.html" class="rfq-kirim-btn" id="rfqNewActions" style="display: none;">Kirim Permintaan</a>
+            </aside>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ======================================================================
+           VIEW E: PROFIL AKUN
+           ====================================================================== -->
+      <div id="profileViewContainer" class="profile-view" style="display: none;">
+        <div class="profile-layout">
+          <!-- Kartu Ringkasan Profil -->
+          <aside class="profile-summary-card">
+            <div class="profile-avatar-large">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div class="profile-summary-name">PT. Maju Jaya Abadi</div>
+            <div class="profile-summary-email">supplier@majuabadi.co.id</div>
+            <span class="profile-verified-badge">
+              <span class="profile-verified-dot"></span>
+              Supplier Terverifikasi
+            </span>
+          </aside>
+
+          <!-- Form Profil -->
+          <div class="profile-form-stack">
+            <section class="profile-card">
+              <h2 class="profile-card-title">Informasi Usaha</h2>
+              <div class="profile-field-grid">
+                <div class="profile-field">
+                  <label class="profile-label" for="profileNamaUsaha">Nama Usaha</label>
+                  <input class="profile-input" id="profileNamaUsaha" type="text" value="PT. Maju Jaya Abadi">
+                </div>
+                <div class="profile-field">
+                  <label class="profile-label" for="profileEmail">Email</label>
+                  <input class="profile-input" id="profileEmail" type="email" value="supplier@majuabadi.co.id">
+                </div>
+                <div class="profile-field">
+                  <label class="profile-label" for="profileTelepon">Nomor Telepon</label>
+                  <input class="profile-input" id="profileTelepon" type="text" value="+00000000">
+                </div>
+                <div class="profile-field">
+                  <label class="profile-label" for="profileKota">Kota</label>
+                  <input class="profile-input" id="profileKota" type="text" value="Jakarta Timur">
+                </div>
+                <div class="profile-field full">
+                  <label class="profile-label" for="profileAlamat">Alamat Lengkap</label>
+                  <input class="profile-input" id="profileAlamat" type="text" value="Jl. Raya Industri No. 123">
+                </div>
+              </div>
+            </section>
+
+            <section class="profile-card">
+              <h2 class="profile-card-title">Pengaturan Rekening Bank</h2>
+              <div class="profile-field-grid">
+                <div class="profile-field">
+                  <label class="profile-label" for="profileBank">Nama Bank</label>
+                  <select class="profile-input" id="profileBank">
+                    <option selected="">Bank Mandiri</option>
+                    <option>Bank BCA</option>
+                    <option>Bank BNI</option>
+                    <option>Bank BRI</option>
+                    <option>Bank Syariah Indonesia</option>
+                  </select>
+                </div>
+                <div class="profile-field">
+                  <label class="profile-label" for="profileNoRek">Nomor Rekening</label>
+                  <input class="profile-input" id="profileNoRek" type="text" value="00-000-00">
+                </div>
+                <div class="profile-field full">
+                  <label class="profile-label" for="profileAtasNama">Atas Nama Rekening</label>
+                  <input class="profile-input" id="profileAtasNama" type="text" value="PT. Maju Jaya Abadi">
+                </div>
+              </div>
+            </section>
+
+            <div class="profile-actions">
+              <a href="dashboard.html" class="btn-profile-cancel">Batal</a>
+              <a href="dashboard.html" class="btn-profile-save">Simpan Perubahan</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================================
+           VIEW F: DISPUTE
+           ====================================================================== -->
+      <div id="disputeViewContainer" class="dispute-view" style="display: none;">
+
+        <!-- Sub-View 1: Daftar Dispute -->
+        <div id="disputeListView" class="dispute-list-view">
+          <header class="dispute-list-head">
+            <h2 class="dispute-list-title">Daftar Dispute &amp; Komplain</h2>
+            <p class="dispute-list-sub">Tinjau pengajuan Dispute dari pembeli.</p>
+          </header>
+
+          <div class="dispute-tabs">
+            <button class="dispute-tab active" type="button">Semua</button>
+            <button class="dispute-tab" type="button">Perlu Ditinjau (1)</button>
+            <button class="dispute-tab" type="button">Menunggu Barang</button>
+            <button class="dispute-tab" type="button">Disetujui</button>
+            <button class="dispute-tab" type="button">Ditolak</button>
+          </div>
+
+          <section class="dispute-table-card">
+            <div class="table-wrap dispute-scroll" data-fill-scroll="">
+              <table class="dispute-table">
+                <thead>
+                  <tr>
+                    <th>ID RETUR / ORDER</th>
+                    <th>TGL KOMPLAIN</th>
+                    <th>PEMBELI</th>
+                    <th>KATEGORI KOMPLAIN</th>
+                    <th>BUKTI (MEDIA)</th>
+                    <th>KEPUTUSAN</th>
+                    <th>AKSI</th>
+                  </tr>
+                </thead>
+                <tbody id="disputeTableBody"></tbody>
+              </table>
+            </div>
+
+            <footer class="dispute-list-footer">
+              <span class="dispute-list-count" id="disputeCountInfo">Menampilkan 1–3 dari 3 retur</span>
+            </footer>
+          </section>
+        </div>
+
+        <!-- Sub-View 2: Detail Dispute (komentar 3 role) -->
+        <div id="disputeDetailView" class="dispute-detail" style="display: none;">
+
+        <!-- Judul & Breadcrumb -->
+        <header class="dispute-head">
+          <div class="dispute-head-top">
+            <div class="dispute-title-row">
+              <h2 class="dispute-title" id="disputeDetailTitle">Dispute #DSP-0012</h2>
+              <span class="dispute-status-badge" id="disputeDetailBadge">
+                <span class="status-dot"></span>
+                <span id="disputeDetailBadgeText">Ditinjau Admin</span>
+              </span>
+            </div>
+            <a href="dashboard-dispute.html" class="dispute-btn-back">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              Kembali
+            </a>
+          </div>
+          <nav class="dispute-breadcrumb" aria-label="Breadcrumb">
+            <a href="dashboard-dispute.html">Daftar Dispute</a>
+            <span class="sep">/</span>
+            <a href="dashboard-pesanan.html" id="disputeBreadcrumbOrder">#ORD-2041</a>
+            <span class="sep">/</span>
+            <span class="current">Dispute</span>
+          </nav>
+        </header>
+
+        <!-- Ringkasan Pesanan -->
+        <section class="dispute-summary">
+          <div class="dispute-summary-item">
+            <div class="dispute-summary-label">Buyer</div>
+            <div class="dispute-summary-value" id="disputeSummaryBuyer">Rira W.</div>
+          </div>
+          <div class="dispute-summary-item">
+            <div class="dispute-summary-label">Perusahaan</div>
+            <div class="dispute-summary-value" id="disputeSummaryCompany">CV Telur Makmur Bersama</div>
+          </div>
+          <div class="dispute-summary-item">
+            <div class="dispute-summary-label">Nilai Pesanan</div>
+            <div class="dispute-summary-value" id="disputeSummaryValue">Rp 48.000.000</div>
+          </div>
+          <div class="dispute-summary-item">
+            <div class="dispute-summary-label">Dana Dibekukan</div>
+            <div class="dispute-summary-value" id="disputeSummaryFrozen">Rp 24.000.000</div>
+          </div>
+        </section>
+
+        <div class="dispute-layout">
+          <!-- Diskusi & Bukti -->
+          <div class="dispute-main">
+            <section class="dispute-card">
+              <h3 class="dispute-card-title">Diskusi &amp; Bukti</h3>
+
+              <div class="dispute-thread" id="disputeThread">
+                <article class="dispute-message">
+                  <div class="message-avatar avatar-buyer">B</div>
+                  <div class="message-body">
+                    <div class="message-head">
+                      <span class="message-name">CV Maju Jaya</span>
+                      <span class="message-role role-buyer">Buyer</span>
+                      <span class="message-time">8 Okt 2026, 14:20</span>
+                    </div>
+                    <p class="message-text">Sekitar 12% telur pecah saat diterima dari total pengiriman. Mohon ditindaklanjuti.</p>
+                    <div class="message-attachments">
+                      <span>Lampiran:</span>
+                      <span class="attachment-chip">foto_1.jpg</span>
+                      <span class="attachment-chip">foto_2.jpg</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="dispute-message">
+                  <div class="message-avatar avatar-seller">P</div>
+                  <div class="message-body">
+                    <div class="message-head">
+                      <span class="message-name">PT Telur Nusantara</span>
+                      <span class="message-role role-seller">Perusahaan</span>
+                      <span class="message-time">9 Okt 2026, 09:05</span>
+                    </div>
+                    <p class="message-text">Pengiriman sudah sesuai standar packing.</p>
+                    <div class="message-attachments">
+                      <span>Lampiran:</span>
+                      <span class="attachment-chip">foto_packing.jpg</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="dispute-message">
+                  <div class="message-avatar avatar-admin">A</div>
+                  <div class="message-body">
+                    <div class="message-head">
+                      <span class="message-name">Admin Sistem</span>
+                      <span class="message-role role-admin">Admin</span>
+                      <span class="message-time">12 Okt 2026, 10:30</span>
+                    </div>
+                    <p class="message-text">Buyer mohon unggah foto per rak dan nota penerimaan.</p>
+                  </div>
+                </article>
+              </div>
+
+              <form class="dispute-composer">
+                <textarea id="disputeCommentInput" placeholder="Tulis komentar Anda..." aria-label="Tulis komentar"></textarea>
+                <div class="dispute-attachment-preview" id="disputeAttachmentPreview" hidden="">
+                  <span>Lampiran dipilih:</span>
+                  <span class="attachment-chip" id="disputeAttachmentName"></span>
+                </div>
+                <input type="file" id="disputeFileInput" accept="image/*,.pdf" hidden="">
+                <div class="dispute-composer-actions">
+                  <button type="button" class="btn-dispute-attach">Lampirkan Foto / Dokumen</button>
+                  <button type="submit" class="btn-dispute-send">Kirim Komentar</button>
+                </div>
+              </form>
+            </section>
+          </div>
+
+          <!-- Sidebar Kanan -->
+          <aside class="dispute-side">
+            <section class="dispute-card">
+              <h3 class="dispute-card-title">Status Dispute</h3>
+              <ul class="dispute-steps" id="disputeSteps">
+                <li class="dispute-step done"><span class="dispute-step-dot"></span>Dibuka</li>
+                <li class="dispute-step done"><span class="dispute-step-dot"></span>Menunggu Tanggapan</li>
+                <li class="dispute-step current"><span class="dispute-step-dot"></span>Ditinjau Admin</li>
+                <li class="dispute-step"><span class="dispute-step-dot"></span>Diputuskan</li>
+                <li class="dispute-step"><span class="dispute-step-dot"></span>Ditutup</li>
+              </ul>
+            </section>
+
+            <section class="dispute-card">
+              <h3 class="dispute-card-title">Detail Dispute</h3>
+              <dl class="dispute-detail-list">
+                <div class="dispute-detail-row">
+                  <dt>Jenis</dt>
+                  <dd id="disputeDetailJenis">Barang tidak sesuai</dd>
+                </div>
+                <div class="dispute-detail-row">
+                  <dt>Diajukan</dt>
+                  <dd id="disputeDetailDiajukan">8 Okt 2026, 14:20</dd>
+                </div>
+                <div class="dispute-detail-row">
+                  <dt>Batas tanggapan Perusahaan</dt>
+                  <dd id="disputeDetailBatas">10 Okt 2026</dd>
+                </div>
+              </dl>
+            </section>
+
+            <section class="dispute-card">
+              <h3 class="dispute-card-title">Dana dibekukan</h3>
+              <div class="dispute-fund-row">
+                <span class="label">Sisa pelunasan</span>
+                <span class="value" id="disputeFundValue">Rp 24.000.000</span>
+              </div>
+              <div class="dispute-fund-row">
+                <span class="label">Status dana</span>
+                <span class="badge-frozen">
+                  <span class="status-dot"></span>
+                  Dibekukan
+                </span>
+              </div>
+              <p class="dispute-fund-note">Pencairan sisa dana dibekukan otomatis selama dispute berlangsung.</p>
+            </section>
+          </aside>
+        </div>
+        </div>
+      </div>
+
+      <!-- ======================================================================
+           VIEW G: KEUANGAN / PENCAIRAN DANA
+           ====================================================================== -->
+      <div id="keuanganViewContainer" class="keuangan-view" style="display: none;">
+
+        <!-- Saldo -->
+        <section class="keuangan-balance-grid">
+          <div class="balance-card primary">
+            <div class="balance-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="5" width="22" height="15" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+              </svg>
+            </div>
+            <div>
+              <span class="balance-label">Saldo Siap Cair</span>
+              <div class="balance-value" id="saldoSiapCair">Rp 45.000.000</div>
+            </div>
+          </div>
+
+          <div class="balance-card">
+            <div class="balance-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"></circle>
+                <polyline points="12 7 12 12 15 14"></polyline>
+              </svg>
+            </div>
+            <div>
+              <span class="balance-label">Saldo Tertahan</span>
+              <div class="balance-value" id="saldoTertahan">Rp 12.500.000</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="pencairan-layout">
+          <!-- Detail / Tinjau Pencairan -->
+          <section class="pencairan-card">
+            <h2 class="pencairan-title" id="pencairanTitle">Detail Pencairan</h2>
+
+            <!-- State 1: Form -->
+            <div id="pencairanFormState">
+              <label class="pencairan-label">Rekening Tujuan</label>
+              <div class="bank-account-box">
+                <div>
+                  <div class="bank-name">BCA••••1234</div>
+                  <div class="bank-owner">A/N Staplr Indonesia</div>
+                </div>
+                <span class="badge-utama">
+                  <span class="status-dot"></span>
+                  Utama
+                </span>
+              </div>
+
+              <div class="pencairan-field-grid">
+                <div class="pencairan-field">
+                  <label class="pencairan-label" for="nominalPencairan">Nominal Pencairan</label>
+                  <input class="pencairan-input" id="nominalPencairan" type="text" value="Rp 10.000.000">
+                  <span class="field-hint" id="maksPencairanHint">Maks. Rp 45.000.000</span>
+                </div>
+                <div class="pencairan-field">
+                  <label class="pencairan-label" for="catatanPencairan">Catatan</label>
+                  <input class="pencairan-input" id="catatanPencairan" type="text" value="Pencairan rutin mingguan">
+                </div>
+              </div>
+
+              <div class="pencairan-actions">
+                <a href="dashboard-pencairan.html" class="btn-pencairan-primary">Lanjutkan</a>
+              </div>
+            </div>
+
+          </section>
+
+          <!-- Ringkasan -->
+          <aside class="ringkasan-pencairan-card">
+            <h2 class="ringkasan-pencairan-title">Ringkasan Pencairan</h2>
+            <div class="ringkasan-row">
+              <span class="label">Saldo siap cair</span>
+              <span class="value">Rp 45.000.000</span>
+            </div>
+            <div class="ringkasan-row">
+              <span class="label">Nominal pencairan</span>
+              <span class="value" id="ringkasanNominal">Rp 10.000.000</span>
+            </div>
+            <div class="ringkasan-row">
+              <span class="label">Biaya admin</span>
+              <span class="value">Rp 0</span>
+            </div>
+            <div class="ringkasan-row">
+              <span class="label">Sisa saldo siap cair</span>
+              <span class="value" id="ringkasanSisa">Rp 35.000.000</span>
+            </div>
+            <div class="ringkasan-divider"></div>
+            <div class="ringkasan-total">
+              <span>Total pencairan</span>
+              <strong id="ringkasanTotal">Rp 10.000.000</strong>
+            </div>
+          </aside>
+        </div>
+
+        <!-- Riwayat -->
+        <section class="riwayat-pencairan-card" id="riwayatPencairanCard">
+          <header class="riwayat-pencairan-header">
+            <h2 class="riwayat-pencairan-title">Riwayat Pencairan</h2>
+            <button class="btn-unduh-laporan" type="button">Unduh Laporan</button>
+          </header>
+
+          <div class="table-wrap">
+            <table class="orders-table">
+              <thead>
+                <tr>
+                  <th>ID PENCAIRAN</th>
+                  <th>REKENING</th>
+                  <th>JENIS PENCAIRAN</th>
+                  <th>NOMINAL</th>
+                  <th>STATUS</th>
+                  <th>TANGGAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="order-code">PD-2027-014</td>
+                  <td>BCA •••• 1234</td>
+                  <td>Manual</td>
+                  <td class="order-amount">Rp 10.000.000</td>
+                  <td><span class="status-badge diproses">• Diproses</span></td>
+                  <td class="order-date">12 Okt 2027, 10:00</td>
+                </tr>
+                <tr>
+                  <td class="order-code">PD-2027-013</td>
+                  <td>BNI •••• 8891</td>
+                  <td>Manual</td>
+                  <td class="order-amount">Rp 5.000.000</td>
+                  <td><span class="status-badge selesai">• Berhasil</span></td>
+                  <td class="order-date">11 Okt 2027, 14:30</td>
+                </tr>
+                <tr>
+                  <td class="order-code">PD-2027-011</td>
+                  <td>Mandiri •••• 4421</td>
+                  <td>Manual</td>
+                  <td class="order-amount">Rp 3.000.000</td>
+                  <td><span class="status-badge gagal">• Gagal</span></td>
+                  <td class="order-date">09 Okt 2027, 16:45</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- ======================================================================
+           VIEW H: RIWAYAT PENJUALAN
+           ====================================================================== -->
+      <div id="riwayatViewContainer" class="riwayat-view" style="display: none;">
+
+        <!-- Sub-View 1: Daftar Riwayat -->
+        <div id="riwayatListView">
+          <div class="riwayat-filter-bar">
+            <div class="riwayat-filter-group">
+              <span class="riwayat-filter-label">Rentang Tanggal:</span>
+              <div class="riwayat-date-range">
+                <input class="riwayat-date-input" id="riwayatTanggalMulai" type="date" value="2026-09-01" max="2027-12-31" aria-label="Tanggal mulai">
+                <span class="riwayat-date-sep">–</span>
+                <input class="riwayat-date-input" id="riwayatTanggalAkhir" type="date" value="2026-10-12" max="2027-12-31" aria-label="Tanggal akhir">
+              </div>
+            </div>
+
+            <div class="riwayat-filter-group">
+              <label class="riwayat-filter-label" for="riwayatMetode">Metode Bayar:</label>
+              <select class="riwayat-select" id="riwayatMetode">
+                <option value="semua">Semua</option>
+                <option value="Transfer Bank">Transfer Bank</option>
+                <option value="Virtual Account">Virtual Account</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="riwayat-tabs">
+            <button class="riwayat-tab active" type="button">Semua Status</button>
+            <button class="riwayat-tab" type="button">Selesai (177)</button>
+            <button class="riwayat-tab" type="button">Dibatalkan (7)</button>
+          </div>
+
+          <section class="riwayat-card">
+            <div class="table-wrap riwayat-scroll" data-fill-scroll="">
+              <table class="riwayat-table">
+                <thead>
+                  <tr>
+                    <th>ID TRANSAKSI</th>
+                    <th>TGL SELESAI</th>
+                    <th>PEMBELI</th>
+                    <th>DETAIL ITEM</th>
+                    <th>TOTAL AKHIR</th>
+                    <th>METODE BAYAR</th>
+                    <th>AKSI</th>
+                  </tr>
+                </thead>
+                <tbody id="riwayatTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <!-- Sub-View 2: Detail Riwayat -->
+        <div id="riwayatDetailView" style="display: none;">
+          <div class="riwayat-detail-header">
+            <div>
+              <div class="riwayat-detail-title-row">
+                <h2 class="riwayat-detail-title" id="riwayatDetailTitle">Rincian Transaksi Selesai</h2>
+                <span class="riwayat-status-pill" id="riwayatDetailStatus">• Selesai · 11 Okt 2026</span>
+              </div>
+              <div class="riwayat-detail-id" id="riwayatDetailId">#TRX-2026-088</div>
+            </div>
+
+            <div class="riwayat-detail-actions">
+              <a href="dashboard-riwayat.html" class="riwayat-btn-kembali">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Kembali
+              </a>
+              <a href="dashboard-invoice.html" class="riwayat-btn-invoice">Cetak Invoice</a>
+            </div>
+          </div>
+
+          <div class="riwayat-detail-grid">
+            <div class="riwayat-detail-main">
+              <section class="riwayat-dcard">
+                <h3 class="riwayat-dcard-title">Informasi Pelanggan</h3>
+                <div class="riwayat-info-grid">
+                  <div>
+                    <div class="riwayat-info-label">Pembeli</div>
+                    <div class="riwayat-info-value" id="riwayatDetailPembeli">PT Boga Jaya</div>
+                  </div>
+                  <div>
+                    <div class="riwayat-info-label">Alamat Kirim</div>
+                    <div class="riwayat-info-value" id="riwayatDetailAlamat">Jl. Raya Semarang</div>
+                  </div>
+                  <div>
+                    <div class="riwayat-info-label">Tanggal Pesan</div>
+                    <div class="riwayat-info-value" id="riwayatDetailTanggalPesan">05 Okt 2026</div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="riwayat-dcard">
+                <h3 class="riwayat-dcard-title">Item Pesanan</h3>
+                <table class="riwayat-item-table">
+                  <thead>
+                    <tr>
+                      <th>PRODUK</th>
+                      <th>QTY</th>
+                      <th>HARGA SATUAN</th>
+                      <th>SUBTOTAL</th>
+                    </tr>
+                  </thead>
+                  <tbody id="riwayatItemBody"></tbody>
+                </table>
+              </section>
+            </div>
+
+            <aside class="riwayat-detail-side">
+              <section class="riwayat-dcard">
+                <h3 class="riwayat-dcard-title">Ringkasan Pembayaran</h3>
+                <div class="riwayat-sum-row">
+                  <span>Subtotal</span>
+                  <span class="value" id="riwayatDetailSubtotal">Rp 11.500.000</span>
+                </div>
+                <div class="riwayat-sum-row">
+                  <span>Ongkos Kirim</span>
+                  <span class="value" id="riwayatDetailOngkir">Rp 300.000</span>
+                </div>
+                <div class="riwayat-sum-divider"></div>
+                <div class="riwayat-sum-total">
+                  <span>Total Pembayaran</span>
+                  <strong id="riwayatDetailTotal">Rp 11.800.000</strong>
+                </div>
+              </section>
+
+              <section class="riwayat-dcard">
+                <h3 class="riwayat-dcard-title">Catatan / Bukti Terima</h3>
+                <span class="riwayat-terima-badge" id="riwayatDetailTerimaBadge">• Terkirim &amp; diterima</span>
+                <p class="riwayat-terima-note" id="riwayatDetailTerima">Diterima oleh: Abi Supir pada 11/10/2026</p>
+              </section>
+            </aside>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ==========================================================================
+       POPUP KONFIRMASI PENCAIRAN DANA
+       ========================================================================== -->
+  <div class="pencairan-review-overlay" id="pencairanReviewOverlay">
+    <div class="pencairan-review-card" role="dialog" aria-modal="true" aria-labelledby="pencairanReviewTitle">
+      <div class="pencairan-review-head">
+        <div class="pencairan-review-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+            <line x1="2" y1="10" x2="22" y2="10"></line>
+          </svg>
+        </div>
+        <div>
+          <h2 class="pencairan-review-title" id="pencairanReviewTitle">Tinjau Pencairan</h2>
+          <p class="pencairan-review-sub">Periksa kembali detail pencairan sebelum dikonfirmasi.</p>
+        </div>
+      </div>
+
+      <div class="pencairan-review-rows">
+        <div class="pencairan-review-row">
+          <span class="label">Rekening Tujuan</span>
+          <span class="value">BCA •••• 1234<small>A/N Staplr Indonesia</small></span>
+        </div>
+        <div class="pencairan-review-row">
+          <span class="label">Nominal Pencairan</span>
+          <span class="value amount" id="pencairanReviewNominal">Rp 10.000.000</span>
+        </div>
+        <div class="pencairan-review-row">
+          <span class="label">Catatan</span>
+          <span class="value" id="pencairanReviewCatatan">Pencairan rutin mingguan</span>
+        </div>
+        <div class="pencairan-review-row">
+          <span class="label">Biaya Admin</span>
+          <span class="value">Rp 0</span>
+        </div>
+      </div>
+
+      <p class="pencairan-review-note">Pastikan rekening tujuan sudah benar. Pencairan yang sudah dikonfirmasi tidak dapat dibatalkan.</p>
+
+      <div class="pencairan-review-actions">
+        <a href="dashboard-keuangan.html" class="btn-pencairan-secondary">Batal</a>
+        <a href="dashboard-pencairan.html" class="btn-pencairan-primary">Konfirmasi Pencairan</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL SUKSES PENCAIRAN DANA
+       ========================================================================== -->
+  <div class="pencairan-modal-overlay" id="pencairanModalOverlay">
+    <div class="pencairan-modal-ring ring-a"></div>
+    <div class="pencairan-modal-ring ring-b"></div>
+
+    <div class="pencairan-modal-card" role="dialog" aria-modal="true" aria-labelledby="pencairanModalTitle">
+      <div class="pencairan-success-icon">
+        <svg viewBox="0 0 24 24">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h2 class="pencairan-modal-title" id="pencairanModalTitle">Pencairan Dana Berhasil!</h2>
+      <div class="pencairan-modal-amount" id="pencairanModalNominal">Rp 10.000.000</div>
+      <p class="pencairan-modal-note">Dana akan diteruskan ke rekening <span id="pencairanModalRekening">BCA •••• 1234</span> dalam maksimal 1×24 jam kerja.</p>
+      <a href="dashboard-keuangan.html" class="btn-pencairan-modal-close">Tutup</a>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       3. POPUP MODAL (TAMBAH / EDIT PRODUK DENGAN BACKDROP FIGMA YANG MENIMPA LAYAR)
+       ========================================================================== -->
+  <div class="modal-overlay" id="productModalOverlay">
+    <!-- Decorative Backdrop Rings -->
+    <div class="modal-ring modal-ring-1"></div>
+    <div class="modal-ring modal-ring-2"></div>
+    <div class="modal-ring-blue"></div>
+
+    <div class="modal-card" id="productModalCard">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Tambah Produk Baru</h2>
+        <p class="modal-subtitle" id="modalSubtitle">Lengkapi detail produk yang akan Anda jual.</p>
+      </div>
+
+      <form class="modal-form" id="productForm">
+        <!-- Hidden input for edit mode index -->
+        <input type="hidden" id="editProductIndex" value="-1">
+
+        <!-- Row 1: Jenis Produk & Grade (Telur Bebek telah dihapus) -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="inputJenisProduk">Jenis Produk</label>
+            <select class="form-select" id="inputJenisProduk" required="">
+              <option value="Telur Ayam Ras">Telur Ayam Ras</option>
+              <option value="Telur Ayam Kampung">Telur Ayam Kampung</option>
+              <option value="Telur Omega">Telur Omega</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="inputGrade">Grade</label>
+            <select class="form-select" id="inputGrade" required="">
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Row 2: Harga Partai & Stok -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="inputHarga">Harga Partai</label>
+            <input type="text" class="form-input" id="inputHarga" placeholder="Rp 25.000" required="">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="inputStok">Stok</label>
+            <input type="text" class="form-input" id="inputStok" placeholder="1.200 kg" required="">
+          </div>
+        </div>
+
+        <!-- Row 3: Minimal Pembelian & Satuan (Hanya Satuan kg, peti/butir/ikat dihapus) -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="inputMinOrder">Minimal Pembelian</label>
+            <input type="text" class="form-input" id="inputMinOrder" placeholder="10 kg" required="">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="inputSatuan">Satuan</label>
+            <input type="text" class="form-input" id="inputSatuan" value="KG" readonly="" style="background-color: #f8fafc; font-weight: 700; color: #122f51; cursor: default;">
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="modal-actions">
+          <button type="button" class="btn-modal-cancel">Batal</button>
+          <button type="submit" class="btn-modal-submit" id="btnModalSubmit">Simpan Produk</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL CETAK INVOICE
+       ========================================================================== -->
+  <div class="invoice-overlay" id="invoiceOverlay">
+    <div class="invoice-modal" role="dialog" aria-modal="true" aria-labelledby="invoiceDialogTitle">
+      <div class="invoice-toolbar">
+        <span class="invoice-toolbar-title" id="invoiceDialogTitle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+          Pratinjau Invoice
+        </span>
+        <div class="invoice-toolbar-actions">
+          <a href="dashboard-riwayat-detail.html" class="invoice-btn">Tutup</a>
+          <a href="dashboard-riwayat-detail.html" class="invoice-btn invoice-btn-primary">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            Cetak
+          </a>
+        </div>
+      </div>
+
+      <div class="invoice-scroll">
+        <div class="invoice-sheet" id="invoiceSheet">
+          <div class="inv-head">
+            <div class="inv-brand">
+              <img src="images/logo-staplr-transparent.png" alt="Staplr">
+              <div>
+                <div class="inv-brand-name">CV Telur Makmur Bersama</div>
+                <div class="inv-brand-tag">Mitra Peternak Terverifikasi</div>
+              </div>
+            </div>
+            <div class="inv-doc">
+              <div class="inv-doc-title">INVOICE</div>
+              <div class="inv-doc-no" id="invNomor">INV/2026/088</div>
+            </div>
+          </div>
+
+          <div class="inv-meta">
+            <div>
+              <div class="inv-label">Tanggal Invoice</div>
+              <div class="inv-value" id="invTanggal">11 Okt 2026</div>
+            </div>
+            <div>
+              <div class="inv-label">Metode Pembayaran</div>
+              <div class="inv-value" id="invMetode">Transfer Bank</div>
+            </div>
+            <div>
+              <div class="inv-label">Status Pembayaran</div>
+              <div class="inv-value"><span class="inv-status" id="invStatus">• Lunas</span></div>
+            </div>
+          </div>
+
+          <div class="inv-parties">
+            <div class="inv-party-box">
+              <div class="inv-label">Ditagihkan Kepada</div>
+              <div class="inv-party-name" id="invPembeli">PT Boga Jaya</div>
+              <div class="inv-party-line" id="invAlamat">Jl. Raya Semarang</div>
+            </div>
+            <div class="inv-party-box">
+              <div class="inv-label">Penjual</div>
+              <div class="inv-party-name">CV Telur Makmur Bersama</div>
+              <div class="inv-party-line">Solo, Jawa Tengah<br>staplrindonesia@gmail.com · +62 85666895</div>
+            </div>
+          </div>
+
+          <table class="inv-items">
+            <thead>
+              <tr>
+                <th>Produk</th>
+                <th>Qty</th>
+                <th class="num">Harga Satuan</th>
+                <th class="num">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody id="invItemBody"></tbody>
+          </table>
+
+          <div class="inv-summary">
+            <div class="inv-summary-box">
+              <div class="inv-summary-row">
+                <span>Subtotal</span>
+                <span id="invSubtotal">Rp 11.500.000</span>
+              </div>
+              <div class="inv-summary-row">
+                <span>Ongkos Kirim</span>
+                <span id="invOngkir">Rp 300.000</span>
+              </div>
+              <div class="inv-summary-divider"></div>
+              <div class="inv-summary-total">
+                <span>Total Pembayaran</span>
+                <strong id="invTotal">Rp 11.800.000</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="inv-note" id="invCatatan">Diterima oleh: Abi Supir pada 11/10/2026</div>
+
+          <div class="inv-sign">
+            <div class="inv-sign-note">
+              Invoice ini dibuat secara elektronik oleh Staplr dan sah tanpa tanda tangan basah.
+              Terima kasih atas kepercayaan Anda menjadi mitra kami.
+            </div>
+            <div class="inv-sign-box">
+              <div class="inv-sign-label">Hormat kami,</div>
+              <div class="inv-sign-space"></div>
+              <div class="inv-sign-name">CV Telur Makmur Bersama</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-notification" id="toastNotification">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toastMessage">Operasi berhasil!</span>
+  </div>
+
+  <!-- ==========================================================================
+       4. JAVASCRIPT LOGIC
+       ========================================================================== -->
+  
+
+
+
+</body></html>

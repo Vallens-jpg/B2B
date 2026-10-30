@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifikasi OTP Email - Staplr</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --accent: #F59E0B;
+      --accent-hover: #E59008;
+      --text-light: #ffffff;
+      --text-muted-light: rgba(255, 255, 255, 0.85);
+      --text-dark: #0F172A;
+      --border: rgba(255, 255, 255, 0.35);
+      --card-bg: rgba(15, 23, 42, 0.55);
+      --input-bg: rgba(255, 255, 255, 0.98);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    html,
+    body {
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    body {
+      color: var(--text-light);
+      background: #0f1f17;
+    }
+
+    .auth-page {
+      position: relative;
+      height: 100vh;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .auth-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .auth-bg-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .auth-bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg,
+          rgba(9, 27, 21, 0.96) 0%,
+          rgba(9, 27, 21, 0.92) 38%,
+          rgba(9, 27, 21, 0.72) 62%,
+          rgba(9, 27, 21, 0.48) 100%);
+    }
+
+    .auth-left {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 64px;
+      gap: 32px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-light);
+    }
+
+    .brand-logo {
+      height: 52px;
+      width: auto;
+    }
+
+    .brand-text {
+      font-size: 1.6rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .brand-dot {
+      color: var(--accent);
+    }
+
+    .left-content {
+      display: grid;
+      gap: 26px;
+      max-width: 520px;
+    }
+
+    .trusted-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.95);
+      color: #111827;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      width: fit-content;
+      box-shadow: 0 18px 40px -20px rgba(245, 158, 11, 0.9);
+    }
+
+    .left-heading {
+      font-size: clamp(2.6rem, 4vw, 4rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+    }
+
+    .left-subtitle {
+      font-size: 1.02rem;
+      color: var(--text-muted-light);
+      max-width: 460px;
+    }
+
+    .auth-right {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 48px;
+    }
+
+    .form-card {
+      width: 100%;
+      max-width: 440px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: var(--card-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 60px 120px -80px rgba(15, 23, 42, 0.95);
+      overflow: hidden;
+    }
+
+    .form-card-inner {
+      display: grid;
+      gap: 18px;
+      padding: 28px 32px;
+    }
+
+    .form-header {
+      text-align: center;
+      display: grid;
+      gap: 8px;
+    }
+
+    .form-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .form-subtitle {
+      color: var(--text-muted-light);
+      font-size: 0.95rem;
+    }
+
+    .email-highlight {
+      color: #FBBF24;
+      font-weight: 600;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field-label {
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .otp-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    .otp-input {
+      width: 100%;
+      text-align: center;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: var(--input-bg);
+      color: var(--text-dark);
+      padding: 10px 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .otp-input:focus {
+      outline: 2px solid rgba(245, 158, 11, 0.35);
+    }
+
+    .cta-btn {
+      border: none;
+      background: linear-gradient(90deg, var(--accent) 0%, #FBBF24 100%);
+      color: #111827;
+      font-weight: 800;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-size: 0.98rem;
+      cursor: pointer;
+      box-shadow: 0 24px 60px -30px rgba(245, 158, 11, 0.95);
+    }
+
+    .cta-btn:hover {
+      background: linear-gradient(90deg, var(--accent-hover) 0%, #F59E0B 100%);
+    }
+
+    .cta-btn.secondary {
+      background: transparent;
+      color: var(--text-light);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: none;
+    }
+
+    .form-footer {
+      text-align: center;
+      color: var(--text-muted-light);
+    }
+
+    .form-footer a {
+      color: #FBBF24;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    @media (max-width: 1080px) {
+      html,
+      body {
+        height: auto;
+        overflow: auto;
+      }
+
+      .auth-page {
+        height: auto;
+        min-height: 100vh;
+        grid-template-columns: 1fr;
+      }
+
+      .auth-left {
+        display: none;
+      }
+
+      .auth-right {
+        padding: 32px 18px;
+      }
+
+      .form-card-inner {
+        padding: 32px 26px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="auth-page">
+    <div class="auth-bg">
+      <img src="images/farm-original.jpg" alt="Peternakan ayam" class="auth-bg-image">
+      <div class="auth-bg-overlay"></div>
+    </div>
+
+    <div class="auth-left">
+      <a class="brand" href="index.html">
+        <img src="images/logo-staplr.png" alt="Staplr" class="brand-logo">
+        <div class="brand-text">
+          <span class="brand-dot">•</span> Staplr
+        </div>
+      </a>
+
+      <div class="left-content">
+        <div class="trusted-badge">
+          <span>PLATFORM TERPERCAYA</span>
+        </div>
+        <div>
+          <h1 class="left-heading">Verifikasi Akun</h1>
+          <p class="left-subtitle">
+            Keamanan akun Anda penting. Silakan verifikasi email Anda untuk melanjutkan proses pendaftaran.
+          </p>
+        </div>
+      </div>
+
+      <div></div>
+    </div>
+
+    <div class="auth-right">
+      <div class="form-card">
+        <div class="form-card-inner">
+          <div class="form-header">
+            <h2 class="form-title">Verifikasi OTP Email</h2>
+            <p class="form-subtitle">Kami telah mengirim kode OTP ke <span class="email-highlight">email Anda</span></p>
+          </div>
+
+          <form class="form-grid" id="otpForm">
+            <div class="field">
+              <label class="field-label">Masukkan Kode Verifikasi</label>
+              <div class="otp-grid">
+                <input class="otp-input" maxlength="1">
+                <input class="otp-input" maxlength="1">
+                <input class="otp-input" maxlength="1">
+                <input class="otp-input" maxlength="1">
+                <input class="otp-input" maxlength="1">
+                <input class="otp-input" maxlength="1">
+              </div>
+            </div>
+            <button class="cta-btn" type="submit">Verifikasi & Masuk</button>
+            <button class="cta-btn secondary" type="button">Kirim Ulang Kode OTP</button>
+          </form>
+
+          <div class="form-footer">
+            <a href="daftar.html">Kembali ke Pendaftaran</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const otpInputs = document.querySelectorAll('.otp-input');
+    const otpForm = document.getElementById('otpForm');
+
+    otpInputs.forEach((input, index) => {
+      input.addEventListener('input', () => {
+        input.value = input.value.replace(/[^0-9]/g, '');
+        if (input.value && index < otpInputs.length - 1) {
+          otpInputs[index + 1].focus();
+        }
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && index > 0) {
+          otpInputs[index - 1].focus();
+        }
+      });
+    });
+
+    otpForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const accountType = localStorage.getItem('accountType') || 'pembeli';
+      if (accountType === 'perusahaan') {
+        window.location.href = 'dashboard.html';
+      } else {
+        window.location.href = 'index.html';
+      }
+    });
+  </script>
+</body>
+
+</html>
