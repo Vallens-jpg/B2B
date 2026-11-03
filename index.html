@@ -82,21 +82,21 @@
         </div>
 
         <!-- Login Form -->
-        <form action="#" method="POST" id="loginForm">
+        <form action="dashboard.html" method="GET" id="loginForm">
           <div class="form-group">
             <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" class="form-input" placeholder="nama@email.com" required>
+            <input type="email" id="email" class="form-input" placeholder="nama@email.com">
           </div>
 
           <div class="form-group">
             <label for="password" class="form-label">Kata Sandi</label>
-            <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+            <input type="password" id="password" class="form-input" placeholder="••••••••">
             <div class="forgot-wrapper">
               <a href="lupa-sandi.html" class="forgot-link">Lupa Kata Sandi?</a>
             </div>
           </div>
 
-          <button type="submit" class="btn-submit-primary">Masuk</button>
+          <button type="submit" class="btn-submit-primary" id="loginBtn">Masuk</button>
         </form>
 
         <div class="auth-footer">
@@ -123,6 +123,22 @@
         if (activeDot) activeDot.style.display = 'inline-block';
       });
     });
+
+    // Handle Login redirect to dashboard
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+
+    function handleLogin(e) {
+      if (e) e.preventDefault();
+      window.location.href = 'dashboard.html';
+    }
+
+    if (loginForm) {
+      loginForm.addEventListener('submit', handleLogin);
+    }
+    if (loginBtn) {
+      loginBtn.addEventListener('click', handleLogin);
+    }
   </script>
 </body>
 </html>

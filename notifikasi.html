@@ -375,12 +375,11 @@
           </svg>
           Dispute
         </a>
-        <a href="permintaan-disetujui.html" class="nav-pill-item">
+        <a href="pesanan-disetujui.html" class="nav-pill-item">
           <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="9" stroke="currentColor"/>
-            <path d="M8 12l3 3 5-5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          Permintaan Disetujui
+          Disetujui
         </a>
       </nav>
 
@@ -404,6 +403,21 @@
           </div>
 
           <div class="notif-list">
+            <a href="status-pesanan.html?state=approved" class="notif-item unread" id="ddNotifDisetujui">
+              <div class="notif-icon-circle green">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <div class="notif-content">
+                <div class="notif-item-top">
+                  <span class="notif-item-title">Pesanan Disetujui Penjual</span>
+                  <span class="notif-time">&bull; Baru</span>
+                </div>
+                <p class="notif-item-body" id="ddNotifDisetujuiBody">Pesanan Anda telah disetujui. Lanjutkan pembayaran.</p>
+              </div>
+            </a>
+
             <a href="permintaan-disetujui.html" class="notif-item unread">
               <div class="notif-icon-circle green">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -506,6 +520,30 @@
           Hari ini <span class="notif-section-count">(3)</span>
         </div>
 
+        <!-- Notification 0 — Pesanan Disetujui Penjual (dinamis dari status-pesanan) -->
+        <article class="notif-row-item unread" id="notifDisetujui" data-read="false">
+          <div class="notif-row-left">
+            <div class="notif-circle-icon green">
+              <svg viewBox="0 0 24 24">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <div class="notif-row-text-group">
+              <h2 class="notif-row-title green">Pesanan Disetujui Penjual</h2>
+              <p class="notif-row-desc" id="notifDisetujuiDesc">Pesanan Anda telah disetujui. Silakan lanjutkan pembayaran.</p>
+              <div class="notif-row-meta">Pesanan • Baru saja</div>
+            </div>
+          </div>
+          <div class="notif-row-right">
+            <span class="notif-status-indicator unread">
+              <span class="status-dot-blue"></span> Belum dibaca
+            </span>
+            <a href="status-pesanan.html?state=approved" class="notif-action-link" id="notifDisetujuiLink">
+              Lanjut bayar ›
+            </a>
+          </div>
+        </article>
+
         <!-- Notification 1 -->
         <article class="notif-row-item unread" data-read="false">
           <div class="notif-row-left">
@@ -517,9 +555,9 @@
               </svg>
             </div>
             <div class="notif-row-text-group">
-              <h2 class="notif-row-title green">Permintaan Disetujui</h2>
-              <p class="notif-row-desc">Permintaan pengadaan telur dari PT Telur Makmur telah disetujui.</p>
-              <div class="notif-row-meta">Permintaan • 5 menit lalu</div>
+              <h2 class="notif-row-title green">Pesanan Berhasil Dibuat</h2>
+              <p class="notif-row-desc">Pesanan telur Anda ke PT Telur Makmur telah berhasil dibuat.</p>
+              <div class="notif-row-meta">Pesanan • 5 menit lalu</div>
             </div>
           </div>
 
@@ -527,8 +565,8 @@
             <span class="notif-status-indicator unread">
               <span class="status-dot-blue"></span> Belum dibaca
             </span>
-            <a href="permintaan-disetujui.html" class="notif-action-link">
-              Lihat permintaan ›
+            <a href="pesanan.html" class="notif-action-link">
+              Lihat pesanan ›
             </a>
           </div>
         </article>
@@ -751,6 +789,52 @@
       markAllNotificationsRead();
     }
 
+
+    // ---- Cek notif pesanan disetujui dari localStorage ----
+    (function() {
+      const approved = localStorage.getItem("pesananDisetujui");
+      if (approved) {
+        try {
+          const data = JSON.parse(approved);
+          const el = document.getElementById("notifDisetujui");
+          if (el) {
+            el.style.display = "flex";
+            // Update link dengan query params
+            const link = document.getElementById("notifDisetujuiLink");
+            // Update dropdown navbar juga
+            const ddItem = document.getElementById("ddNotifDisetujui");
+            if (ddItem) {
+              ddItem.style.display = "flex";
+              if (data.query) ddItem.href = "status-pesanan.html?state=approved" + data.query;
+            }
+            const ddBody = document.getElementById("ddNotifDisetujuiBody");
+            if (ddBody && data.seller) ddBody.textContent = "Pesanan ke " + data.seller + " disetujui. Lanjutkan pembayaran.";
+            // Update badge merah di bell navbar
+            const bellBadge = document.getElementById("notifBadgeRed");
+            if (bellBadge) {
+              const cur = parseInt(bellBadge.innerText) || 3;
+              bellBadge.innerText = cur + 1;
+              bellBadge.style.display = '';
+            }
+            if (link && data.query) link.href = "status-pesanan.html?state=approved" + data.query;
+            // Update deskripsi
+            const desc = document.getElementById("notifDisetujuiDesc");
+            if (desc && data.seller) desc.textContent = "Pesanan Anda ke " + data.seller + " telah disetujui. Silakan lanjutkan pembayaran.";
+            // Update badge count
+            const badge = document.getElementById("unreadCountBadge");
+            if (badge) {
+              const cur = parseInt(badge.innerText) || 2;
+              badge.innerText = (cur + 1) + " belum dibaca";
+            }
+            const countUnread = document.getElementById("countUnread");
+            if (countUnread) {
+              const cur = parseInt(countUnread.innerText) || 2;
+              countUnread.innerText = cur + 1;
+            }
+          }
+        } catch(e) {}
+      }
+    })();
     document.addEventListener('click', function (e) {
       const dd = document.getElementById('notifDropdown');
       const btn = document.getElementById('notifBellBtn');

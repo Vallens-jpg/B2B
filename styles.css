@@ -903,6 +903,7 @@ body {
 .card-price-text {
   font-size: 0.95rem;
   color: #111827;
+  margin-top: auto;
   margin-bottom: 1.15rem;
 }
 

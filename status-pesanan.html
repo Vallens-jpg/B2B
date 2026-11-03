@@ -3,8 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Staplr - Status Permintaan</title>
+  <title>Staplr - Status Pesanan</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .btn-acc-simulasi {
+      margin-top: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.95rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #065f46;
+      background: #d1fae5;
+      border: 1.5px solid #6ee7b7;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+    .btn-acc-simulasi:hover {
+      background: #a7f3d0;
+      color: #064e3b;
+      transform: translateY(-1px);
+    }
+  </style>
 </head>
 <body class="sp-body">
 
@@ -15,14 +38,14 @@
         <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </a>
-    <h1 class="detail-page-heading">Status Permintaan</h1>
+    <h1 class="detail-page-heading">Status Pesanan</h1>
     <div class="navbar-actions">
-      <button type="button" class="notification-bell-btn" aria-label="Notifikasi">
+      <a href="notifikasi.html" class="notification-bell-btn" aria-label="Notifikasi" style="text-decoration:none">
         <svg class="bell-icon" viewBox="0 0 24 24">
           <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
         </svg>
         <span class="notification-badge-red">3</span>
-      </button>
+      </a>
       <div class="user-profile-capsule">
         <div class="user-avatar-circle">AD</div>
         <span class="user-name-text">Buyer</span>
@@ -34,12 +57,14 @@
   <main class="sp-container">
     <!-- Alert Banner -->
     <div class="sp-alert-banner" id="alertBanner">
-      <div class="sp-alert-title" id="alertTitle"><span>&#9203;</span> Menunggu Persetujuan Penjual</div>
+      <div class="sp-alert-title" id="alertTitle">Menunggu Persetujuan Penjual</div>
       <p class="sp-alert-desc" id="alertDesc">
-        Permintaan Anda telah dikirim ke <strong id="bannerCompany">PT Telur Makmur</strong>.
-        Penjual sedang meninjau pesanan dan ketersediaan stok Anda. Anda akan mendapat notifikasi
-        untuk melanjutkan pembayaran setelah di-acc.
+        Pesanan Anda telah dikirim ke <strong id="bannerCompany">PT Telur Makmur</strong>.
+        Penjual sedang meninjau pesanan dan ketersediaan stok Anda. Tombol pembayaran akan aktif setelah pesanan disetujui penjual.
       </p>
+      <button type="button" id="btnSimulateApprove" class="btn-acc-simulasi" onclick="approveOrder()">
+        Simulasikan ACC Penjual (Setujui Sekarang)
+      </button>
     </div>
 
     <div class="sp-inner">
@@ -82,10 +107,10 @@
 
       <!-- Action Buttons -->
       <div class="sp-actions">
-        <a href="dashboard.html" id="cancelReqLink" class="btn-batalkan">Batalkan Permintaan</a>
+        <a href="pesanan.html" id="cancelReqLink" class="btn-batalkan">Batalkan Pesanan</a>
         <div class="sp-review-group">
-          <a href="permintaan-disetujui.html" id="reviewBtn" class="btn-tinjau-active">Tinjau Pesanan</a>
-          <span id="reviewCaption" class="sp-review-caption">Menunggu persetujuan penjual</span>
+          <a href="#" id="paymentBtn" class="btn-tinjau-disabled">Lanjut ke Pembayaran</a>
+          <span id="reviewCaption" class="sp-review-caption">Menunggu persetujuan penjual...</span>
         </div>
       </div>
     </div>
@@ -96,10 +121,11 @@
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const sellerId = urlParams.get('seller') || '1';
-    const productName = urlParams.get('product') || 'Telur ayam';
-    const productPrice = urlParams.get('price') || 'Rp 250.000';
+    const productName = urlParams.get('product') || 'Telur Ayam Ras Grade A';
+    const productPrice = urlParams.get('price') || 'Rp 28.000';
     const qty = urlParams.get('qty') || '2 kg';
-    const subtotal = urlParams.get('subtotal') || 'Rp 500.000';
+    const subtotal = urlParams.get('subtotal') || 'Rp 56.000';
+    const notes = urlParams.get('notes') || '';
 
     const sellersMap = {
       '1': 'PT Telur Makmur',
@@ -110,29 +136,41 @@
       '6': 'Sinar Jaya Poultry'
     };
 
-    // Default persis seperti desain; dinamis bila dibuka dari alur RFQ
     const hasParams = urlParams.get('seller') || urlParams.get('product');
     const company = sellersMap[sellerId] || 'PT Telur Makmur';
 
-    document.getElementById('bannerCompany').innerText =
-      hasParams ? company : 'PT Telur Makmur';
-    document.getElementById('orderCompany').innerText =
-      hasParams ? company : 'PT Jaya Makmur';
+    document.getElementById('bannerCompany').innerText = company;
+    document.getElementById('orderCompany').innerText = company;
     document.getElementById('orderValue').innerText = subtotal;
-    document.getElementById('orderItem').innerText =
-      hasParams
-        ? `${productName} (${qty}) – ${subtotal}`
-        : 'Telur Ayam (2 Peti) – Rp 500.000';
-    document.getElementById('orderNumber').innerText =
-      hasParams
-        ? `#ORD-2026-${String(Math.floor(Math.random() * 900) + 100)}`
-        : '#ORD-2026-103';
+    document.getElementById('orderItem').innerText = `${productName} (${qty}) – ${subtotal}`;
+    
+    // Simpan atau buat order ID konsisten
+    const orderId = sessionStorage.getItem('currentOrderId') || ('#ORD-2026-' + (Math.floor(Math.random() * 899) + 100));
+    sessionStorage.setItem('currentOrderId', orderId);
+    document.getElementById('orderNumber').innerText = orderId;
 
-    // Tombol kembali ke halaman sebelumnya (alur sekarang)
-    const fallbackBack = hasParams ? 'ajukan-permintaan.html' : 'dashboard.html';
+    // Tanggal kirim besok
+    const tglKirim = new Date();
+    tglKirim.setDate(tglKirim.getDate() + 1);
+    const optionsTgl = { day: 'numeric', month: 'short', year: 'numeric' };
+    const tglKirimStr = tglKirim.toLocaleDateString('id-ID', optionsTgl);
+    const tglEl = document.querySelectorAll('.sp-row-value');
+    if (tglEl.length >= 7) {
+      tglEl[6].innerText = tglKirimStr;
+    }
+
+    // Tombol kembali ke halaman Ajukan Pesanan
+    const backToAjukan = 'ajukan-pesanan.html' +
+      '?seller=' + encodeURIComponent(sellerId) +
+      '&product=' + encodeURIComponent(productName) +
+      '&price=' + encodeURIComponent(productPrice) +
+      '&qty=' + encodeURIComponent(qty) +
+      '&subtotal=' + encodeURIComponent(subtotal) +
+      '&notes=' + encodeURIComponent(notes);
+
     const spBackBtn = document.getElementById('backLink');
     if (spBackBtn) {
-      spBackBtn.href = fallbackBack;
+      spBackBtn.href = backToAjukan;
       spBackBtn.addEventListener('click', function(e) {
         e.preventDefault();
         if (window.history.length > 1) {
@@ -140,28 +178,73 @@
         } else if (document.referrer && document.referrer !== window.location.href) {
           window.location.href = document.referrer;
         } else {
-          window.location.href = fallbackBack;
+          window.location.href = backToAjukan;
         }
       });
     }
 
-    // ==== Status persetujuan penjual ====
-    // state=approved  -> penjual sudah menyetujui, tombol Tinjau Pesanan aktif
+    // Query untuk ke halaman Pembayaran setelah disetujui
+    const paymentQuery =
+      '?seller=' + encodeURIComponent(sellerId) +
+      '&product=' + encodeURIComponent(productName) +
+      '&qty=' + encodeURIComponent(qty) +
+      '&price=' + encodeURIComponent(productPrice) +
+      '&subtotal=' + encodeURIComponent(subtotal) +
+      '&notes=' + encodeURIComponent(notes);
+
+    // Fungsi saat penjual menyetujui pesanan
+    function approveOrder() {
+      const banner = document.getElementById('alertBanner');
+      const title = document.getElementById('alertTitle');
+      const desc = document.getElementById('alertDesc');
+      const simBtn = document.getElementById('btnSimulateApprove');
+      const paymentBtn = document.getElementById('paymentBtn');
+      const caption = document.getElementById('reviewCaption');
+
+      banner.classList.add('sp-banner-approved');
+      // Simpan notifikasi ke localStorage agar muncul di halaman notifikasi
+      try {
+        const q = '&seller=' + encodeURIComponent(sellerParam)
+          + '&product=' + encodeURIComponent(productParam)
+          + '&qty=' + encodeURIComponent(qtyParam)
+          + '&price=' + encodeURIComponent(priceParam)
+          + '&subtotal=' + encodeURIComponent(subtotalParam);
+        localStorage.setItem('pesananDisetujui', JSON.stringify({ seller: company, query: q }));
+      } catch(e) {}
+      title.innerHTML = 'Pesanan Disetujui Penjual';
+      desc.innerHTML = `Pesanan Anda telah disetujui oleh <strong>${company}</strong>. Stok tersedia dan siap dikirim. Silakan selesaikan pembayaran untuk memproses pesanan.`;
+
+      if (simBtn) simBtn.style.display = 'none';
+
+      paymentBtn.classList.remove('btn-tinjau-disabled');
+      paymentBtn.classList.add('btn-tinjau-active');
+      paymentBtn.style.pointerEvents = 'auto';
+      paymentBtn.style.cursor = 'pointer';
+      paymentBtn.innerText = 'Lanjut ke Pembayaran';
+      paymentBtn.href = 'pembayaran.html' + paymentQuery;
+
+      caption.innerHTML = 'Pesanan disetujui, silakan lakukan pembayaran';
+      caption.style.color = '#059669';
+      caption.style.fontWeight = '600';
+    }
+
+    // Jika parameter state=approved, langsung tampilkan disetujui
     const state = urlParams.get('state');
-
     if (state === 'approved') {
-      const companyShown = hasParams ? company : 'PT Telur Makmur';
+      approveOrder();
+    } else {
+      // Simulasikan persetujuan otomatis setelah 4 detik untuk kenyamanan pengujian
+      const autoTimer = setTimeout(() => {
+        approveOrder();
+      }, 4000);
 
-      // Banner hijau "Disetujui"
-      document.getElementById('alertBanner').classList.add('sp-banner-approved');
-      document.getElementById('alertTitle').innerHTML =
-        '<span>&#9989;</span> Permintaan Disetujui Penjual';
-      document.getElementById('alertDesc').innerHTML =
-        `Permintaan Anda telah disetujui oleh <strong>${companyShown}</strong>. ` +
-        'Penjual telah mengonfirmasi ketersediaan stok. Silakan ajukan pesanan untuk melanjutkan ke tahap pembayaran.';
-
-      // Batalkan permintaan tidak lagi tampil setelah disetujui
-      document.getElementById('cancelReqLink').style.display = 'none';
+      // Jika tombol simulasi diklik duluan, hentikan timer
+      const simBtn = document.getElementById('btnSimulateApprove');
+      if (simBtn) {
+        simBtn.addEventListener('click', () => {
+          clearTimeout(autoTimer);
+        });
+      }
     }
   </script>
 </body>

@@ -31,7 +31,7 @@
       <h2 class="auth-card-title">Lupa Kata Sandi</h2>
       <p class="auth-card-subtitle">Masukkan email dan kata sandi baru Anda.</p>
 
-      <form action="#" method="POST" id="forgotForm">
+      <form action="index.html" method="GET" id="forgotForm">
         <div class="form-group">
           <label for="email" class="form-label">Email</label>
           <input type="email" id="email" class="form-input" placeholder="nama@email.com" required>
@@ -58,5 +58,15 @@
 
   <!-- Floating Navigation Toolbar to switch between the 3 visual design states -->
 
+  <script>
+    const forgotForm = document.getElementById('forgotForm');
+    if (forgotForm) {
+      forgotForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Kata sandi berhasil diperbarui! Silakan masuk kembali.');
+        window.location.href = 'index.html';
+      });
+    }
+  </script>
 </body>
 </html>

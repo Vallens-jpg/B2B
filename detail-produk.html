@@ -196,8 +196,8 @@
         </div>
       </div>
 
-      <!-- RFQ Button -->
-      <a id="rfqLink" href="ajukan-permintaan.html?seller=1" class="btn-rfq-primary">Ajukan Permintaan (RFQ)</a>
+      <!-- Order Button -->
+      <a id="rfqLink" href="ajukan-pesanan.html?seller=1" class="btn-rfq-primary">Ajukan Pesanan</a>
     </div>
   </main>
 
@@ -258,7 +258,7 @@
     }
 
     document.getElementById('rfqLink').href =
-      `ajukan-permintaan.html?seller=${sellerId}` +
+      `ajukan-pesanan.html?seller=${sellerId}` +
       `&product=${encodeURIComponent(productName)}` +
       `&price=${encodeURIComponent(productPrice)}`;
 

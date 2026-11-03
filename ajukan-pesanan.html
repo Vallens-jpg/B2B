@@ -243,7 +243,7 @@
 
   <!-- Top Navbar -->
   <header class="detail-navbar">
-    <a href="status-pesanan.html" id="backLink" class="back-btn-circle" aria-label="Kembali">
+    <a href="detail-produk.html" id="backLink" class="back-btn-circle" aria-label="Kembali">
       <svg class="back-arrow-icon" viewBox="0 0 24 24" fill="none">
         <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -363,15 +363,12 @@
       document.getElementById('companyInput').value = sellersMap[sellerId];
     }
 
-    // Tombol kembali -> Status Pesanan (dengan data yang sama)
-    const backToStatus = 'status-pesanan.html' +
-      '?state=approved' +
-      '&seller=' + encodeURIComponent(sellerId) +
+    // Tombol kembali -> Detail Produk (dengan data yang sama)
+    const backToProduct = 'detail-produk.html' +
+      '?seller=' + encodeURIComponent(sellerId) +
       (productName ? '&product=' + encodeURIComponent(productName) : '') +
-      (productPrice ? '&price=' + encodeURIComponent(productPrice) : '') +
-      (qtyParam ? '&qty=' + encodeURIComponent(qtyParam) : '') +
-      (subtotalParam ? '&subtotal=' + encodeURIComponent(subtotalParam) : '');
-    document.getElementById('backLink').href = backToStatus;
+      (productPrice ? '&price=' + encodeURIComponent(productPrice) : '');
+    document.getElementById('backLink').href = backToProduct;
 
     function handleSmartBackApes() {
       if (window.history.length > 1) {
@@ -379,7 +376,7 @@
       } else if (document.referrer && document.referrer !== window.location.href) {
         window.location.href = document.referrer;
       } else {
-        window.location.href = backToStatus;
+        window.location.href = backToProduct;
       }
     }
 
@@ -512,7 +509,7 @@
       });
     }
 
-    // Ajukan Pesanan -> halaman Konfirmasi Pesanan (membawa data pesanan)
+    // Ajukan Pesanan -> masuk ke pending menunggu persetujuan penjual
     document.getElementById('ajukanPesananBtn').addEventListener('click', function () {
       const firstRow = document.querySelector('.item-row-grid');
       const product = firstRow.querySelector('.form-select').value;
@@ -520,7 +517,7 @@
       const subtotalValue = firstRow.querySelector('.subtotal-text').innerText;
       const notes = document.querySelector('.textarea-notes').value;
 
-      window.location.href = 'konfirmasi-pesanan.html' +
+      window.location.href = 'status-pesanan.html' +
         '?seller=' + encodeURIComponent(sellerId) +
         '&product=' + encodeURIComponent(product) +
         '&qty=' + encodeURIComponent(qty) +
