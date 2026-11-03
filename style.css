@@ -1062,6 +1062,7 @@ button {
   border-radius: 8px;
   text-align: center;
   transition: all var(--transition-fast);
+  margin-top: auto;
 }
 
 .btn-product-detail:hover {
@@ -1681,4 +1682,94 @@ button {
     padding: 6px 14px;
     font-size: 0.8rem;
   }
+}
+
+/* ==========================================================================
+   CSS CHECKBOX HACK – Hamburger Mobile Menu (no JS)
+   ========================================================================== */
+.menu-toggle-input {
+  display: none;
+}
+
+/* Label as hamburger button */
+.menu-toggle-label {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.menu-toggle-label span {
+  display: block;
+  width: 24px;
+  height: 2.5px;
+  background-color: var(--color-dark);
+  border-radius: 2px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+/* Hamburger → X animation when checked */
+.menu-toggle-input:checked ~ .navbar-container .menu-toggle-label span:nth-child(1) {
+  transform: translateY(7.5px) rotate(45deg);
+}
+.menu-toggle-input:checked ~ .navbar-container .menu-toggle-label span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.menu-toggle-input:checked ~ .navbar-container .menu-toggle-label span:nth-child(3) {
+  transform: translateY(-7.5px) rotate(-45deg);
+}
+
+/* Open mobile nav when checkbox is checked */
+.menu-toggle-input:checked ~ .navbar-container .navbar-navigation {
+  max-height: 420px;
+  border-bottom-color: var(--color-border);
+  box-shadow: 0 12px 20px -4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .menu-toggle-label {
+    display: flex;
+  }
+}
+
+/* ==========================================================================
+   CSS :target PRODUCT MODALS (no JS)
+   ========================================================================== */
+.product-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.product-modal-overlay:target {
+  display: flex;
+}
+
+.product-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  color: var(--color-white);
+  text-decoration: none;
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: background 0.2s;
+}
+
+.product-modal-close:hover {
+  background: rgba(255,255,255,0.25);
 }

@@ -1247,1003 +1247,6 @@
     }
 
     /* ==========================================================================
-       PENAWARAN (RFQ) VIEW
-       ========================================================================== */
-    .penawaran-view {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      width: 100%;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .rfq-card {
-      background-color: var(--color-card-bg);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-card);
-      padding: 28px 32px 24px;
-      box-shadow: var(--shadow-card);
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .rfq-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .rfq-title {
-      font-size: 1.2rem;
-      font-weight: 800;
-      color: var(--color-text-dark);
-      letter-spacing: -0.01em;
-    }
-
-    .rfq-subtitle {
-      font-size: 0.84rem;
-      color: var(--color-text-muted);
-      margin-top: 2px;
-    }
-
-    /* Filter Tabs */
-    .rfq-filter-tabs {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .rfq-tab {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 22px;
-      border-radius: 999px;
-      font-size: 0.92rem;
-      font-weight: 600;
-      border: 1px solid #e2e8f0;
-      background: #ffffff;
-      color: #1e3a5f;
-      cursor: pointer;
-      transition: var(--transition-smooth);
-      white-space: nowrap;
-    }
-
-    .rfq-tab:hover {
-      border-color: #cbd5e1;
-      background: #ffffff;
-    }
-
-    .rfq-tab.active {
-      background: #0f2440;
-      color: #ffffff;
-      border-color: #0f2440;
-      box-shadow: 0 12px 24px -14px rgba(15, 36, 64, 0.85);
-    }
-
-    .rfq-tab-count {
-      font-weight: 600;
-    }
-
-    /* Search Bar */
-    .rfq-search-wrap {
-      position: relative;
-      max-width: 320px;
-    }
-
-    .rfq-search-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #94a3b8;
-      pointer-events: none;
-    }
-
-    .rfq-search-input {
-      width: 100%;
-      padding: 9px 14px 9px 38px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-pill);
-      font-family: inherit;
-      font-size: 0.85rem;
-      color: var(--color-text-dark);
-      background: #f8fafc;
-      outline: none;
-      transition: var(--transition-smooth);
-    }
-
-    .rfq-search-input:focus {
-      border-color: #3b82f6;
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-    }
-
-    /* RFQ Status Badges */
-    .rfq-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 10px;
-      border-radius: var(--radius-pill);
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-
-    .rfq-status.perlu-dibalas {
-      background: #fff7ed;
-      color: #c2410c;
-      border: 1px solid #fed7aa;
-    }
-
-    .rfq-status.terkirim {
-      background: #eff6ff;
-      color: #1d4ed8;
-      border: 1px solid #bfdbfe;
-    }
-
-    .rfq-status.ditolak {
-      background: #fef2f2;
-      color: #dc2626;
-      border: 1px solid #fecaca;
-    }
-
-    .rfq-status.disetujui {
-      background: #f0fdf4;
-      color: #15803d;
-      border: 1px solid #bbf7d0;
-    }
-
-    /* RFQ Action Buttons */
-    .btn-rfq-action {
-      padding: 5px 14px;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      border: 1px solid var(--color-border);
-      background: #ffffff;
-      color: #122f51;
-      cursor: pointer;
-      transition: var(--transition-smooth);
-    }
-
-    .btn-rfq-action:hover {
-      background: #f1f5f9;
-    }
-
-    .btn-rfq-action.primary {
-      background: #133054;
-      color: #ffffff;
-      border-color: #133054;
-    }
-
-    .btn-rfq-action.primary:hover {
-      background: #0b1f38;
-    }
-
-    /* ======================================================
-       BUAT PENAWARAN FORM VIEW (RFQ Detail Form)
-       ====================================================== */
-    .buat-penawaran-wrap {
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 20px;
-      align-items: start;
-    }
-
-    .buat-penawaran-main {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .buat-form-card {
-      background: var(--color-card-bg);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-card);
-      padding: 24px 28px;
-      box-shadow: var(--shadow-card);
-    }
-
-    .buat-form-section-title {
-      font-size: 0.9rem;
-      font-weight: 800;
-      color: var(--color-text-dark);
-      margin-bottom: 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #f1f5f9;
-    }
-
-    .buat-form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-
-    .buat-form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .buat-form-label {
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: var(--color-text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .buat-form-value {
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: var(--color-text-dark);
-      padding: 9px 0;
-      border-bottom: 1px solid #f1f5f9;
-    }
-
-    .buat-form-input {
-      padding: 9px 12px;
-      border: 1px solid var(--color-border);
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 0.88rem;
-      font-weight: 500;
-      color: var(--color-text-dark);
-      background: #ffffff;
-      outline: none;
-      transition: var(--transition-smooth);
-      width: 100%;
-    }
-
-    .buat-form-input:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    .buat-form-textarea {
-      padding: 9px 12px;
-      border: 1px solid var(--color-border);
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 0.87rem;
-      font-weight: 500;
-      color: var(--color-text-dark);
-      background: #f8fafc;
-      outline: none;
-      resize: none;
-      width: 100%;
-      min-height: 70px;
-      transition: var(--transition-smooth);
-    }
-
-    .buat-form-textarea:focus {
-      border-color: #3b82f6;
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    /* Item Permintaan Harga Table */
-    .item-harga-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .item-harga-table th {
-      text-align: left;
-      font-size: 0.72rem;
-      font-weight: 800;
-      color: var(--color-text-subtle);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 0 10px 10px 0;
-      border-bottom: 1px solid #f1f5f9;
-    }
-
-    .item-harga-table td {
-      padding: 10px 10px 10px 0;
-      border-bottom: 1px solid #f8fafc;
-      font-size: 0.86rem;
-      vertical-align: middle;
-    }
-
-    .item-harga-table .td-produk select {
-      padding: 7px 10px;
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 0.84rem;
-      font-weight: 600;
-      color: #0f172a;
-      background: #f8fafc;
-      outline: none;
-      width: 100%;
-      min-width: 120px;
-    }
-
-    .item-harga-table .td-qty input,
-    .item-harga-table .td-harga input {
-      padding: 7px 10px;
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 0.84rem;
-      font-weight: 600;
-      color: #0f172a;
-      background: #f8fafc;
-      outline: none;
-      width: 100%;
-      transition: var(--transition-smooth);
-    }
-
-    .item-harga-table .td-qty input:focus,
-    .item-harga-table .td-harga input:focus {
-      border-color: #3b82f6;
-      background: #fff;
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-    }
-
-    .btn-hapus-item {
-      padding: 5px 12px;
-      border-radius: 7px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      background: #fef2f2;
-      color: #dc2626;
-      border: 1px solid #fecaca;
-      cursor: pointer;
-      transition: var(--transition-smooth);
-    }
-
-    .btn-hapus-item:hover {
-      background: #fee2e2;
-    }
-
-    .btn-tambah-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 12px;
-      padding: 7px 14px;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #2563eb;
-      border: 1.5px dashed #93c5fd;
-      background: #eff6ff;
-      cursor: pointer;
-      transition: var(--transition-smooth);
-    }
-
-    .btn-tambah-item:hover {
-      background: #dbeafe;
-      border-color: #60a5fa;
-    }
-
-    .item-subtotal-row {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 12px;
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid #f1f5f9;
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--color-text-muted);
-    }
-
-    .item-subtotal-row span:last-child {
-      color: var(--color-text-dark);
-      font-size: 0.96rem;
-    }
-
-    .buat-form-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 4px;
-    }
-
-    .btn-save-draft {
-      padding: 9px 22px;
-      border-radius: 10px;
-      border: 1px solid var(--color-border);
-      background: #ffffff;
-      color: #122f51;
-      font-size: 0.86rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition-smooth);
-    }
-
-    .btn-save-draft:hover {
-      background: #f1f5f9;
-    }
-
-    .btn-delete-draft {
-      padding: 9px 22px;
-      border-radius: 10px;
-      border: 1px solid #fecaca;
-      background: #fef2f2;
-      color: #dc2626;
-      font-size: 0.86rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition-smooth);
-    }
-
-    .btn-delete-draft:hover {
-      background: #fee2e2;
-    }
-
-    /* Ringkasan Permintaan Sidebar */
-    .ringkasan-card {
-      background: var(--color-card-bg);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-card);
-      padding: 22px 22px;
-      box-shadow: var(--shadow-card);
-      position: sticky;
-      top: 20px;
-    }
-
-    .ringkasan-title {
-      font-size: 0.9rem;
-      font-weight: 800;
-      color: var(--color-text-dark);
-      margin-bottom: 16px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #f1f5f9;
-    }
-
-    .ringkasan-field {
-      margin-bottom: 14px;
-    }
-
-    .ringkasan-label {
-      font-size: 0.74rem;
-      font-weight: 700;
-      color: var(--color-text-subtle);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-bottom: 5px;
-    }
-
-    .ringkasan-input {
-      padding: 8px 11px;
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #0f172a;
-      background: #f8fafc;
-      outline: none;
-      width: 100%;
-      transition: var(--transition-smooth);
-    }
-
-    .ringkasan-input:focus {
-      border-color: #3b82f6;
-      background: #ffffff;
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-    }
-
-    .ringkasan-textarea {
-      padding: 8px 11px;
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: #0f172a;
-      background: #f8fafc;
-      outline: none;
-      width: 100%;
-      resize: none;
-      min-height: 72px;
-      transition: var(--transition-smooth);
-    }
-
-    .ringkasan-textarea:focus {
-      border-color: #3b82f6;
-      background: #ffffff;
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-    }
-
-    .ringkasan-divider {
-      height: 1px;
-      background: #f1f5f9;
-      margin: 14px 0;
-    }
-
-    .ringkasan-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.84rem;
-      margin-bottom: 8px;
-    }
-
-    .ringkasan-row .label {
-      color: var(--color-text-muted);
-      font-weight: 500;
-    }
-
-    .ringkasan-row .value {
-      color: var(--color-text-dark);
-      font-weight: 700;
-    }
-
-    .ringkasan-row.total {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 2px solid #e8ecf2;
-    }
-
-    .ringkasan-row.total .label {
-      font-size: 0.9rem;
-      font-weight: 800;
-      color: var(--color-text-dark);
-    }
-
-    .ringkasan-row.total .value {
-      font-size: 1.05rem;
-      color: #133054;
-    }
-
-    .btn-kirim-penawaran {
-      width: 100%;
-      padding: 12px;
-      margin-top: 16px;
-      border-radius: 12px;
-      background: #133054;
-      color: #ffffff;
-      font-size: 0.92rem;
-      font-weight: 800;
-      border: none;
-      cursor: pointer;
-      transition: var(--transition-smooth);
-      box-shadow: 0 4px 14px rgba(19, 48, 84, 0.25);
-      letter-spacing: 0.01em;
-    }
-
-    .btn-kirim-penawaran:hover {
-      background: #0b1f38;
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(19, 48, 84, 0.3);
-    }
-
-    .back-link-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.84rem;
-      font-weight: 700;
-      color: #2563eb;
-      cursor: pointer;
-      padding: 6px 0;
-      transition: var(--transition-smooth);
-      background: none;
-      border: none;
-    }
-
-    .back-link-btn:hover {
-      color: #1d4ed8;
-      gap: 8px;
-    }
-
-    /* ======================================================
-       PERMINTAAN DETAIL VIEW (RFQ DETAIL)
-       ====================================================== */
-    .rfq-detail-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 14px;
-    }
-
-    .rfq-detail-heading {
-      font-size: 1rem;
-      font-weight: 800;
-      color: #0f172a;
-      letter-spacing: -0.01em;
-      line-height: 1.3;
-    }
-
-    .rfq-detail-sub {
-      margin-top: 2px;
-      font-size: 0.74rem;
-      color: #94a3b8;
-    }
-
-    .rfq-back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 12px;
-      border: 1px solid #d8e0ea;
-      border-radius: 6px;
-      background: #ffffff;
-      color: #16324f;
-      font-family: inherit;
-      font-size: 0.74rem;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: var(--transition-smooth);
-    }
-
-    .rfq-back-btn:hover {
-      background: #f8fafc;
-      border-color: #c3cedb;
-    }
-
-    .rfq-back-btn svg {
-      width: 12px;
-      height: 12px;
-    }
-
-    .rfq-detail-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 258px;
-      gap: 20px;
-      align-items: start;
-    }
-
-    .rfq-detail-main {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .rfq-dcard {
-      background: #ffffff;
-      border: 1px solid #e9eef5;
-      border-radius: 9px;
-      padding: 15px 17px 16px;
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
-    }
-
-    .rfq-dcard-title {
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: #0f172a;
-      margin-bottom: 10px;
-    }
-
-    .rfq-dfield {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .rfq-dfield + .rfq-dfield,
-    .rfq-dfield-row + .rfq-dfield {
-      margin-top: 10px;
-    }
-
-    .rfq-dfield-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .rfq-dlabel {
-      font-size: 0.71rem;
-      font-weight: 600;
-      color: #8c9bb0;
-      letter-spacing: 0.01em;
-    }
-
-    .rfq-dinput {
-      width: 100%;
-      height: 30px;
-      padding: 6px 9px;
-      border: 1px solid #e3e9f1;
-      border-radius: 6px;
-      background: #ffffff;
-      font-family: inherit;
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: #1f2937;
-      outline: none;
-      transition: var(--transition-smooth);
-    }
-
-    .rfq-dinput:focus {
-      border-color: #a9bcd3;
-      box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.14);
-    }
-
-    .rfq-dinput[readonly] {
-      background: #f5f8fc;
-      color: #46586e;
-      cursor: default;
-    }
-
-    select.rfq-dinput {
-      appearance: none;
-      -webkit-appearance: none;
-      padding-right: 28px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 9px center;
-      cursor: pointer;
-    }
-
-    .rfq-dtextarea {
-      width: 100%;
-      min-height: 46px;
-      padding: 7px 9px;
-      border: 1px solid #e3e9f1;
-      border-radius: 6px;
-      background: #ffffff;
-      font-family: inherit;
-      font-size: 0.75rem;
-      font-weight: 500;
-      line-height: 1.5;
-      color: #1f2937;
-      outline: none;
-      resize: vertical;
-      transition: var(--transition-smooth);
-    }
-
-    .rfq-dtextarea:focus {
-      border-color: #a9bcd3;
-      box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.14);
-    }
-
-    .rfq-dcard-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .rfq-dcard-head .rfq-dcard-title {
-      margin-bottom: 0;
-    }
-
-    .rfq-add-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 5px 10px;
-      border: 1px solid #d8e0ea;
-      border-radius: 6px;
-      background: #ffffff;
-      color: #16324f;
-      font-family: inherit;
-      font-size: 0.71rem;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: var(--transition-smooth);
-    }
-
-    .rfq-add-item:hover {
-      background: #f8fafc;
-      border-color: #c3cedb;
-    }
-
-    .rfq-item-head,
-    .rfq-item-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr) minmax(0, 1fr) auto;
-      gap: 9px;
-      align-items: center;
-    }
-
-    .rfq-item-head {
-      margin-bottom: 6px;
-      font-size: 0.71rem;
-      font-weight: 600;
-      color: #8c9bb0;
-    }
-
-    .rfq-item-row + .rfq-item-row {
-      margin-top: 9px;
-    }
-
-    .rfq-item-hapus {
-      padding: 7px 11px;
-      border: 1px solid #f0b3b3;
-      border-radius: 6px;
-      background: #ffffff;
-      color: #dc2626;
-      font-family: inherit;
-      font-size: 0.73rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: var(--transition-smooth);
-    }
-
-    .rfq-item-hapus:hover {
-      background: #fef2f2;
-      border-color: #e99696;
-    }
-
-    .rfq-item-subtotal {
-      display: flex;
-      align-items: baseline;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 12px;
-      font-size: 0.73rem;
-      color: #8c9bb0;
-    }
-
-    .rfq-item-subtotal strong {
-      font-size: 0.86rem;
-      font-weight: 800;
-      color: #0f172a;
-    }
-
-    /* Ringkasan (right column) */
-    .rfq-summary-card {
-      padding: 16px 18px 18px;
-    }
-
-    .rfq-summary-card .rfq-dfield {
-      margin-bottom: 12px;
-    }
-
-    .rfq-sum-field-label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 0.74rem;
-      font-weight: 600;
-      color: #8c9bb0;
-    }
-
-    .rfq-sum-divider {
-      height: 1px;
-      background: #edf2f7;
-      margin: 14px 0;
-    }
-
-    .rfq-sum-row {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 0.76rem;
-      margin-bottom: 9px;
-    }
-
-    .rfq-sum-row .label {
-      color: #8c9bb0;
-    }
-
-    .rfq-sum-row .value {
-      color: #334155;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .rfq-sum-row .value.diskon {
-      color: #15803d;
-    }
-
-    .rfq-sum-total {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .rfq-sum-total span {
-      font-size: 0.74rem;
-      color: #8c9bb0;
-    }
-
-    .rfq-sum-total strong {
-      font-size: 1rem;
-      font-weight: 800;
-      letter-spacing: -0.01em;
-      color: #0f172a;
-      white-space: nowrap;
-    }
-
-    .rfq-sum-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .rfq-btn-setujui,
-    .rfq-btn-tolak {
-      padding: 8px 10px;
-      border-radius: 6px;
-      background: #ffffff;
-      font-family: inherit;
-      font-size: 0.77rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition-smooth);
-    }
-
-    .rfq-btn-setujui {
-      border: 1px solid #cfd8e3;
-      color: #16324f;
-    }
-
-    .rfq-btn-setujui:hover {
-      background: #f8fafc;
-      border-color: #b9c6d6;
-    }
-
-    .rfq-btn-tolak {
-      border: 1px solid #f3b6b6;
-      color: #dc2626;
-    }
-
-    .rfq-btn-tolak:hover {
-      background: #fef2f2;
-      border-color: #e99696;
-    }
-
-    .rfq-kirim-btn {
-      width: 100%;
-      margin-top: 10px;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      background: #133054;
-      color: #ffffff;
-      font-family: inherit;
-      font-size: 0.81rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition-smooth);
-    }
-
-    .rfq-kirim-btn:hover {
-      background: #0b1f38;
-    }
-
-    @media (max-width: 960px) {
-      .rfq-detail-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .rfq-detail-header {
-        flex-direction: column-reverse;
-        align-items: stretch;
-      }
-
-      .rfq-back-btn {
-        justify-content: center;
-      }
-
-      .rfq-dfield-row {
-        grid-template-columns: 1fr;
-      }
-
-      .rfq-item-head {
-        display: none;
-      }
-
-      .rfq-item-row {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* ==========================================================================
        RIWAYAT PENJUALAN VIEW
        ========================================================================== */
     .riwayat-view {
@@ -2883,6 +1886,37 @@
     .profile-input:focus {
       border-color: #94a3b8;
       box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.18);
+    }
+
+    .profile-file-box {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--color-text-dark);
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: var(--transition-smooth);
+      box-sizing: border-box;
+    }
+
+    .profile-file-box:hover {
+      border-color: #94a3b8;
+      background: #f8fafc;
+    }
+
+    .profile-file-box svg {
+      width: 18px;
+      height: 18px;
+      color: #334155;
+      flex-shrink: 0;
     }
 
     select.profile-input {
@@ -4259,12 +3293,6 @@
       .pencairan-field-grid {
         grid-template-columns: 1fr;
       }
-      .buat-penawaran-wrap {
-        grid-template-columns: 1fr;
-      }
-      .buat-form-row {
-        grid-template-columns: 1fr;
-      }
     }
 
     /* Animation keyframes */
@@ -5632,19 +4660,7 @@
         <span>Produk</span>
       </a>
 
-      <!-- 3. Permintaan -->
-      <a href="#permintaan" class="sidebar-link" id="navPermintaan" onclick="switchMainView('penawaran', event)">
-        <span class="sidebar-icon">
-          <!-- Price Tag Icon -->
-          <svg viewBox="0 0 24 24">
-            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-            <line x1="7" y1="7" x2="7.01" y2="7"></line>
-          </svg>
-        </span>
-        <span>Permintaan</span>
-      </a>
-
-      <!-- 4. Pesanan (Terhubung langsung ke tampilan Pesanan) -->
+      <!-- 3. Pesanan (Terhubung langsung ke tampilan Pesanan) -->
       <a href="#pesanan" class="sidebar-link" id="navPesanan" onclick="switchMainView('pesanan', event)">
         <span class="sidebar-icon">
           <!-- Shopping Bag / Order Icon -->
@@ -5657,7 +4673,7 @@
         <span>Pesanan</span>
       </a>
 
-      <!-- 5. Dispute -->
+      <!-- 4. Dispute -->
       <a href="#dispute" class="sidebar-link" id="navDispute" onclick="switchMainView('dispute', event)">
         <span class="sidebar-icon">
           <!-- Shield Alert Icon -->
@@ -5670,7 +4686,7 @@
         <span>Dispute</span>
       </a>
 
-      <!-- 6. Keuangan -->
+      <!-- 5. Keuangan -->
       <a href="#keuangan" class="sidebar-link" id="navKeuangan" onclick="switchMainView('keuangan', event)">
         <span class="sidebar-icon">
           <!-- Wallet / Card Icon -->
@@ -5683,7 +4699,7 @@
         <span>Keuangan</span>
       </a>
 
-      <!-- 7. Riwayat -->
+      <!-- 6. Riwayat -->
       <a href="#riwayat" class="sidebar-link" id="navRiwayat" onclick="switchMainView('riwayat', event)">
         <span class="sidebar-icon">
           <!-- History / Clock Icon -->
@@ -6001,187 +5017,13 @@
       </div>
 
       <!-- ======================================================================
-           VIEW D: PENAWARAN (RFQ) VIEW
-           ====================================================================== -->
-      <div id="penawaranViewContainer" class="penawaran-view" style="display: none;">
-
-        <!-- Sub-View 1: Daftar Permintaan (List) -->
-        <div id="rfqListView">
-          <div class="rfq-card">
-            <header class="rfq-header">
-              <div>
-                <h2 class="rfq-title">Permintaan (RFQ)</h2>
-                <p class="rfq-subtitle">Kelola permintaan, tindaklanjut harga dari pembeli</p>
-              </div>
-            </header>
-
-            <!-- Filter Tabs -->
-            <div class="rfq-filter-tabs">
-              <button class="rfq-tab active" id="rfqTabSemua" onclick="filterRFQ('semua', this)">Semua</button>
-              <button class="rfq-tab" onclick="filterRFQ('perlu-dibalas', this)">Perlu Dibalas <span class="rfq-tab-count">(1)</span></button>
-              <button class="rfq-tab" onclick="filterRFQ('terkirim', this)">Terkirim <span class="rfq-tab-count">(1)</span></button>
-              <button class="rfq-tab" onclick="filterRFQ('disetujui', this)">Disetujui <span class="rfq-tab-count">(1)</span></button>
-              <button class="rfq-tab" onclick="filterRFQ('kedaluwarsa', this)">Kedaluwarsa</button>
-              <button class="rfq-tab" onclick="filterRFQ('ditolak', this)">Ditolak</button>
-            </div>
-
-            <!-- Search -->
-            <div class="rfq-search-wrap">
-              <svg class="rfq-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-              <input type="text" class="rfq-search-input" id="rfqSearchInput" placeholder="Cari no. RFQ..." oninput="renderRFQTable()">
-            </div>
-
-            <!-- Table -->
-            <div class="table-wrap view-scroll" data-fill-scroll>
-              <table class="orders-table" id="rfqTable">
-                <thead>
-                  <tr>
-                    <th>NO RFQ</th>
-                    <th>TGL MASUK</th>
-                    <th>PEMBELI</th>
-                    <th>RINGKAS PRODUK</th>
-                    <th>TOTAL PERMINTAAN</th>
-                    <th>STATUS</th>
-                    <th>AKSI</th>
-                  </tr>
-                </thead>
-                <tbody id="rfqTableBody">
-                  <!-- Rendered by JS -->
-                </tbody>
-              </table>
-            </div>
-
-            <footer class="product-mgmt-footer">
-              <div class="product-count-info" id="rfqCountInfo">Menampilkan 1-3 dari 3 RFQ</div>
-            </footer>
-          </div>
-        </div>
-
-        <!-- Sub-View 2: Detail Permintaan (RFQ Detail) -->
-        <div id="rfqFormView" style="display: none;">
-
-          <div class="rfq-detail-header">
-            <div>
-              <h2 class="rfq-detail-heading" id="rfqDetailHeading">Permintaan</h2>
-              <div class="rfq-detail-sub" id="rfqFormSubtitle">RFQ #RFQ-2027-001</div>
-            </div>
-            <button class="rfq-back-btn" type="button" onclick="showRFQList()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-              </svg>
-              Kembali ke Daftar Permintaan
-            </button>
-          </div>
-
-          <div class="rfq-detail-grid">
-            <!-- Left: Informasi & Item -->
-            <div class="rfq-detail-main">
-
-              <section class="rfq-dcard">
-                <h3 class="rfq-dcard-title">Informasi Permintaan</h3>
-
-                <div class="rfq-dfield-row">
-                  <div class="rfq-dfield">
-                    <label class="rfq-dlabel" for="rfqFormNomor">Nomor RFQ</label>
-                    <input class="rfq-dinput" id="rfqFormNomor" type="text" value="#RFQ-2027-001" readonly>
-                  </div>
-                  <div class="rfq-dfield">
-                    <label class="rfq-dlabel" for="rfqFormPembeli">Pembeli</label>
-                    <input class="rfq-dinput" id="rfqFormPembeli" type="text" value="Riky W." readonly>
-                  </div>
-                </div>
-
-                <div class="rfq-dfield">
-                  <label class="rfq-dlabel" for="rfqFormCatatan">Catatan Pembeli</label>
-                  <textarea class="rfq-dtextarea" id="rfqFormCatatan" rows="2">Kirim secepatnya</textarea>
-                </div>
-              </section>
-
-              <section class="rfq-dcard">
-                <div class="rfq-dcard-head">
-                  <h3 class="rfq-dcard-title">Item Permintaan</h3>
-                  <button class="rfq-add-item" type="button" id="rfqAddItemBtn" onclick="tambahItemBaru()">+ Tambah Item</button>
-                </div>
-
-                <div class="rfq-item-head">
-                  <span>Produk <span class="req">*</span></span>
-                  <span>Qty <span class="req">*</span></span>
-                  <span>Harga Satuan <span class="req">*</span></span>
-                  <span></span>
-                </div>
-
-                <div id="itemHargaBody">
-                  <div class="rfq-item-row" id="item-row-0">
-                    <select class="rfq-dinput item-produk" onchange="hitungSubtotal()">
-                      <option>Telur Ayam</option>
-                      <option>Telur Omega</option>
-                      <option>Telur Ayam Kampung</option>
-                    </select>
-                    <input class="rfq-dinput item-qty" type="text" value="500 Kg" oninput="hitungSubtotal()">
-                    <input class="rfq-dinput item-harga" type="text" value="Rp 23.000" oninput="hitungSubtotal()">
-                    <button class="rfq-item-hapus" type="button" onclick="hapusItemRow(0)">Hapus</button>
-                  </div>
-                </div>
-
-                <div class="rfq-item-subtotal">
-                  <span>Subtotal Item</span>
-                  <strong id="rfqSubtotal">Rp 11.500.000</strong>
-                </div>
-              </section>
-
-            </div>
-
-            <!-- Right: Ringkasan -->
-            <aside class="rfq-dcard rfq-summary-card">
-              <h3 class="rfq-dcard-title">Ringkasan Permintaan</h3>
-
-              <div class="rfq-sum-row">
-                <span class="label">Subtotal Item</span>
-                <span class="value" id="rfqSummarySubtotal">Rp 11.500.000</span>
-              </div>
-              <div class="rfq-sum-row">
-                <span class="label">Biaya Pengiriman</span>
-                <span class="value" id="rfqSummaryKirim">Rp 200.000</span>
-              </div>
-              <div class="rfq-sum-row">
-                <span class="label">Fee (3%)</span>
-                <span class="value" id="rfqSummaryFee">Rp 342.000</span>
-              </div>
-
-              <div class="rfq-sum-total">
-                <span>Total</span>
-                <strong id="rfqSummaryTotal">Rp 11.742.000</strong>
-              </div>
-
-              <div class="rfq-sum-actions" id="rfqExistingActions">
-                <button class="rfq-btn-setujui" type="button" onclick="setujuiPermintaan()">Setujui</button>
-                <button class="rfq-btn-tolak" type="button" onclick="tolakPermintaan()">Tolak</button>
-              </div>
-
-              <button class="rfq-kirim-btn" type="button" id="rfqNewActions" style="display: none;" onclick="kirimPermintaan()">Kirim Permintaan</button>
-            </aside>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ======================================================================
            VIEW E: PROFIL AKUN
            ====================================================================== -->
       <div id="profileViewContainer" class="profile-view">
         <div class="profile-layout">
           <!-- Kartu Ringkasan Profil -->
           <aside class="profile-summary-card">
-            <div class="profile-avatar-large">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-            </div>
+            <div class="profile-avatar-large"></div>
             <div class="profile-summary-name">PT. Maju Jaya Abadi</div>
             <div class="profile-summary-email">supplier@majuabadi.co.id</div>
             <span class="profile-verified-badge">
@@ -6214,6 +5056,34 @@
                 <div class="profile-field full">
                   <label class="profile-label" for="profileAlamat">Alamat Lengkap</label>
                   <input class="profile-input" id="profileAlamat" type="text" value="Jl. Raya Industri No. 123">
+                </div>
+                <div class="profile-field">
+                  <label class="profile-label" for="profileNibInput">NIB</label>
+                  <label class="profile-file-box" for="profileNibInput">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="16" y1="13" x2="8" y2="13"></line>
+                      <line x1="16" y1="17" x2="8" y2="17"></line>
+                      <line x1="10" y1="9" x2="8" y2="9"></line>
+                    </svg>
+                    <span id="profileNibName">File NIB</span>
+                    <input type="file" id="profileNibInput" hidden accept=".pdf,image/*" onchange="if(this.files[0]) document.getElementById('profileNibName').textContent = this.files[0].name">
+                  </label>
+                </div>
+                <div class="profile-field">
+                  <label class="profile-label" for="profileNpwpInput">NPWP</label>
+                  <label class="profile-file-box" for="profileNpwpInput">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="16" y1="13" x2="8" y2="13"></line>
+                      <line x1="16" y1="17" x2="8" y2="17"></line>
+                      <line x1="10" y1="9" x2="8" y2="9"></line>
+                    </svg>
+                    <span id="profileNpwpName">File NPWP</span>
+                    <input type="file" id="profileNpwpInput" hidden accept=".pdf,image/*" onchange="if(this.files[0]) document.getElementById('profileNpwpName').textContent = this.files[0].name">
+                  </label>
                 </div>
               </div>
             </section>
@@ -7125,7 +5995,7 @@
     ];
 
     /* --------------------------------------------------------------------------
-       C. VIEW SWITCHER (DASHBOARD VS PRODUK VS PESANAN VS PENAWARAN)
+       C. VIEW SWITCHER (DASHBOARD VS PRODUK VS PESANAN)
        -------------------------------------------------------------------------- */
     function switchMainView(viewName, event) {
       if (event) event.preventDefault();
@@ -7133,7 +6003,6 @@
       const navDashboard = document.getElementById('navDashboard');
       const navProduk = document.getElementById('navProduk');
       const navPesanan = document.getElementById('navPesanan');
-      const navPermintaan = document.getElementById('navPermintaan');
       const navDispute = document.getElementById('navDispute');
       const navKeuangan = document.getElementById('navKeuangan');
       const navRiwayat = document.getElementById('navRiwayat');
@@ -7141,7 +6010,6 @@
       const dashboardView = document.getElementById('dashboardViewContainer');
       const productView = document.getElementById('productViewContainer');
       const pesananView = document.getElementById('pesananViewContainer');
-      const penawaranView = document.getElementById('penawaranViewContainer');
       const profileView = document.getElementById('profileViewContainer');
       const disputeView = document.getElementById('disputeViewContainer');
       const keuanganView = document.getElementById('keuanganViewContainer');
@@ -7154,7 +6022,6 @@
       dashboardView.style.display = 'none';
       productView.style.display = 'none';
       if (pesananView) pesananView.style.display = 'none';
-      if (penawaranView) penawaranView.style.display = 'none';
       if (profileView) profileView.style.display = 'none';
       if (disputeView) disputeView.style.display = 'none';
       if (keuanganView) keuanganView.style.display = 'none';
@@ -7172,13 +6039,6 @@
         if (pesananView) pesananView.style.display = 'flex';
         showPesananList();
         window.location.hash = 'pesanan';
-      } else if (viewName === 'penawaran') {
-        if (navPermintaan) navPermintaan.classList.add('active');
-        pageTitle.textContent = 'Daftar Permintaan';
-        if (penawaranView) penawaranView.style.display = 'flex';
-        showRFQList();
-        renderRFQTable();
-        window.location.hash = 'permintaan';
       } else if (viewName === 'profil') {
         pageTitle.textContent = 'Profil Akun';
         if (profileView) profileView.style.display = 'flex';
@@ -7607,6 +6467,10 @@
         const el = document.getElementById(id);
         if (el) el.value = profileSaved[id];
       });
+      const nibName = document.getElementById('profileNibName');
+      const npwpName = document.getElementById('profileNpwpName');
+      if (nibName) nibName.textContent = 'File NIB';
+      if (npwpName) npwpName.textContent = 'File NPWP';
       applyProfileSummary();
       showToast('Perubahan dibatalkan');
     }
@@ -8773,7 +7637,7 @@
         const rect = el.getBoundingClientRect();
         const body = el.closest('.dashboard-body');
         const padBottom = body ? parseFloat(getComputedStyle(body).paddingBottom) || 0 : 36;
-        const card = el.closest('.product-mgmt-card, .rfq-card, .dispute-table-card, .pesanan-table-card, .riwayat-card');
+        const card = el.closest('.product-mgmt-card, .dispute-table-card, .pesanan-table-card, .riwayat-card');
         const after = card ? Math.max(0, card.getBoundingClientRect().bottom - rect.bottom) : 0;
         const available = window.innerHeight - rect.top - after - padBottom - 2;
 
@@ -8987,327 +7851,6 @@
     });
 
     /* --------------------------------------------------------------------------
-       G. PENAWARAN (RFQ) LOGIC
-       -------------------------------------------------------------------------- */
-    let RFQ_DATA = [
-      { id: '#RFQ-2027-001', tgl: '11 Okt 2027', pembeli: 'Riky W.', produk: 'Telur Ayam', qty: 500, harga: 23000, total: 'Rp 12.045.000', statusKey: 'perlu-dibalas', catatan: 'Kirim secepatnya', alamat: 'Jl. Melati No. 12, Jakarta Timur' },
-      { id: '#RFQ-2027-002', tgl: '10 Okt 2027', pembeli: 'FT Doga', produk: 'Telur Ayam B', qty: 500, harga: 26000, total: 'Rp 13.590.000', statusKey: 'terkirim', catatan: 'Butuh pengiriman cepat', alamat: 'Jl. Raya Bogor Km. 24, Jakarta Timur' },
-      { id: '#RFQ-2027-003', tgl: '06 Okt 2027', pembeli: 'CV Sembako', produk: 'Telur Ayam A', qty: 500, harga: 28000, total: 'Rp 14.620.000', statusKey: 'ditolak', catatan: 'Harga terlalu tinggi', alamat: 'Jl. Pasar Minggu No. 8, Jakarta Selatan' }
-    ];
-
-    let rfqFilterActive = 'semua';
-    let rfqActiveIndex = null;
-    let rfqItemCounter = 1;
-
-    function showRFQList() {
-      document.getElementById('rfqListView').style.display = 'block';
-      document.getElementById('rfqFormView').style.display = 'none';
-      renderRFQTable();
-    }
-
-    function filterRFQ(key, btnEl) {
-      rfqFilterActive = key;
-      document.querySelectorAll('.rfq-tab').forEach(t => t.classList.remove('active'));
-      if (btnEl) btnEl.classList.add('active');
-      renderRFQTable();
-    }
-
-    function renderRFQTable() {
-      const tbody = document.getElementById('rfqTableBody');
-      const countEl = document.getElementById('rfqCountInfo');
-      if (!tbody) return;
-
-      const searchVal = (document.getElementById('rfqSearchInput') ? document.getElementById('rfqSearchInput').value : '').toLowerCase();
-
-      const filtered = RFQ_DATA.filter(r => {
-        const matchFilter = rfqFilterActive === 'semua' || r.statusKey === rfqFilterActive;
-        const matchSearch = r.id.toLowerCase().includes(searchVal) || r.pembeli.toLowerCase().includes(searchVal);
-        return matchFilter && matchSearch;
-      });
-
-      const statusLabel = { 'perlu-dibalas': 'Perlu Dibalas', 'terkirim': 'Terkirim', 'ditolak': 'Ditolak', 'disetujui': 'Disetujui', 'kedaluwarsa': 'Kedaluwarsa' };
-
-      tbody.innerHTML = '';
-      filtered.forEach((rfq, idx) => {
-        const label = statusLabel[rfq.statusKey] || rfq.statusKey;
-        const actionsBtns = `<button class="btn-rfq-action" onclick="openBuatPermintaan(${RFQ_DATA.indexOf(rfq)})">Detail</button>`;
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="order-code">${rfq.id}</td>
-          <td class="order-date">${rfq.tgl}</td>
-          <td class="order-customer">${rfq.pembeli}</td>
-          <td class="order-product">${rfq.produk}</td>
-          <td class="order-amount">${rfq.total}</td>
-          <td><span class="rfq-status ${rfq.statusKey}">• ${label}</span></td>
-          <td style="display:flex;gap:6px;flex-wrap:wrap;">${actionsBtns}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      if (countEl) countEl.textContent = `Menampilkan 1-${filtered.length} dari ${filtered.length} RFQ`;
-
-      syncFillScroll();
-    }
-
-    const BIAYA_PENGIRIMAN_RFQ = 200000;
-    const DISKON_KUANTITAS_RFQ = 300000;
-    const FEE_RFQ_RATE = 0.03;
-
-    function barisItemHtml(item, rowId) {
-      const produk = item && item.produk ? item.produk : 'Telur Ayam';
-      const qty = item && item.qty ? item.qty : 100;
-      const harga = item && item.harga ? item.harga : 23000;
-
-      return `
-        <div class="rfq-item-row" id="item-row-${rowId}">
-          <select class="rfq-dinput item-produk" onchange="hitungSubtotal()">
-            <option>Telur Ayam</option>
-            <option>Telur Omega</option>
-            <option>Telur Ayam Kampung</option>
-          </select>
-          <input class="rfq-dinput item-qty" type="text" value="${qty} Kg" oninput="hitungSubtotal()">
-          <input class="rfq-dinput item-harga" type="text" value="${formatRupiah(harga)}" oninput="hitungSubtotal()">
-          <button class="rfq-item-hapus" type="button" onclick="hapusItemRow(${rowId})">Hapus</button>
-        </div>
-      `;
-    }
-
-    function tambahItemBaru(item) {
-      const body = document.getElementById('itemHargaBody');
-      if (!body) return;
-
-      const rowId = rfqItemCounter++;
-      body.insertAdjacentHTML('beforeend', barisItemHtml(item, rowId));
-
-      const row = document.getElementById('item-row-' + rowId);
-      const produkEl = row ? row.querySelector('.item-produk') : null;
-      if (produkEl && item && item.produk) {
-        const ada = [...produkEl.options].some(o => o.text === item.produk);
-        if (!ada) {
-          const opsi = document.createElement('option');
-          opsi.textContent = item.produk;
-          produkEl.appendChild(opsi);
-        }
-        produkEl.value = item.produk;
-      }
-
-      hitungSubtotal();
-    }
-
-    function hapusItemRow(rowId) {
-      const row = document.getElementById('item-row-' + rowId);
-      if (!row) return;
-
-      const semuaRow = document.querySelectorAll('#itemHargaBody .rfq-item-row');
-      if (semuaRow.length <= 1) {
-        showToast('Minimal satu item permintaan');
-        return;
-      }
-
-      row.remove();
-      hitungSubtotal();
-    }
-
-    function setModePermintaan(isBaru) {
-      const addBtn = document.getElementById('rfqAddItemBtn');
-      const existingActions = document.getElementById('rfqExistingActions');
-      const newActions = document.getElementById('rfqNewActions');
-
-      if (addBtn) addBtn.style.display = isBaru ? 'inline-flex' : 'none';
-      if (existingActions) existingActions.style.display = isBaru ? 'none' : 'grid';
-      if (newActions) newActions.style.display = isBaru ? 'block' : 'none';
-
-      document.querySelectorAll('#itemHargaBody .rfq-item-hapus').forEach(btn => {
-        btn.style.display = isBaru ? 'inline-flex' : 'none';
-      });
-    }
-
-    function openBuatPermintaan(rfqIndex) {
-      document.getElementById('rfqListView').style.display = 'none';
-      document.getElementById('rfqFormView').style.display = 'block';
-
-      const rfq = (rfqIndex !== null && rfqIndex !== undefined && RFQ_DATA[rfqIndex]) ? RFQ_DATA[rfqIndex] : null;
-      rfqActiveIndex = rfq ? rfqIndex : null;
-
-      const nomorEl = document.getElementById('rfqFormNomor');
-      const pembeliEl = document.getElementById('rfqFormPembeli');
-      const catatanEl = document.getElementById('rfqFormCatatan');
-      const subtitleEl = document.getElementById('rfqFormSubtitle');
-
-      if (rfq) {
-        subtitleEl.textContent = `RFQ ${rfq.id}`;
-        nomorEl.value = rfq.id;
-        pembeliEl.value = rfq.pembeli;
-        catatanEl.value = rfq.catatan || '-';
-      } else {
-        const newId = '#RFQ-2027-NEW';
-        subtitleEl.textContent = `RFQ ${newId}`;
-        nomorEl.value = newId;
-        pembeliEl.value = '-';
-        catatanEl.value = '';
-      }
-
-      // Reset baris item
-      const body = document.getElementById('itemHargaBody');
-      if (body) body.innerHTML = '';
-      rfqItemCounter = 1;
-      tambahItemBaru(rfq
-        ? { produk: rfq.produk, qty: rfq.qty, harga: rfq.harga }
-        : { produk: 'Telur Ayam', qty: 500, harga: 23000 });
-
-      setModePermintaan(!rfq);
-      hitungSubtotal();
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function hitungSubtotal() {
-      const rows = [...document.querySelectorAll('#itemHargaBody .rfq-item-row')];
-      let subtotal = 0;
-
-      rows.forEach(row => {
-        const qtyEl = row.querySelector('.item-qty');
-        const hargaEl = row.querySelector('.item-harga');
-        const qty = parseInt(String(qtyEl ? qtyEl.value : '').replace(/[^\d]/g, ''), 10) || 0;
-        const harga = parseRupiah(hargaEl ? hargaEl.value : '');
-        subtotal += qty * harga;
-      });
-
-      const diskon = subtotal >= 10000000 ? DISKON_KUANTITAS_RFQ : 0;
-      const kirim = subtotal > 0 ? BIAYA_PENGIRIMAN_RFQ : 0;
-      const fee = Math.round(Math.max(subtotal - diskon + kirim, 0) * FEE_RFQ_RATE);
-      const total = subtotal - diskon + kirim + fee;
-
-      const setText = (id, value) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = value;
-      };
-
-      setText('rfqSubtotal', formatRupiah(subtotal));
-      setText('rfqSummarySubtotal', formatRupiah(subtotal));
-      setText('rfqSummaryKirim', formatRupiah(kirim));
-      setText('rfqSummaryFee', formatRupiah(fee));
-      setText('rfqSummaryTotal', formatRupiah(total));
-    }
-
-    function ambilItemPermintaan() {
-      return [...document.querySelectorAll('#itemHargaBody .rfq-item-row')].map(row => {
-        const produkEl = row.querySelector('.item-produk');
-        const qtyEl = row.querySelector('.item-qty');
-        const hargaEl = row.querySelector('.item-harga');
-        return {
-          produk: produkEl ? produkEl.value : '',
-          qty: parseInt(String(qtyEl ? qtyEl.value : '').replace(/[^\d]/g, ''), 10) || 0,
-          harga: parseRupiah(hargaEl ? hargaEl.value : '')
-        };
-      });
-    }
-
-    function setujuiPermintaan() {
-      if (rfqActiveIndex === null || !RFQ_DATA[rfqActiveIndex]) {
-        showToast('Pilih permintaan terlebih dahulu');
-        return;
-      }
-
-      const rfq = RFQ_DATA[rfqActiveIndex];
-      const totalEl = document.getElementById('rfqSummaryTotal');
-      const items = ambilItemPermintaan();
-
-      rfq.statusKey = 'disetujui';
-      if (totalEl) rfq.total = totalEl.textContent;
-
-      if (items.length) {
-        rfq.produk = items.map(item => item.produk).join(', ');
-        rfq.qty = items.reduce((sum, item) => sum + item.qty, 0);
-        rfq.harga = items[0].harga;
-      }
-
-      showRFQList();
-      showToast('Permintaan ' + rfq.id + ' disetujui');
-    }
-
-    function tolakPermintaan() {
-      if (rfqActiveIndex === null || !RFQ_DATA[rfqActiveIndex]) {
-        showToast('Pilih permintaan terlebih dahulu');
-        return;
-      }
-
-      const rfq = RFQ_DATA[rfqActiveIndex];
-      rfq.statusKey = 'ditolak';
-
-      showRFQList();
-      showToast('Permintaan ' + rfq.id + ' ditolak');
-    }
-
-    function kirimPermintaan() {
-      const rows = [...document.querySelectorAll('#itemHargaBody .rfq-item-row')];
-
-      if (!rows.length) {
-        showToast('Tambahkan minimal satu item permintaan');
-        return;
-      }
-
-      const items = [];
-
-      for (let i = 0; i < rows.length; i += 1) {
-        const produkEl = rows[i].querySelector('.item-produk');
-        const qtyEl = rows[i].querySelector('.item-qty');
-        const hargaEl = rows[i].querySelector('.item-harga');
-        const produk = produkEl ? produkEl.value : '';
-        const qty = parseInt(String(qtyEl ? qtyEl.value : '').replace(/[^\d]/g, ''), 10) || 0;
-        const harga = parseRupiah(hargaEl ? hargaEl.value : '');
-
-        if (qty <= 0) {
-          showToast('Qty item ' + (i + 1) + ' harus lebih dari 0');
-          return;
-        }
-
-        if (harga <= 0) {
-          showToast('Harga satuan item ' + (i + 1) + ' wajib diisi');
-          return;
-        }
-
-        items.push({ produk, qty, harga });
-      }
-
-      const nomorTerbesar = RFQ_DATA.reduce((max, row) => {
-        const nomor = parseInt(String(row.id).split('-').pop(), 10) || 0;
-        return Math.max(max, nomor);
-      }, 0);
-
-      const nomorBaru = '#RFQ-2027-' + String(nomorTerbesar + 1).padStart(3, '0');
-      const totalEl = document.getElementById('rfqSummaryTotal');
-      const pembeliEl = document.getElementById('rfqFormPembeli');
-      const catatanEl = document.getElementById('rfqFormCatatan');
-      const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
-
-      RFQ_DATA.unshift({
-        id: nomorBaru,
-        tgl: formatTanggalPesanan(new Date().toISOString().slice(0, 10)),
-        pembeli: pembeliEl ? (pembeliEl.value || '-') : '-',
-        produk: items.map(item => item.produk).join(', '),
-        qty: totalQty,
-        harga: items[0].harga,
-        total: totalEl ? totalEl.textContent : formatRupiah(0),
-        statusKey: 'terkirim',
-        catatan: catatanEl ? catatanEl.value : '',
-        alamat: '-'
-      });
-
-      rfqFilterActive = 'semua';
-      document.querySelectorAll('.rfq-tab').forEach((tab, index) => {
-        tab.classList.toggle('active', index === 0);
-      });
-
-      const searchInput = document.getElementById('rfqSearchInput');
-      if (searchInput) searchInput.value = '';
-
-      showRFQList();
-      showToast('Permintaan berhasil dikirim ke pembeli!');
-    }
-
-    /* --------------------------------------------------------------------------
        H. GLOBAL EVENT LISTENERS & INITIALIZATION
        -------------------------------------------------------------------------- */
     // Metric cards click
@@ -9364,8 +7907,6 @@
         switchMainView('produk');
       } else if (window.location.hash === '#pesanan') {
         switchMainView('pesanan');
-      } else if (window.location.hash === '#permintaan' || window.location.hash === '#penawaran') {
-        switchMainView('penawaran');
       } else if (window.location.hash === '#profil') {
         switchMainView('profil');
       } else if (window.location.hash === '#dispute') {

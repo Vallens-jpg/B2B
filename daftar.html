@@ -30,24 +30,25 @@
 
     html,
     body {
-      height: 100vh;
-      overflow: hidden;
+      height: 100%;
+      overflow: auto;
     }
 
     body {
       color: var(--text-light);
       background: #0f1f17;
+      min-height: 100vh;
     }
 
     .auth-page {
       position: relative;
-      height: 100vh;
+      min-height: 100vh;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .auth-bg {
-      position: absolute;
+      position: fixed;
       inset: 0;
       z-index: 0;
     }
@@ -76,9 +77,10 @@
       z-index: 1;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      padding: 40px 64px;
+      justify-content: center;
+      padding: 60px 64px;
       gap: 32px;
+      min-height: 100vh;
     }
 
     .brand {
@@ -174,9 +176,10 @@
       position: relative;
       z-index: 1;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      padding: 40px 48px;
+      padding: 48px 48px;
+      min-height: 100vh;
     }
 
     .form-card {
@@ -238,6 +241,32 @@
       box-shadow: 0 14px 40px -18px rgba(245, 158, 11, 0.95);
     }
 
+    .tab-dot {
+      color: #F59E0B;
+      font-size: 1.1em;
+    }
+
+    .tab-btn.active .tab-dot {
+      color: #111827;
+    }
+
+    /* Tab Radio CSS-only */
+    .tab-radio { display: none; }
+
+    /* Default: tab Pembeli aktif */
+    #tab-pembeli:checked ~ .tab-switcher .tab-btn[for="tab-pembeli"],
+    #tab-perusahaan:checked ~ .tab-switcher .tab-btn[for="tab-perusahaan"] {
+      background: linear-gradient(90deg, rgba(245, 158, 11, 0.98) 0%, rgba(251, 191, 36, 0.98) 100%);
+      color: #111827;
+      box-shadow: 0 14px 40px -18px rgba(245, 158, 11, 0.95);
+    }
+    #tab-perusahaan:checked ~ .tab-switcher .tab-btn[for="tab-perusahaan"] .tab-dot { color: #111827; }
+
+    /* Field Perusahaan: tampil hanya saat tab perusahaan aktif */
+    .company-field { display: none; }
+    #tab-perusahaan:checked ~ * .company-field { display: grid; }
+    #tab-pembeli:checked ~ * .company-field { display: none; }
+
     .form-grid {
       display: grid;
       gap: 14px;
@@ -273,29 +302,38 @@
 
     .cta-btn {
       border: none;
-      background: linear-gradient(90deg, var(--accent) 0%, #FBBF24 100%);
+      background: linear-gradient(90deg, #F59E0B 0%, #FBBF24 100%);
       color: #111827;
       font-weight: 800;
-      padding: 11px 16px;
-      border-radius: 10px;
-      font-size: 0.98rem;
+      padding: 14px 16px;
+      border-radius: 999px;
+      font-size: 1rem;
       cursor: pointer;
-      box-shadow: 0 24px 60px -30px rgba(245, 158, 11, 0.95);
+      box-shadow: 0 8px 32px -8px rgba(245, 158, 11, 0.7);
+      letter-spacing: 0.01em;
+      transition: box-shadow 0.2s, transform 0.1s;
     }
 
     .cta-btn:hover {
-      background: linear-gradient(90deg, var(--accent-hover) 0%, #F59E0B 100%);
+      background: linear-gradient(90deg, #E59008 0%, #F59E0B 100%);
+      box-shadow: 0 12px 40px -10px rgba(245, 158, 11, 0.85);
+      transform: translateY(-1px);
     }
 
     .form-footer {
       text-align: center;
       color: var(--text-muted-light);
+      font-size: 0.95rem;
     }
 
     .form-footer a {
       color: #FBBF24;
       font-weight: 700;
       text-decoration: none;
+    }
+
+    .form-footer a:hover {
+      text-decoration: underline;
     }
 
     @media (max-width: 1080px) {
@@ -317,6 +355,8 @@
 
       .auth-right {
         padding: 32px 18px;
+        min-height: 100vh;
+        align-items: flex-start;
       }
 
       .form-card-inner {
@@ -390,34 +430,47 @@
         <div class="form-card-inner">
           <div class="form-header">
             <h2 class="form-title">Daftar Akun Baru</h2>
-            <p class="form-subtitle">Buat akun untuk mulai bertransaksi di Staplr</p>
+            <p class="form-subtitle">Buat akun untuk mulai menggunakan layanan kami.</p>
           </div>
+
+          <!-- Tab radio inputs harus di luar .tab-switcher tapi di dalam .form-card-inner -->
+          <input type="radio" name="acc-type" id="tab-pembeli" class="tab-radio" checked>
+          <input type="radio" name="acc-type" id="tab-perusahaan" class="tab-radio">
 
           <div class="tab-switcher">
-            <button class="tab-btn active" type="button" data-type="pembeli">Pembeli</button>
-            <button class="tab-btn" type="button" data-type="perusahaan">Perusahaan</button>
+            <label class="tab-btn" for="tab-pembeli">Pembeli</label>
+            <label class="tab-btn" for="tab-perusahaan"><span class="tab-dot">•</span> Perusahaan</label>
           </div>
 
-          <form class="form-grid" id="registerForm">
+          <form class="form-grid" id="registerForm" action="verifikasi-otp.html" method="get">
             <div class="field">
-              <label class="field-label" for="full-name" id="name-label">Nama Lengkap</label>
-              <input class="field-input" id="full-name" placeholder="Masukkan nama lengkap" required>
+              <label class="field-label" for="full-name">Nama Lengkap</label>
+              <input class="field-input" id="full-name" name="nama" placeholder="Masukkan nama lengkap" required>
             </div>
             <div class="field">
               <label class="field-label" for="email">Email</label>
-              <input class="field-input" id="email" type="email" placeholder="Masukkan alamat email" required>
+              <input class="field-input" id="email" name="email" type="email" placeholder="nama@email.com" required>
             </div>
             <div class="field">
               <label class="field-label" for="phone">No Hp</label>
-              <input class="field-input" id="phone" placeholder="Masukkan nomor handphone" required>
+              <input class="field-input" id="phone" name="phone" placeholder="08xx xxxx xxxx" required>
             </div>
             <div class="field">
               <label class="field-label" for="address">Alamat</label>
-              <input class="field-input" id="address" placeholder="Masukkan alamat lengkap" required>
+              <input class="field-input" id="address" name="address" placeholder="Masukkan alamat lengkap" required>
+            </div>
+            <!-- Field khusus Perusahaan - dikontrol CSS -->
+            <div class="field company-field" id="field-nib">
+              <label class="field-label" for="nib">Nomor Induk Berusaha (NIB)</label>
+              <input class="field-input" id="nib" name="nib" placeholder="Masukkan NIB">
+            </div>
+            <div class="field company-field" id="field-npwp">
+              <label class="field-label" for="npwp">NPWP Badan Usaha</label>
+              <input class="field-input" id="npwp" name="npwp" placeholder="Masukkan NPWP">
             </div>
             <div class="field">
               <label class="field-label" for="password">Kata Sandi</label>
-              <input class="field-input" id="password" type="password" placeholder="Masukkan kata sandi" required>
+              <input class="field-input" id="password" name="password" type="password" placeholder="••••••••" required>
             </div>
             <button class="cta-btn" type="submit">Daftar Sekarang</button>
           </form>
@@ -429,36 +482,6 @@
       </div>
     </div>
   </div>
-  <script>
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const nameLabel = document.getElementById('name-label');
-    const fullNameInput = document.getElementById('full-name');
-    const registerForm = document.getElementById('registerForm');
-    let accountType = 'pembeli';
-
-    tabButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        tabButtons.forEach((b) => b.classList.remove('active'));
-        btn.classList.add('active');
-        accountType = btn.dataset.type || 'pembeli';
-        localStorage.setItem('accountType', accountType);
-
-        if (accountType === 'perusahaan') {
-          if (nameLabel) nameLabel.textContent = 'Nama Perusahaan';
-          if (fullNameInput) fullNameInput.placeholder = 'Masukkan nama perusahaan';
-        } else {
-          if (nameLabel) nameLabel.textContent = 'Nama Lengkap';
-          if (fullNameInput) fullNameInput.placeholder = 'Masukkan nama lengkap';
-        }
-      });
-    });
-
-    registerForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      localStorage.setItem('accountType', accountType);
-      window.location.href = 'verifikasi-otp.html';
-    });
-  </script>
 </body>
 
 </html>

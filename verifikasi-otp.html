@@ -328,7 +328,7 @@
             <p class="form-subtitle">Kami telah mengirim kode OTP ke <span class="email-highlight">email Anda</span></p>
           </div>
 
-          <form class="form-grid" id="otpForm">
+          <form class="form-grid" id="otpForm" action="index.html" method="get">
             <div class="field">
               <label class="field-label">Masukkan Kode Verifikasi</label>
               <div class="otp-grid">
@@ -352,34 +352,6 @@
     </div>
   </div>
 
-  <script>
-    const otpInputs = document.querySelectorAll('.otp-input');
-    const otpForm = document.getElementById('otpForm');
-
-    otpInputs.forEach((input, index) => {
-      input.addEventListener('input', () => {
-        input.value = input.value.replace(/[^0-9]/g, '');
-        if (input.value && index < otpInputs.length - 1) {
-          otpInputs[index + 1].focus();
-        }
-      });
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && !input.value && index > 0) {
-          otpInputs[index - 1].focus();
-        }
-      });
-    });
-
-    otpForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const accountType = localStorage.getItem('accountType') || 'pembeli';
-      if (accountType === 'perusahaan') {
-        window.location.href = 'dashboard.html';
-      } else {
-        window.location.href = 'index.html';
-      }
-    });
-  </script>
 </body>
 
 </html>

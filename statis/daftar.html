@@ -77,12 +77,12 @@
         <div class="form-card-inner">
           <div class="form-header">
             <h2 class="form-title">Daftar Akun Baru</h2>
-            <p class="form-subtitle">Buat akun untuk mulai bertransaksi di Staplr</p>
+            <p class="form-subtitle">Buat akun untuk mulai menggunakan layanan kami.</p>
           </div>
 
           <div class="tab-switcher">
             <button class="tab-btn active" type="button" data-type="pembeli">Pembeli</button>
-            <button class="tab-btn" type="button" data-type="perusahaan">Perusahaan</button>
+            <button class="tab-btn" type="button" data-type="perusahaan"><span class="tab-dot">•</span> Perusahaan</button>
           </div>
 
           <div class="form-grid" id="registerForm">
@@ -92,19 +92,28 @@
             </div>
             <div class="field">
               <label class="field-label" for="email">Email</label>
-              <input class="field-input" id="email" type="email" placeholder="Masukkan alamat email" required>
+              <input class="field-input" id="email" type="email" placeholder="nama@email.com" required>
             </div>
             <div class="field">
               <label class="field-label" for="phone">No Hp</label>
-              <input class="field-input" id="phone" placeholder="Masukkan nomor handphone" required>
+              <input class="field-input" id="phone" placeholder="08xx xxxx xxxx" required>
             </div>
             <div class="field">
               <label class="field-label" for="address">Alamat</label>
               <input class="field-input" id="address" placeholder="Masukkan alamat lengkap" required>
             </div>
+            <!-- Field khusus Perusahaan -->
+            <div class="field company-only" id="field-nib" style="display:none;">
+              <label class="field-label" for="nib">Nomor Induk Berusaha (NIB)</label>
+              <input class="field-input" id="nib" placeholder="Masukkan NIB">
+            </div>
+            <div class="field company-only" id="field-npwp" style="display:none;">
+              <label class="field-label" for="npwp">NPWP Badan Usaha</label>
+              <input class="field-input" id="npwp" placeholder="Masukkan NPWP">
+            </div>
             <div class="field">
               <label class="field-label" for="password">Kata Sandi</label>
-              <input class="field-input" id="password" type="password" placeholder="Masukkan kata sandi" required>
+              <input class="field-input" id="password" type="password" placeholder="••••••••" required>
             </div>
             <a class="cta-btn" href="verifikasi-otp.html">Daftar Sekarang</a>
           </div>
@@ -116,7 +125,41 @@
       </div>
     </div>
   </div>
-  
+  <script>
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const nameLabel = document.getElementById('name-label');
+    const fullNameInput = document.getElementById('full-name');
+    const fieldNib = document.getElementById('field-nib');
+    const fieldNpwp = document.getElementById('field-npwp');
+    const nibInput = document.getElementById('nib');
+    const npwpInput = document.getElementById('npwp');
+    let accountType = 'pembeli';
+
+    function setAccountType(type) {
+      accountType = type;
+      localStorage.setItem('accountType', accountType);
+
+      if (accountType === 'perusahaan') {
+        if (nameLabel) nameLabel.textContent = 'Nama Perusahaan';
+        if (fullNameInput) fullNameInput.placeholder = 'Masukkan nama perusahaan';
+        if (fieldNib) fieldNib.style.display = '';
+        if (fieldNpwp) fieldNpwp.style.display = '';
+      } else {
+        if (nameLabel) nameLabel.textContent = 'Nama Lengkap';
+        if (fullNameInput) fullNameInput.placeholder = 'Masukkan nama lengkap';
+        if (fieldNib) fieldNib.style.display = 'none';
+        if (fieldNpwp) fieldNpwp.style.display = 'none';
+      }
+    }
+
+    tabButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        tabButtons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        setAccountType(btn.dataset.type || 'pembeli');
+      });
+    });
+  </script>
 </body>
 
 </html>

@@ -59,19 +59,7 @@
         <span>Produk</span>
       </a>
 
-      <!-- 3. Permintaan -->
-      <a href="dashboard-permintaan.html" class="sidebar-link" id="navPermintaan">
-        <span class="sidebar-icon">
-          <!-- Price Tag Icon -->
-          <svg viewBox="0 0 24 24">
-            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-            <line x1="7" y1="7" x2="7.01" y2="7"></line>
-          </svg>
-        </span>
-        <span>Permintaan</span>
-      </a>
-
-      <!-- 4. Pesanan (Terhubung langsung ke tampilan Pesanan) -->
+      <!-- 3. Pesanan (Terhubung langsung ke tampilan Pesanan) -->
       <a href="dashboard-pesanan.html" class="sidebar-link" id="navPesanan">
         <span class="sidebar-icon">
           <!-- Shopping Bag / Order Icon -->
@@ -84,7 +72,7 @@
         <span>Pesanan</span>
       </a>
 
-      <!-- 5. Dispute -->
+      <!-- 4. Dispute -->
       <a href="dashboard-dispute.html" class="sidebar-link" id="navDispute">
         <span class="sidebar-icon">
           <!-- Shield Alert Icon -->
@@ -97,7 +85,7 @@
         <span>Dispute</span>
       </a>
 
-      <!-- 6. Keuangan -->
+      <!-- 5. Keuangan -->
       <a href="dashboard-keuangan.html" class="sidebar-link" id="navKeuangan">
         <span class="sidebar-icon">
           <!-- Wallet / Card Icon -->
@@ -110,7 +98,7 @@
         <span>Keuangan</span>
       </a>
 
-      <!-- 7. Riwayat -->
+      <!-- 6. Riwayat -->
       <a href="dashboard-riwayat.html" class="sidebar-link" id="navRiwayat">
         <span class="sidebar-icon">
           <!-- History / Clock Icon -->
@@ -509,187 +497,13 @@
       </div>
 
       <!-- ======================================================================
-           VIEW D: PENAWARAN (RFQ) VIEW
-           ====================================================================== -->
-      <div id="penawaranViewContainer" class="penawaran-view" style="display: none;">
-
-        <!-- Sub-View 1: Daftar Permintaan (List) -->
-        <div id="rfqListView">
-          <div class="rfq-card">
-            <header class="rfq-header">
-              <div>
-                <h2 class="rfq-title">Permintaan (RFQ)</h2>
-                <p class="rfq-subtitle">Kelola permintaan, tindaklanjut harga dari pembeli</p>
-              </div>
-            </header>
-
-            <!-- Filter Tabs -->
-            <div class="rfq-filter-tabs">
-              <button class="rfq-tab active" id="rfqTabSemua">Semua</button>
-              <button class="rfq-tab">Perlu Dibalas <span class="rfq-tab-count">(1)</span></button>
-              <button class="rfq-tab">Terkirim <span class="rfq-tab-count">(1)</span></button>
-              <button class="rfq-tab">Disetujui <span class="rfq-tab-count">(1)</span></button>
-              <button class="rfq-tab">Kedaluwarsa</button>
-              <button class="rfq-tab">Ditolak</button>
-            </div>
-
-            <!-- Search -->
-            <div class="rfq-search-wrap">
-              <svg class="rfq-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-              <input type="text" class="rfq-search-input" id="rfqSearchInput" placeholder="Cari no. RFQ...">
-            </div>
-
-            <!-- Table -->
-            <div class="table-wrap view-scroll" data-fill-scroll="">
-              <table class="orders-table" id="rfqTable">
-                <thead>
-                  <tr>
-                    <th>NO RFQ</th>
-                    <th>TGL MASUK</th>
-                    <th>PEMBELI</th>
-                    <th>RINGKAS PRODUK</th>
-                    <th>TOTAL PERMINTAAN</th>
-                    <th>STATUS</th>
-                    <th>AKSI</th>
-                  </tr>
-                </thead>
-                <tbody id="rfqTableBody">
-                  <!-- Rendered by JS -->
-                </tbody>
-              </table>
-            </div>
-
-            <footer class="product-mgmt-footer">
-              <div class="product-count-info" id="rfqCountInfo">Menampilkan 1-3 dari 3 RFQ</div>
-            </footer>
-          </div>
-        </div>
-
-        <!-- Sub-View 2: Detail Permintaan (RFQ Detail) -->
-        <div id="rfqFormView" style="display: none;">
-
-          <div class="rfq-detail-header">
-            <div>
-              <h2 class="rfq-detail-heading" id="rfqDetailHeading">Permintaan</h2>
-              <div class="rfq-detail-sub" id="rfqFormSubtitle">RFQ #RFQ-2027-001</div>
-            </div>
-            <a href="dashboard-permintaan.html" class="rfq-back-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-              </svg>
-              Kembali ke Daftar Permintaan
-            </a>
-          </div>
-
-          <div class="rfq-detail-grid">
-            <!-- Left: Informasi & Item -->
-            <div class="rfq-detail-main">
-
-              <section class="rfq-dcard">
-                <h3 class="rfq-dcard-title">Informasi Permintaan</h3>
-
-                <div class="rfq-dfield-row">
-                  <div class="rfq-dfield">
-                    <label class="rfq-dlabel" for="rfqFormNomor">Nomor RFQ</label>
-                    <input class="rfq-dinput" id="rfqFormNomor" type="text" value="#RFQ-2027-001" readonly="">
-                  </div>
-                  <div class="rfq-dfield">
-                    <label class="rfq-dlabel" for="rfqFormPembeli">Pembeli</label>
-                    <input class="rfq-dinput" id="rfqFormPembeli" type="text" value="Riky W." readonly="">
-                  </div>
-                </div>
-
-                <div class="rfq-dfield">
-                  <label class="rfq-dlabel" for="rfqFormCatatan">Catatan Pembeli</label>
-                  <textarea class="rfq-dtextarea" id="rfqFormCatatan" rows="2">Kirim secepatnya</textarea>
-                </div>
-              </section>
-
-              <section class="rfq-dcard">
-                <div class="rfq-dcard-head">
-                  <h3 class="rfq-dcard-title">Item Permintaan</h3>
-                  <button class="rfq-add-item" type="button" id="rfqAddItemBtn">+ Tambah Item</button>
-                </div>
-
-                <div class="rfq-item-head">
-                  <span>Produk <span class="req">*</span></span>
-                  <span>Qty <span class="req">*</span></span>
-                  <span>Harga Satuan <span class="req">*</span></span>
-                  <span></span>
-                </div>
-
-                <div id="itemHargaBody">
-                  <div class="rfq-item-row" id="item-row-0">
-                    <select class="rfq-dinput item-produk">
-                      <option>Telur Ayam</option>
-                      <option>Telur Omega</option>
-                      <option>Telur Ayam Kampung</option>
-                    </select>
-                    <input class="rfq-dinput item-qty" type="text" value="500 Kg">
-                    <input class="rfq-dinput item-harga" type="text" value="Rp 23.000">
-                    <button class="rfq-item-hapus" type="button">Hapus</button>
-                  </div>
-                </div>
-
-                <div class="rfq-item-subtotal">
-                  <span>Subtotal Item</span>
-                  <strong id="rfqSubtotal">Rp 11.500.000</strong>
-                </div>
-              </section>
-
-            </div>
-
-            <!-- Right: Ringkasan -->
-            <aside class="rfq-dcard rfq-summary-card">
-              <h3 class="rfq-dcard-title">Ringkasan Permintaan</h3>
-
-              <div class="rfq-sum-row">
-                <span class="label">Subtotal Item</span>
-                <span class="value" id="rfqSummarySubtotal">Rp 11.500.000</span>
-              </div>
-              <div class="rfq-sum-row">
-                <span class="label">Biaya Pengiriman</span>
-                <span class="value" id="rfqSummaryKirim">Rp 200.000</span>
-              </div>
-              <div class="rfq-sum-row">
-                <span class="label">Fee (3%)</span>
-                <span class="value" id="rfqSummaryFee">Rp 342.000</span>
-              </div>
-
-              <div class="rfq-sum-total">
-                <span>Total</span>
-                <strong id="rfqSummaryTotal">Rp 11.742.000</strong>
-              </div>
-
-              <div class="rfq-sum-actions" id="rfqExistingActions">
-                <a href="dashboard-permintaan.html" class="rfq-btn-setujui">Setujui</a>
-                <a href="dashboard-permintaan.html" class="rfq-btn-tolak">Tolak</a>
-              </div>
-
-              <a href="dashboard-permintaan.html" class="rfq-kirim-btn" id="rfqNewActions" style="display: none;">Kirim Permintaan</a>
-            </aside>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ======================================================================
            VIEW E: PROFIL AKUN
            ====================================================================== -->
       <div id="profileViewContainer" class="profile-view" style="display: none;">
         <div class="profile-layout">
           <!-- Kartu Ringkasan Profil -->
           <aside class="profile-summary-card">
-            <div class="profile-avatar-large">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-            </div>
+            <div class="profile-avatar-large"></div>
             <div class="profile-summary-name">PT. Maju Jaya Abadi</div>
             <div class="profile-summary-email">supplier@majuabadi.co.id</div>
             <span class="profile-verified-badge">
@@ -722,6 +536,34 @@
                 <div class="profile-field full">
                   <label class="profile-label" for="profileAlamat">Alamat Lengkap</label>
                   <input class="profile-input" id="profileAlamat" type="text" value="Jl. Raya Industri No. 123">
+                </div>
+                <div class="profile-field">
+                  <label class="profile-label" for="profileNibInput">NIB</label>
+                  <label class="profile-file-box" for="profileNibInput">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="16" y1="13" x2="8" y2="13"></line>
+                      <line x1="16" y1="17" x2="8" y2="17"></line>
+                      <line x1="10" y1="9" x2="8" y2="9"></line>
+                    </svg>
+                    <span id="profileNibName">File NIB</span>
+                    <input type="file" id="profileNibInput" hidden accept=".pdf,image/*" onchange="if(this.files[0]) document.getElementById('profileNibName').textContent = this.files[0].name">
+                  </label>
+                </div>
+                <div class="profile-field">
+                  <label class="profile-label" for="profileNpwpInput">NPWP</label>
+                  <label class="profile-file-box" for="profileNpwpInput">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="16" y1="13" x2="8" y2="13"></line>
+                      <line x1="16" y1="17" x2="8" y2="17"></line>
+                      <line x1="10" y1="9" x2="8" y2="9"></line>
+                    </svg>
+                    <span id="profileNpwpName">File NPWP</span>
+                    <input type="file" id="profileNpwpInput" hidden accept=".pdf,image/*" onchange="if(this.files[0]) document.getElementById('profileNpwpName').textContent = this.files[0].name">
+                  </label>
                 </div>
               </div>
             </section>
@@ -1536,7 +1378,6 @@
        4. JAVASCRIPT LOGIC
        ========================================================================== -->
   
-
 
 
 </body></html>

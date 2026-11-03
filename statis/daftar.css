@@ -19,24 +19,25 @@
 
     html,
     body {
-      height: 100vh;
-      overflow: hidden;
+      height: 100%;
+      overflow: auto;
     }
 
     body {
       color: var(--text-light);
       background: #0f1f17;
+      min-height: 100vh;
     }
 
     .auth-page {
       position: relative;
-      height: 100vh;
+      min-height: 100vh;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .auth-bg {
-      position: absolute;
+      position: fixed;
       inset: 0;
       z-index: 0;
     }
@@ -65,9 +66,10 @@
       z-index: 1;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      padding: 40px 64px;
+      justify-content: center;
+      padding: 60px 64px;
       gap: 32px;
+      min-height: 100vh;
     }
 
     .brand {
@@ -163,9 +165,10 @@
       position: relative;
       z-index: 1;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      padding: 40px 48px;
+      padding: 48px 48px;
+      min-height: 100vh;
     }
 
     .form-card {
@@ -227,6 +230,15 @@
       box-shadow: 0 14px 40px -18px rgba(245, 158, 11, 0.95);
     }
 
+    .tab-dot {
+      color: #F59E0B;
+      font-size: 1.1em;
+    }
+
+    .tab-btn.active .tab-dot {
+      color: #111827;
+    }
+
     .form-grid {
       display: grid;
       gap: 14px;
@@ -262,29 +274,38 @@
 
     .cta-btn {
       border: none;
-      background: linear-gradient(90deg, var(--accent) 0%, #FBBF24 100%);
+      background: linear-gradient(90deg, #F59E0B 0%, #FBBF24 100%);
       color: #111827;
       font-weight: 800;
-      padding: 11px 16px;
-      border-radius: 10px;
-      font-size: 0.98rem;
+      padding: 14px 16px;
+      border-radius: 999px;
+      font-size: 1rem;
       cursor: pointer;
-      box-shadow: 0 24px 60px -30px rgba(245, 158, 11, 0.95);
+      box-shadow: 0 8px 32px -8px rgba(245, 158, 11, 0.7);
+      letter-spacing: 0.01em;
+      transition: box-shadow 0.2s, transform 0.1s;
     }
 
     .cta-btn:hover {
-      background: linear-gradient(90deg, var(--accent-hover) 0%, #F59E0B 100%);
+      background: linear-gradient(90deg, #E59008 0%, #F59E0B 100%);
+      box-shadow: 0 12px 40px -10px rgba(245, 158, 11, 0.85);
+      transform: translateY(-1px);
     }
 
     .form-footer {
       text-align: center;
       color: var(--text-muted-light);
+      font-size: 0.95rem;
     }
 
     .form-footer a {
       color: #FBBF24;
       font-weight: 700;
       text-decoration: none;
+    }
+
+    .form-footer a:hover {
+      text-decoration: underline;
     }
 
     @media (max-width: 1080px) {
@@ -306,6 +327,8 @@
 
       .auth-right {
         padding: 32px 18px;
+        min-height: 100vh;
+        align-items: flex-start;
       }
 
       .form-card-inner {
@@ -322,4 +345,5 @@ a.cta-btn {
   box-sizing: border-box;
   text-decoration: none;
   cursor: pointer;
+  border-radius: 999px;
 }

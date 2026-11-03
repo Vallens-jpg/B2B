@@ -1062,6 +1062,7 @@ button {
   border-radius: 8px;
   text-align: center;
   transition: all var(--transition-fast);
+  margin-top: auto;
 }
 
 .btn-product-detail:hover {

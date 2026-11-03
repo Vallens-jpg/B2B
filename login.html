@@ -238,6 +238,15 @@
       box-shadow: 0 14px 40px -18px rgba(245, 158, 11, 0.95);
     }
 
+    /* Tab Radio CSS-only */
+    .tab-radio { display: none; }
+    #tab-pembeli:checked ~ .tab-switcher .tab-btn[for="tab-pembeli"],
+    #tab-perusahaan:checked ~ .tab-switcher .tab-btn[for="tab-perusahaan"] {
+      background: linear-gradient(90deg, rgba(245, 158, 11, 0.98) 0%, rgba(251, 191, 36, 0.98) 100%);
+      color: #111827;
+      box-shadow: 0 14px 40px -18px rgba(245, 158, 11, 0.95);
+    }
+
     .form-grid {
       display: grid;
       gap: 14px;
@@ -417,12 +426,16 @@
             <p class="form-subtitle">Masuk untuk mengelola transaksi Anda</p>
           </div>
 
+          <!-- Tab radio inputs di luar .tab-switcher tapi di dalam .form-card-inner -->
+          <input type="radio" name="acc-type" id="tab-pembeli" class="tab-radio" checked>
+          <input type="radio" name="acc-type" id="tab-perusahaan" class="tab-radio">
+
           <div class="tab-switcher">
-            <button class="tab-btn active" type="button" data-type="pembeli">Pembeli</button>
-            <button class="tab-btn" type="button" data-type="perusahaan">Perusahaan</button>
+            <label class="tab-btn" for="tab-pembeli">Pembeli</label>
+            <label class="tab-btn" for="tab-perusahaan">Perusahaan</label>
           </div>
 
-          <form class="form-grid" id="loginForm">
+          <form class="form-grid" id="loginForm" action="index.html" method="get">
             <div class="field">
               <label class="field-label" for="email">Email</label>
               <input class="field-input" id="email" type="email" placeholder="Masukkan alamat email" required>
@@ -448,30 +461,6 @@
       </div>
     </div>
   </div>
-  <script>
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const loginForm = document.getElementById('loginForm');
-    let accountType = 'pembeli';
-
-    tabButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        tabButtons.forEach((b) => b.classList.remove('active'));
-        btn.classList.add('active');
-        accountType = btn.dataset.type || 'pembeli';
-        localStorage.setItem('accountType', accountType);
-      });
-    });
-
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const type = localStorage.getItem('accountType') || accountType;
-      if (type === 'perusahaan') {
-        window.location.href = 'dashboard.html';
-      } else {
-        window.location.href = 'index.html';
-      }
-    });
-  </script>
 </body>
 
 </html>
