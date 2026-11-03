@@ -183,11 +183,14 @@
       color: #0f2a4a;
       text-decoration: none;
       box-shadow: 0 1px 2px rgba(15, 42, 74, 0.02);
-      transition: background 0.15s ease;
+      transition: all 0.15s ease;
+      cursor: pointer;
     }
 
     .btn-back:hover {
       background: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateX(-2px);
     }
 
     .btn-back svg {
@@ -251,11 +254,11 @@
       font-weight: 700;
     }
 
-    /* 4 Information Tiles Grid */
+    /* 6 Information Tiles Grid */
     .info-tiles-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 14px;
     }
 
     .info-tile {
@@ -424,6 +427,7 @@
       outline: none;
       resize: vertical;
       font-family: inherit;
+      transition: border-color 0.15s ease;
     }
 
     .form-textarea::placeholder {
@@ -451,11 +455,16 @@
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.15s ease;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .btn-submit-approve:hover {
       background: #173b66;
+      box-shadow: 0 2px 8px rgba(15, 42, 74, 0.2);
     }
 
     .btn-submit-reject {
@@ -468,17 +477,61 @@
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.15s ease;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .btn-submit-reject:hover {
-      background: #f8fafc;
+      background: #fef2f2;
+      border-color: #fca5a5;
+      color: #dc2626;
+    }
+
+    /* ============ TOAST NOTIFICATION ============ */
+    .staplr-toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      padding: 14px 20px;
+      border-radius: 10px;
+      background: #0f2a4a;
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(15, 42, 74, 0.2);
+      z-index: 9999;
+      transform: translateY(60px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .staplr-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .staplr-toast.success {
+      background: #065f46;
+      border: 1px solid #059669;
+    }
+
+    .staplr-toast.danger {
+      background: #991b1b;
+      border: 1px solid #dc2626;
     }
 
     /* ============ RESPONSIVE ============ */
-    @media (max-width: 1024px) {
+    @media (max-width: 1200px) {
       .info-tiles-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
       }
     }
 
@@ -509,17 +562,17 @@
   <!-- ==================== SIDEBAR ==================== -->
   <aside class="sidebar">
     <!-- Logo with shopping basket + yellow dot + Staplr -->
-    <div class="logo-container">
+    <a href="dashboard.html" class="logo-container" style="text-decoration: none; display: block;">
       <img src="../../assets/img/staplr-logo.png" alt="Staplr">
-    </div>
+    </a>
 
     <!-- Navigation Menu -->
     <nav class="menu">
       <!-- 1. Dashboard -->
       <a class="menu-item" href="dashboard.html">
         <span class="icon">
-          <!-- 4-square grid in olive-yellow #877825 / #9eb028 -->
-          <svg viewBox="0 0 24 24" fill="#877825">
+          <!-- 4-square grid in golden yellow #FFC700 -->
+          <svg viewBox="0 0 24 24" fill="#FFC700">
             <rect x="3" y="3" width="8" height="8" rx="2"/>
             <rect x="13" y="3" width="8" height="8" rx="2"/>
             <rect x="3" y="13" width="8" height="8" rx="2"/>
@@ -602,7 +655,7 @@
     <!-- Topbar -->
     <header class="topbar">
       <h1>Verifikasi Perusahaan</h1>
-      <div class="admin-profile">
+      <div class="admin-profile" id="adminProfileBtn" style="cursor: pointer;" title="Klik untuk info profil">
         <div class="admin-avatar"></div>
         <span>Admin</span>
       </div>
@@ -626,10 +679,10 @@
       <div class="company-detail-card">
         <!-- Company Top Header -->
         <div class="company-top">
-          <div class="avatar-large">NU</div>
+          <div class="avatar-large" id="companyAvatarLarge">NU</div>
           <div class="company-heading">
-            <h3>PT Nusantara Tech Utama</h3>
-            <div class="email">admin@nusantaratech.id</div>
+            <h3 id="companyHeadingName">PT Nusantara Tech Utama</h3>
+            <div class="email" id="companyHeadingEmail">admin@nusantaratech.id</div>
             <span class="badge-perusahaan">Perusahaan</span>
           </div>
         </div>
@@ -645,7 +698,7 @@
               </svg>
               <span>NAMA LENGKAP</span>
             </div>
-            <div class="tile-value">PT Nusantara Tech Utama</div>
+            <div class="tile-value" id="tileFullName">PT Nusantara Tech Utama</div>
           </div>
 
           <!-- Tile 2: Email -->
@@ -657,7 +710,7 @@
               </svg>
               <span>EMAIL</span>
             </div>
-            <div class="tile-value">admin@nusantaratech.id</div>
+            <div class="tile-value" id="tileEmail">admin@nusantaratech.id</div>
           </div>
 
           <!-- Tile 3: No HP -->
@@ -668,7 +721,7 @@
               </svg>
               <span>NO HP</span>
             </div>
-            <div class="tile-value">—</div>
+            <div class="tile-value" id="tilePhone">—</div>
             <div class="tile-sub">Belum tersedia</div>
           </div>
 
@@ -681,7 +734,37 @@
               </svg>
               <span>ALAMAT</span>
             </div>
-            <div class="tile-value">—</div>
+            <div class="tile-value" id="tileAddress">—</div>
+            <div class="tile-sub">Belum tersedia</div>
+          </div>
+
+          <!-- Tile 5: NIB -->
+          <div class="info-tile">
+            <div class="tile-head">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+              <span>NIB</span>
+            </div>
+            <div class="tile-value" id="tileNib">—</div>
+            <div class="tile-sub">Belum tersedia</div>
+          </div>
+
+          <!-- Tile 6: NPWP -->
+          <div class="info-tile">
+            <div class="tile-head">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+              <span>NPWP</span>
+            </div>
+            <div class="tile-value" id="tileNpwp">—</div>
             <div class="tile-sub">Belum tersedia</div>
           </div>
         </div>
@@ -694,7 +777,7 @@
         <!-- Decision Radio Options -->
         <div class="decision-options">
           <!-- Option 1: Setujui -->
-          <input type="radio" name="keputusan" id="opt-approve" class="radio-input" checked>
+          <input type="radio" name="keputusan" id="opt-approve" value="approved" class="radio-input" checked>
           <label for="opt-approve" class="decision-box approve">
             <div class="decision-icon green">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
@@ -708,7 +791,7 @@
           </label>
 
           <!-- Option 2: Tolak -->
-          <input type="radio" name="keputusan" id="opt-reject" class="radio-input">
+          <input type="radio" name="keputusan" id="opt-reject" value="rejected" class="radio-input">
           <label for="opt-reject" class="decision-box reject">
             <div class="decision-icon red">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
@@ -723,10 +806,10 @@
           </label>
 
           <!-- Option 3: Tunda / Pending -->
-          <input type="radio" name="keputusan" id="opt-pending" class="radio-input">
+          <input type="radio" name="keputusan" id="opt-pending" value="pending" class="radio-input">
           <label for="opt-pending" class="decision-box pending">
             <div class="decision-icon gray">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="9"/>
                 <polyline points="12 6 12 12 16 14"/>
               </svg>
@@ -740,19 +823,244 @@
 
         <!-- Form: Catatan Admin -->
         <div class="form-group">
-          <label class="form-label">Catatan Admin (opsional)</label>
-          <textarea class="form-textarea" placeholder="Tambahkan catatan untuk keputusan ini..."></textarea>
+          <label class="form-label" for="adminNoteTextarea">Catatan Admin (opsional)</label>
+          <textarea id="adminNoteTextarea" class="form-textarea" placeholder="Tambahkan catatan untuk keputusan ini..."></textarea>
         </div>
 
         <!-- Action Buttons -->
         <div class="button-stack">
-          <button type="button" class="btn-submit-approve">Setujui Perusahaan</button>
-          <button type="button" class="btn-submit-reject">Tolak Perusahaan</button>
+          <button type="button" class="btn-submit-approve" id="btnSubmitApprove">
+            Setujui Perusahaan
+          </button>
+          <button type="button" class="btn-submit-reject" id="btnSubmitReject">
+            Tolak Perusahaan
+          </button>
         </div>
       </div>
 
     </section>
   </main>
 
+  <!-- Toast Notification Container -->
+  <div id="toastNotification" class="staplr-toast"></div>
+
+  <!-- Client-side Logic Script -->
+  <script>
+    // ==========================================
+    // STAPLR ADMIN - DETAIL VERIFIKASI LOGIC
+    // ==========================================
+    const STORAGE_KEY = 'staplr_company_verifications';
+
+    const initialCompanies = [
+      {
+        id: '1',
+        name: 'Agus Dermawan',
+        company: 'PT Nusantara Tech Utama',
+        email: 'admin@nusantaratech.id',
+        avatar: 'NU',
+        avatarClass: 'ad',
+        date: '24 Okt 2026',
+        phone: '—',
+        address: '—',
+        nib: '—',
+        npwp: '—',
+        status: 'pending',
+        note: ''
+      },
+      {
+        id: '2',
+        name: 'Budi Santoso',
+        company: 'PT Bina Karya Mandiri',
+        email: 'info@binakarya.co.id',
+        avatar: 'BS',
+        avatarClass: 'bs',
+        date: '23 Okt 2026',
+        phone: '—',
+        address: '—',
+        nib: '—',
+        npwp: '—',
+        status: 'approved',
+        note: ''
+      },
+      {
+        id: '3',
+        name: 'Dewi Lestari',
+        company: 'PT Solusi Data Indonesia',
+        email: 'helo@solusidataindonesia.id',
+        avatar: 'DL',
+        avatarClass: 'dl',
+        date: '23 Okt 2026',
+        phone: '—',
+        address: '—',
+        nib: '—',
+        npwp: '—',
+        status: 'pending',
+        note: ''
+      },
+      {
+        id: '4',
+        name: 'Eko Prasetyo',
+        company: 'PT Maju Bersama Sukses',
+        email: 'maju@majubersama.id',
+        avatar: 'EP',
+        avatarClass: 'ep',
+        date: '22 Okt 2026',
+        phone: '—',
+        address: '—',
+        nib: '—',
+        npwp: '—',
+        status: 'rejected',
+        note: ''
+      },
+      {
+        id: '5',
+        name: 'Fajar Nugraha',
+        company: 'PT Agro Makmur Sejahtera',
+        email: 'fajar@agromakmur.id',
+        avatar: 'FN',
+        avatarClass: 'fn',
+        date: '21 Okt 2026',
+        phone: '—',
+        address: '—',
+        nib: '—',
+        npwp: '—',
+        status: 'pending',
+        note: ''
+      }
+    ];
+
+    function getCompanies() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          let parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(initialCompanies));
+      return initialCompanies;
+    }
+
+    function saveCompanies(companies) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(companies));
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toastNotification');
+      toast.className = `staplr-toast ${type} show`;
+      toast.textContent = message;
+      setTimeout(() => {
+        toast.className = 'staplr-toast';
+      }, 2500);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Determine company ID from URL parameter or localStorage
+      const urlParams = new URLSearchParams(window.location.search);
+      const paramId = urlParams.get('id') || localStorage.getItem('staplr_selected_company_id') || '1';
+
+      const companies = getCompanies();
+      let currentCompany = companies.find(c => c.id === paramId);
+
+      // Fallback default if not found
+      if (!currentCompany) {
+        currentCompany = initialCompanies[0];
+      }
+
+      // 2. Populate company overview & tiles
+      const displayCompanyName = currentCompany.company || currentCompany.name;
+      document.getElementById('companyAvatarLarge').textContent = currentCompany.avatar || 'NU';
+      document.getElementById('companyHeadingName').textContent = displayCompanyName;
+      document.getElementById('companyHeadingEmail').textContent = currentCompany.email;
+
+      document.getElementById('tileFullName').textContent = displayCompanyName;
+      document.getElementById('tileEmail').textContent = currentCompany.email;
+      document.getElementById('tilePhone').textContent = currentCompany.phone || '—';
+      document.getElementById('tileAddress').textContent = currentCompany.address || '—';
+      document.getElementById('tileNib').textContent = currentCompany.nib || '—';
+      document.getElementById('tileNpwp').textContent = currentCompany.npwp || '—';
+
+      // 3. Pre-select radio based on current status
+      if (currentCompany.status === 'approved') {
+        document.getElementById('opt-approve').checked = true;
+      } else if (currentCompany.status === 'rejected') {
+        document.getElementById('opt-reject').checked = true;
+      } else {
+        document.getElementById('opt-pending').checked = true;
+      }
+
+      // Load note if exists
+      const noteInput = document.getElementById('adminNoteTextarea');
+      if (currentCompany.note) {
+        noteInput.value = currentCompany.note;
+      }
+
+      // 4. Decision Action: Setujui Perusahaan Button
+      const btnApprove = document.getElementById('btnSubmitApprove');
+      btnApprove.addEventListener('click', () => {
+        const checkedRadio = document.querySelector('input[name="keputusan"]:checked');
+        const decision = checkedRadio ? checkedRadio.value : 'approved';
+        saveDecision(decision);
+      });
+
+      // 5. Decision Action: Tolak Perusahaan Button
+      const btnReject = document.getElementById('btnSubmitReject');
+      btnReject.addEventListener('click', () => {
+        document.getElementById('opt-reject').checked = true;
+        saveDecision('rejected');
+      });
+
+      // 6. Radio change listener
+      document.querySelectorAll('input[name="keputusan"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          if (e.target.value === 'pending') {
+            btnApprove.textContent = 'Simpan Status Pending';
+          } else if (e.target.value === 'rejected') {
+            btnApprove.textContent = 'Konfirmasi Tolak Perusahaan';
+          } else {
+            btnApprove.textContent = 'Setujui Perusahaan';
+          }
+        });
+      });
+
+      // 7. Topbar Admin Profile Button Event
+      const adminProfileBtn = document.getElementById('adminProfileBtn');
+      if (adminProfileBtn) {
+        adminProfileBtn.addEventListener('click', () => {
+          showToast('Masuk sebagai Administrator Staplr (Superadmin)', 'info');
+        });
+      }
+
+      // Core save decision function
+      function saveDecision(decisionStatus) {
+        const note = noteInput.value.trim();
+        const allCompanies = getCompanies();
+        const index = allCompanies.findIndex(c => c.id === currentCompany.id);
+
+        if (index !== -1) {
+          allCompanies[index].status = decisionStatus;
+          allCompanies[index].note = note;
+          saveCompanies(allCompanies);
+        }
+
+        if (decisionStatus === 'approved') {
+          showToast(`Perusahaan ${displayCompanyName} berhasil disetujui! Mengalihkan...`, 'success');
+        } else if (decisionStatus === 'rejected') {
+          showToast(`Perusahaan ${displayCompanyName} telah ditolak. Mengalihkan...`, 'danger');
+        } else {
+          showToast(`Status penundaan untuk ${displayCompanyName} disimpan. Mengalihkan...`, 'success');
+        }
+
+        // Return to verifikasi.html after brief toast
+        setTimeout(() => {
+          window.location.href = 'verifikasi.html';
+        }, 900);
+      }
+    });
+  </script>
 </body>
 </html>

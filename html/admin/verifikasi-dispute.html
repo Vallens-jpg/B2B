@@ -313,9 +313,9 @@
 
     .decision-option {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 14px;
-      padding: 16px 18px;
+      padding: 13px 18px;
       border-radius: 10px;
       background: #ffffff;
       border: 1px solid #e2e8f0;
@@ -343,7 +343,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      margin-top: 2px;
+      margin-top: 0;
       transition: all 0.15s ease;
     }
 
@@ -364,22 +364,11 @@
       opacity: 1;
     }
 
-    .decision-text {
-      display: flex;
-      flex-direction: column;
-    }
-
     .decision-title {
       font-size: 14px;
       font-weight: 700;
       color: #0f2a4a;
-      margin-bottom: 3px;
-    }
-
-    .decision-desc {
-      font-size: 12.5px;
-      color: #64748b;
-      line-height: 1.3;
+      margin-bottom: 0;
     }
 
     /* Field Inputs */
@@ -432,6 +421,7 @@
       resize: vertical;
       outline: none;
       transition: border-color 0.15s ease;
+      font-family: inherit;
     }
 
     .textarea-box:focus {
@@ -462,6 +452,7 @@
       text-decoration: none;
       cursor: pointer;
       transition: all 0.15s ease;
+      font-family: inherit;
     }
 
     .btn-secondary:hover {
@@ -484,10 +475,54 @@
       text-decoration: none;
       cursor: pointer;
       transition: all 0.15s ease;
+      font-family: inherit;
     }
 
     .btn-primary:hover {
       background: #17385f;
+    }
+
+    /* Toast Notification */
+    .staplr-toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      padding: 14px 20px;
+      border-radius: 10px;
+      background: #0f2a4a;
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(15, 42, 74, 0.2);
+      z-index: 9999;
+      transform: translateY(60px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .staplr-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .staplr-toast.success {
+      background: #065f46;
+      border: 1px solid #059669;
+    }
+
+    .staplr-toast.danger {
+      background: #991b1b;
+      border: 1px solid #dc2626;
+    }
+
+    .staplr-toast.info {
+      background: #0f2a4a;
+      border: 1px solid #1e3a8a;
     }
 
     /* ============ RESPONSIVE ============ */
@@ -528,17 +563,17 @@
   <!-- ==================== SIDEBAR ==================== -->
   <aside class="sidebar">
     <!-- Logo with shopping basket + yellow dot + Staplr -->
-    <div class="logo-container">
+    <a href="dashboard.html" class="logo-container" style="text-decoration: none; display: block;">
       <img src="../../assets/img/staplr-logo.png" alt="Staplr">
-    </div>
+    </a>
 
     <!-- Navigation Menu -->
     <nav class="menu">
       <!-- 1. Dashboard -->
       <a class="menu-item" href="dashboard.html">
         <span class="icon">
-          <!-- 4-square grid in olive-yellow #877825 / #9eb028 -->
-          <svg viewBox="0 0 24 24" fill="#877825">
+          <!-- 4-square grid in golden yellow #FFC700 -->
+          <svg viewBox="0 0 24 24" fill="#FFC700">
             <rect x="3" y="3" width="8" height="8" rx="2"/>
             <rect x="13" y="3" width="8" height="8" rx="2"/>
             <rect x="3" y="13" width="8" height="8" rx="2"/>
@@ -621,7 +656,7 @@
     <!-- Topbar -->
     <header class="topbar">
       <h1>Dispute</h1>
-      <div class="admin-profile">
+      <div class="admin-profile" id="adminProfileBtn" style="cursor: pointer;" title="Profil Admin">
         <div class="admin-avatar"></div>
         <span>Admin</span>
       </div>
@@ -630,13 +665,13 @@
     <!-- Page Body -->
     <section class="content">
       <!-- Content Heading -->
-      <h2 class="content-title">Verifikasi Dispute #RET-2026-001</h2>
+      <h2 class="content-title" id="pageContentTitle">Verifikasi Dispute #RET-2026-001</h2>
 
       <!-- Stepper / Breadcrumbs -->
       <div class="stepper-row">
         <a href="dispute.html" class="step-pill">Daftar Retur</a>
         <span class="step-arrow">→</span>
-        <a href="detail-dispute.html" class="step-pill">Detail</a>
+        <a href="detail-dispute.html" class="step-pill" id="stepperDetailLink">Detail</a>
         <span class="step-arrow">→</span>
         <div class="step-pill active">Verifikasi Admin</div>
       </div>
@@ -651,11 +686,11 @@
           <div class="case-group">
             <div class="case-item">
               <span class="case-label">ID Retur</span>
-              <span class="case-value">#RET-2026-001</span>
+              <span class="case-value" id="caseIdRetur">#RET-2026-001</span>
             </div>
             <div class="case-item">
               <span class="case-label">ID Pesanan</span>
-              <span class="case-value">#ORD-2026-089</span>
+              <span class="case-value" id="caseIdPesanan">#ORD-2026-089</span>
             </div>
           </div>
 
@@ -664,11 +699,11 @@
           <div class="case-group">
             <div class="case-item">
               <span class="case-label">Pembeli</span>
-              <span class="case-value">Rira W. (PT Rira Pangan)</span>
+              <span class="case-value" id="casePembeli">Rira W. (PT Rira Pangan)</span>
             </div>
             <div class="case-item">
               <span class="case-label">Produk</span>
-              <span class="case-value">Telur Ayam (500 Kg)</span>
+              <span class="case-value" id="caseProduk">Telur Ayam (500 Kg)</span>
             </div>
           </div>
 
@@ -677,11 +712,11 @@
           <div class="case-group">
             <div class="case-item">
               <span class="case-label">Tgl Pembelian</span>
-              <span class="case-value">05 Oktober 2026</span>
+              <span class="case-value" id="caseTglBeli">05 Oktober 2026</span>
             </div>
             <div class="case-item">
               <span class="case-label">Tgl Komplain</span>
-              <span class="case-value">11 Okt 2026</span>
+              <span class="case-value" id="caseTglKomplain">11 Okt 2026</span>
             </div>
           </div>
 
@@ -690,11 +725,11 @@
           <div class="case-group">
             <div class="case-item">
               <span class="case-label">Alasan Utama</span>
-              <span class="case-value">Barang Rusak / Cacat / Pecah</span>
+              <span class="case-value" id="caseAlasan">Barang Rusak / Cacat / Pecah</span>
             </div>
             <div class="case-item">
               <span class="case-label">Bukti</span>
-              <span class="case-value">2 Foto dan 1 Video</span>
+              <span class="case-value" id="caseBukti">2 Foto dan 1 Video</span>
             </div>
           </div>
 
@@ -703,7 +738,7 @@
           <div class="case-group">
             <div class="case-item">
               <span class="case-label">Usulan Penjual</span>
-              <span class="case-value">Refund Rp 350.000</span>
+              <span class="case-value" id="caseUsulan">Refund Rp 350.000</span>
             </div>
           </div>
 
@@ -712,8 +747,10 @@
           <div class="case-group">
             <div class="case-item">
               <span class="case-label">Status Saat Ini</span>
-              <span class="badge badge-pending">
-                <span class="badge-dot">●</span> Menunggu Verifikasi Admin
+              <span id="caseStatusBadge">
+                <span class="badge badge-pending">
+                  <span class="badge-dot">●</span> Menunggu Verifikasi Admin
+                </span>
               </span>
             </div>
           </div>
@@ -726,36 +763,27 @@
           <!-- Decision Radio Options -->
           <div class="decision-options">
             <!-- Option 1: Setujui usulan refund (Selected) -->
-            <label class="decision-option selected">
+            <label class="decision-option selected" data-value="approved">
               <div class="radio-circle">
                 <div class="radio-circle-dot"></div>
               </div>
-              <div class="decision-text">
-                <span class="decision-title">Setujui usulan refund</span>
-                <span class="decision-desc">Terima usulan penjual untuk refund Rp 350.000 dan tutup kasus ini.</span>
-              </div>
+              <span class="decision-title">Setujui usulan refund</span>
             </label>
 
             <!-- Option 2: Minta revisi usulan -->
-            <label class="decision-option">
+            <label class="decision-option" data-value="revision">
               <div class="radio-circle">
                 <div class="radio-circle-dot"></div>
               </div>
-              <div class="decision-text">
-                <span class="decision-title">Minta revisi usulan</span>
-                <span class="decision-desc">Kembalikan kasus ini ke penjual untuk perbaikan nominal atau catatan.</span>
-              </div>
+              <span class="decision-title">Minta revisi usulan</span>
             </label>
 
             <!-- Option 3: Tolak usulan refund -->
-            <label class="decision-option">
+            <label class="decision-option" data-value="rejected">
               <div class="radio-circle">
                 <div class="radio-circle-dot"></div>
               </div>
-              <div class="decision-text">
-                <span class="decision-title">Tolak usulan refund</span>
-                <span class="decision-desc">Tutup kasus ini tanpa refund dan berikan alasan penolakan kepada pembeli.</span>
-              </div>
+              <span class="decision-title">Tolak usulan refund</span>
             </label>
           </div>
 
@@ -763,7 +791,6 @@
           <div class="field-section">
             <label class="field-label" for="nominalRefund">Nominal refund ke Buyer</label>
             <input type="text" id="nominalRefund" class="input-box" value="Rp 350.000">
-            <div class="field-helper">Nominal ini mengikuti usulan penjual berdasarkan 15 tray telur yang pecah.</div>
           </div>
 
           <!-- Section: Catatan putusan -->
@@ -774,8 +801,8 @@
 
           <!-- Section: Action Buttons -->
           <div class="action-row">
-            <a href="detail-dispute.html" class="btn-secondary">Kembali ke Detail</a>
-            <a href="dispute.html" class="btn-primary">Tetapkan Putusan</a>
+            <a href="detail-dispute.html" class="btn-secondary" id="btnBackToDetail">Kembali ke Detail</a>
+            <button type="button" class="btn-primary" id="btnSubmitPutusan">Tetapkan Putusan</button>
           </div>
 
         </div>
@@ -784,5 +811,203 @@
     </section>
   </main>
 
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="staplr-toast"></div>
+
+  <script>
+    const STORAGE_KEY = 'staplr_dispute_list';
+    let selectedDecision = 'approved';
+
+    const defaultDisputes = [
+      {
+        id: '#RET-2026-001',
+        orderId: '#ORD-2026-089',
+        date: '11 Okt 2026',
+        buyDate: '05 Oktober 2026',
+        buyer: 'Rira W. (PT Rira Pangan)',
+        product: 'Telur Ayam (500 Kg)',
+        category: 'Barang Rusak/Pecah',
+        categoryFull: 'Barang Rusak / Cacat / Pecah',
+        media: '2 Foto dan 1 Video',
+        complaint: 'saya pesan 15 kg kok 14 kg rusak semua???',
+        solution: 'Refund Rp 350.000',
+        attachments: [
+          { type: 'JPG', title: 'Foto 1 - Kerusakan Tray Telur', desc: 'Lampiran foto 1 dari pembeli' },
+          { type: 'JPG', title: 'Foto 2 - Detail Pecahan Telur', desc: 'Lampiran foto 2 dari pembeli' },
+          { type: 'MP4', title: 'Video 1 - Pemeriksaan Kerusakan', desc: 'Lampiran video 1 dari pembeli' }
+        ],
+        status: 'pending',
+        statusLabel: 'Pending'
+      },
+      {
+        id: '#RET-2026-002',
+        orderId: '#ORD-2026-074',
+        date: '09 Okt 2026',
+        buyDate: '03 Oktober 2026',
+        buyer: 'PT Boga Jaya',
+        product: 'Minyak Goreng (200 L)',
+        category: 'Kuantitas Kurang',
+        categoryFull: 'Kuantitas Kurang / Tidak Lengkap',
+        media: '1 Foto',
+        complaint: 'Pesanan kurang 1 jerigen saat pengiriman.',
+        solution: 'Pengiriman Susulan / Refund Sebagian',
+        attachments: [
+          { type: 'JPG', title: 'Foto 1 - Kekurangan Jerigen Minyak', desc: 'Lampiran foto dari pembeli' }
+        ],
+        status: 'approved',
+        statusLabel: 'Disetujui'
+      },
+      {
+        id: '#RET-2026-003',
+        orderId: '#ORD-2026-061',
+        date: '05 Okt 2026',
+        buyDate: '01 Oktober 2026',
+        buyer: 'CV Sembako',
+        product: 'Beras Premium (100 Karung)',
+        category: 'Tidak Sesuai Specs',
+        categoryFull: 'Barang Tidak Sesuai Spesifikasi',
+        media: '3 Foto',
+        complaint: 'Kualitas beras tidak sesuai dengan deskripsi pesanan.',
+        solution: 'Tolak klaim karena sudah lewat batas waktu verifikasi.',
+        attachments: [
+          { type: 'JPG', title: 'Foto 1 - Timbangan Beras', desc: 'Lampiran foto timbangan' },
+          { type: 'JPG', title: 'Foto 2 - Kualitas Butir Beras', desc: 'Lampiran foto butiran beras' },
+          { type: 'JPG', title: 'Foto 3 - Label Karung Beras', desc: 'Lampiran foto kemasan karung' }
+        ],
+        status: 'rejected',
+        statusLabel: 'Ditolak'
+      }
+    ];
+
+    function getDisputes() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          let parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed.map(d => {
+              const match = defaultDisputes.find(init => init.id === d.id);
+              return match ? { ...match, ...d } : d;
+            });
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultDisputes));
+      return defaultDisputes;
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toastNotification');
+      toast.className = `staplr-toast ${type} show`;
+      toast.textContent = message;
+      setTimeout(() => {
+        toast.className = 'staplr-toast';
+      }, 2500);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Determine active dispute
+      const urlParams = new URLSearchParams(window.location.search);
+      const selectedId = urlParams.get('id') || localStorage.getItem('staplr_selected_dispute_id') || '#RET-2026-001';
+
+      const disputes = getDisputes();
+      let dispute = disputes.find(d => d.id === selectedId) || disputes[0];
+
+      // Save as active selected
+      localStorage.setItem('staplr_selected_dispute_id', dispute.id);
+
+      // 2. Populate left card and page heading
+      document.getElementById('pageContentTitle').textContent = `Verifikasi Dispute ${dispute.id}`;
+      document.getElementById('caseIdRetur').textContent = dispute.id;
+      document.getElementById('caseIdPesanan').textContent = dispute.orderId;
+      document.getElementById('casePembeli').textContent = dispute.buyer;
+      document.getElementById('caseProduk').textContent = dispute.product;
+      document.getElementById('caseTglBeli').textContent = dispute.buyDate;
+      document.getElementById('caseTglKomplain').textContent = dispute.date;
+      document.getElementById('caseAlasan').textContent = dispute.categoryFull || dispute.category;
+      document.getElementById('caseBukti').textContent = dispute.media;
+      document.getElementById('caseUsulan').textContent = dispute.solution;
+
+      // Update Back to detail & Stepper link
+      const detailUrl = `detail-dispute.html?id=${encodeURIComponent(dispute.id)}`;
+      document.getElementById('stepperDetailLink').href = detailUrl;
+      document.getElementById('btnBackToDetail').href = detailUrl;
+
+      // Pre-populate input based on solution
+      const nominalInput = document.getElementById('nominalRefund');
+      const catatanInput = document.getElementById('catatanPutusan');
+      if (dispute.id === '#RET-2026-001') {
+        nominalInput.value = 'Rp 350.000';
+        catatanInput.value = 'Usulan refund Rp 350.000 diterima karena bukti foto dan video menunjukkan 15 tray telur pecah.';
+      } else if (dispute.solution && dispute.solution.includes('Rp')) {
+        const match = dispute.solution.match(/Rp\s*[\d.]+/);
+        nominalInput.value = match ? match[0] : dispute.solution;
+        catatanInput.value = `Usulan refund ${nominalInput.value} diterima sesuai dengan bukti yang telah dilampirkan.`;
+      } else {
+        nominalInput.value = 'Rp 0';
+      }
+
+      // 3. Radio option selection
+      const options = document.querySelectorAll('.decision-option');
+      options.forEach(opt => {
+        opt.addEventListener('click', () => {
+          options.forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+          selectedDecision = opt.getAttribute('data-value');
+
+          if (selectedDecision === 'approved') {
+            catatanInput.value = dispute.id === '#RET-2026-001'
+              ? 'Usulan refund Rp 350.000 diterima karena bukti foto dan video menunjukkan 15 tray telur pecah.'
+              : `Usulan penyelesaian diterima untuk ${dispute.id}. Refund diproses sesuai ketentuan.`;
+          } else if (selectedDecision === 'rejected') {
+            catatanInput.value = `Klaim dispute ${dispute.id} ditolak karena tidak memenuhi ketentuan verifikasi.`;
+          } else {
+            catatanInput.value = `Dimohon kepada pihak penjual untuk merevisi rincian usulan dispute ${dispute.id}.`;
+          }
+        });
+      });
+
+      // 4. Submit Putusan Button
+      const btnSubmit = document.getElementById('btnSubmitPutusan');
+      btnSubmit.addEventListener('click', () => {
+        const allDisputes = getDisputes();
+        const d = allDisputes.find(item => item.id === dispute.id);
+        if (d) {
+          if (selectedDecision === 'approved') {
+            d.status = 'approved';
+            d.statusLabel = 'Disetujui';
+          } else if (selectedDecision === 'rejected') {
+            d.status = 'rejected';
+            d.statusLabel = 'Ditolak';
+          } else {
+            d.status = 'pending';
+            d.statusLabel = 'Perlu Revisi';
+          }
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(allDisputes));
+        }
+
+        const msg = selectedDecision === 'approved' 
+          ? `Putusan ${dispute.id} disetujui! Mengalihkan...` 
+          : selectedDecision === 'rejected' 
+            ? `Putusan ${dispute.id} ditolak! Mengalihkan...` 
+            : `Permintaan revisi ${dispute.id} dikirim! Mengalihkan...`;
+
+        showToast(msg, selectedDecision === 'rejected' ? 'danger' : 'success');
+        setTimeout(() => {
+          window.location.href = 'dispute.html';
+        }, 900);
+      });
+
+      // 5. Topbar Profile button
+      const adminProfileBtn = document.getElementById('adminProfileBtn');
+      if (adminProfileBtn) {
+        adminProfileBtn.addEventListener('click', () => {
+          showToast('Masuk sebagai Administrator Staplr (Superadmin)', 'info');
+        });
+      }
+    });
+  </script>
 </body>
 </html>

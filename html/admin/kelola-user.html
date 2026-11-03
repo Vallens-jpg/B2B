@@ -7,7 +7,6 @@
   <style>
     /* ==========================================================
        STAPLR ADMIN - MANAJEMEN USER (PIXEL-PERFECT REPLICA)
-       Reference: assets/tampilan admin/8. Admin Kelola User.png
        ========================================================== */
     * {
       margin: 0;
@@ -28,7 +27,6 @@
     .sidebar {
       width: 260px;
       flex-shrink: 0;
-      /* Exact 7-stop gradient matching Admin design */
       background: linear-gradient(
         180deg,
         #87ab95 0%,
@@ -55,12 +53,18 @@
       padding: 0 10px 42px 10px;
     }
 
+    .logo-container a {
+      display: inline-block;
+      text-decoration: none;
+    }
+
     .logo-container img {
       height: 56px;
       width: auto;
       max-width: 100%;
       display: block;
       object-fit: contain;
+      cursor: pointer;
     }
 
     .menu {
@@ -142,6 +146,14 @@
       font-size: 14.5px;
       font-weight: 600;
       color: #0f2a4a;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 20px;
+      transition: background 0.15s ease;
+    }
+
+    .admin-profile:hover {
+      background: #f1f5f9;
     }
 
     .admin-avatar {
@@ -175,6 +187,12 @@
       flex-wrap: wrap;
     }
 
+    /* Dropdown wrapper & buttons */
+    .dropdown-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
     .filter-select-btn {
       height: 38px;
       padding: 0 14px;
@@ -190,6 +208,7 @@
       cursor: pointer;
       transition: all 0.15s ease;
       white-space: nowrap;
+      user-select: none;
     }
 
     .filter-select-btn:hover {
@@ -197,10 +216,63 @@
       background: #f8fafc;
     }
 
+    .filter-select-btn.active {
+      border-color: #0f2a4a;
+      box-shadow: 0 0 0 2px rgba(15, 42, 74, 0.08);
+    }
+
     .filter-select-btn svg {
       width: 14px;
       height: 14px;
       color: #64748b;
+      transition: transform 0.15s ease;
+    }
+
+    .filter-select-btn.open svg {
+      transform: rotate(180deg);
+    }
+
+    /* Dropdown menu popover */
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      min-width: 175px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px -5px rgba(15, 42, 74, 0.12), 0 8px 10px -6px rgba(15, 42, 74, 0.06);
+      padding: 6px;
+      z-index: 100;
+      display: none;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+      animation: fadeIn 0.15s ease-out;
+    }
+
+    .dropdown-item {
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .dropdown-item:hover {
+      background: #f1f5f9;
+      color: #0f2a4a;
+    }
+
+    .dropdown-item.active {
+      background: #0f2a4a;
+      color: #ffffff;
     }
 
     .btn-add-user {
@@ -223,6 +295,7 @@
 
     .btn-add-user:hover {
       background: #17385f;
+      transform: translateY(-1px);
     }
 
     /* ============ TOOLBAR ROW 2: ROLE FILTER PILLS ============ */
@@ -250,6 +323,7 @@
       transition: all 0.15s ease;
       cursor: pointer;
       white-space: nowrap;
+      user-select: none;
     }
 
     .role-pill:hover {
@@ -348,6 +422,12 @@
       line-height: 1.3;
     }
 
+    .td-dash {
+      color: #94a3b8;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
     .td-date {
       color: #475569;
       font-size: 13.5px;
@@ -380,11 +460,11 @@
       border: 1px solid #bfdbfe;
     }
 
-    /* Role: Admin */
-    .badge-admin {
-      background: #fff4cc;
-      color: #b45309;
-      border: 1px solid #fde68a;
+    /* Role: Perusahaan */
+    .badge-company {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
     }
 
     /* Status: Aktif */
@@ -484,6 +564,247 @@
       border-color: #cbd5e1;
     }
 
+    /* ============ MODAL ADD USER ============ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 42, 74, 0.45);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 25px 50px -12px rgba(15, 42, 74, 0.25);
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+      animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      background: #f8fafc;
+      border-bottom: 1px solid #edf1f6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h3 {
+      font-size: 17px;
+      font-weight: 800;
+      color: #0f2a4a;
+      margin: 0;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      color: #94a3b8;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close-btn:hover {
+      color: #0f2a4a;
+      background: #e2e8f0;
+    }
+
+    .modal-body {
+      padding: 22px 24px;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .form-label .required {
+      color: #dc2626;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      height: 40px;
+      padding: 0 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 13.5px;
+      color: #0f2a4a;
+      background: #ffffff;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      font-family: inherit;
+    }
+
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: #0f2a4a;
+      box-shadow: 0 0 0 3px rgba(15, 42, 74, 0.1);
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      background: #f8fafc;
+      border-top: 1px solid #edf1f6;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .btn-cancel {
+      height: 38px;
+      padding: 0 18px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-cancel:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+
+    .btn-submit {
+      height: 38px;
+      padding: 0 20px;
+      background: #0f2a4a;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-submit:hover {
+      background: #17385f;
+    }
+
+    /* ============ TOAST NOTIFICATION ============ */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      pointer-events: auto;
+      min-width: 300px;
+      max-width: 420px;
+      background: #0f2a4a;
+      color: #ffffff;
+      border-radius: 10px;
+      padding: 12px 18px;
+      box-shadow: 0 10px 25px -5px rgba(15, 42, 74, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideToastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.25s, transform 0.25s;
+    }
+
+    .toast.toast-leave {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+
+    @keyframes slideToastIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .toast-icon {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toast-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .toast-message {
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1.4;
+      flex: 1;
+    }
+
     /* ============ RESPONSIVE ============ */
     @media (max-width: 820px) {
       body {
@@ -512,6 +833,9 @@
         width: 100%;
         justify-content: center;
       }
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -521,7 +845,9 @@
   <aside class="sidebar">
     <!-- Logo with shopping basket + yellow dot + Staplr -->
     <div class="logo-container">
-      <img src="../../assets/img/staplr-logo.png" alt="Staplr">
+      <a href="dashboard.html" title="Dashboard Staplr">
+        <img src="../../assets/img/staplr-logo.png" alt="Staplr">
+      </a>
     </div>
 
     <!-- Navigation Menu -->
@@ -529,8 +855,8 @@
       <!-- 1. Dashboard -->
       <a class="menu-item" href="dashboard.html">
         <span class="icon">
-          <!-- 4-square grid in olive-yellow #877825 / #9eb028 -->
-          <svg viewBox="0 0 24 24" fill="#877825">
+          <!-- 4-square grid in golden yellow #FFC700 -->
+          <svg viewBox="0 0 24 24" fill="#FFC700">
             <rect x="3" y="3" width="8" height="8" rx="2"/>
             <rect x="13" y="3" width="8" height="8" rx="2"/>
             <rect x="3" y="13" width="8" height="8" rx="2"/>
@@ -613,7 +939,7 @@
     <!-- Topbar -->
     <header class="topbar">
       <h1>Manajemen User</h1>
-      <div class="admin-profile">
+      <div class="admin-profile" id="adminProfileBtn" title="Profil Admin">
         <div class="admin-avatar"></div>
         <span>Admin</span>
       </div>
@@ -626,42 +952,63 @@
       <div class="toolbar-row">
         <div class="filters-left">
           <!-- Dropdown 1: Semua Role -->
-          <button type="button" class="filter-select-btn">
-            <span>Semua Role</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </button>
+          <div class="dropdown-wrapper" id="dropdownRoleWrapper">
+            <button type="button" class="filter-select-btn" id="btnRoleDropdown">
+              <span id="labelRole">Semua Role</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="dropdown-menu" id="menuRole">
+              <div class="dropdown-item active" data-role="all">Semua Role</div>
+              <div class="dropdown-item" data-role="company">Perusahaan</div>
+              <div class="dropdown-item" data-role="buyer">Pembeli</div>
+            </div>
+          </div>
 
           <!-- Dropdown 2: Status: Semua -->
-          <button type="button" class="filter-select-btn">
-            <span>Status: Semua</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </button>
+          <div class="dropdown-wrapper" id="dropdownStatusWrapper">
+            <button type="button" class="filter-select-btn" id="btnStatusDropdown">
+              <span id="labelStatus">Status: Semua</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="dropdown-menu" id="menuStatus">
+              <div class="dropdown-item active" data-status="all">Status: Semua</div>
+              <div class="dropdown-item" data-status="active">Status: Aktif</div>
+              <div class="dropdown-item" data-status="inactive">Status: Nonaktif</div>
+            </div>
+          </div>
 
           <!-- Dropdown 3: Sort: Terbaru -->
-          <button type="button" class="filter-select-btn">
-            <span>Sort: Terbaru</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </button>
+          <div class="dropdown-wrapper" id="dropdownSortWrapper">
+            <button type="button" class="filter-select-btn" id="btnSortDropdown">
+              <span id="labelSort">Sort: Terbaru</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="dropdown-menu" id="menuSort">
+              <div class="dropdown-item active" data-sort="newest">Sort: Terbaru</div>
+              <div class="dropdown-item" data-sort="oldest">Sort: Terlama</div>
+              <div class="dropdown-item" data-sort="name-asc">Sort: Nama (A-Z)</div>
+              <div class="dropdown-item" data-sort="id">Sort: ID User</div>
+            </div>
+          </div>
         </div>
 
         <!-- Add User Button -->
-        <a href="#" class="btn-add-user">
+        <button type="button" class="btn-add-user" id="btnOpenAddModal">
           <span>+ Tambah User Baru</span>
-        </a>
+        </button>
       </div>
 
       <!-- Toolbar Row 2: Role Filter Pills -->
-      <div class="pills-row">
-        <a href="#" class="role-pill active">Semua User (128)</a>
-        <a href="#" class="role-pill">Pembeli / Buyer (95)</a>
-        <a href="#" class="role-pill">Penjual / Supplier (25)</a>
-        <a href="#" class="role-pill">Admin (8)</a>
+      <div class="pills-row" id="rolePillsRow">
+        <button type="button" class="role-pill active" data-role="all">Semua User (<span id="countAll">128</span>)</button>
+        <button type="button" class="role-pill" data-role="company">Perusahaan (<span id="countCompany">33</span>)</button>
+        <button type="button" class="role-pill" data-role="buyer">Pembeli (<span id="countBuyer">95</span>)</button>
       </div>
 
       <!-- Table Card -->
@@ -674,104 +1021,607 @@
                 <th>NAMA / PERUSAHAAN</th>
                 <th>EMAIL / NO. HP</th>
                 <th>ROLE</th>
+                <th>NIB</th>
+                <th>NPWP</th>
                 <th>TGL DAFTAR</th>
                 <th>STATUS</th>
                 <th>AKSI</th>
               </tr>
             </thead>
-            <tbody>
-              <!-- Row 1: Rira W. -->
-              <tr>
-                <td class="td-id">#USR-0012</td>
-                <td>
-                  <div class="td-name-title">Rira W.</div>
-                  <div class="td-name-sub">(PT Rira Pangan)</div>
-                </td>
-                <td>
-                  <div class="td-contact-title">rira@panganboga.com</div>
-                  <div class="td-contact-sub">081234567890</div>
-                </td>
-                <td>
-                  <span class="badge badge-buyer">
-                    <span class="badge-dot">●</span> Pembeli
-                  </span>
-                </td>
-                <td class="td-date">31 Okt 2027</td>
-                <td>
-                  <span class="badge badge-active">
-                    <span class="badge-dot">●</span> Aktif
-                  </span>
-                </td>
-                <td>
-                  <button type="button" class="btn-lock">Lock</button>
-                </td>
-              </tr>
-
-              <!-- Row 2: Ahmad Staff -->
-              <tr>
-                <td class="td-id">#USR-0003</td>
-                <td>
-                  <div class="td-name-title">Ahmad Staff</div>
-                  <div class="td-name-sub">(Staf)</div>
-                </td>
-                <td>
-                  <div class="td-contact-title">ahmad@staplr.id</div>
-                  <div class="td-contact-sub">081122334455</div>
-                </td>
-                <td>
-                  <span class="badge badge-admin">
-                    <span class="badge-dot">●</span> Admin
-                  </span>
-                </td>
-                <td class="td-date">01 Mei 2027</td>
-                <td>
-                  <span class="badge badge-active">
-                    <span class="badge-dot">●</span> Aktif
-                  </span>
-                </td>
-                <td>
-                  <button type="button" class="btn-lock">Lock</button>
-                </td>
-              </tr>
-
-              <!-- Row 3: CV Sembako Utama -->
-              <tr>
-                <td class="td-id">#USR-0045</td>
-                <td>
-                  <div class="td-name-title">CV Sembako Utama</div>
-                </td>
-                <td>
-                  <div class="td-contact-title">info@sembakoutama.com</div>
-                  <div class="td-contact-sub">085678901234</div>
-                </td>
-                <td>
-                  <span class="badge badge-buyer">
-                    <span class="badge-dot">●</span> Pembeli
-                  </span>
-                </td>
-                <td class="td-date">12 Ags 2027</td>
-                <td>
-                  <span class="badge badge-inactive">
-                    <span class="badge-dot">●</span> Nonaktif
-                  </span>
-                </td>
-                <td>
-                  <button type="button" class="btn-unlock">Unlock</button>
-                </td>
-              </tr>
+            <tbody id="userTableBody">
+              <!-- Rendered via JavaScript -->
             </tbody>
           </table>
         </div>
 
         <!-- Table Footer -->
         <div class="card-footer">
-          <span class="footer-info">Menampilkan 1–3 dari 128 user</span>
-          <button class="btn-pagination" type="button">Selanjutnya</button>
+          <span class="footer-info" id="footerInfo">Menampilkan 1–3 dari 128 user</span>
+          <button class="btn-pagination" id="btnNextPage" type="button">Selanjutnya</button>
         </div>
       </div>
 
     </section>
   </main>
 
+  <!-- ==================== MODAL TAMBAH USER ==================== -->
+  <div class="modal-overlay" id="addUserModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>+ Tambah User Baru</h3>
+        <button type="button" class="modal-close-btn" id="btnCloseModal">&times;</button>
+      </div>
+      <form id="addUserForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Nama Perusahaan <span class="required">*</span></label>
+            <input type="text" class="form-input" id="inputCompany" placeholder="Contoh: PT Berkah Pangan Mandiri" required>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Email <span class="required">*</span></label>
+              <input type="email" class="form-input" id="inputEmail" placeholder="kontak@berkahpangan.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">No. Handphone <span class="required">*</span></label>
+              <input type="tel" class="form-input" id="inputPhone" placeholder="081234567890" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Alamat <span class="required">*</span></label>
+            <input type="text" class="form-input" id="inputAddress" placeholder="Contoh: Jl. Sudirman No. 12, Jakarta" required>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Nomor Induk Berusaha (NIB)</label>
+              <input type="text" class="form-input" id="inputNib" placeholder="— atau masukkan nomor">
+            </div>
+            <div class="form-group">
+              <label class="form-label">NPWP Badan Usaha</label>
+              <input type="text" class="form-input" id="inputNpwp" placeholder="— atau masukkan nomor">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" id="btnCancelModal">Batal</button>
+          <button type="submit" class="btn-submit">Simpan User</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST CONTAINER ==================== -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <script>
+    (function() {
+      // Storage key for user management
+      const STORAGE_KEY = 'staplr_user_management';
+
+      // Default baseline data matching screenshot exactly
+      const DEFAULT_USERS = [
+        {
+          id: '#USR-0012',
+          name: 'Rira W.',
+          company: 'PT Rira Pangan',
+          email: 'rira@panganboga.com',
+          phone: '081234567890',
+          role: 'buyer',
+          roleLabel: 'Pembeli',
+          nib: '—',
+          npwp: '—',
+          date: '31 Okt 2027',
+          status: 'active'
+        },
+        {
+          id: '#USR-0003',
+          name: 'Ahmad Staff',
+          company: 'PT Sinar Pangan',
+          email: 'ahmad@staplr.id',
+          phone: '081122334455',
+          role: 'company',
+          roleLabel: 'Perusahaan',
+          nib: '—',
+          npwp: '—',
+          date: '01 Mei 2027',
+          status: 'active'
+        },
+        {
+          id: '#USR-0045',
+          name: 'CV Sembako Utama',
+          company: '',
+          email: 'info@sembakoutama.com',
+          phone: '085678901234',
+          role: 'buyer',
+          roleLabel: 'Pembeli',
+          nib: '—',
+          npwp: '—',
+          date: '12 Ags 2027',
+          status: 'inactive'
+        }
+      ];
+
+      // Load data or initialize
+      function loadUsers() {
+        try {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              parsed.forEach(u => {
+                if (u.role === 'admin' || u.role === 'seller') {
+                  u.role = 'company';
+                  u.roleLabel = 'Perusahaan';
+                }
+              });
+              return parsed;
+            }
+          }
+        } catch (e) {
+          console.error('Error loading users:', e);
+        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_USERS));
+        return JSON.parse(JSON.stringify(DEFAULT_USERS));
+      }
+
+      function saveUsers(users) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+        } catch (e) {
+          console.error('Error saving users:', e);
+        }
+      }
+
+      let users = loadUsers();
+
+      // Current filter & sort state
+      let currentRole = 'all';     // 'all' | 'buyer' | 'seller' | 'admin'
+      let currentStatus = 'all';   // 'all' | 'active' | 'inactive'
+      let currentSort = 'newest';  // 'newest' | 'oldest' | 'name-asc' | 'id'
+
+      // DOM Elements
+      const userTableBody = document.getElementById('userTableBody');
+      const footerInfo = document.getElementById('footerInfo');
+      const rolePills = document.querySelectorAll('.role-pill');
+
+      // Dropdown buttons & menus
+      const btnRoleDropdown = document.getElementById('btnRoleDropdown');
+      const menuRole = document.getElementById('menuRole');
+      const labelRole = document.getElementById('labelRole');
+
+      const btnStatusDropdown = document.getElementById('btnStatusDropdown');
+      const menuStatus = document.getElementById('menuStatus');
+      const labelStatus = document.getElementById('labelStatus');
+
+      const btnSortDropdown = document.getElementById('btnSortDropdown');
+      const menuSort = document.getElementById('menuSort');
+      const labelSort = document.getElementById('labelSort');
+
+      // Modal elements
+      const addUserModal = document.getElementById('addUserModal');
+      const btnOpenAddModal = document.getElementById('btnOpenAddModal');
+      const btnCloseModal = document.getElementById('btnCloseModal');
+      const btnCancelModal = document.getElementById('btnCancelModal');
+      const addUserForm = document.getElementById('addUserForm');
+
+      // Other buttons
+      const btnNextPage = document.getElementById('btnNextPage');
+      const adminProfileBtn = document.getElementById('adminProfileBtn');
+      const toastContainer = document.getElementById('toastContainer');
+
+      // Toast notification helper
+      function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        
+        let iconSvg = '';
+        if (type === 'success') {
+          iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+        } else if (type === 'warning') {
+          iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+        } else {
+          iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+        }
+
+        toast.innerHTML = `
+          <div class="toast-icon">${iconSvg}</div>
+          <div class="toast-message">${message}</div>
+        `;
+
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+          toast.classList.add('toast-leave');
+          setTimeout(() => {
+            if (toast.parentNode) toast.parentNode.removeChild(toast);
+          }, 250);
+        }, 3200);
+      }
+
+      // Format date parser helper for sorting
+      function parseIndoDate(dateStr) {
+        if (!dateStr) return new Date(0);
+        const months = {
+          'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'Mei': 4, 'Jun': 5,
+          'Jul': 6, 'Ags': 7, 'Sep': 8, 'Okt': 9, 'Nov': 10, 'Des': 11
+        };
+        const parts = dateStr.trim().split(' ');
+        if (parts.length === 3) {
+          const day = parseInt(parts[0], 10);
+          const mon = months[parts[1]] !== undefined ? months[parts[1]] : 0;
+          const year = parseInt(parts[2], 10);
+          return new Date(year, mon, day);
+        }
+        return new Date(dateStr);
+      }
+
+      // Render table
+      function renderTable() {
+        // Filter users
+        let filtered = users.filter(u => {
+          if (currentRole !== 'all' && u.role !== currentRole) return false;
+          if (currentStatus !== 'all' && u.status !== currentStatus) return false;
+          return true;
+        });
+
+        // Sort users
+        filtered.sort((a, b) => {
+          if (currentSort === 'newest') {
+            return parseIndoDate(b.date) - parseIndoDate(a.date);
+          } else if (currentSort === 'oldest') {
+            return parseIndoDate(a.date) - parseIndoDate(b.date);
+          } else if (currentSort === 'name-asc') {
+            return a.name.localeCompare(b.name);
+          } else if (currentSort === 'id') {
+            return a.id.localeCompare(b.id);
+          }
+          return 0;
+        });
+
+        // Clear existing rows
+        userTableBody.innerHTML = '';
+
+        if (filtered.length === 0) {
+          const emptyTr = document.createElement('tr');
+          emptyTr.innerHTML = `
+            <td colspan="9" style="text-align: center; padding: 42px 20px; color: #64748b; font-size: 14px;">
+              Tidak ada data user yang sesuai dengan filter yang dipilih.
+            </td>
+          `;
+          userTableBody.appendChild(emptyTr);
+        } else {
+          filtered.forEach(user => {
+            const tr = document.createElement('tr');
+
+            // Role badge class & label
+            let badgeRoleClass = 'badge-buyer';
+            let roleLabelText = user.roleLabel || 'Pembeli';
+            if (user.role === 'company') {
+              badgeRoleClass = 'badge-company';
+              roleLabelText = 'Perusahaan';
+            }
+
+            // Status badge class & label
+            const isAktif = user.status === 'active';
+            const badgeStatusClass = isAktif ? 'badge-active' : 'badge-inactive';
+            const statusLabelText = isAktif ? 'Aktif' : 'Nonaktif';
+
+            // Action button
+            const actionButtonHtml = isAktif
+              ? `<button type="button" class="btn-lock" data-action="toggle-status" data-id="${user.id}">Lock</button>`
+              : `<button type="button" class="btn-unlock" data-action="toggle-status" data-id="${user.id}">Unlock</button>`;
+
+            // Subtitle for name/company
+            const companySubHtml = user.company
+              ? `<div class="td-name-sub">(${user.company})</div>`
+              : '';
+
+            // Phone sub
+            const phoneSubHtml = user.phone
+              ? `<div class="td-contact-sub">${user.phone}</div>`
+              : '';
+
+            tr.innerHTML = `
+              <td class="td-id">${user.id}</td>
+              <td>
+                <div class="td-name-title">${user.name}</div>
+                ${companySubHtml}
+              </td>
+              <td>
+                <div class="td-contact-title">${user.email}</div>
+                ${phoneSubHtml}
+              </td>
+              <td>
+                <span class="badge ${badgeRoleClass}">
+                  <span class="badge-dot">●</span> ${roleLabelText}
+                </span>
+              </td>
+              <td class="td-dash">${user.nib || '—'}</td>
+              <td class="td-dash">${user.npwp || '—'}</td>
+              <td class="td-date">${user.date}</td>
+              <td>
+                <span class="badge ${badgeStatusClass}">
+                  <span class="badge-dot">●</span> ${statusLabelText}
+                </span>
+              </td>
+              <td>
+                ${actionButtonHtml}
+              </td>
+            `;
+
+            userTableBody.appendChild(tr);
+          });
+        }
+
+        // Update counts and footer info
+        updateCountsAndFooter(filtered.length);
+      }
+
+      function updateCountsAndFooter(visibleCount) {
+        // Calculate counts based on base 128 plus any additional added users
+        const addedCount = Math.max(0, users.length - DEFAULT_USERS.length);
+        const addedBuyer = users.slice(0, addedCount).filter(u => u.role === 'buyer').length;
+        const addedCompany = users.slice(0, addedCount).filter(u => u.role === 'company').length;
+
+        const totalAll = 128 + addedCount;
+        const totalCompany = 33 + addedCompany;
+        const totalBuyer = 95 + addedBuyer;
+
+        const elAll = document.getElementById('countAll');
+        if (elAll) elAll.textContent = totalAll;
+        const elCompany = document.getElementById('countCompany');
+        if (elCompany) elCompany.textContent = totalCompany;
+        const elBuyer = document.getElementById('countBuyer');
+        if (elBuyer) elBuyer.textContent = totalBuyer;
+
+        if (visibleCount === 0) {
+          footerInfo.textContent = `Menampilkan 0 user dari ${totalAll} user`;
+        } else {
+          footerInfo.textContent = `Menampilkan 1–${visibleCount} dari ${totalAll} user`;
+        }
+      }
+
+      // Close all dropdown menus
+      function closeAllDropdowns() {
+        menuRole.classList.remove('show');
+        btnRoleDropdown.classList.remove('open', 'active');
+        menuStatus.classList.remove('show');
+        btnStatusDropdown.classList.remove('open', 'active');
+        menuSort.classList.remove('show');
+        btnSortDropdown.classList.remove('open', 'active');
+      }
+
+      // Dropdown toggle listeners
+      btnRoleDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isOpen = menuRole.classList.contains('show');
+        closeAllDropdowns();
+        if (!isOpen) {
+          menuRole.classList.add('show');
+          btnRoleDropdown.classList.add('open', 'active');
+        }
+      });
+
+      btnStatusDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isOpen = menuStatus.classList.contains('show');
+        closeAllDropdowns();
+        if (!isOpen) {
+          menuStatus.classList.add('show');
+          btnStatusDropdown.classList.add('open', 'active');
+        }
+      });
+
+      btnSortDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isOpen = menuSort.classList.contains('show');
+        closeAllDropdowns();
+        if (!isOpen) {
+          menuSort.classList.add('show');
+          btnSortDropdown.classList.add('open', 'active');
+        }
+      });
+
+      // Close dropdowns on click outside
+      document.addEventListener('click', function() {
+        closeAllDropdowns();
+      });
+
+      // Role Dropdown Selection
+      menuRole.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+          e.stopPropagation();
+          menuRole.querySelectorAll('.dropdown-item').forEach(el => el.classList.remove('active'));
+          this.classList.add('active');
+
+          const role = this.getAttribute('data-role');
+          currentRole = role;
+          labelRole.textContent = this.textContent.trim();
+
+          // Sync Role Pills
+          rolePills.forEach(pill => {
+            if (pill.getAttribute('data-role') === role) {
+              pill.classList.add('active');
+            } else {
+              pill.classList.remove('active');
+            }
+          });
+
+          closeAllDropdowns();
+          renderTable();
+          showToast(`Filter role diterapkan: ${this.textContent.trim()}`);
+        });
+      });
+
+      // Status Dropdown Selection
+      menuStatus.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+          e.stopPropagation();
+          menuStatus.querySelectorAll('.dropdown-item').forEach(el => el.classList.remove('active'));
+          this.classList.add('active');
+
+          const status = this.getAttribute('data-status');
+          currentStatus = status;
+          labelStatus.textContent = this.textContent.trim();
+
+          closeAllDropdowns();
+          renderTable();
+          showToast(`Filter status diterapkan: ${this.textContent.trim()}`);
+        });
+      });
+
+      // Sort Dropdown Selection
+      menuSort.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+          e.stopPropagation();
+          menuSort.querySelectorAll('.dropdown-item').forEach(el => el.classList.remove('active'));
+          this.classList.add('active');
+
+          const sort = this.getAttribute('data-sort');
+          currentSort = sort;
+          labelSort.textContent = this.textContent.trim();
+
+          closeAllDropdowns();
+          renderTable();
+          showToast(`Urutan diterapkan: ${this.textContent.trim()}`);
+        });
+      });
+
+      // Role Pills Click Listener
+      rolePills.forEach(pill => {
+        pill.addEventListener('click', function(e) {
+          e.preventDefault();
+          rolePills.forEach(p => p.classList.remove('active'));
+          this.classList.add('active');
+
+          const role = this.getAttribute('data-role');
+          currentRole = role;
+
+          // Sync Dropdown
+          menuRole.querySelectorAll('.dropdown-item').forEach(item => {
+            if (item.getAttribute('data-role') === role) {
+              item.classList.add('active');
+              labelRole.textContent = item.textContent.trim();
+            } else {
+              item.classList.remove('active');
+            }
+          });
+
+          renderTable();
+          showToast(`Menampilkan kategori: ${this.textContent.split('(')[0].trim()}`);
+        });
+      });
+
+      // Table Action Click: Lock / Unlock Toggle
+      userTableBody.addEventListener('click', function(e) {
+        const btn = e.target.closest('[data-action="toggle-status"]');
+        if (!btn) return;
+
+        const userId = btn.getAttribute('data-id');
+        const user = users.find(u => u.id === userId);
+        if (!user) return;
+
+        if (user.status === 'active') {
+          user.status = 'inactive';
+          saveUsers(users);
+          renderTable();
+          showToast(`User ${user.name} (${user.id}) telah dikunci (Nonaktif).`, 'warning');
+        } else {
+          user.status = 'active';
+          saveUsers(users);
+          renderTable();
+          showToast(`User ${user.name} (${user.id}) berhasil diaktifkan kembali.`, 'success');
+        }
+      });
+
+      // Modal Open & Close Handlers
+      btnOpenAddModal.addEventListener('click', function(e) {
+        e.preventDefault();
+        addUserForm.reset();
+        addUserModal.classList.add('show');
+        document.getElementById('inputCompany').focus();
+      });
+
+      function closeModal() {
+        addUserModal.classList.remove('show');
+      }
+
+      btnCloseModal.addEventListener('click', closeModal);
+      btnCancelModal.addEventListener('click', closeModal);
+
+      // Close modal on clicking backdrop
+      addUserModal.addEventListener('click', function(e) {
+        if (e.target === addUserModal) {
+          closeModal();
+        }
+      });
+
+      // Form Submit: Add New User
+      addUserForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const company = document.getElementById('inputCompany').value.trim();
+        const email = document.getElementById('inputEmail').value.trim();
+        const phone = document.getElementById('inputPhone').value.trim();
+        const address = document.getElementById('inputAddress').value.trim();
+        const nib = document.getElementById('inputNib').value.trim() || '—';
+        const npwp = document.getElementById('inputNpwp').value.trim() || '—';
+
+        if (!company || !email || !phone || !address) {
+          showToast('Harap lengkapi semua kolom wajib!', 'warning');
+          return;
+        }
+
+        // Generate ID like #USR-0046
+        const randomNum = Math.floor(46 + Math.random() * 50);
+        const newId = `#USR-00${randomNum}`;
+
+        // Format Date
+        const now = new Date();
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+        const formattedDate = `${now.getDate()} ${months[now.getMonth()]} 2027`;
+
+        const newUser = {
+          id: newId,
+          name: company,
+          company: '',
+          email: email,
+          phone: phone,
+          address: address,
+          role: 'company',
+          roleLabel: 'Perusahaan',
+          nib: nib,
+          npwp: npwp,
+          date: formattedDate,
+          status: 'active'
+        };
+
+        // Add user to top of list
+        users.unshift(newUser);
+        saveUsers(users);
+
+        closeModal();
+        renderTable();
+        showToast(`User baru ${newUser.name} (${newUser.id}) berhasil ditambahkan!`, 'success');
+      });
+
+      // Pagination button
+      btnNextPage.addEventListener('click', function() {
+        showToast('Halaman berikutnya: Semua user telah ditampilkan (Halaman 1 dari 1).', 'info');
+      });
+
+      // Admin Profile button
+      adminProfileBtn.addEventListener('click', function() {
+        showToast('Masuk sebagai Superadmin Staplr (Aktif).', 'info');
+      });
+
+      // Initial Render
+      renderTable();
+    })();
+  </script>
 </body>
 </html>

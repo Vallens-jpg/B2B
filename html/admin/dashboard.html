@@ -7,7 +7,7 @@
   <style>
     /* ==========================================================
        STAPLR ADMIN - DASHBOARD (PIXEL-PERFECT REPLICA)
-       Reference: assets/tampilan admin/Admin dashboard.png
+       Reference: media_1793680693993_c2b7f3e8.png
        ========================================================== */
     * {
       margin: 0;
@@ -28,7 +28,6 @@
     .sidebar {
       width: 260px;
       flex-shrink: 0;
-      /* Exact 7-stop gradient matching Admin dashboard.png */
       background: linear-gradient(
         180deg,
         #87ab95 0%,
@@ -55,12 +54,18 @@
       padding: 0 10px 42px 10px;
     }
 
+    .logo-container a {
+      display: inline-block;
+      text-decoration: none;
+    }
+
     .logo-container img {
       height: 56px;
       width: auto;
       max-width: 100%;
       display: block;
       object-fit: contain;
+      cursor: pointer;
     }
 
     .menu {
@@ -102,7 +107,6 @@
       background: rgba(255, 255, 255, 0.12);
     }
 
-    /* Active Dashboard state: dark teal text, translucent pill, olive-yellow icon */
     .menu-item.active {
       background: rgba(255, 255, 255, 0.22);
       color: #092d40;
@@ -142,6 +146,14 @@
       font-size: 14.5px;
       font-weight: 600;
       color: #0f2a4a;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 20px;
+      transition: background 0.15s ease;
+    }
+
+    .admin-profile:hover {
+      background: #f1f5f9;
     }
 
     .admin-avatar {
@@ -172,6 +184,14 @@
       border-radius: 16px;
       padding: 22px 24px;
       box-shadow: 0 1px 3px rgba(15, 42, 74, 0.03);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .stat-card:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 12px rgba(15, 42, 74, 0.08);
+      transform: translateY(-2px);
     }
 
     .stat-head {
@@ -216,47 +236,12 @@
       line-height: 1.15;
     }
 
-    .stat-foot {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12.5px;
-      font-weight: 600;
-    }
-
-    .stat-foot.green {
-      color: #16a34a;
-    }
-
-    .stat-foot.amber {
-      color: #b45309;
-    }
-
-    .stat-foot.red {
-      color: #bd2a2a;
-    }
-
-    .arrow-badge {
-      width: 18px;
-      height: 18px;
-      border-radius: 5px;
-      background: #defce8;
-      color: #16a34a;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 800;
-      line-height: 1;
-    }
-
     /* ============ STATISTIK TRANSAKSI BULANAN (CHART) ============ */
     .chart-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 16px;
       padding: 24px 26px 26px;
-      max-width: 760px;
       box-shadow: 0 1px 3px rgba(15, 42, 74, 0.03);
     }
 
@@ -272,12 +257,7 @@
       font-weight: 800;
       color: #0f2a4a;
       letter-spacing: -0.2px;
-      margin-bottom: 4px;
-    }
-
-    .chart-head p {
-      font-size: 13.5px;
-      color: #64748b;
+      margin-bottom: 0;
     }
 
     .btn-period {
@@ -289,6 +269,11 @@
       padding: 7px 18px;
       border-radius: 999px;
       cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-period:hover {
+      background: #17385f;
     }
 
     /* Outer chart plot area container */
@@ -301,7 +286,7 @@
 
     .chart-svg {
       width: 100%;
-      height: 360px;
+      height: auto;
       display: block;
     }
 
@@ -321,13 +306,69 @@
       text-align: center;
     }
 
+    /* ============ TOAST NOTIFICATION ============ */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      pointer-events: auto;
+      min-width: 300px;
+      max-width: 420px;
+      background: #0f2a4a;
+      color: #ffffff;
+      border-radius: 10px;
+      padding: 12px 18px;
+      box-shadow: 0 10px 25px -5px rgba(15, 42, 74, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideToastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.25s, transform 0.25s;
+    }
+
+    .toast.toast-leave {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+
+    @keyframes slideToastIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .toast-icon {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toast-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .toast-message {
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1.4;
+      flex: 1;
+    }
+
     /* ============ RESPONSIVE ============ */
     @media (max-width: 1200px) {
       .stat-grid {
         grid-template-columns: repeat(2, 1fr);
-      }
-      .chart-card {
-        max-width: 100%;
       }
     }
 
@@ -357,9 +398,10 @@
 
   <!-- ==================== SIDEBAR ==================== -->
   <aside class="sidebar">
-    <!-- Logo with shopping basket + yellow dot + Staplr -->
     <div class="logo-container">
-      <img src="../../assets/img/staplr-logo.png" alt="Staplr">
+      <a href="dashboard.html" title="Dashboard Staplr">
+        <img src="../../assets/img/staplr-logo.png" alt="Staplr">
+      </a>
     </div>
 
     <!-- Navigation Menu -->
@@ -367,8 +409,7 @@
       <!-- 1. Dashboard (Active) -->
       <a class="menu-item active" href="dashboard.html">
         <span class="icon">
-          <!-- 4-square grid in olive-yellow #877825 / #9eb028 -->
-          <svg viewBox="0 0 24 24" fill="#877825">
+          <svg viewBox="0 0 24 24" fill="#FFC700">
             <rect x="3" y="3" width="8" height="8" rx="2"/>
             <rect x="13" y="3" width="8" height="8" rx="2"/>
             <rect x="3" y="13" width="8" height="8" rx="2"/>
@@ -381,7 +422,6 @@
       <!-- 2. Verifikasi -->
       <a class="menu-item" href="verifikasi.html">
         <span class="icon">
-          <!-- Shield with checkmark in golden yellow #FFC700 -->
           <svg viewBox="0 0 24 24" fill="none">
             <path d="M12 2.5 L20 6.2 V11.5 C20 16.5 16.6 20.3 12 21.8 C7.4 20.3 4 16.5 4 11.5 V6.2 Z" fill="#FFC700"/>
             <path d="M9.2 11.8 L11.2 13.8 L15.2 9.8" stroke="#0F2A4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -393,7 +433,6 @@
       <!-- 3. Dispute -->
       <a class="menu-item" href="dispute.html">
         <span class="icon">
-          <!-- Speech bubble with ! in golden yellow #FFC700 -->
           <svg viewBox="0 0 24 24" fill="none">
             <path d="M4 4.5 C4 3.4 4.9 2.5 6 2.5 H18 C19.1 2.5 20 3.4 20 4.5 V14.5 C20 15.6 19.1 16.5 18 16.5 H7.5 L4 20 V4.5 Z" fill="#FFC700"/>
             <rect x="11" y="6" width="2" height="5.5" rx="1" fill="#0F2A4A"/>
@@ -406,7 +445,6 @@
       <!-- 4. Keuangan -->
       <a class="menu-item" href="keuangan.html">
         <span class="icon">
-          <!-- Wallet icon in golden yellow #FFC700 -->
           <svg viewBox="0 0 24 24" fill="none">
             <path d="M3 7 C3 5.3 4.3 4 6 4 H18 C19.7 4 21 5.3 21 7 V8 H3 Z" fill="#FFC700"/>
             <rect x="3" y="7" width="18" height="13" rx="2" fill="#FFC700"/>
@@ -420,7 +458,6 @@
       <!-- 5. Manajemen User -->
       <a class="menu-item" href="manajemen-user.html">
         <span class="icon">
-          <!-- Two users outline in golden yellow #FFC700 -->
           <svg viewBox="0 0 24 24" fill="#FFC700">
             <circle cx="9" cy="8" r="3.2"/>
             <path d="M3.5 18 C3.5 14.7 6 12 9 12 C12 12 14.5 14.7 14.5 18 Z"/>
@@ -434,7 +471,6 @@
       <!-- 6. Riwayat -->
       <a class="menu-item" href="riwayat.html">
         <span class="icon">
-          <!-- Counter-clockwise history clock arrow in #0F2A4A and #FFC700 -->
           <svg viewBox="0 0 24 24" fill="none">
             <path d="M12 4 A8 8 0 1 0 19.5 14" stroke="#0F2A4A" stroke-width="2.2" stroke-linecap="round"/>
             <path d="M19.5 9.5 V14 H15" stroke="#FFC700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -451,7 +487,7 @@
     <!-- Topbar -->
     <header class="topbar">
       <h1>Dashboard</h1>
-      <div class="admin-profile">
+      <div class="admin-profile" id="adminProfileBtn" title="Profil Admin">
         <div class="admin-avatar"></div>
         <span>Admin</span>
       </div>
@@ -463,7 +499,7 @@
       <!-- ===== 4 Stat Cards ===== -->
       <div class="stat-grid">
         <!-- 1. Total User -->
-        <div class="stat-card">
+        <div class="stat-card" id="cardTotalUser" title="Lihat data Total User">
           <div class="stat-head">
             <span class="stat-label">Total User</span>
             <div class="stat-icon blue">
@@ -479,7 +515,7 @@
         </div>
 
         <!-- 2. Verifikasi Pending -->
-        <div class="stat-card">
+        <div class="stat-card" id="cardVerifikasi" title="Lihat Verifikasi Pending">
           <div class="stat-head">
             <span class="stat-label">Verifikasi Pending</span>
             <div class="stat-icon amber">
@@ -493,7 +529,7 @@
         </div>
 
         <!-- 3. Dispute Terbuka -->
-        <div class="stat-card">
+        <div class="stat-card" id="cardDispute" title="Lihat Dispute Terbuka">
           <div class="stat-head">
             <span class="stat-label">Dispute Terbuka</span>
             <div class="stat-icon red">
@@ -508,7 +544,7 @@
         </div>
 
         <!-- 4. Saldo Admin -->
-        <div class="stat-card">
+        <div class="stat-card" id="cardSaldo" title="Lihat Saldo Admin">
           <div class="stat-head">
             <span class="stat-label">Saldo Admin</span>
             <div class="stat-icon emerald">
@@ -528,23 +564,21 @@
         <div class="chart-head">
           <div>
             <h2>Statistik Transaksi Bulanan</h2>
-            <p>Ringkasan transaksi dan pendapatan komisi tahun 2026</p>
           </div>
-          <button class="btn-period">Tahun ini</button>
+          <button class="btn-period" id="btnPeriod">Tahun ini</button>
         </div>
 
-        <!-- Inner Plot Container with #f8fafc background -->
+        <!-- Inner Plot Container -->
         <div class="chart-plot">
-          <svg class="chart-svg" viewBox="0 0 712 360" preserveAspectRatio="none">
+          <svg class="chart-svg" viewBox="0 0 712 360" preserveAspectRatio="xMidYMid meet">
             <defs>
-              <!-- Blue Area Gradient Fill under line -->
               <linearGradient id="blueAreaGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.22"/>
                 <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.04"/>
               </linearGradient>
             </defs>
 
-            <!-- 5 Horizontal Grid Lines: 1.5B, 1.2B, 900M, 600M, 300M -->
+            <!-- 5 Horizontal Grid Lines -->
             <g stroke="#e2e8f0" stroke-width="1">
               <line x1="48" y1="56"  x2="698" y2="56"/>
               <line x1="48" y1="112" x2="698" y2="112"/>
@@ -553,7 +587,7 @@
               <line x1="48" y1="280" x2="698" y2="280"/>
             </g>
 
-            <!-- Y-Axis Labels: 1.5B, 1.2B, 900M, 600M, 300M -->
+            <!-- Y-Axis Labels -->
             <g font-family="'Segoe UI', sans-serif" font-size="11" fill="#94a3b8" text-anchor="start" font-weight="500">
               <text x="14" y="59">1.5B</text>
               <text x="14" y="115">1.2B</text>
@@ -562,8 +596,7 @@
               <text x="14" y="283">300M</text>
             </g>
 
-            <!-- Blue Area Fill (Translucent gradient down to baseline 336) -->
-            <!-- Exact points: (55,175) (119,163) (189,133) (260,149) (329,105) (400,93) (471,76) (539,82) (611,71) (677,61) -->
+            <!-- Blue Area Fill -->
             <polygon
               points="55,175 119,163 189,133 260,149 329,105 400,93 471,76 539,82 611,71 677,61 677,336 55,336"
               fill="url(#blueAreaGrad)"
@@ -620,7 +653,7 @@
           </svg>
         </div>
 
-        <!-- Month Labels placed below the plot area, perfectly aligned to data points -->
+        <!-- Month Labels -->
         <div class="chart-x-row">
           <span style="left: calc(12px + (100% - 24px) * 0.0772)">Jan</span>
           <span style="left: calc(12px + (100% - 24px) * 0.1671)">Feb</span>
@@ -638,5 +671,63 @@
     </section>
   </main>
 
+  <!-- ==================== TOAST CONTAINER ==================== -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <script>
+    (function() {
+      const toastContainer = document.getElementById('toastContainer');
+
+      function showToast(message, type) {
+        type = type || 'info';
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        let iconSvg = '';
+        if (type === 'success') {
+          iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+        } else if (type === 'warning') {
+          iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+        } else {
+          iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+        }
+        toast.innerHTML = '<div class="toast-icon">' + iconSvg + '</div><div class="toast-message">' + message + '</div>';
+        toastContainer.appendChild(toast);
+        setTimeout(function() {
+          toast.classList.add('toast-leave');
+          setTimeout(function() {
+            if (toast.parentNode) toast.parentNode.removeChild(toast);
+          }, 250);
+        }, 3200);
+      }
+
+      // Stat card clicks
+      document.getElementById('cardTotalUser').addEventListener('click', function() {
+        showToast('Total User terdaftar: 12,840 user aktif di platform Staplr.', 'info');
+      });
+
+      document.getElementById('cardVerifikasi').addEventListener('click', function() {
+        window.location.href = 'verifikasi.html';
+      });
+
+      document.getElementById('cardDispute').addEventListener('click', function() {
+        window.location.href = 'dispute.html';
+      });
+
+      document.getElementById('cardSaldo').addEventListener('click', function() {
+        window.location.href = 'keuangan.html';
+      });
+
+      // Period button
+      document.getElementById('btnPeriod').addEventListener('click', function() {
+        showToast('Menampilkan statistik transaksi tahun ini (Jan \u2013 Okt 2026).', 'info');
+      });
+
+      // Admin profile
+      document.getElementById('adminProfileBtn').addEventListener('click', function() {
+        showToast('Masuk sebagai Superadmin Staplr (Aktif).', 'info');
+      });
+    })();
+  </script>
 </body>
 </html>

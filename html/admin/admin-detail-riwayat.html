@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detail Transaksi - Staplr Admin</title>
+  <style>
+    /* ==========================================================
+       STAPLR ADMIN - DETAIL RIWAYAT (PIXEL-PERFECT REPLICA)
+       ========================================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background: #f4f7fa;
+      color: #0f2a4a;
+      overflow-x: hidden;
+    }
+
+    /* ============ SIDEBAR ============ */
+    .sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: linear-gradient(
+        180deg,
+        #87ab95 0%,
+        #8fad97 20%,
+        #b9ccaf 40%,
+        #ebedc9 60%,
+        #cdd8b8 75%,
+        #95b499 90%,
+        #7ea58d 100%
+      );
+      padding: 32px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 1px solid rgba(15, 42, 74, 0.06);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      padding: 0 10px 42px 10px;
+    }
+
+    .logo-link {
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .logo-container img {
+      height: 56px;
+      width: auto;
+      max-width: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-size: 14.5px;
+      font-weight: 600;
+      text-decoration: none;
+      color: #ffffff;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .menu-item .icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-item .icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Active Riwayat state */
+    .menu-item.active {
+      background: rgba(255, 255, 255, 0.22);
+      color: #092d40;
+      font-weight: 700;
+    }
+
+    /* ============ MAIN LAYOUT ============ */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ============ TOPBAR ============ */
+    .topbar {
+      height: 80px;
+      background: #ffffff;
+      padding: 0 41px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .topbar h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f2a4a;
+      letter-spacing: -0.3px;
+    }
+
+    .admin-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #0f2a4a;
+      cursor: pointer;
+      user-select: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: background 0.15s ease;
+    }
+
+    .admin-profile:hover {
+      background: #f1f5f9;
+    }
+
+    .admin-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #166951 0%, #0d4635 100%);
+      flex-shrink: 0;
+    }
+
+    /* ============ CONTENT ============ */
+    .content {
+      padding: 28px 41px 40px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ============ DETAIL CARD ============ */
+    .detail-card {
+      background: #ffffff;
+      border: 1px solid #edf1f6;
+      border-radius: 14px;
+      padding: 28px 32px;
+      box-shadow: 0 1px 3px rgba(15, 42, 74, 0.03);
+      width: 100%;
+    }
+
+    .detail-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f2a4a;
+      letter-spacing: -0.2px;
+      margin-bottom: 20px;
+    }
+
+    .info-group {
+      margin-bottom: 16px;
+    }
+
+    .info-label {
+      font-size: 12px;
+      color: #94a3b8;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .info-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f2a4a;
+      line-height: 1.3;
+    }
+
+    .divider {
+      border: 0;
+      border-top: 1px solid #edf1f6;
+      margin: 18px 0;
+    }
+
+    /* Financial Summary Box */
+    .summary-box {
+      background: #f8fafc;
+      border: 1px solid #edf1f6;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 22px 0 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+
+    .summary-row .label {
+      color: #64748b;
+    }
+
+    .summary-row .val {
+      font-weight: 700;
+      color: #0f2a4a;
+    }
+
+    .summary-row.total-row {
+      margin-top: 4px;
+      padding-top: 12px;
+      font-size: 14px;
+    }
+
+    .summary-row.total-row .label,
+    .summary-row.total-row .val {
+      font-weight: 800;
+      color: #0f2a4a;
+      font-size: 14.5px;
+    }
+
+    .notes-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f2a4a;
+      margin-top: 22px;
+      margin-bottom: 14px;
+    }
+
+    /* Action Buttons */
+    .btn-action-primary {
+      width: 100%;
+      height: 44px;
+      background: #143358;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      margin-bottom: 10px;
+      text-decoration: none;
+    }
+
+    .btn-action-primary:hover {
+      background: #0f2a4a;
+      transform: translateY(-1px);
+    }
+
+    .btn-action-secondary {
+      width: 100%;
+      height: 44px;
+      background: #ffffff;
+      color: #0f2a4a;
+      border: 1px solid #d0d5dd;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-action-secondary:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+
+    /* ============ BUKTI TRANSFER MODAL ============ */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 42, 74, 0.55);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 460px;
+      box-shadow: 0 12px 36px rgba(15, 42, 74, 0.18);
+      overflow: hidden;
+      transform: translateY(12px) scale(0.98);
+      transition: transform 0.2s ease;
+    }
+
+    .modal-overlay.active .modal-box {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid #edf1f6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fafcff;
+    }
+
+    .modal-header-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f2a4a;
+    }
+
+    .modal-close-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: none;
+      background: #f1f5f9;
+      color: #64748b;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .modal-close-btn:hover {
+      background: #e2e8f0;
+      color: #0f2a4a;
+    }
+
+    /* Receipt Card */
+    .receipt-body {
+      padding: 24px;
+    }
+
+    .receipt-card {
+      background: #fdfefe;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    }
+
+    .receipt-top {
+      text-align: center;
+      padding-bottom: 16px;
+      border-bottom: 1px dashed #cbd5e1;
+      margin-bottom: 16px;
+    }
+
+    .receipt-bank-badge {
+      display: inline-block;
+      background: #00529c;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    .receipt-amount-title {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 2px;
+    }
+
+    .receipt-amount {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f2a4a;
+    }
+
+    .receipt-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ecfdf5;
+      color: #059669;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-top: 6px;
+    }
+
+    .receipt-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 12.5px;
+    }
+
+    .receipt-item {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .receipt-item .item-label {
+      color: #64748b;
+    }
+
+    .receipt-item .item-val {
+      font-weight: 700;
+      color: #0f2a4a;
+      text-align: right;
+    }
+
+    .receipt-footer-actions {
+      padding: 16px 24px 20px;
+      border-top: 1px solid #edf1f6;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      background: #fafcff;
+    }
+
+    .btn-receipt-action {
+      height: 38px;
+      padding: 0 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-receipt-secondary {
+      background: #ffffff;
+      border: 1px solid #d0d5dd;
+      color: #0f2a4a;
+    }
+
+    .btn-receipt-secondary:hover {
+      background: #f1f5f9;
+    }
+
+    .btn-receipt-primary {
+      background: #0f2a4a;
+      border: none;
+      color: #ffffff;
+    }
+
+    .btn-receipt-primary:hover {
+      background: #143358;
+    }
+
+    /* ============ INVOICE MODAL / PRINT VIEW ============ */
+    .invoice-card-content {
+      padding: 28px;
+      font-size: 13px;
+    }
+
+    .inv-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid #0f2a4a;
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+
+    .inv-brand {
+      font-size: 20px;
+      font-weight: 900;
+      color: #0f2a4a;
+    }
+
+    .inv-tagline {
+      font-size: 11.5px;
+      color: #64748b;
+    }
+
+    .inv-num {
+      text-align: right;
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f2a4a;
+    }
+
+    .inv-date {
+      font-size: 11.5px;
+      color: #64748b;
+    }
+
+    .inv-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+
+    .inv-table th {
+      background: #f1f5f9;
+      padding: 8px 12px;
+      text-align: left;
+      font-size: 11.5px;
+      color: #475569;
+    }
+
+    .inv-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #edf1f6;
+      font-size: 12.5px;
+    }
+
+    /* ============ TOAST ============ */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: #0f2a4a;
+      color: #ffffff;
+      padding: 14px 22px;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      font-size: 13.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 820px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        padding: 20px;
+      }
+      .topbar {
+        padding: 0 20px;
+      }
+      .content {
+        padding: 20px;
+      }
+      .detail-card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="sidebar">
+    <!-- Logo with shopping basket + yellow dot + Staplr -->
+    <div class="logo-container">
+      <a href="dashboard.html" class="logo-link">
+        <img src="../../assets/img/staplr-logo.png" alt="Staplr">
+      </a>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="menu">
+      <!-- 1. Dashboard -->
+      <a class="menu-item" href="dashboard.html">
+        <span class="icon">
+          <!-- 4-square grid in olive-yellow #FFC700 -->
+          <svg viewBox="0 0 24 24" fill="#FFC700">
+            <rect x="3" y="3" width="8" height="8" rx="2"/>
+            <rect x="13" y="3" width="8" height="8" rx="2"/>
+            <rect x="3" y="13" width="8" height="8" rx="2"/>
+            <rect x="13" y="13" width="8" height="8" rx="2"/>
+          </svg>
+        </span>
+        <span>Dashboard</span>
+      </a>
+
+      <!-- 2. Verifikasi -->
+      <a class="menu-item" href="verifikasi.html">
+        <span class="icon">
+          <!-- Shield with checkmark in golden yellow #FFC700 -->
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 2.5 L20 6.2 V11.5 C20 16.5 16.6 20.3 12 21.8 C7.4 20.3 4 16.5 4 11.5 V6.2 Z" fill="#FFC700"/>
+            <path d="M9.2 11.8 L11.2 13.8 L15.2 9.8" stroke="#0F2A4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>Verifikasi</span>
+      </a>
+
+      <!-- 3. Dispute -->
+      <a class="menu-item" href="dispute.html">
+        <span class="icon">
+          <!-- Speech bubble with ! in golden yellow #FFC700 -->
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M4 4.5 C4 3.4 4.9 2.5 6 2.5 H18 C19.1 2.5 20 3.4 20 4.5 V14.5 C20 15.6 19.1 16.5 18 16.5 H7.5 L4 20 V4.5 Z" fill="#FFC700"/>
+            <rect x="11" y="6" width="2" height="5.5" rx="1" fill="#0F2A4A"/>
+            <circle cx="12" cy="13.5" r="1.1" fill="#0F2A4A"/>
+          </svg>
+        </span>
+        <span>Dispute</span>
+      </a>
+
+      <!-- 4. Keuangan -->
+      <a class="menu-item" href="keuangan.html">
+        <span class="icon">
+          <!-- Wallet icon in golden yellow #FFC700 -->
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M3 7 C3 5.3 4.3 4 6 4 H18 C19.7 4 21 5.3 21 7 V8 H3 Z" fill="#FFC700"/>
+            <rect x="3" y="7" width="18" height="13" rx="2" fill="#FFC700"/>
+            <path d="M15 11.5 H21 V15.5 H15 C13.9 15.5 13 14.6 13 13.5 C13 12.4 13.9 11.5 15 11.5 Z" fill="#FFF2B2"/>
+            <circle cx="15.8" cy="13.5" r="1" fill="#0F2A4A"/>
+          </svg>
+        </span>
+        <span>Keuangan</span>
+      </a>
+
+      <!-- 5. Manajemen User -->
+      <a class="menu-item" href="manajemen-user.html">
+        <span class="icon">
+          <!-- Two users outline in golden yellow #FFC700 -->
+          <svg viewBox="0 0 24 24" fill="#FFC700">
+            <circle cx="9" cy="8" r="3.2"/>
+            <path d="M3.5 18 C3.5 14.7 6 12 9 12 C12 12 14.5 14.7 14.5 18 Z"/>
+            <circle cx="16.5" cy="8.8" r="2.5"/>
+            <path d="M14.5 13.8 C15.5 13.3 16.7 13.3 17.6 13.9 C19.2 14.9 20 16.4 20 18 H15.5 Z"/>
+          </svg>
+        </span>
+        <span>Manajemen User</span>
+      </a>
+
+      <!-- 6. Riwayat (Active) -->
+      <a class="menu-item active" href="riwayat.html">
+        <span class="icon">
+          <!-- Counter-clockwise history clock arrow in #0F2A4A and #FFC700 -->
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 4 A8 8 0 1 0 19.5 14" stroke="#0F2A4A" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M19.5 9.5 V14 H15" stroke="#FFC700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 8 V12 L14.5 14.5" stroke="#FFC700" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Riwayat</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <a href="riwayat.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">
+          <h1>Riwayat</h1>
+        </a>
+      </div>
+      <div class="admin-profile" id="adminProfileBtn" title="Profil Admin">
+        <div class="admin-avatar"></div>
+        <span>Admin</span>
+      </div>
+    </header>
+
+    <!-- Page Body -->
+    <section class="content">
+
+      <!-- Detail Card (Exact Replication) -->
+      <div class="detail-card">
+        <h3 class="detail-title">Detail Transaksi</h3>
+
+        <div class="info-group">
+          <div class="info-label">ID Transaksi</div>
+          <div class="info-value" id="valTrxId">TRX-2026-001</div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="info-group">
+          <div class="info-label">Pembeli</div>
+          <div class="info-value" id="valBuyer">Rira W. (PT Rira Pangan)</div>
+        </div>
+
+        <div class="info-group">
+          <div class="info-label">Metode Pembayaran</div>
+          <div class="info-value" id="valPaymentMethod">Transfer Bank BCA</div>
+        </div>
+
+        <div class="info-group">
+          <div class="info-label">Waktu Transaksi</div>
+          <div class="info-value" id="valTrxTime">12 Oktober 2026, 14:30 WIB</div>
+        </div>
+
+        <!-- Financial Summary Box -->
+        <div class="summary-box">
+          <div class="summary-row">
+            <span class="label">Subtotal</span>
+            <span class="val" id="valSubtotal">Rp 1.200.000</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Biaya Pengiriman</span>
+            <span class="val" id="valShipping">Rp 50.000</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Diskon</span>
+            <span class="val" id="valDiscount">Rp 0</span>
+          </div>
+          <div class="summary-row total-row">
+            <span class="label">Total</span>
+            <span class="val" id="valTotal">Rp 1.250.000</span>
+          </div>
+        </div>
+
+        <!-- Notes & Action Buttons -->
+        <div class="notes-title">Catatan Pembayaran</div>
+        <button type="button" class="btn-action-primary" id="btnViewTransferProof">
+          Lihat Bukti Transfer
+        </button>
+        <button type="button" class="btn-action-secondary" id="btnPrintInvoice">
+          Cetak Invoice
+        </button>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ==================== MODAL BUKTI TRANSFER ==================== -->
+  <div class="modal-overlay" id="transferProofModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h4 class="modal-header-title">Bukti Transfer Pembayaran</h4>
+        <button type="button" class="modal-close-btn" id="btnCloseProofModal">&times;</button>
+      </div>
+      <div class="receipt-body">
+        <div class="receipt-card">
+          <div class="receipt-top">
+            <span class="receipt-bank-badge" id="proofBankName">BCA</span>
+            <div class="receipt-amount-title">Total Transfer</div>
+            <div class="receipt-amount" id="proofAmount">Rp 1.250.000</div>
+            <div>
+              <span class="receipt-status-pill">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span id="proofStatusText">Transaksi Berhasil</span>
+              </span>
+            </div>
+          </div>
+          <div class="receipt-list">
+            <div class="receipt-item">
+              <span class="item-label">No. Referensi</span>
+              <span class="item-val" id="proofRef">BCA2026101298412</span>
+            </div>
+            <div class="receipt-item">
+              <span class="item-label">Waktu</span>
+              <span class="item-val" id="proofTime">12 Okt 2026, 14:30:15 WIB</span>
+            </div>
+            <div class="receipt-item">
+              <span class="item-label">Pengirim</span>
+              <span class="item-val" id="proofSender">Rira W. (PT Rira Pangan)</span>
+            </div>
+            <div class="receipt-item">
+              <span class="item-label">Rekening Pengirim</span>
+              <span class="item-val">BCA •••• 9412</span>
+            </div>
+            <div class="receipt-item">
+              <span class="item-label">Penerima</span>
+              <span class="item-val">PT STAPLR SEMBAKO INDONESIA</span>
+            </div>
+            <div class="receipt-item">
+              <span class="item-label">Rekening Tujuan</span>
+              <span class="item-val">BCA 8830129482</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="receipt-footer-actions">
+        <button type="button" class="btn-receipt-action btn-receipt-secondary" id="btnCloseProofModal2">Tutup</button>
+        <button type="button" class="btn-receipt-action btn-receipt-primary" id="btnDownloadProof">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Unduh Bukti</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL CETAK INVOICE ==================== -->
+  <div class="modal-overlay" id="invoiceModal">
+    <div class="modal-box" style="max-width: 540px;">
+      <div class="modal-header">
+        <h4 class="modal-header-title">Invoice Pembelian</h4>
+        <button type="button" class="modal-close-btn" id="btnCloseInvoiceModal">&times;</button>
+      </div>
+      <div class="invoice-card-content" id="printableInvoiceArea">
+        <div class="inv-header">
+          <div>
+            <div class="inv-brand">STAPLR</div>
+            <div class="inv-tagline">Solusi Pengadaan Sembako B2B</div>
+          </div>
+          <div>
+            <div class="inv-num" id="invModalId">INV/2026/TRX-001</div>
+            <div class="inv-date" id="invModalDate">Tanggal: 12 Okt 2026</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <div style="font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase;">Ditujukan Kepada:</div>
+          <div style="font-weight: 700; color: #0f2a4a; font-size: 14px;" id="invModalCustomer">Rira W. (PT Rira Pangan)</div>
+          <div style="color: #64748b; font-size: 12px;">Metode Pembayaran: <span id="invModalPayment" style="font-weight: 600; color: #0f2a4a;">Transfer Bank BCA</span></div>
+        </div>
+
+        <table class="inv-table">
+          <thead>
+            <tr>
+              <th>Deskripsi Produk</th>
+              <th style="text-align: right;">Jumlah</th>
+              <th style="text-align: right;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div style="font-weight: 600; color: #0f2a4a;" id="invModalProduct">Beras Rojolele Super</div>
+                <div style="font-size: 11px; color: #64748b;">Kualitas Premium Terjamin</div>
+              </td>
+              <td style="text-align: right;" id="invModalQty">500 Kg</td>
+              <td style="text-align: right; font-weight: 600;" id="invModalSubtotal">Rp 1.200.000</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 10px; border-top: 1px solid #edf1f6; font-size: 12.5px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: #64748b;">Subtotal:</span>
+            <span style="font-weight: 600;" id="invModalSubtotal2">Rp 1.200.000</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: #64748b;">Biaya Pengiriman:</span>
+            <span style="font-weight: 600;" id="invModalShipping">Rp 50.000</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: #64748b;">Diskon:</span>
+            <span style="font-weight: 600;" id="invModalDiscount">Rp 0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 800; color: #0f2a4a; padding-top: 8px; border-top: 1px dashed #cbd5e1;">
+            <span>Total Akhir:</span>
+            <span id="invModalTotal">Rp 1.250.000</span>
+          </div>
+        </div>
+      </div>
+      <div class="receipt-footer-actions">
+        <button type="button" class="btn-receipt-action btn-receipt-secondary" id="btnCloseInvoiceModal2">Tutup</button>
+        <button type="button" class="btn-receipt-action btn-receipt-primary" id="btnExecutePrint">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span>Cetak Sekarang</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toastBox">
+    <span id="toastMessage">Aksi berhasil dilakukan</span>
+  </div>
+
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Data Transaksi
+      const transactionRecords = {
+        'TRX-2026-001': {
+          id: 'TRX-2026-001',
+          buyer: 'Rira W. (PT Rira Pangan)',
+          paymentMethod: 'Transfer Bank BCA',
+          bank: 'BCA',
+          time: '12 Oktober 2026, 14:30 WIB',
+          subtotal: 'Rp 1.200.000',
+          shipping: 'Rp 50.000',
+          discount: 'Rp 0',
+          total: 'Rp 1.250.000',
+          product: 'Beras Rojolele Super',
+          qty: '500 Kg',
+          status: 'Transaksi Berhasil',
+          ref: 'BCA2026101298412'
+        },
+        'TRX-2026-002': {
+          id: 'TRX-2026-002',
+          buyer: 'Andi P. (CV Andi Jaya)',
+          paymentMethod: 'Transfer Bank Mandiri',
+          bank: 'MANDIRI',
+          time: '12 Oktober 2026, 11:15 WIB',
+          subtotal: 'Rp 820.000',
+          shipping: 'Rp 30.000',
+          discount: 'Rp 0',
+          total: 'Rp 850.000',
+          product: 'Minyak Goreng Sawit 2L',
+          qty: '40 Pcs',
+          status: 'Menunggu Verifikasi',
+          ref: 'MDR2026101277123'
+        },
+        'TRX-2026-003': {
+          id: 'TRX-2026-003',
+          buyer: 'Sinta S. (Toko Sinta)',
+          paymentMethod: 'Transfer Bank BNI',
+          bank: 'BNI',
+          time: '11 Oktober 2026, 16:45 WIB',
+          subtotal: 'Rp 4.100.000',
+          shipping: 'Rp 100.000',
+          discount: 'Rp 0',
+          total: 'Rp 4.200.000',
+          product: 'Gula Pasir Kristal Putih',
+          qty: '800 Kg',
+          status: 'Transaksi Berhasil',
+          ref: 'BNI2026101188219'
+        }
+      };
+
+      // Read URL Parameter (?id=TRX-...)
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryId = urlParams.get('id');
+      const currentData = (queryId && transactionRecords[queryId]) ? transactionRecords[queryId] : transactionRecords['TRX-2026-001'];
+
+      // Populate Elements
+      document.getElementById('valTrxId').textContent = currentData.id;
+      document.getElementById('valBuyer').textContent = currentData.buyer;
+      document.getElementById('valPaymentMethod').textContent = currentData.paymentMethod;
+      document.getElementById('valTrxTime').textContent = currentData.time;
+      document.getElementById('valSubtotal').textContent = currentData.subtotal;
+      document.getElementById('valShipping').textContent = currentData.shipping;
+      document.getElementById('valDiscount').textContent = currentData.discount;
+      document.getElementById('valTotal').textContent = currentData.total;
+
+      // Modal Proof Data
+      document.getElementById('proofBankName').textContent = currentData.bank;
+      document.getElementById('proofAmount').textContent = currentData.total;
+      document.getElementById('proofStatusText').textContent = currentData.status;
+      document.getElementById('proofRef').textContent = currentData.ref;
+      document.getElementById('proofTime').textContent = currentData.time;
+      document.getElementById('proofSender').textContent = currentData.buyer;
+
+      // Modal Invoice Data
+      document.getElementById('invModalId').textContent = 'INV/2026/' + currentData.id;
+      document.getElementById('invModalCustomer').textContent = currentData.buyer;
+      document.getElementById('invModalPayment').textContent = currentData.paymentMethod;
+      document.getElementById('invModalProduct').textContent = currentData.product;
+      document.getElementById('invModalQty').textContent = currentData.qty;
+      document.getElementById('invModalSubtotal').textContent = currentData.subtotal;
+      document.getElementById('invModalSubtotal2').textContent = currentData.subtotal;
+      document.getElementById('invModalShipping').textContent = currentData.shipping;
+      document.getElementById('invModalDiscount').textContent = currentData.discount;
+      document.getElementById('invModalTotal').textContent = currentData.total;
+
+      // Toast function
+      let toastTimer = null;
+      function showToast(message) {
+        const toast = document.getElementById('toastBox');
+        const text = document.getElementById('toastMessage');
+        text.textContent = message;
+        toast.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      }
+
+      // Proof Modal Handlers
+      const transferProofModal = document.getElementById('transferProofModal');
+      const btnViewTransferProof = document.getElementById('btnViewTransferProof');
+      const btnCloseProofModal = document.getElementById('btnCloseProofModal');
+      const btnCloseProofModal2 = document.getElementById('btnCloseProofModal2');
+      const btnDownloadProof = document.getElementById('btnDownloadProof');
+
+      btnViewTransferProof.addEventListener('click', () => {
+        transferProofModal.classList.add('active');
+      });
+
+      function closeProofModal() {
+        transferProofModal.classList.remove('active');
+      }
+
+      btnCloseProofModal.addEventListener('click', closeProofModal);
+      btnCloseProofModal2.addEventListener('click', closeProofModal);
+      transferProofModal.addEventListener('click', (e) => {
+        if (e.target === transferProofModal) closeProofModal();
+      });
+
+      btnDownloadProof.addEventListener('click', () => {
+        showToast('Mengunduh berkas bukti transfer (' + currentData.id + '.pdf)...');
+        setTimeout(() => {
+          showToast('Bukti transfer ' + currentData.id + ' berhasil diunduh');
+          closeProofModal();
+        }, 1200);
+      });
+
+      // Invoice Modal Handlers
+      const invoiceModal = document.getElementById('invoiceModal');
+      const btnPrintInvoice = document.getElementById('btnPrintInvoice');
+      const btnCloseInvoiceModal = document.getElementById('btnCloseInvoiceModal');
+      const btnCloseInvoiceModal2 = document.getElementById('btnCloseInvoiceModal2');
+      const btnExecutePrint = document.getElementById('btnExecutePrint');
+
+      btnPrintInvoice.addEventListener('click', () => {
+        invoiceModal.classList.add('active');
+      });
+
+      function closeInvoiceModal() {
+        invoiceModal.classList.remove('active');
+      }
+
+      btnCloseInvoiceModal.addEventListener('click', closeInvoiceModal);
+      btnCloseInvoiceModal2.addEventListener('click', closeInvoiceModal);
+      invoiceModal.addEventListener('click', (e) => {
+        if (e.target === invoiceModal) closeInvoiceModal();
+      });
+
+      btnExecutePrint.addEventListener('click', () => {
+        showToast('Membuka dialog pencetakan invoice...');
+        setTimeout(() => {
+          window.print();
+        }, 500);
+      });
+
+      // Admin Profile Handler
+      const adminProfileBtn = document.getElementById('adminProfileBtn');
+      adminProfileBtn.addEventListener('click', () => {
+        showToast('Sesi aktif: Admin Staplr (Superadmin)');
+      });
+    });
+  </script>
+</body>
+</html>

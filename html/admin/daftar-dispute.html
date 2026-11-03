@@ -191,6 +191,8 @@
       transition: all 0.15s ease;
       cursor: pointer;
       white-space: nowrap;
+      font-family: inherit;
+      outline: none;
     }
 
     .filter-pill:hover {
@@ -313,6 +315,13 @@
       border: 1px solid #fde68a;
     }
 
+    /* Waiting Item Badge */
+    .badge-waiting {
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
     /* Approved Badge */
     .badge-approved {
       background: #e3f6ec;
@@ -344,11 +353,13 @@
       cursor: pointer;
       transition: all 0.15s ease;
       white-space: nowrap;
+      font-family: inherit;
     }
 
     .btn-detail:hover {
       background: #f8fafc;
       border-color: #cbd5e1;
+      transform: translateY(-1px);
     }
 
     /* Table Footer & Pagination */
@@ -382,11 +393,57 @@
       cursor: pointer;
       transition: all 0.15s ease;
       white-space: nowrap;
+      font-family: inherit;
     }
 
     .btn-pagination:hover {
       background: #f8fafc;
       border-color: #cbd5e1;
+    }
+
+    .btn-pagination:active {
+      transform: scale(0.98);
+    }
+
+    /* Toast Notification */
+    .staplr-toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      padding: 14px 20px;
+      border-radius: 10px;
+      background: #0f2a4a;
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(15, 42, 74, 0.2);
+      z-index: 9999;
+      transform: translateY(60px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .staplr-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .staplr-toast.info {
+      background: #0f2a4a;
+      border: 1px solid #1e3a8a;
+    }
+
+    /* Empty state */
+    .empty-row td {
+      text-align: center;
+      padding: 36px 20px;
+      color: #64748b;
+      font-size: 13.5px;
     }
 
     /* ============ RESPONSIVE ============ */
@@ -417,17 +474,17 @@
   <!-- ==================== SIDEBAR ==================== -->
   <aside class="sidebar">
     <!-- Logo with shopping basket + yellow dot + Staplr -->
-    <div class="logo-container">
+    <a href="dashboard.html" class="logo-container" style="text-decoration: none; display: block;">
       <img src="../../assets/img/staplr-logo.png" alt="Staplr">
-    </div>
+    </a>
 
     <!-- Navigation Menu -->
     <nav class="menu">
       <!-- 1. Dashboard -->
       <a class="menu-item" href="dashboard.html">
         <span class="icon">
-          <!-- 4-square grid in olive-yellow #877825 / #9eb028 -->
-          <svg viewBox="0 0 24 24" fill="#877825">
+          <!-- 4-square grid in golden yellow #FFC700 -->
+          <svg viewBox="0 0 24 24" fill="#FFC700">
             <rect x="3" y="3" width="8" height="8" rx="2"/>
             <rect x="13" y="3" width="8" height="8" rx="2"/>
             <rect x="3" y="13" width="8" height="8" rx="2"/>
@@ -510,9 +567,9 @@
     <!-- Topbar -->
     <header class="topbar">
       <h1>Dispute</h1>
-      <div class="admin-profile">
+      <div class="admin-profile" id="adminProfileBtn" style="cursor: pointer;" title="Profil Admin">
         <div class="admin-avatar"></div>
-        <span>Profil</span>
+        <span>Admin</span>
       </div>
     </header>
 
@@ -521,12 +578,14 @@
       <h2 class="content-title">Daftar Dispute & Komplain</h2>
 
       <!-- Filter Pills -->
-      <div class="filter-row">
-        <a href="#" class="filter-pill active">Semua</a>
-        <a href="#" class="filter-pill">Perlu Ditinjau (1)</a>
-        <a href="#" class="filter-pill">Menunggu Barang</a>
-        <a href="#" class="filter-pill">Disetujui</a>
-        <a href="#" class="filter-pill">Ditolak</a>
+      <div class="filter-row" id="filterPillsRow">
+        <button type="button" class="filter-pill active" data-filter="all">Semua</button>
+        <button type="button" class="filter-pill" data-filter="pending">
+          Perlu Ditinjau (<span id="countPendingBadge">1</span>)
+        </button>
+        <button type="button" class="filter-pill" data-filter="waiting">Menunggu Barang</button>
+        <button type="button" class="filter-pill" data-filter="approved">Disetujui</button>
+        <button type="button" class="filter-pill" data-filter="rejected">Ditolak</button>
       </div>
 
       <!-- Table Card -->
@@ -544,69 +603,246 @@
                 <th>AKSI</th>
               </tr>
             </thead>
-            <tbody>
-              <!-- Row 1: Pending -->
-              <tr>
-                <td class="td-id">#RET-2026-001</td>
-                <td class="td-date">11 Okt 2026</td>
-                <td class="td-buyer">Rira W. (PT Rira Pangan)</td>
-                <td class="td-category">Barang Rusak/Pecah</td>
-                <td class="td-media">2 Foto dan 1 Video</td>
-                <td>
-                  <span class="badge badge-pending">
-                    <span class="badge-dot">●</span> Pending
-                  </span>
-                </td>
-                <td>
-                  <a href="detail-dispute.html" class="btn-detail">Detail</a>
-                </td>
-              </tr>
-
-              <!-- Row 2: Disetujui -->
-              <tr>
-                <td class="td-id">#RET-2026-002</td>
-                <td class="td-date">09 Okt 2026</td>
-                <td class="td-buyer">PT Boga Jaya</td>
-                <td class="td-category">Kuantitas Kurang</td>
-                <td class="td-media">1 Foto</td>
-                <td>
-                  <span class="badge badge-approved">
-                    <span class="badge-dot">●</span> Disetujui
-                  </span>
-                </td>
-                <td>
-                  <a href="detail-dispute.html" class="btn-detail">Detail</a>
-                </td>
-              </tr>
-
-              <!-- Row 3: Ditolak -->
-              <tr>
-                <td class="td-id">#RET-2026-003</td>
-                <td class="td-date">05 Okt 2026</td>
-                <td class="td-buyer">CV Sembako</td>
-                <td class="td-category">Tidak Sesuai Specs</td>
-                <td class="td-media">3 Foto</td>
-                <td>
-                  <span class="badge badge-rejected">
-                    <span class="badge-dot">●</span> Ditolak
-                  </span>
-                </td>
-                <td>
-                  <a href="detail-dispute.html" class="btn-detail">Detail</a>
-                </td>
-              </tr>
+            <tbody id="disputeTableBody">
+              <!-- Dynamically rendered rows -->
             </tbody>
           </table>
         </div>
 
         <!-- Footer Pagination Info -->
         <div class="card-footer">
-          <span class="footer-info">Menampilkan 1–3 dari 3 dispute</span>
-          <button class="btn-pagination" type="button">Selanjutnya</button>
+          <span class="footer-info" id="footerInfoText">Menampilkan 1–3 dari 3 dispute</span>
+          <button class="btn-pagination" id="btnNextPage" type="button">Selanjutnya</button>
         </div>
       </div>
     </section>
   </main>
 
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="staplr-toast"></div>
+
+  <!-- Client-side Logic Script -->
+  <script>
+    // ==========================================
+    // STAPLR ADMIN - DISPUTE & COMPLAINTS LOGIC
+    // ==========================================
+    const STORAGE_KEY = 'staplr_dispute_list';
+
+    // Default dispute records matching pixel-perfect design
+    const initialDisputes = [
+      {
+        id: '#RET-2026-001',
+        orderId: '#ORD-2026-089',
+        date: '11 Okt 2026',
+        buyDate: '05 Oktober 2026',
+        buyer: 'Rira W. (PT Rira Pangan)',
+        product: 'Telur Ayam (500 Kg)',
+        category: 'Barang Rusak/Pecah',
+        categoryFull: 'Barang Rusak / Cacat / Pecah',
+        media: '2 Foto dan 1 Video',
+        complaint: 'saya pesan 15 kg kok 14 kg rusak semua???',
+        solution: 'Refund Rp 350.000',
+        attachments: [
+          { type: 'JPG', title: 'Foto 1 - Kerusakan Tray Telur', desc: 'Lampiran foto 1 dari pembeli' },
+          { type: 'JPG', title: 'Foto 2 - Detail Pecahan Telur', desc: 'Lampiran foto 2 dari pembeli' },
+          { type: 'MP4', title: 'Video 1 - Pemeriksaan Kerusakan', desc: 'Lampiran video 1 dari pembeli' }
+        ],
+        status: 'pending', // pending, waiting, approved, rejected
+        statusLabel: 'Pending'
+      },
+      {
+        id: '#RET-2026-002',
+        orderId: '#ORD-2026-074',
+        date: '09 Okt 2026',
+        buyDate: '03 Oktober 2026',
+        buyer: 'PT Boga Jaya',
+        product: 'Minyak Goreng (200 L)',
+        category: 'Kuantitas Kurang',
+        categoryFull: 'Kuantitas Kurang / Tidak Lengkap',
+        media: '1 Foto',
+        complaint: 'Pesanan kurang 1 jerigen saat pengiriman.',
+        solution: 'Pengiriman Susulan / Refund Sebagian',
+        attachments: [
+          { type: 'JPG', title: 'Foto 1 - Kekurangan Jerigen Minyak', desc: 'Lampiran foto dari pembeli' }
+        ],
+        status: 'approved',
+        statusLabel: 'Disetujui'
+      },
+      {
+        id: '#RET-2026-003',
+        orderId: '#ORD-2026-061',
+        date: '05 Okt 2026',
+        buyDate: '01 Oktober 2026',
+        buyer: 'CV Sembako',
+        product: 'Beras Premium (100 Karung)',
+        category: 'Tidak Sesuai Specs',
+        categoryFull: 'Barang Tidak Sesuai Spesifikasi',
+        media: '3 Foto',
+        complaint: 'Kualitas beras tidak sesuai dengan deskripsi pesanan.',
+        solution: 'Tolak klaim karena sudah lewat batas waktu verifikasi.',
+        attachments: [
+          { type: 'JPG', title: 'Foto 1 - Timbangan Beras', desc: 'Lampiran foto timbangan' },
+          { type: 'JPG', title: 'Foto 2 - Kualitas Butir Beras', desc: 'Lampiran foto butiran beras' },
+          { type: 'JPG', title: 'Foto 3 - Label Karung Beras', desc: 'Lampiran foto kemasan karung' }
+        ],
+        status: 'rejected',
+        statusLabel: 'Ditolak'
+      }
+    ];
+
+    function getDisputes() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          let parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed.map(d => {
+              const match = initialDisputes.find(init => init.id === d.id);
+              return match ? { ...match, ...d } : d;
+            });
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(initialDisputes));
+      return initialDisputes;
+    }
+
+    function saveDisputes(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      toast.className = 'staplr-toast info show';
+      toast.textContent = message;
+      setTimeout(() => {
+        toast.className = 'staplr-toast';
+      }, 2500);
+    }
+
+    let activeFilter = 'all';
+
+    function renderDisputes() {
+      const disputes = getDisputes();
+
+      // Update badge count for Perlu Ditinjau (pending items)
+      const pendingCount = disputes.filter(d => d.status === 'pending').length;
+      document.getElementById('countPendingBadge').textContent = pendingCount;
+
+      // Filter disputes based on active tab
+      const filtered = disputes.filter(d => {
+        if (activeFilter === 'all') return true;
+        return d.status === activeFilter;
+      });
+
+      // Update footer pagination text
+      const total = disputes.length;
+      const footerInfo = document.getElementById('footerInfoText');
+      if (filtered.length === total) {
+        footerInfo.textContent = `Menampilkan 1–${filtered.length} dari ${total} dispute`;
+      } else if (filtered.length > 0) {
+        footerInfo.textContent = `Menampilkan ${filtered.length} dari ${filtered.length} dispute`;
+      } else {
+        footerInfo.textContent = `Menampilkan 0 dispute`;
+      }
+
+      // Render Table Rows
+      const tbody = document.getElementById('disputeTableBody');
+      tbody.innerHTML = '';
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr class="empty-row">
+            <td colspan="7">Tidak ada dispute dalam kategori ini.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      filtered.forEach(d => {
+        const tr = document.createElement('tr');
+
+        // Determine badge styling
+        let badgeHtml = '';
+        if (d.status === 'pending') {
+          badgeHtml = `
+            <span class="badge badge-pending">
+              <span class="badge-dot">●</span> Pending
+            </span>
+          `;
+        } else if (d.status === 'approved') {
+          badgeHtml = `
+            <span class="badge badge-approved">
+              <span class="badge-dot">●</span> Disetujui
+            </span>
+          `;
+        } else if (d.status === 'rejected') {
+          badgeHtml = `
+            <span class="badge badge-rejected">
+              <span class="badge-dot">●</span> Ditolak
+            </span>
+          `;
+        } else if (d.status === 'waiting') {
+          badgeHtml = `
+            <span class="badge badge-waiting">
+              <span class="badge-dot">●</span> Menunggu Barang
+            </span>
+          `;
+        }
+
+        tr.innerHTML = `
+          <td class="td-id">${d.id}</td>
+          <td class="td-date">${d.date}</td>
+          <td class="td-buyer">${d.buyer}</td>
+          <td class="td-category">${d.category}</td>
+          <td class="td-media">${d.media}</td>
+          <td>${badgeHtml}</td>
+          <td>
+            <a href="detail-dispute.html?id=${encodeURIComponent(d.id)}" class="btn-detail" onclick="handleDetailClick('${d.id}')">Detail</a>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Save selected dispute before navigation
+    window.handleDetailClick = function(id) {
+      localStorage.setItem('staplr_selected_dispute_id', id);
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Filter pill click events
+      const pills = document.querySelectorAll('.filter-pill');
+      pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          pills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+
+          activeFilter = pill.getAttribute('data-filter');
+          renderDisputes();
+        });
+      });
+
+      // 2. Next Page button event
+      const btnNext = document.getElementById('btnNextPage');
+      btnNext.addEventListener('click', () => {
+        showToast('Anda berada pada halaman 1 dari 1 (Semua dispute ditampilkan)');
+      });
+
+      // 3. Topbar Profile button event
+      const adminProfileBtn = document.getElementById('adminProfileBtn');
+      if (adminProfileBtn) {
+        adminProfileBtn.addEventListener('click', () => {
+          showToast('Masuk sebagai Administrator Staplr (Superadmin)');
+        });
+      }
+
+      // Initial render
+      renderDisputes();
+    });
+  </script>
 </body>
 </html>

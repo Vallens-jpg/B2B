@@ -475,6 +475,185 @@
       background: #17385f;
     }
 
+    /* Toast Notification */
+    .staplr-toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      padding: 14px 20px;
+      border-radius: 10px;
+      background: #0f2a4a;
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(15, 42, 74, 0.2);
+      z-index: 9999;
+      transform: translateY(60px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .staplr-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .staplr-toast.success {
+      background: #065f46;
+      border: 1px solid #059669;
+    }
+
+    .staplr-toast.danger {
+      background: #991b1b;
+      border: 1px solid #dc2626;
+    }
+
+    .staplr-toast.info {
+      background: #0f2a4a;
+      border: 1px solid #1e3a8a;
+    }
+
+    /* Attachment item hover */
+    .attachment-item {
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .attachment-item:hover {
+      border-color: #94a3b8;
+      background: #f8fafc;
+      transform: translateY(-1px);
+    }
+
+    /* Modal Backdrop & Lightbox */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 42, 74, 0.6);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 520px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(15, 42, 74, 0.2);
+      transform: scale(0.95);
+      transition: transform 0.2s ease;
+    }
+
+    .modal-backdrop.open .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #edf1f6;
+    }
+
+    .modal-header h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f2a4a;
+    }
+
+    .btn-modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+
+    .btn-modal-close:hover {
+      background: #f1f5f9;
+      color: #0f2a4a;
+    }
+
+    .modal-body {
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      text-align: center;
+    }
+
+    .modal-preview-box {
+      width: 100%;
+      height: 220px;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #64748b;
+    }
+
+    .modal-footer {
+      padding: 14px 20px;
+      background: #f8fafc;
+      border-top: 1px solid #edf1f6;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-modal-action {
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn-modal-secondary {
+      background: #ffffff;
+      border: 1px solid #d0d5dd;
+      color: #344054;
+    }
+
+    .btn-modal-primary {
+      background: #0f2a4a;
+      border: none;
+      color: #ffffff;
+    }
+
     /* ============ RESPONSIVE ============ */
     @media (max-width: 1100px) {
       .detail-grid {
@@ -513,17 +692,17 @@
   <!-- ==================== SIDEBAR ==================== -->
   <aside class="sidebar">
     <!-- Logo with shopping basket + yellow dot + Staplr -->
-    <div class="logo-container">
+    <a href="dashboard.html" class="logo-container" style="text-decoration: none; display: block;">
       <img src="../../assets/img/staplr-logo.png" alt="Staplr">
-    </div>
+    </a>
 
     <!-- Navigation Menu -->
     <nav class="menu">
       <!-- 1. Dashboard -->
       <a class="menu-item" href="dashboard.html">
         <span class="icon">
-          <!-- 4-square grid in olive-yellow #877825 / #9eb028 -->
-          <svg viewBox="0 0 24 24" fill="#877825">
+          <!-- 4-square grid in olive-yellow #FFC700 / #9eb028 -->
+          <svg viewBox="0 0 24 24" fill="#FFC700">
             <rect x="3" y="3" width="8" height="8" rx="2"/>
             <rect x="13" y="3" width="8" height="8" rx="2"/>
             <rect x="3" y="13" width="8" height="8" rx="2"/>
@@ -606,9 +785,9 @@
     <!-- Topbar -->
     <header class="topbar">
       <h1>Dispute</h1>
-      <div class="admin-profile">
+      <div class="admin-profile" id="adminProfileBtn" style="cursor: pointer;" title="Profil Admin">
         <div class="admin-avatar"></div>
-        <span>Profil</span>
+        <span>Admin</span>
       </div>
     </header>
 
@@ -618,7 +797,7 @@
       <a href="dispute.html" class="btn-back">Kembali ke Daftar</a>
 
       <!-- Content Heading -->
-      <h2 class="content-title">Detail / Peninjauan Penjual</h2>
+      <h2 class="content-title">Detail Dispute</h2>
 
       <!-- Stepper / Breadcrumbs -->
       <div class="stepper-row">
@@ -626,7 +805,7 @@
         <span class="step-arrow">→</span>
         <div class="step-pill active">Detail</div>
         <span class="step-arrow">→</span>
-        <a href="verifikasi-dispute.html" class="step-pill">Verifikasi Admin</a>
+        <a href="verifikasi-dispute.html" id="stepperVerifikasiLink" class="step-pill">Verifikasi Admin</a>
       </div>
 
       <!-- Two Cards Layout -->
@@ -639,11 +818,11 @@
           <div class="case-group">
             <div class="case-item">
               <span class="case-label">ID Retur</span>
-              <span class="case-value">#RET-2026-001</span>
+              <span class="case-value" id="caseIdRetur">#RET-2026-001</span>
             </div>
             <div class="case-item">
               <span class="case-label">ID Pesanan</span>
-              <span class="case-value">#ORD-2026-089</span>
+              <span class="case-value" id="caseIdPesanan">#ORD-2026-089</span>
             </div>
           </div>
 
@@ -652,11 +831,11 @@
           <div class="case-group">
             <div class="case-item">
               <span class="case-label">Pembeli</span>
-              <span class="case-value">Rira W. (PT Rira Pangan)</span>
+              <span class="case-value" id="casePembeli">Rira W. (PT Rira Pangan)</span>
             </div>
             <div class="case-item">
               <span class="case-label">Produk</span>
-              <span class="case-value">Telur Ayam (500 Kg)</span>
+              <span class="case-value" id="caseProduk">Telur Ayam (500 Kg)</span>
             </div>
           </div>
 
@@ -665,11 +844,11 @@
           <div class="case-group">
             <div class="case-item">
               <span class="case-label">Tgl Pembelian</span>
-              <span class="case-value">05 Oktober 2026</span>
+              <span class="case-value" id="caseTglBeli">05 Oktober 2026</span>
             </div>
             <div class="case-item">
               <span class="case-label">Tgl Komplain</span>
-              <span class="case-value">11 Okt 2026</span>
+              <span class="case-value" id="caseTglKomplain">11 Okt 2026</span>
             </div>
           </div>
 
@@ -678,11 +857,11 @@
           <div class="case-group">
             <div class="case-item">
               <span class="case-label">Alasan Utama</span>
-              <span class="case-value">Barang Rusak / Cacat / Pecah</span>
+              <span class="case-value" id="caseAlasan">Barang Rusak / Cacat / Pecah</span>
             </div>
             <div class="case-item">
               <span class="case-label">Bukti</span>
-              <span class="case-value">2 Foto dan 1 Video</span>
+              <span class="case-value" id="caseBukti">2 Foto dan 1 Video</span>
             </div>
           </div>
 
@@ -691,8 +870,10 @@
           <div class="case-group">
             <div class="case-item">
               <span class="case-label">Status Saat Ini</span>
-              <span class="badge badge-pending">
-                <span class="badge-dot">●</span> Pending
+              <span id="caseStatusBadge">
+                <span class="badge badge-pending">
+                  <span class="badge-dot">●</span> Pending
+                </span>
               </span>
             </div>
           </div>
@@ -702,16 +883,18 @@
         <div class="card right-card">
           <!-- Header with Title & Badge -->
           <div class="right-card-header">
-            <h3>Detail Dispute #RET-2026-001</h3>
-            <span class="badge badge-pending">
-              <span class="badge-dot">●</span> Pending
+            <h3 id="rightCardTitle">Detail Dispute #RET-2026-001</h3>
+            <span id="rightCardBadge">
+              <span class="badge badge-pending">
+                <span class="badge-dot">●</span> Pending
+              </span>
             </span>
           </div>
 
           <!-- Section 1: Komplain -->
           <div class="field-section">
             <label class="field-label">Komplain</label>
-            <div class="field-box">
+            <div class="field-box" id="fieldKomplain">
               saya pesan 15 kg kok 14 kg rusak semua???
             </div>
           </div>
@@ -719,76 +902,23 @@
           <!-- Section 2: Bukti -->
           <div class="field-section">
             <label class="field-label">Bukti</label>
-            <div class="attachment-list">
-
-              <!-- Attachment 1: Foto 1 -->
-              <div class="attachment-item">
-                <div class="attachment-left">
-                  <div class="attachment-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                      <circle cx="8.5" cy="8.5" r="1.5"/>
-                      <polyline points="21 15 16 10 5 21"/>
-                    </svg>
-                  </div>
-                  <div class="attachment-info">
-                    <span class="attachment-title">Foto 1 - Kerusakan Tray Telur</span>
-                    <span class="attachment-sub">Lampiran foto 1 dari pembeli</span>
-                  </div>
-                </div>
-                <span class="attachment-tag">JPG</span>
-              </div>
-
-              <!-- Attachment 2: Foto 2 -->
-              <div class="attachment-item">
-                <div class="attachment-left">
-                  <div class="attachment-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                      <circle cx="8.5" cy="8.5" r="1.5"/>
-                      <polyline points="21 15 16 10 5 21"/>
-                    </svg>
-                  </div>
-                  <div class="attachment-info">
-                    <span class="attachment-title">Foto 2 - Detail Pecahan Telur</span>
-                    <span class="attachment-sub">Lampiran foto 2 dari pembeli</span>
-                  </div>
-                </div>
-                <span class="attachment-tag">JPG</span>
-              </div>
-
-              <!-- Attachment 3: Video 1 -->
-              <div class="attachment-item">
-                <div class="attachment-left">
-                  <div class="attachment-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="2" y="6" width="13" height="12" rx="2"/>
-                      <polygon points="22 8 15 12 22 16 22 8"/>
-                    </svg>
-                  </div>
-                  <div class="attachment-info">
-                    <span class="attachment-title">Video 1 - Pemeriksaan Kerusakan</span>
-                    <span class="attachment-sub">Lampiran video 1 dari pembeli</span>
-                  </div>
-                </div>
-                <span class="attachment-tag">MP4</span>
-              </div>
-
+            <div class="attachment-list" id="attachmentList">
+              <!-- Dynamically populated -->
             </div>
           </div>
 
           <!-- Section 3: Usulan Penyelesaian -->
           <div class="field-section">
             <label class="field-label">Usulan Penyelesaian</label>
-            <div class="field-box">
+            <div class="field-box" id="fieldUsulan">
               Refund Rp 350.000
             </div>
           </div>
 
           <!-- Section 4: Action Buttons -->
           <div class="action-row">
-            <button type="button" class="btn-reject">Tolak</button>
-            <a href="verifikasi-dispute.html" class="btn-forward">Teruskan ke Verifikasi ke 2 Pihak</a>
+            <button type="button" class="btn-reject" id="btnRejectDispute">Tolak</button>
+            <a href="verifikasi-dispute.html" class="btn-forward" id="btnForwardDispute">Teruskan ke Verifikasi ke 2 Pihak</a>
           </div>
 
         </div>
@@ -796,6 +926,290 @@
       </div>
     </section>
   </main>
+
+  <!-- Modal Preview Lampiran / Lightbox -->
+  <div id="attachmentModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h4 id="modalAttachmentTitle">Pratinjau Lampiran Bukti</h4>
+        <button type="button" class="btn-modal-close" id="btnCloseModal" title="Tutup">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-preview-box">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0F2A4A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <div style="font-weight: 600; font-size: 14px; color: #0F2A4A;" id="modalPreviewName">Foto 1 - Kerusakan Tray Telur</div>
+          <div style="font-size: 12.5px; color: #64748B;" id="modalPreviewDesc">Lampiran foto 1 dari pembeli</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-action btn-modal-secondary" id="btnModalCloseAction">Tutup</button>
+        <button type="button" class="btn-modal-action btn-modal-primary" id="btnModalDownload">Unduh Berkas</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="staplr-toast"></div>
+
+  <!-- Client-side Logic Script -->
+  <script>
+    // ==========================================
+    // STAPLR ADMIN - DETAIL DISPUTE LOGIC
+    // ==========================================
+    const STORAGE_KEY = 'staplr_dispute_list';
+
+    const defaultDisputes = [
+      {
+        id: '#RET-2026-001',
+        orderId: '#ORD-2026-089',
+        date: '11 Okt 2026',
+        buyDate: '05 Oktober 2026',
+        buyer: 'Rira W. (PT Rira Pangan)',
+        product: 'Telur Ayam (500 Kg)',
+        category: 'Barang Rusak/Pecah',
+        categoryFull: 'Barang Rusak / Cacat / Pecah',
+        media: '2 Foto dan 1 Video',
+        complaint: 'saya pesan 15 kg kok 14 kg rusak semua???',
+        solution: 'Refund Rp 350.000',
+        attachments: [
+          { type: 'JPG', title: 'Foto 1 - Kerusakan Tray Telur', desc: '' },
+          { type: 'PNG', title: 'Foto 2 - Detail Pecahan Telur', desc: '' },
+          { type: 'MP4', title: 'Video 1 - Pemeriksaan Kerusakan', desc: '' }
+        ],
+        status: 'pending',
+        statusLabel: 'Pending'
+      },
+      {
+        id: '#RET-2026-002',
+        orderId: '#ORD-2026-074',
+        date: '09 Okt 2026',
+        buyDate: '03 Oktober 2026',
+        buyer: 'PT Boga Jaya',
+        product: 'Minyak Goreng (200 L)',
+        category: 'Kuantitas Kurang',
+        categoryFull: 'Kuantitas Kurang / Tidak Lengkap',
+        media: '1 Foto',
+        complaint: 'Pesanan kurang 1 jerigen saat pengiriman.',
+        solution: 'Pengiriman Susulan / Refund Sebagian',
+        attachments: [
+          { type: 'JPG', title: 'Foto 1 - Kekurangan Jerigen Minyak', desc: 'Lampiran foto dari pembeli' }
+        ],
+        status: 'approved',
+        statusLabel: 'Disetujui'
+      },
+      {
+        id: '#RET-2026-003',
+        orderId: '#ORD-2026-061',
+        date: '05 Okt 2026',
+        buyDate: '01 Oktober 2026',
+        buyer: 'CV Sembako',
+        product: 'Beras Premium (100 Karung)',
+        category: 'Tidak Sesuai Specs',
+        categoryFull: 'Barang Tidak Sesuai Spesifikasi',
+        media: '3 Foto',
+        complaint: 'Kualitas beras tidak sesuai dengan deskripsi pesanan.',
+        solution: 'Tolak klaim karena sudah lewat batas waktu verifikasi.',
+        attachments: [
+          { type: 'JPG', title: 'Foto 1 - Timbangan Beras', desc: 'Lampiran foto timbangan' },
+          { type: 'JPG', title: 'Foto 2 - Kualitas Butir Beras', desc: 'Lampiran foto butiran beras' },
+          { type: 'JPG', title: 'Foto 3 - Label Karung Beras', desc: 'Lampiran foto kemasan karung' }
+        ],
+        status: 'rejected',
+        statusLabel: 'Ditolak'
+      }
+    ];
+
+    function getDisputes() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          let parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed.map(d => {
+              const match = defaultDisputes.find(init => init.id === d.id);
+              return match ? { ...match, ...d } : d;
+            });
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultDisputes));
+      return defaultDisputes;
+    }
+
+    function saveDisputes(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toastNotification');
+      toast.className = `staplr-toast ${type} show`;
+      toast.textContent = message;
+      setTimeout(() => {
+        toast.className = 'staplr-toast';
+      }, 2500);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Get dispute ID from URL search param or localStorage
+      const urlParams = new URLSearchParams(window.location.search);
+      const selectedId = urlParams.get('id') || localStorage.getItem('staplr_selected_dispute_id') || '#RET-2026-001';
+
+      const disputes = getDisputes();
+      let dispute = disputes.find(d => d.id === selectedId) || disputes[0];
+
+      // Save as active selected
+      localStorage.setItem('staplr_selected_dispute_id', dispute.id);
+
+      // 2. Populate case summary left card
+      document.getElementById('caseIdRetur').textContent = dispute.id;
+      document.getElementById('caseIdPesanan').textContent = dispute.orderId;
+      document.getElementById('casePembeli').textContent = dispute.buyer;
+      document.getElementById('caseProduk').textContent = dispute.product;
+      document.getElementById('caseTglBeli').textContent = dispute.buyDate;
+      document.getElementById('caseTglKomplain').textContent = dispute.date;
+      document.getElementById('caseAlasan').textContent = dispute.categoryFull || dispute.category;
+      document.getElementById('caseBukti').textContent = dispute.media;
+
+      // Status badge styling helper
+      function getBadgeHtml(status) {
+        if (status === 'approved') {
+          return '<span class="badge badge-approved"><span class="badge-dot">●</span> Disetujui</span>';
+        } else if (status === 'rejected') {
+          return '<span class="badge badge-rejected"><span class="badge-dot">●</span> Ditolak</span>';
+        } else if (status === 'waiting') {
+          return '<span class="badge badge-waiting"><span class="badge-dot">●</span> Menunggu Barang</span>';
+        }
+        return '<span class="badge badge-pending"><span class="badge-dot">●</span> Pending</span>';
+      }
+
+      document.getElementById('caseStatusBadge').innerHTML = getBadgeHtml(dispute.status);
+
+      // 3. Populate right card
+      document.getElementById('rightCardTitle').textContent = `Detail Dispute ${dispute.id}`;
+      document.getElementById('rightCardBadge').innerHTML = getBadgeHtml(dispute.status);
+      document.getElementById('fieldKomplain').textContent = dispute.complaint;
+      document.getElementById('fieldUsulan').textContent = dispute.solution;
+
+      // Update stepper link and forward button to point to verifikasi with this ID
+      const verifikasiUrl = `verifikasi-dispute.html?id=${encodeURIComponent(dispute.id)}`;
+      document.getElementById('stepperVerifikasiLink').href = verifikasiUrl;
+      const btnForward = document.getElementById('btnForwardDispute');
+      btnForward.href = verifikasiUrl;
+
+      // 4. Render Attachment items
+      const attachmentList = document.getElementById('attachmentList');
+      attachmentList.innerHTML = '';
+
+      const attachments = dispute.attachments || [
+        { type: 'JPG', title: 'Foto 1 - Bukti Masalah', desc: 'Lampiran foto bukti dari pembeli' }
+      ];
+
+      attachments.forEach((att, idx) => {
+        const item = document.createElement('div');
+        item.className = 'attachment-item';
+        item.setAttribute('data-index', idx);
+
+        const isVideo = att.type === 'MP4';
+        const iconSvg = isVideo
+          ? `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <rect x="2" y="6" width="13" height="12" rx="2"/>
+               <polygon points="22 8 15 12 22 16 22 8"/>
+             </svg>`
+          : `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+               <circle cx="8.5" cy="8.5" r="1.5"/>
+               <polyline points="21 15 16 10 5 21"/>
+             </svg>`;
+
+        item.innerHTML = `
+          <div class="attachment-left">
+            <div class="attachment-icon">
+              ${iconSvg}
+            </div>
+            <div class="attachment-info">
+              <span class="attachment-title">${att.title}</span>
+            </div>
+          </div>
+          <span class="attachment-tag">${att.type}</span>
+        `;
+
+        item.addEventListener('click', () => {
+          openAttachmentModal(att);
+        });
+
+        attachmentList.appendChild(item);
+      });
+
+      // 5. Modal Attachment Preview Controls
+      const modal = document.getElementById('attachmentModal');
+      const btnCloseModal = document.getElementById('btnCloseModal');
+      const btnModalCloseAction = document.getElementById('btnModalCloseAction');
+      const btnModalDownload = document.getElementById('btnModalDownload');
+      let currentActiveAttachment = null;
+
+      function openAttachmentModal(att) {
+        currentActiveAttachment = att;
+        document.getElementById('modalAttachmentTitle').textContent = `Pratinjau ${att.title}`;
+        document.getElementById('modalPreviewName').textContent = att.title;
+        document.getElementById('modalPreviewDesc').textContent = `${att.desc} (${att.type})`;
+        modal.classList.add('open');
+      }
+
+      function closeModal() {
+        modal.classList.remove('open');
+      }
+
+      btnCloseModal.addEventListener('click', closeModal);
+      btnModalCloseAction.addEventListener('click', closeModal);
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('open')) {
+          closeModal();
+        }
+      });
+
+      btnModalDownload.addEventListener('click', () => {
+        if (currentActiveAttachment) {
+          showToast(`Mengunduh ${currentActiveAttachment.title}...`, 'success');
+        }
+      });
+
+      // 6. Tolak Dispute Button Event
+      const btnReject = document.getElementById('btnRejectDispute');
+      btnReject.addEventListener('click', () => {
+        const allDisputes = getDisputes();
+        const target = allDisputes.find(item => item.id === dispute.id);
+        if (target) {
+          target.status = 'rejected';
+          target.statusLabel = 'Ditolak';
+          saveDisputes(allDisputes);
+        }
+
+        showToast(`Dispute ${dispute.id} berhasil ditolak! Mengalihkan ke daftar...`, 'danger');
+        setTimeout(() => {
+          window.location.href = 'dispute.html';
+        }, 900);
+      });
+
+      // 7. Topbar Admin Profile Button Event
+      const adminProfileBtn = document.getElementById('adminProfileBtn');
+      if (adminProfileBtn) {
+        adminProfileBtn.addEventListener('click', () => {
+          showToast('Masuk sebagai Administrator Staplr (Superadmin)', 'info');
+        });
+      }
+    });
+  </script>
 
 </body>
 </html>
