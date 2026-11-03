@@ -561,8 +561,23 @@
       '&qty=' + encodeURIComponent(qtyParam) +
       '&price=' + encodeURIComponent(priceParam) +
       '&subtotal=' + encodeURIComponent(subtotalParam);
-    document.getElementById('backLink').href = 'ajukan-pesanan.html' + backQuery;
-    document.getElementById('editLink').href = 'ajukan-pesanan.html' + backQuery;
+    const fallbackKp = 'ajukan-pesanan.html' + backQuery;
+    document.getElementById('backLink').href = fallbackKp;
+    document.getElementById('editLink').href = fallbackKp;
+
+    const kpBackBtn = document.getElementById('backLink');
+    if (kpBackBtn) {
+      kpBackBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (window.history.length > 1) {
+          window.history.back();
+        } else if (document.referrer && document.referrer !== window.location.href) {
+          window.location.href = document.referrer;
+        } else {
+          window.location.href = fallbackKp;
+        }
+      });
+    }
 
     // Konfirmasi Pesanan -> halaman Pembayaran Transfer Bank
     document.getElementById('confirmBtn').addEventListener('click', function () {

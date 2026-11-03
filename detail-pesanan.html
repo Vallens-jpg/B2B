@@ -280,13 +280,96 @@
       z-index: 50;
     }
 
+    /* Top Nav Row */
+    .dp-top-nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.25rem;
+      gap: 1rem;
+    }
+
+    .dp-link-daftar-pesanan {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #152C4E;
+      text-decoration: none;
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .dp-link-daftar-pesanan:hover {
+      background-color: #F0F4FF;
+      border-color: #152C4E;
+      color: #0F203A;
+      transform: translateY(-1px);
+    }
+
+    .dp-link-daftar-pesanan svg {
+      width: 16px;
+      height: 16px;
+      stroke: #152C4E;
+      flex-shrink: 0;
+    }
+
+    .dp-order-id-badge {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #64748b;
+      background-color: #f1f5f9;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+
     .dp-action-bar-inner {
       max-width: 1100px;
       margin: 0 auto;
       padding: 0 2.5rem;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 1rem;
+    }
+
+    .btn-daftar-pesanan {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      background-color: #ffffff;
+      border: 1.5px solid #152C4E;
+      color: #152C4E;
+      padding: 1rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(21, 44, 78, 0.06);
+    }
+
+    .btn-daftar-pesanan:hover {
+      background-color: #F0F4FF;
+      border-color: #0F203A;
+      color: #0F203A;
+      transform: translateY(-1px);
+    }
+
+    .btn-daftar-pesanan svg {
+      width: 18px;
+      height: 18px;
+      stroke: #152C4E;
+      stroke-width: 2;
+      fill: none;
+      flex-shrink: 0;
     }
 
     .btn-dispute {
@@ -358,6 +441,7 @@
       }
       .dp-action-bar-inner {
         padding: 0 1.25rem;
+        grid-template-columns: 1fr;
       }
     }
 
@@ -397,6 +481,17 @@
 
   <!-- Main Content -->
   <div class="dp-container">
+
+    <!-- Top Navigation Row ke Daftar Pesanan -->
+    <div class="dp-top-nav-row">
+      <a href="pesanan.html" class="dp-link-daftar-pesanan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span>Ke Halaman Daftar Pesanan</span>
+      </a>
+      <span class="dp-order-id-badge" id="orderIdBadge">#ORD-2026-103</span>
+    </div>
 
     <!-- Progres Pesanan -->
     <div class="dp-progress-card">
@@ -511,6 +606,15 @@
   <!-- Bottom Action Bar -->
   <div class="dp-action-bar">
     <div class="dp-action-bar-inner">
+      <a href="pesanan.html" class="btn-daftar-pesanan" id="btnDaftarPesanan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+          <rect x="9" y="3" width="6" height="4" rx="1"/>
+          <path d="M9 12h6"/>
+          <path d="M9 16h6"/>
+        </svg>
+        Daftar Pesanan
+      </a>
       <button class="btn-dispute" onclick="ajukanDispute()">
         <svg viewBox="0 0 24 24">
           <circle cx="12" cy="12" r="9"/>
@@ -561,10 +665,16 @@
       ? qtyClean + ' kg @ ' + price + ' / kg'
       : '200 kg @ Rp 25.000 / kg';
     document.getElementById('totalHarga').innerText  = hasParams ? subtotal : 'Rp 5.000.000';
+    const orderParam = urlParams.get('order');
+    if (orderParam) {
+      const badge = document.getElementById('orderIdBadge');
+      if (badge) badge.innerText = orderParam;
+    }
     document.getElementById('ringkasanValue').innerText = (hasParams ? subtotal : 'Rp 5.000.000') + ' [LUNAS via BCA]';
 
     // Back link — dinamis sesuai asal halaman
     const fromPage = urlParams.get('from');
+    let fallbackDpes = 'pesanan.html';
     if (fromPage === 'pesanan') {
       document.getElementById('backLink').href = 'pesanan.html';
     } else {
@@ -574,7 +684,22 @@
         '&qty='      + encodeURIComponent(qty) +
         '&price='    + encodeURIComponent(price) +
         '&subtotal=' + encodeURIComponent(subtotal);
-      document.getElementById('backLink').href = 'invoice-pembayaran.html' + backQ;
+      fallbackDpes = 'invoice-pembayaran.html' + backQ;
+      document.getElementById('backLink').href = fallbackDpes;
+    }
+
+    const dpesBackBtn = document.getElementById('backLink');
+    if (dpesBackBtn) {
+      dpesBackBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (window.history.length > 1) {
+          window.history.back();
+        } else if (document.referrer && document.referrer !== window.location.href) {
+          window.location.href = document.referrer;
+        } else {
+          window.location.href = fallbackDpes;
+        }
+      });
     }
 
     // Actions

@@ -24,9 +24,9 @@
       background-color: #ffffff;
       border-bottom: 1px solid #EBE7DD;
       padding: 0.9rem 2.5rem;
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      justify-content: space-between;
       position: sticky;
       top: 0;
       z-index: 50;
@@ -66,12 +66,15 @@
       letter-spacing: 0.04em;
       text-transform: uppercase;
       margin: 0;
+      text-align: center;
+      justify-self: center;
     }
 
     .pd-nav-actions {
       display: flex;
       align-items: center;
       gap: 1.25rem;
+      justify-self: end;
     }
 
     .pd-bell-btn {
@@ -528,10 +531,27 @@
     // Preserve back / cancel button destination
     const cancelBtn = document.getElementById('cancelBtn');
     const backLink = document.getElementById('backLink');
-    if (window.location.search) {
-      cancelBtn.href = 'detail-pesanan.html' + window.location.search;
-      backLink.href = 'detail-pesanan.html' + window.location.search;
+    const fallbackPd = 'detail-pesanan.html' + (window.location.search || '');
+    cancelBtn.href = fallbackPd;
+    backLink.href = fallbackPd;
+
+    function handleSmartBackPd() {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else if (document.referrer && document.referrer !== window.location.href) {
+        window.location.href = document.referrer;
+      } else {
+        window.location.href = fallbackPd;
+      }
     }
+    backLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      handleSmartBackPd();
+    });
+    cancelBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      handleSmartBackPd();
+    });
 
     // Drag and Drop support
     const dropzone = document.getElementById('dropzone');

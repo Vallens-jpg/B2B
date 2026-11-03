@@ -383,6 +383,31 @@
     document.getElementById('backLink').href = backToProduct;
     document.getElementById('cancelLink').href = backToProduct;
 
+    function handleSmartBack() {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else if (document.referrer && document.referrer !== window.location.href) {
+        window.location.href = document.referrer;
+      } else {
+        window.location.href = backToProduct;
+      }
+    }
+
+    const backBtn = document.getElementById('backLink');
+    const cancelBtn = document.getElementById('cancelLink');
+    if (backBtn) {
+      backBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        handleSmartBack();
+      });
+    }
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        handleSmartBack();
+      });
+    }
+
     if (sellersMap[sellerId]) {
       document.getElementById('companyInput').value = sellersMap[sellerId];
     }

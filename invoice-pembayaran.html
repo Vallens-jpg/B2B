@@ -20,9 +20,20 @@
       background-color: #ffffff;
       border-bottom: 1px solid #e5e7eb;
       padding: 0.85rem 2.5rem;
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      justify-content: space-between;
+    }
+    .inv-navbar .back-btn-circle {
+      justify-self: start;
+    }
+    .inv-navbar .detail-page-heading {
+      justify-self: center;
+      text-align: center;
+      margin: 0;
+    }
+    .inv-navbar .navbar-actions {
+      justify-self: end;
     }
 
     /* Main wrapper */
@@ -800,7 +811,21 @@
       '&qty='      + encodeURIComponent(qty) +
       '&price='    + encodeURIComponent(price) +
       '&subtotal=' + encodeURIComponent(subtotal);
-    document.getElementById('backLink').href = 'pembayaran.html' + backQ;
+    const fallbackInv = 'pembayaran.html' + backQ;
+    const invBackBtn = document.getElementById('backLink');
+    if (invBackBtn) {
+      invBackBtn.href = fallbackInv;
+      invBackBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (window.history.length > 1) {
+          window.history.back();
+        } else if (document.referrer && document.referrer !== window.location.href) {
+          window.location.href = document.referrer;
+        } else {
+          window.location.href = fallbackInv;
+        }
+      });
+    }
 
     // Cek detail link
     document.getElementById('cekDetailLink').href =

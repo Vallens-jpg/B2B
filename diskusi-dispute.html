@@ -24,9 +24,9 @@
       background-color: #ffffff;
       border-bottom: 1px solid #EBE7DD;
       padding: 0.9rem 2.5rem;
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      justify-content: space-between;
       position: sticky;
       top: 0;
       z-index: 50;
@@ -66,12 +66,15 @@
       letter-spacing: 0.04em;
       text-transform: uppercase;
       margin: 0;
+      text-align: center;
+      justify-self: center;
     }
 
     .pd-nav-actions {
       display: flex;
       align-items: center;
       gap: 1.25rem;
+      justify-self: end;
     }
 
     .pd-bell-btn {
@@ -881,9 +884,18 @@
     // Preserve back navigation query params
     const urlParams = new URLSearchParams(window.location.search);
     const backBtn = document.getElementById('backLink');
-    if (window.location.search) {
-      backBtn.href = 'pengajuan-dispute.html' + window.location.search;
-    }
+    const fallbackDd = 'pengajuan-dispute.html' + (window.location.search || '');
+    backBtn.href = fallbackDd;
+    backBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (window.history.length > 1) {
+        window.history.back();
+      } else if (document.referrer && document.referrer !== window.location.href) {
+        window.location.href = document.referrer;
+      } else {
+        window.location.href = fallbackDd;
+      }
+    });
 
     let pendingFiles = [];
 
