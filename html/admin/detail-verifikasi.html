@@ -4,7 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Detail Verifikasi Perusahaan - Staplr Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    /* Design tokens — disamakan dengan branch perusahaan (dashboard.css :root) */
+    :root {
+      --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --color-navy: #122f51;
+      --color-navy-dark: #0d223c;
+      --color-yellow: #ffc700;
+      --color-avatar-green: #155f50;
+      --color-bg-main: #f8fafc;
+      --color-card-bg: #ffffff;
+      --color-border: #e8ecf2;
+      --color-text-dark: #0f172a;
+      --color-text-muted: #64748b;
+      --sidebar-width: 215px;
+      --radius-card: 16px;
+      --radius-pill: 999px;
+      --shadow-card: 0 2px 12px -2px rgba(18, 47, 81, 0.04);
+    }
+
     /* ==========================================================
        STAPLR ADMIN - DETAIL VERIFIKASI PERUSAHAAN (PIXEL-PERFECT REPLICA)
        Reference: assets/tampilan admin/3. Admin Detail Verifikasi Perusahaan.png
@@ -13,72 +34,81 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
     body {
       display: flex;
       min-height: 100vh;
-      background: #f4f7fa;
+      background: #f8fafc;
       color: #0f2a4a;
       overflow-x: hidden;
     }
 
     /* ============ SIDEBAR ============ */
     .sidebar {
-      width: 260px;
+      width: 215px;
       flex-shrink: 0;
-      background: linear-gradient(
-        180deg,
-        #87ab95 0%,
-        #8fad97 20%,
-        #b9ccaf 40%,
-        #ebedc9 60%,
-        #cdd8b8 75%,
-        #95b499 90%,
-        #7ea58d 100%
-      );
-      padding: 32px 16px 24px;
+      background: linear-gradient(180deg, #87ab95 0%, #afc5aa 30%, #ebedc8 55%, #d2dcba 75%, #82a78f 100%);
+      padding: 20px 14px;
       display: flex;
       flex-direction: column;
       position: sticky;
       top: 0;
       height: 100vh;
       overflow-y: auto;
-      border-right: 1px solid rgba(15, 42, 74, 0.06);
+      border-right: 1px solid rgba(0, 0, 0, 0.04);
     }
 
-    .logo-container {
+    .sidebar-brand {
       display: flex;
       align-items: center;
-      padding: 0 10px 42px 10px;
+      gap: 10px;
+      padding: 2px 8px 18px;
+      text-decoration: none;
+      user-select: none;
     }
 
-    .logo-container img {
-      height: 56px;
+    .sidebar-brand-icon {
+      height: 34px;
       width: auto;
-      max-width: 100%;
-      display: block;
       object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+    }
+
+    .sidebar-brand-name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #122f51;
+      letter-spacing: -0.02em;
+    }
+
+    .sidebar-brand-dot {
+      color: #ffc700;
+      font-size: 1.1rem;
+      line-height: 1;
     }
 
     .menu {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 3px;
     }
 
     .menu-item {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 11px 16px;
-      border-radius: 10px;
-      font-size: 14.5px;
+      gap: 12px;
+      padding: 9px 12px;
+      border-radius: 12px;
+      font-size: 0.92rem;
       font-weight: 600;
       text-decoration: none;
-      color: #ffffff;
-      transition: all 0.15s ease;
+      color: #1a3327;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       white-space: nowrap;
     }
 
@@ -95,17 +125,28 @@
       width: 100%;
       height: 100%;
       display: block;
+      stroke: #ffc700;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .menu-item.active .icon svg {
+      fill: rgba(255, 199, 0, 0.25);
     }
 
     .menu-item:hover {
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.28);
+      color: #0d2218;
     }
 
     /* Active Verifikasi state */
     .menu-item.active {
-      background: rgba(255, 255, 255, 0.22);
-      color: #092d40;
+      background: rgba(255, 255, 255, 0.52);
+      color: #0b1f14;
       font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
 
     /* ============ MAIN LAYOUT ============ */
@@ -118,20 +159,19 @@
 
     /* ============ TOPBAR ============ */
     .topbar {
-      height: 80px;
       background: #ffffff;
-      padding: 0 36px;
+      padding: 18px 36px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #edf1f5;
+      border-bottom: 1px solid #e8ecf2;
     }
 
     .topbar h1 {
-      font-size: 22px;
+      font-size: 1.45rem;
       font-weight: 800;
-      color: #0f2a4a;
-      letter-spacing: -0.3px;
+      color: #0f172a;
+      letter-spacing: -0.02em;
     }
 
     .admin-profile {
@@ -144,16 +184,16 @@
     }
 
     .admin-avatar {
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #166951 0%, #0d4635 100%);
+      background: #155f50;
       flex-shrink: 0;
     }
 
     /* ============ CONTENT AREA ============ */
     .content {
-      padding: 28px 36px 40px;
+      padding: 24px 36px 36px;
       flex: 1;
     }
 
@@ -175,7 +215,7 @@
       width: 44px;
       height: 40px;
       background: #ffffff;
-      border: 1px solid #e2e8f0;
+      border: 1px solid #e8ecf2;
       border-radius: 10px;
       display: inline-flex;
       align-items: center;
@@ -203,11 +243,11 @@
     /* ============ CARD 1: COMPANY DETAIL CARD ============ */
     .company-detail-card {
       background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
+      border: 1px solid #e8ecf2;
+      border-radius: 16px;
       padding: 24px 26px;
       margin-bottom: 22px;
-      box-shadow: 0 1px 3px rgba(15, 42, 74, 0.03);
+      box-shadow: 0 2px 12px -2px rgba(18, 47, 81, 0.04);
     }
 
     .company-top {
@@ -303,10 +343,10 @@
     /* ============ CARD 2: KEPUTUSAN VERIFIKASI ============ */
     .decision-card {
       background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
+      border: 1px solid #e8ecf2;
+      border-radius: 16px;
       padding: 24px 26px;
-      box-shadow: 0 1px 3px rgba(15, 42, 74, 0.03);
+      box-shadow: 0 2px 12px -2px rgba(18, 47, 81, 0.04);
     }
 
     .decision-card h3 {
@@ -419,7 +459,7 @@
       width: 100%;
       height: 90px;
       background: #ffffff;
-      border: 1px solid #e2e8f0;
+      border: 1px solid #e8ecf2;
       border-radius: 10px;
       padding: 12px 16px;
       font-size: 13.5px;
@@ -562,22 +602,15 @@
   <!-- ==================== SIDEBAR ==================== -->
   <aside class="sidebar">
     <!-- Logo with shopping basket + yellow dot + Staplr -->
-    <a href="dashboard.html" class="logo-container" style="text-decoration: none; display: block;">
-      <img src="../../assets/img/staplr-logo.png" alt="Staplr">
-    </a>
+    <a href="dashboard.html" class="sidebar-brand" title="Dashboard Staplr"><img src="../../assets/img/logo-transparent.png" alt="Staplr Icon" class="sidebar-brand-icon"><span class="sidebar-brand-name">Staplr<span class="sidebar-brand-dot">.</span></span></a>
 
     <!-- Navigation Menu -->
     <nav class="menu">
       <!-- 1. Dashboard -->
       <a class="menu-item" href="dashboard.html">
         <span class="icon">
-          <!-- 4-square grid in golden yellow #FFC700 -->
-          <svg viewBox="0 0 24 24" fill="#FFC700">
-            <rect x="3" y="3" width="8" height="8" rx="2"/>
-            <rect x="13" y="3" width="8" height="8" rx="2"/>
-            <rect x="3" y="13" width="8" height="8" rx="2"/>
-            <rect x="13" y="13" width="8" height="8" rx="2"/>
-          </svg>
+          
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
         </span>
         <span>Dashboard</span>
       </a>
@@ -585,11 +618,8 @@
       <!-- 2. Verifikasi (Active) -->
       <a class="menu-item active" href="verifikasi.html">
         <span class="icon">
-          <!-- Shield with checkmark in golden yellow #FFC700 -->
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M12 2.5 L20 6.2 V11.5 C20 16.5 16.6 20.3 12 21.8 C7.4 20.3 4 16.5 4 11.5 V6.2 Z" fill="#FFC700"/>
-            <path d="M9.2 11.8 L11.2 13.8 L15.2 9.8" stroke="#0F2A4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          
+          <svg viewBox="0 0 24 24" fill="rgba(255,199,0,0.25)" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L20 6 V11 C20 16 16.5 20 12 21 C7.5 20 4 16 4 11 V6 Z"/><path d="M9 12 L11 14 L15 10"/></svg>
         </span>
         <span>Verifikasi</span>
       </a>
@@ -597,12 +627,8 @@
       <!-- 3. Dispute -->
       <a class="menu-item" href="dispute.html">
         <span class="icon">
-          <!-- Speech bubble with ! in golden yellow #FFC700 -->
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M4 4.5 C4 3.4 4.9 2.5 6 2.5 H18 C19.1 2.5 20 3.4 20 4.5 V14.5 C20 15.6 19.1 16.5 18 16.5 H7.5 L4 20 V4.5 Z" fill="#FFC700"/>
-            <rect x="11" y="6" width="2" height="5.5" rx="1" fill="#0F2A4A"/>
-            <circle cx="12" cy="13.5" r="1.1" fill="#0F2A4A"/>
-          </svg>
+          
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </span>
         <span>Dispute</span>
       </a>
@@ -610,13 +636,8 @@
       <!-- 4. Keuangan -->
       <a class="menu-item" href="keuangan.html">
         <span class="icon">
-          <!-- Wallet icon in golden yellow #FFC700 -->
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M3 7 C3 5.3 4.3 4 6 4 H18 C19.7 4 21 5.3 21 7 V8 H3 Z" fill="#FFC700"/>
-            <rect x="3" y="7" width="18" height="13" rx="2" fill="#FFC700"/>
-            <path d="M15 11.5 H21 V15.5 H15 C13.9 15.5 13 14.6 13 13.5 C13 12.4 13.9 11.5 15 11.5 Z" fill="#FFF2B2"/>
-            <circle cx="15.8" cy="13.5" r="1" fill="#0F2A4A"/>
-          </svg>
+          
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
         </span>
         <span>Keuangan</span>
       </a>
@@ -624,13 +645,8 @@
       <!-- 5. Manajemen User -->
       <a class="menu-item" href="manajemen-user.html">
         <span class="icon">
-          <!-- Two users outline in golden yellow #FFC700 -->
-          <svg viewBox="0 0 24 24" fill="#FFC700">
-            <circle cx="9" cy="8" r="3.2"/>
-            <path d="M3.5 18 C3.5 14.7 6 12 9 12 C12 12 14.5 14.7 14.5 18 Z"/>
-            <circle cx="16.5" cy="8.8" r="2.5"/>
-            <path d="M14.5 13.8 C15.5 13.3 16.7 13.3 17.6 13.9 C19.2 14.9 20 16.4 20 18 H15.5 Z"/>
-          </svg>
+          
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20 C2.5 16 5.5 14 9 14 C12.5 14 15.5 16 15.5 20"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.5 C18 14.5 20 16 20.5 18"/></svg>
         </span>
         <span>Manajemen User</span>
       </a>
@@ -638,12 +654,8 @@
       <!-- 6. Riwayat -->
       <a class="menu-item" href="riwayat.html">
         <span class="icon">
-          <!-- Counter-clockwise history clock arrow in #0F2A4A and #FFC700 -->
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M12 4 A8 8 0 1 0 19.5 14" stroke="#0F2A4A" stroke-width="2.2" stroke-linecap="round"/>
-            <path d="M19.5 9.5 V14 H15" stroke="#FFC700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12 8 V12 L14.5 14.5" stroke="#FFC700" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+          
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </span>
         <span>Riwayat</span>
       </a>
