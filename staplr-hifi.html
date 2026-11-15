@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Staplr — Desain Hi-Fi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --navy:#0B1E3F;--navy-deep:#061124;--navy-raised:#17356B;
+  --emerald:#10B981;--emerald-d:#059669;--emerald-t:#047857;
+  --amber:#F59E0B;--amber-l:#FBBF24;--amber-t:#B45309;
+  --canvas:#F8FAFC;--surface:#FFFFFF;--subtle:#F1F5F9;--line:#E2E8F0;--line-s:#CBD5E1;
+  --text:#0B1E3F;--text2:#475569;--muted:#64748B;--inv:#FFFFFF;--inv-m:#CBD5E1;
+  --ok-bg:#ECFDF5;--warn-bg:#FEF3C7;--info-bg:#EEF2F8;--info-t:#17356B;--bad-bg:#FEF2F2;--bad-t:#DC2626;
+  --shadow:0 2px 8px rgba(11,30,63,.06);--shadow-r:0 8px 24px rgba(11,30,63,.12);
+  --r-md:10px;--r-lg:16px;
+  --font:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --canvas:#061124;--surface:#0B1E3F;--subtle:#102A54;--line:#17356B;--line-s:#24487F;
+    --text:#F8FAFC;--text2:#CBD5E1;--muted:#94A3B8;
+    --ok-bg:rgba(16,185,129,.16);--warn-bg:rgba(245,158,11,.18);--info-bg:rgba(36,72,127,.5);--info-t:#DCE4F0;--bad-bg:rgba(239,68,68,.16);--bad-t:#FCA5A5;
+    --emerald-t:#34D399;--amber-t:#FBBF24;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --canvas:#061124;--surface:#0B1E3F;--subtle:#102A54;--line:#17356B;--line-s:#24487F;
+  --text:#F8FAFC;--text2:#CBD5E1;--muted:#94A3B8;
+  --ok-bg:rgba(16,185,129,.16);--warn-bg:rgba(245,158,11,.18);--info-bg:rgba(36,72,127,.5);--info-t:#DCE4F0;--bad-bg:rgba(239,68,68,.16);--bad-t:#FCA5A5;
+  --emerald-t:#34D399;--amber-t:#FBBF24;
+}
+*{box-sizing:border-box;margin:0}
+html{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--canvas);color:var(--text);font:400 14px/1.55 var(--font);-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+:focus-visible{outline:2px solid var(--emerald);outline-offset:2px}
+.wrap{max-width:1272px;margin:0 auto;padding:0 24px}
+
+/* App bar */
+.bar{background:var(--navy);color:var(--inv)}
+.bar .wrap{display:flex;align-items:center;gap:32px;height:64px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px;letter-spacing:-.3px}
+.logo i{width:32px;height:32px;border-radius:10px;background:var(--emerald);display:grid;place-items:center}
+.tabs{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.tab{padding:8px 16px;border-radius:var(--r-md);color:var(--inv-m);font-weight:500;white-space:nowrap}
+.tab[aria-selected="true"]{background:var(--navy-raised);color:var(--inv);font-weight:600}
+.screen{display:none}.screen.on{display:block}
+
+/* Shared */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:var(--r-md);font-weight:600;line-height:20px;transition:background .15s}
+.btn.p{background:var(--emerald);color:#fff}.btn.p:hover{background:var(--emerald-d)}
+.btn.o{background:var(--surface);border:1px solid var(--line-s);color:var(--text)}.btn.o:hover{background:var(--subtle)}
+.btn.s{background:var(--ok-bg);color:var(--emerald-t)}
+.btn.sm{padding:8px 14px;font-size:13px}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.b-ok{background:var(--ok-bg);color:var(--emerald-t)}.b-warn{background:var(--warn-bg);color:var(--amber-t)}
+.b-proc{background:var(--info-bg);color:var(--info-t)}.b-bad{background:var(--bad-bg);color:var(--bad-t)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow)}
+h1{font-size:34px;line-height:1.2;font-weight:800;letter-spacing:-.6px}
+h2{font-size:22px;font-weight:700;letter-spacing:-.3px}
+h3{font-size:17px;font-weight:700}
+.muted{color:var(--muted)}
+
+/* Hero (aurora) */
+.hero{position:relative;overflow:hidden;background:var(--navy-deep);color:var(--inv);padding:56px 0 64px}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;filter:blur(110px);pointer-events:none}
+.hero::before{width:620px;height:300px;right:8%;top:-120px;background:var(--emerald);opacity:.42}
+.hero::after{width:420px;height:240px;right:-60px;bottom:-70px;background:var(--amber);opacity:.26}
+.hero .wrap{position:relative;display:flex;gap:48px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.hero p{color:var(--inv-m);max-width:52ch;margin:12px 0 24px;font-size:16px}
+.search{display:flex;gap:8px;max-width:600px}
+.search label{flex:1;display:flex;align-items:center;gap:8px;background:#fff;border-radius:var(--r-md);padding:0 16px;color:#64748B}
+.search input{flex:1;border:0;outline:0;padding:13px 0;font:inherit;color:#0B1E3F;background:none;min-width:0}
+.float{display:grid;gap:12px}
+.metric{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px);border-radius:var(--r-lg);padding:16px 20px;min-width:240px}
+.metric b{display:block;font-size:24px;font-weight:800;letter-spacing:-.4px}
+.metric span{color:var(--inv-m);font-size:13px}
+
+/* Catalog */
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:24px 0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:24px;padding-bottom:48px}
+.pc{overflow:hidden;display:flex;flex-direction:column}
+.pc .img{position:relative;height:150px;background:linear-gradient(135deg,var(--navy-deep),var(--navy) 55%,var(--emerald));display:grid;place-items:center}
+.pc .img .badge{position:absolute;left:12px;top:12px}
+.pc .bd{padding:16px;display:grid;gap:8px;flex:1}
+.price{font-size:20px;font-weight:800;color:var(--emerald-t);letter-spacing:-.3px}
+.price small{font-size:12px;font-weight:500;color:var(--muted)}
+.tier{background:var(--subtle);border-radius:var(--r-md);padding:8px 12px;font-size:12px;display:grid;gap:2px}
+.tier b{font-weight:600}
+.rate{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--amber-t);font-weight:600}
+
+/* Dashboard */
+.dash{display:grid;grid-template-columns:240px 1fr;min-height:720px}
+.side{background:var(--navy);padding:24px 12px;display:grid;gap:4px;align-content:start}
+.mi{display:flex;align-items:center;gap:12px;padding:11px 16px;border-radius:var(--r-md);color:var(--inv-m);font-weight:500;text-align:left}
+.mi svg{flex:none}.mi.on{background:var(--navy-raised);color:#fff;font-weight:600}
+.main{padding:32px;display:grid;gap:24px;align-content:start;min-width:0}
+.head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.kpi{padding:20px}.kpi span{color:var(--muted);font-size:13px}
+.kpi b{display:block;font-size:26px;font-weight:800;letter-spacing:-.5px;margin:4px 0}
+.kpi.money b{color:var(--emerald-t)}
+.delta{font-size:12px;font-weight:600;color:var(--emerald-t)}
+.tblw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:720px}
+th{background:var(--subtle);color:var(--muted);font-size:12px;font-weight:700;text-align:left;padding:12px 20px}
+td{padding:16px 20px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+td.id{font-weight:600}
+
+/* Modal */
+dialog{border:0;border-radius:var(--r-lg);padding:0;background:var(--surface);color:var(--text);box-shadow:0 24px 56px rgba(11,30,63,.3);width:min(460px,calc(100vw - 32px))}
+dialog::backdrop{background:rgba(6,17,36,.6)}
+.mb{padding:24px;display:grid;gap:16px}
+.fld{display:grid;gap:8px}.fld label{font-weight:600}
+.in{padding:12px 16px;border:1px solid var(--line-s);border-radius:var(--r-md);background:var(--surface);color:var(--text);font:inherit;width:100%}
+.in:focus{outline:0;border:2px solid var(--emerald);padding:11px 15px}
+.in.err{border:2px solid #EF4444;padding:11px 15px}
+.help{font-size:12px;color:var(--muted)}.help.err{color:var(--bad-t)}
+.sum{background:var(--ok-bg);border-radius:var(--r-md);padding:12px 16px;display:flex;justify-content:space-between;font-weight:600;color:var(--emerald-t)}
+.acts{display:flex;gap:8px;justify-content:flex-end}
+
+/* Checkout */
+.co{display:grid;grid-template-columns:1fr 360px;gap:24px;padding:32px 0 56px;align-items:start}
+.steps{display:flex;gap:8px;align-items:center;padding-top:32px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:8px;font-weight:600;color:var(--muted)}
+.step i{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--subtle);font-style:normal;font-size:13px}
+.step.done i,.step.on i{background:var(--emerald);color:#fff}.step.on,.step.done{color:var(--text)}
+.step+.step::before{content:"";width:32px;height:2px;background:var(--line-s);margin-right:8px}
+.va{padding:24px;display:grid;gap:20px}
+.vano{font-size:30px;font-weight:800;letter-spacing:1px;font-variant-numeric:tabular-nums}
+.count{display:flex;gap:8px}
+.count div{background:var(--navy);color:#fff;border-radius:var(--r-md);padding:10px 14px;text-align:center;min-width:64px}
+.count b{display:block;font-size:24px;font-weight:800;font-variant-numeric:tabular-nums}
+.count span{font-size:11px;color:var(--inv-m)}
+.row{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.row:last-child{border:0}
+.tot{font-size:18px;font-weight:800;color:var(--emerald-t)}
+@media (max-width:860px){
+  .dash{grid-template-columns:1fr}.side{display:flex;overflow-x:auto;padding:12px}.mi{white-space:nowrap}
+  .co{grid-template-columns:1fr}.main{padding:20px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="egg" viewBox="0 0 64 64"><path d="M32 5C21 5 12 24 12 38c0 11 9 21 20 21s20-10 20-21C52 24 43 5 32 5z" fill="#fff" fill-opacity=".93"/><ellipse cx="25" cy="24" rx="4" ry="7" fill="#FBBF24" fill-opacity=".38" transform="rotate(-18 25 24)"/></symbol>
+  <symbol id="star" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8L12 2.5z" fill="#FBBF24"/></symbol>
+  <symbol id="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+</svg>
+
+<header class="bar"><div class="wrap">
+  <div class="logo"><i><svg width="18" height="18"><use href="#egg"/></svg></i>Staplr</div>
+  <nav class="tabs" role="tablist" aria-label="Layar">
+    <button class="tab" role="tab" data-s="katalog" aria-selected="true">Katalog pembeli</button>
+    <button class="tab" role="tab" data-s="dashboard" aria-selected="false">Dashboard penjual</button>
+    <button class="tab" role="tab" data-s="checkout" aria-selected="false">Checkout</button>
+  </nav>
+</div></header>
+
+<!-- KATALOG -->
+<main id="katalog" class="screen on">
+  <section class="hero"><div class="wrap">
+    <div>
+      <h1>Telur segar langsung dari<br>peternak terverifikasi</h1>
+      <p>Harga grosir transparan, pembayaran aman lewat escrow, dan tempo bayar yang fleksibel untuk bisnis Anda.</p>
+      <form class="search" onsubmit="return false"><label><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input aria-label="Cari produk" placeholder="Cari jenis telur, peternak, atau lokasi"></label><button class="btn p">Cari</button></form>
+    </div>
+    <div class="float">
+      <div class="metric"><b>Escrow aktif</b><span>Dana dilepas ke peternak setelah barang Anda terima</span></div>
+      <div class="metric"><b>TOP 30 / 60 hari</b><span>Tempo pembayaran untuk pembeli korporat</span></div>
+    </div>
+  </div></section>
+  <div class="wrap">
+    <div class="filters"><b>Filter</b>
+      <button class="btn o sm">Jenis telur</button><button class="btn o sm">Grade A</button><button class="btn o sm">Lokasi: Jawa Tengah</button><button class="btn o sm">Min. order</button><button class="btn s sm">Vendor terverifikasi</button>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</main>
+
+<!-- DASHBOARD -->
+<main id="dashboard" class="screen">
+  <div class="dash">
+    <aside class="side" aria-label="Menu penjual">
+      <button class="mi on"><svg width="20" height="20"><use href="#ic"/></svg>Dashboard</button>
+      <button class="mi"><svg width="20" height="20"><use href="#ic"/></svg>Produk</button>
+      <button class="mi"><svg width="20" height="20"><use href="#ic"/></svg>Penawaran</button>
+      <button class="mi"><svg width="20" height="20"><use href="#ic"/></svg>Pesanan</button>
+      <button class="mi"><svg width="20" height="20"><use href="#ic"/></svg>Keuangan</button>
+      <button class="mi"><svg width="20" height="20"><use href="#ic"/></svg>Dispute</button>
+      <button class="mi"><svg width="20" height="20"><use href="#ic"/></svg>Riwayat</button>
+    </aside>
+    <section class="main">
+      <div class="head"><div><h2>Selamat datang, PT Jaya Makmur</h2><span class="muted">Ringkasan penjualan minggu ini</span></div>
+        <button class="btn p" id="openPay">Cairkan dana</button></div>
+      <div class="kpis">
+        <div class="card kpi"><span>Total penjualan</span><b>Rp 184,5 jt</b><em class="delta">+12,4% dari minggu lalu</em></div>
+        <div class="card kpi"><span>Pesanan baru</span><b>14</b><em class="delta">3 perlu persetujuan</em></div>
+        <div class="card kpi"><span>Pesanan diproses</span><b>9</b><span>2 dijadwalkan kirim hari ini</span></div>
+        <div class="card kpi money"><span>Saldo siap cair</span><b>Rp 45.000.000</b><span>Rp 12.500.000 masih tertahan</span></div>
+      </div>
+      <div class="card">
+        <div class="head" style="padding:20px 20px 12px"><h3>Pesanan terbaru</h3><button class="btn o sm">Lihat semua</button></div>
+        <div class="tblw"><table>
+          <thead><tr><th>ID order</th><th>Pembeli</th><th>Produk</th><th>Qty</th><th>Total</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="id">#ORD-2027-001</td><td>Rira W.</td><td>Telur Ayam Omega A</td><td>200 kg</td><td>Rp 10.000.000</td><td><span class="badge b-warn">Menunggu</span></td><td><button class="btn p sm">Setujui</button></td></tr>
+            <tr><td class="id">#ORD-2027-002</td><td>CV Boga Rasa</td><td>Telur Ayam Negeri A</td><td>500 kg</td><td>Rp 13.250.000</td><td><span class="badge b-proc">Diproses</span></td><td><button class="btn o sm">Detail</button></td></tr>
+            <tr><td class="id">#ORD-2027-003</td><td>Warung Sari</td><td>Telur Puyuh Premium</td><td>60 kg</td><td>Rp 2.640.000</td><td><span class="badge b-ok">Selesai</span></td><td><button class="btn o sm">Detail</button></td></tr>
+            <tr><td class="id">#ORD-2027-004</td><td>Resto Nusantara</td><td>Telur Bebek Grade A</td><td>120 kg</td><td>Rp 3.840.000</td><td><span class="badge b-bad">Dispute</span></td><td><button class="btn o sm">Tinjau</button></td></tr>
+          </tbody></table></div>
+      </div>
+    </section>
+  </div>
+  <dialog id="payDlg" aria-labelledby="payT"><form class="mb" method="dialog" id="payForm" novalidate>
+    <h3 id="payT">Pencairan dana</h3>
+    <div class="fld"><label>Rekening tujuan</label><div class="in" style="display:flex;justify-content:space-between">BCA •••• 1234 · Staplr Indonesia <span class="badge b-ok" style="padding:2px 8px">Utama</span></div></div>
+    <div class="fld"><label for="nom">Nominal pencairan</label><input class="in" id="nom" inputmode="numeric" value="10.000.000" aria-describedby="nomH"><span class="help" id="nomH">Maksimal Rp 45.000.000</span></div>
+    <div class="fld"><label for="cat">Catatan (opsional)</label><input class="in" id="cat" placeholder="Contoh: pelunasan supplier pakan"></div>
+    <div class="sum"><span>Sisa saldo siap cair</span><span id="rest">Rp 35.000.000</span></div>
+    <div class="acts"><button class="btn o" value="cancel">Batal</button><button class="btn p" id="payOk">Cairkan dana</button></div>
+  </form></dialog>
+</main>
+
+<!-- CHECKOUT -->
+<main id="checkout" class="screen"><div class="wrap">
+  <div class="steps"><div class="step done"><i>✓</i>Tinjau pesanan</div><div class="step on"><i>2</i>Pembayaran VA</div><div class="step"><i>3</i>Status pesanan</div></div>
+  <div class="co">
+    <div class="card va">
+      <div><h2>Selesaikan pembayaran DP</h2><span class="muted">Transfer ke Virtual Account sebelum waktu habis</span></div>
+      <div class="count" id="cd" aria-live="off"><div><b id="h">23</b><span>jam</span></div><div><b id="m">59</b><span>menit</span></div><div><b id="s">59</b><span>detik</span></div></div>
+      <div class="fld"><span class="muted">Bank Mandiri · Virtual Account</span><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="vano">8808 1234 5678 9012</span><button class="btn o sm" id="copy">Salin nomor</button></div></div>
+      <span class="badge b-warn" style="justify-self:start">Menunggu pembayaran</span>
+    </div>
+    <aside class="card" style="padding:24px">
+      <h3 style="margin-bottom:8px">Ringkasan pesanan</h3>
+      <div class="row"><span>2 × Telur Ayam Omega A</span><b>Rp 500.000</b></div>
+      <div class="row"><span>DP 30%</span><b>Rp 150.000</b></div>
+      <div class="row"><span>Sisa pelunasan</span><b>Rp 350.000</b></div>
+      <div class="row"><span>Jadwal kirim</span><b>12 Okt 2027</b></div>
+      <div class="row"><span>Total dibayar sekarang</span><span class="tot">Rp 150.000</span></div>
+    </aside>
+  </div>
+</div></main>
+
+<script>
+(function(){
+  var P=[["Telur Ayam Omega Grade A","PT Jaya Makmur · Klaten","50.000","100","1.500","48.500"],
+  ["Telur Ayam Negeri Grade A","Sumber Rejeki · Blitar","27.500","200","3.200","26.800"],
+  ["Telur Ayam Kampung Grade B","CV Tani Makmur · Boyolali","38.000","50","800","36.500"],
+  ["Telur Bebek Segar Grade A","UD Bebek Jaya · Tegal","32.000","100","1.100","31.000"],
+  ["Telur Puyuh Premium","Kandang Mandiri · Sukoharjo","44.000","30","420","42.500"],
+  ["Telur Omega-3 Grade A","PT Agro Unggas · Semarang","52.500","150","2.000","51.000"],
+  ["Telur Ayam Ras Grade B","Berkah · Karanganyar","25.500","250","4.000","24.800"],
+  ["Telur Asin Siap Olah","UD Mina Telur · Brebes","36.000","80","650","34.900"]];
+  document.getElementById("grid").innerHTML=P.map(function(p){return '<article class="card pc"><div class="img"><span class="badge b-ok" style="background:#ECFDF5">Terverifikasi</span><svg width="72" height="72"><use href="#egg"/></svg></div><div class="bd"><h3>'+p[0]+'</h3><span class="muted" style="font-size:12px">'+p[1]+'</span><div class="price">Rp '+p[2]+' <small>/ kg</small></div><div class="tier"><span>Harga grosir</span><b>'+p[3]+' – 499 kg · Rp '+p[2]+'</b><b>≥ 500 kg · Rp '+p[5]+'</b></div><b>Min. order '+p[3]+' kg</b><span class="muted" style="font-size:12px">Stok '+p[4]+' kg</span><div class="rate"><svg width="14" height="14"><use href="#star"/></svg>4,9 · Supplier tier-1</div></div><div style="padding:0 16px 16px"><button class="btn p" style="width:100%">Lihat detail</button></div></article>'}).join("");
+
+  var tabs=[].slice.call(document.querySelectorAll(".tab"));
+  function show(id){
+    if(!document.getElementById(id))id="katalog";
+    document.querySelectorAll(".screen").forEach(function(s){s.classList.toggle("on",s.id===id)});
+    tabs.forEach(function(t){t.setAttribute("aria-selected",t.dataset.s===id)});
+  }
+  tabs.forEach(function(t){t.addEventListener("click",function(){show(t.dataset.s);try{location.hash=t.dataset.s}catch(e){}})});
+  show(location.hash.slice(1)||"katalog");
+
+  var dlg=document.getElementById("payDlg"),nom=document.getElementById("nom"),help=document.getElementById("nomH"),MAX=45000000;
+  function num(v){return parseInt(String(v).replace(/\D/g,""),10)||0}
+  function fmt(n){return n.toLocaleString("id-ID")}
+  function check(){
+    var n=num(nom.value),bad=n<=0||n>MAX;
+    nom.classList.toggle("err",bad);help.classList.toggle("err",bad);
+    help.textContent=n<=0?"Masukkan nominal pencairan":n>MAX?"Nominal melebihi saldo siap cair Rp 45.000.000":"Maksimal Rp 45.000.000";
+    document.getElementById("rest").textContent=bad?"—":"Rp "+fmt(MAX-n);
+    return !bad;
+  }
+  nom.addEventListener("input",check);
+  document.getElementById("openPay").addEventListener("click",function(){dlg.showModal();check()});
+  document.getElementById("payOk").addEventListener("click",function(e){if(!check())e.preventDefault()});
+
+  var end=Date.now()+86399000;
+  function tick(){var t=Math.max(0,Math.floor((end-Date.now())/1000));
+    document.getElementById("h").textContent=String(Math.floor(t/3600)).padStart(2,"0");
+    document.getElementById("m").textContent=String(Math.floor(t%3600/60)).padStart(2,"0");
+    document.getElementById("s").textContent=String(t%60).padStart(2,"0")}
+  tick();setInterval(tick,1000);
+  document.getElementById("copy").addEventListener("click",function(){var b=this;try{navigator.clipboard.writeText("8808123456789012")}catch(e){}b.textContent="Tersalin";setTimeout(function(){b.textContent="Salin nomor"},1500)});
+})();
+</script>
+</body>
+</html>
