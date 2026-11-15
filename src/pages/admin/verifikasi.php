@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifikasi Perusahaan - Staplr Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Design tokens — disamakan dengan branch perusahaan (dashboard.css :root) */
+    :root {
+      --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --color-navy: #122f51;
+      --color-navy-dark: #0d223c;
+      --color-yellow: #ffc700;
+      --color-avatar-green: #155f50;
+      --color-bg-main: #f8fafc;
+      --color-card-bg: #ffffff;
+      --color-border: #e8ecf2;
+      --color-text-dark: #0f172a;
+      --color-text-muted: #64748b;
+      --sidebar-width: 215px;
+      --radius-card: 16px;
+      --radius-pill: 999px;
+      --shadow-card: 0 2px 12px -2px rgba(18, 47, 81, 0.04);
+    }
+
+    /* ==========================================================
+       STAPLR ADMIN - VERIFIKASI PERUSAHAAN (PIXEL-PERFECT REPLICA)
+       Reference: assets/tampilan admin/2. Admin Verifikasi Perusahaan.png
+       ========================================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background: #f8fafc;
+      color: #0f2a4a;
+      overflow-x: hidden;
+    }
+
+    /* ============ SIDEBAR ============ */
+    .sidebar {
+      width: 215px;
+      flex-shrink: 0;
+      /* Exact 7-stop gradient matching Admin design */
+      background: linear-gradient(180deg, #87ab95 0%, #afc5aa 30%, #ebedc8 55%, #d2dcba 75%, #82a78f 100%);
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 2px 8px 18px;
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .sidebar-brand-icon {
+      height: 34px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+    }
+
+    .sidebar-brand-name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #122f51;
+      letter-spacing: -0.02em;
+    }
+
+    .sidebar-brand-dot {
+      color: #ffc700;
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 12px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-decoration: none;
+      color: #1a3327;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
+    }
+
+    .menu-item .icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-item .icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      stroke: #ffc700;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .menu-item.active .icon svg {
+      fill: rgba(255, 199, 0, 0.25);
+    }
+
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.28);
+      color: #0d2218;
+    }
+
+    /* Active Verifikasi state */
+    .menu-item.active {
+      background: rgba(255, 255, 255, 0.52);
+      color: #0b1f14;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    /* ============ MAIN LAYOUT ============ */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ============ TOPBAR ============ */
+    .topbar {
+      background: #ffffff;
+      padding: 18px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e8ecf2;
+    }
+
+    .topbar h1 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    .admin-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #0f2a4a;
+    }
+
+    .admin-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #155f50;
+      flex-shrink: 0;
+    }
+
+    /* ============ POPUP PROFIL ADMIN (dropdown di topbar) ============ */
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+
+    .admin-profile .chevron {
+      width: 15px;
+      height: 15px;
+      stroke: #64748b;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    .admin-profile.open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .admin-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 248px;
+      background: #ffffff;
+      border: 1px solid #e8ecf2;
+      border-radius: 16px;
+      box-shadow: 0 12px 32px -8px rgba(18, 47, 81, 0.18);
+      padding: 8px;
+      display: none;
+      z-index: 100;
+    }
+
+    .admin-dropdown.show {
+      display: block;
+    }
+
+    .dropdown-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+    }
+
+    .dropdown-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #155f50;
+      flex-shrink: 0;
+    }
+
+    .dropdown-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.01em;
+    }
+
+    .dropdown-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #16a34a;
+    }
+
+    .dropdown-status::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: #f1f5f9;
+      margin: 4px 4px 6px;
+    }
+
+    .dropdown-logout {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: #dc2626;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .dropdown-logout:hover {
+      background: #fef2f2;
+    }
+
+    .dropdown-logout svg {
+      width: 17px;
+      height: 17px;
+      stroke: #dc2626;
+      flex-shrink: 0;
+    }
+
+    /* ============ CONTENT AREA ============ */
+    .content {
+      padding: 24px 36px 36px;
+      flex: 1;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0f2a4a;
+      letter-spacing: -0.3px;
+      margin-bottom: 22px;
+    }
+
+    /* ============ 4 STAT CARDS ============ */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border: 1px solid #e8ecf2;
+      border-radius: 16px;
+      padding: 22px 24px;
+      box-shadow: 0 2px 12px -2px rgba(18, 47, 81, 0.04);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(15, 42, 74, 0.06);
+      border-color: #cbd5e1;
+    }
+
+    .stat-card.active-filter {
+      border-color: #0f2a4a;
+      background: #fbfcfe;
+      box-shadow: 0 0 0 2px rgba(15, 42, 74, 0.15);
+    }
+
+    .stat-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .stat-main {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .stat-icon.blue    { background: #eff6ff; }
+    .stat-icon.amber   { background: #fffbeb; }
+    .stat-icon.emerald { background: #ecfdf5; }
+    .stat-icon.red     { background: #fef2f2; }
+
+    .stat-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.5px;
+    }
+
+    .stat-value.navy    { color: #0f2a4a; }
+    .stat-value.amber   { color: #d97706; }
+    .stat-value.emerald { color: #10b981; }
+    .stat-value.red     { color: #ef4444; }
+
+    /* ============ TOOLBAR (Search & Filter) ============ */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .search-box {
+      flex: 1;
+      max-width: 380px;
+      height: 42px;
+      background: #ffffff;
+      border: 1px solid #e8ecf2;
+      border-radius: 10px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 1px 2px rgba(15, 42, 74, 0.02);
+      transition: border-color 0.15s ease;
+    }
+
+    .search-box:focus-within {
+      border-color: #0f2a4a;
+    }
+
+    .search-box svg {
+      width: 17px;
+      height: 17px;
+      stroke: #94a3b8;
+      flex-shrink: 0;
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      background: transparent;
+      width: 100%;
+      font-size: 13.5px;
+      color: #0f2a4a;
+    }
+
+    .search-box input::placeholder {
+      color: #94a3b8;
+    }
+
+    /* Filter Dropdown Container */
+    .filter-dropdown-container {
+      position: relative;
+    }
+
+    .filter-dropdown {
+      height: 42px;
+      background: #ffffff;
+      border: 1px solid #e8ecf2;
+      border-radius: 10px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #0f2a4a;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(15, 42, 74, 0.02);
+      min-width: 165px;
+      justify-content: space-between;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .filter-dropdown:hover {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+    }
+
+    .filter-dropdown svg {
+      width: 15px;
+      height: 15px;
+      stroke: #64748b;
+      stroke-width: 2.2;
+      transition: transform 0.2s ease;
+    }
+
+    .filter-dropdown.open svg {
+      transform: rotate(180deg);
+    }
+
+    .filter-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      background: #ffffff;
+      border: 1px solid #e8ecf2;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(15, 42, 74, 0.08);
+      min-width: 175px;
+      padding: 6px;
+      display: none;
+      z-index: 50;
+    }
+
+    .filter-dropdown-menu.show {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .dropdown-item {
+      padding: 9px 14px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #334155;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .dropdown-item:hover {
+      background: #f1f5f9;
+      color: #0f2a4a;
+    }
+
+    .dropdown-item.active {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
+    /* ============ TABLE CARD ============ */
+    .table-card {
+      background: #ffffff;
+      border: 1px solid #e8ecf2;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px -2px rgba(18, 47, 81, 0.04);
+    }
+
+    .table-header {
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .table-header h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f2a4a;
+    }
+
+    .table-header .count-info {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    thead th {
+      background: #f8fafc;
+      padding: 15px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #e5e7eb;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f1f5f9;
+      transition: background 0.1s ease;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #f9fafb;
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: #f1f5f9;
+    }
+
+    tbody td {
+      padding: 16px 20px;
+      font-size: 14px;
+      color: #334155;
+      vertical-align: middle;
+    }
+
+    /* Date column */
+    .td-date {
+      color: #475569;
+      white-space: nowrap;
+      font-weight: 500;
+      width: 140px;
+    }
+
+    /* Name / Email Column */
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 250px;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .user-avatar.ad { background: #dbeafe; color: #2563eb; }
+    .user-avatar.bs { background: #fed7aa; color: #ea580c; }
+    .user-avatar.dl { background: #f3e8ff; color: #9333ea; }
+    .user-avatar.ep { background: #d1fae5; color: #059669; }
+    .user-avatar.fn { background: #fef08a; color: #ca8a04; }
+
+    .user-info .user-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f2a4a;
+      line-height: 1.3;
+    }
+
+    .user-info .user-email {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.3;
+    }
+
+    /* Empty dash column */
+    .td-dash {
+      color: #94a3b8;
+      font-weight: 500;
+      font-size: 15px;
+    }
+
+    /* Status Badges */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .status-pill.pending {
+      background: #fffbeb;
+      color: #b45309;
+    }
+
+    .status-pill.pending .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #d97706;
+    }
+
+    .status-pill.approved {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .status-pill.rejected {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    /* Action Buttons */
+    .action-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-action {
+      width: 30px;
+      height: 30px;
+      border-radius: 7px;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn-action:hover {
+      transform: scale(1.08);
+      opacity: 0.9;
+    }
+
+    .btn-action.approve {
+      background: #ecfdf5;
+      color: #059669;
+    }
+
+    .btn-action.reject {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    .btn-action.view {
+      background: #f3f4f6;
+      color: #64748b;
+    }
+
+    .btn-action.view:hover {
+      background: #e2e8f0;
+      color: #0f2a4a;
+    }
+
+    .btn-action svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* Empty state */
+    .empty-row td {
+      text-align: center;
+      padding: 36px 20px;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    /* ============ TOAST NOTIFICATION ============ */
+    .staplr-toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      padding: 14px 20px;
+      border-radius: 10px;
+      background: #0f2a4a;
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(15, 42, 74, 0.2);
+      z-index: 9999;
+      transform: translateY(60px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .staplr-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .staplr-toast.success {
+      background: #065f46;
+      border: 1px solid #059669;
+    }
+
+    .staplr-toast.danger {
+      background: #991b1b;
+      border: 1px solid #dc2626;
+    }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 1200px) {
+      .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 820px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        padding: 20px;
+      }
+      .topbar {
+        padding: 0 20px;
+      }
+      .content {
+        padding: 20px;
+      }
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+      .toolbar {
+        flex-direction: column;
+      }
+      .filter-dropdown {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="sidebar">
+    <!-- Logo with shopping basket + yellow dot + Staplr -->
+    <a href="dashboard.php" class="sidebar-brand" title="Dashboard Staplr"><img src="../../assets/img/logo-transparent.png" alt="Staplr Icon" class="sidebar-brand-icon"><span class="sidebar-brand-name">Staplr<span class="sidebar-brand-dot">.</span></span></a>
+
+    <!-- Navigation Menu -->
+    <nav class="menu">
+      <!-- 1. Dashboard -->
+      <a class="menu-item" href="dashboard.php">
+        <span class="icon">
+          
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </span>
+        <span>Dashboard</span>
+      </a>
+
+      <!-- 2. Verifikasi (Active) -->
+      <a class="menu-item active" href="verifikasi.php">
+        <span class="icon">
+          
+          <svg viewBox="0 0 24 24" fill="rgba(255,199,0,0.25)" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L20 6 V11 C20 16 16.5 20 12 21 C7.5 20 4 16 4 11 V6 Z"/><path d="M9 12 L11 14 L15 10"/></svg>
+        </span>
+        <span>Verifikasi</span>
+      </a>
+
+      <!-- 3. Dispute -->
+      <a class="menu-item" href="dispute.php">
+        <span class="icon">
+          
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </span>
+        <span>Dispute</span>
+      </a>
+
+      <!-- 4. Keuangan -->
+      <a class="menu-item" href="keuangan.php">
+        <span class="icon">
+          
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </span>
+        <span>Keuangan</span>
+      </a>
+
+      <!-- 5. Manajemen User -->
+      <a class="menu-item" href="manajemen-user.php">
+        <span class="icon">
+          
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20 C2.5 16 5.5 14 9 14 C12.5 14 15.5 16 15.5 20"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.5 C18 14.5 20 16 20.5 18"/></svg>
+        </span>
+        <span>Manajemen User</span>
+      </a>
+
+      <!-- 6. Riwayat -->
+      <a class="menu-item" href="riwayat.php">
+        <span class="icon">
+          
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </span>
+        <span>Riwayat</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <h1>Verifikasi Perusahaan</h1>
+      <div class="topbar-actions">
+        <div class="admin-profile" id="adminProfileBtn" style="cursor: pointer;" title="Klik untuk info profil">
+          <div class="admin-avatar"></div>
+          <span>Admin</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+
+        <div class="admin-dropdown" id="adminDropdown">
+          <div class="dropdown-head">
+            <div class="dropdown-avatar"></div>
+            <div>
+              <div class="dropdown-name">Superadmin Staplr</div>
+              <div class="dropdown-status">Aktif</div>
+            </div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <button type="button" class="dropdown-logout" id="btnLogout">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Keluar
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <section class="content">
+
+      <!-- Section Title -->
+      <h2 class="page-title">Verifikasi Perusahaan</h2>
+
+      <!-- ===== 4 Stat Cards ===== -->
+      <div class="stat-grid">
+        <!-- 1. TOTAL PENDAFTAR -->
+        <div class="stat-card" id="cardTotal" data-filter="all" title="Klik untuk menampilkan semua perusahaan">
+          <div class="stat-label">TOTAL PENDAFTAR</div>
+          <div class="stat-main">
+            <div class="stat-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="2" width="16" height="20" rx="2"/>
+                <line x1="9" y1="6" x2="9" y2="6.01"/>
+                <line x1="15" y1="6" x2="15" y2="6.01"/>
+                <line x1="9" y1="10" x2="9" y2="10.01"/>
+                <line x1="15" y1="10" x2="15" y2="10.01"/>
+                <line x1="9" y1="14" x2="9" y2="14.01"/>
+                <line x1="15" y1="14" x2="15" y2="14.01"/>
+                <path d="M10 22v-4h4v4"/>
+              </svg>
+            </div>
+            <div class="stat-value navy" id="countTotal">5</div>
+          </div>
+        </div>
+
+        <!-- 2. MENUNGGU VERIFIKASI -->
+        <div class="stat-card" id="cardPending" data-filter="pending" title="Klik untuk memfilter status Pending">
+          <div class="stat-label">MENUNGGU VERIFIKASI</div>
+          <div class="stat-main">
+            <div class="stat-icon amber">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div class="stat-value amber" id="countPending">3</div>
+          </div>
+        </div>
+
+        <!-- 3. DISETUJUI -->
+        <div class="stat-card" id="cardApproved" data-filter="approved" title="Klik untuk memfilter status Disetujui">
+          <div class="stat-label">DISETUJUI</div>
+          <div class="stat-main">
+            <div class="stat-icon emerald">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/>
+                <polyline points="9 12 11 14 15 10"/>
+              </svg>
+            </div>
+            <div class="stat-value emerald" id="countApproved">1</div>
+          </div>
+        </div>
+
+        <!-- 4. DITOLAK -->
+        <div class="stat-card" id="cardRejected" data-filter="rejected" title="Klik untuk memfilter status Ditolak">
+          <div class="stat-label">DITOLAK</div>
+          <div class="stat-main">
+            <div class="stat-icon red">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+              </svg>
+            </div>
+            <div class="stat-value red" id="countRejected">1</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TOOLBAR (Search & Filter) ===== -->
+      <div class="toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Cari nama...">
+        </div>
+
+        <!-- Dropdown Menu Filter -->
+        <div class="filter-dropdown-container">
+          <button type="button" class="filter-dropdown" id="filterDropdownBtn">
+            <span id="selectedFilterText">Semua Status</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="filter-dropdown-menu" id="filterDropdownMenu">
+            <div class="dropdown-item active" data-value="all">Semua Status</div>
+            <div class="dropdown-item" data-value="pending">Menunggu Verifikasi</div>
+            <div class="dropdown-item" data-value="approved">Disetujui</div>
+            <div class="dropdown-item" data-value="rejected">Ditolak</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TABLE CARD: Daftar Perusahaan ===== -->
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Daftar Perusahaan</h3>
+          <span class="count-info" id="tableCountInfo">Menampilkan 4 dari 5 perusahaan</span>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>TGL DAFTAR</th>
+                <th>NAMA LENGKAP / EMAIL</th>
+                <th>NO HP</th>
+                <th>ALAMAT</th>
+                <th>NIB</th>
+                <th>NPWP</th>
+                <th>STATUS</th>
+                <th>AKSI</th>
+              </tr>
+            </thead>
+            <tbody id="companyTableBody">
+              <!-- Dynamically populated or rendered rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div id="toastNotification" class="staplr-toast"></div>
+
+  <!-- Client-side Logic Script -->
+  <script>
+    // ==========================================
+    // STAPLR ADMIN - COMPANY VERIFICATION LOGIC
+    // ==========================================
+    const STORAGE_KEY = 'staplr_company_verifications';
+
+    // Default initial data
+    const initialCompanies = [
+      {
+        id: '1',
+        name: 'Agus Dermawan',
+        company: 'PT Nusantara Tech Utama',
+        email: 'admin@nusantaratech.id',
+        avatar: 'AD',
+        avatarClass: 'ad',
+        date: '24 Okt 2026',
+        phone: '—',
+        address: '—',
+        nib: '—',
+        npwp: '—',
+        status: 'pending',
+        note: ''
+      },
+      {
+        id: '2',
+        name: 'Budi Santoso',
+        company: 'PT Bina Karya Mandiri',
+        email: 'info@binakarya.co.id',
+        avatar: 'BS',
+        avatarClass: 'bs',
+        date: '23 Okt 2026',
+        phone: '—',
+        address: '—',
+        nib: '—',
+        npwp: '—',
+        status: 'approved',
+        note: ''
+      },
+      {
+        id: '3',
+        name: 'Dewi Lestari',
+        company: 'PT Solusi Data Indonesia',
+        email: 'helo@solusidataindonesia.id',
+        avatar: 'DL',
+        avatarClass: 'dl',
+        date: '23 Okt 2026',
+        phone: '—',
+        address: '—',
+        nib: '—',
+        npwp: '—',
+        status: 'pending',
+        note: ''
+      },
+      {
+        id: '4',
+        name: 'Eko Prasetyo',
+        company: 'PT Maju Bersama Sukses',
+        email: 'maju@majubersama.id',
+        avatar: 'EP',
+        avatarClass: 'ep',
+        date: '22 Okt 2026',
+        phone: '—',
+        address: '—',
+        nib: '—',
+        npwp: '—',
+        status: 'rejected',
+        note: ''
+      },
+      {
+        id: '5',
+        name: 'Fajar Nugraha',
+        company: 'PT Agro Makmur Sejahtera',
+        email: 'fajar@agromakmur.id',
+        avatar: 'FN',
+        avatarClass: 'fn',
+        date: '21 Okt 2026',
+        phone: '—',
+        address: '—',
+        nib: '—',
+        npwp: '—',
+        status: 'pending',
+        note: ''
+      }
+    ];
+
+    // Load data from localStorage or fallback
+    function getCompanies() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          let parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            initialCompanies.forEach(init => {
+              const existing = parsed.find(p => p.id === init.id);
+              if (!existing) {
+                parsed.push({ ...init });
+              } else {
+                if (!existing.nib) existing.nib = '—';
+                if (!existing.npwp) existing.npwp = '—';
+                if (!existing.company) existing.company = init.company;
+              }
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+            return parsed;
+          }
+        } catch (e) {
+          console.error('Failed to parse localStorage data', e);
+        }
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(initialCompanies));
+      return initialCompanies;
+    }
+
+    function saveCompanies(companies) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(companies));
+    }
+
+    // Toast helper
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toastNotification');
+      toast.className = `staplr-toast ${type} show`;
+      toast.textContent = message;
+      setTimeout(() => {
+        toast.className = 'staplr-toast';
+      }, 3000);
+    }
+
+    // State variables
+    let currentFilter = 'all';
+    let searchQuery = '';
+
+    // Render table and stats
+    function render() {
+      const companies = getCompanies();
+
+      // Update stat counters
+      let total = companies.length;
+      let pending = companies.filter(c => c.status === 'pending').length;
+      let approved = companies.filter(c => c.status === 'approved').length;
+      let rejected = companies.filter(c => c.status === 'rejected').length;
+
+      document.getElementById('countTotal').textContent = total;
+      document.getElementById('countPending').textContent = pending;
+      document.getElementById('countApproved').textContent = approved;
+      document.getElementById('countRejected').textContent = rejected;
+
+      // Filter rows
+      const filtered = companies.filter(c => {
+        const matchesStatus = (currentFilter === 'all') || (c.status === currentFilter);
+        const q = searchQuery.toLowerCase().trim();
+        const matchesSearch = !q || 
+          c.name.toLowerCase().includes(q) || 
+          c.email.toLowerCase().includes(q) || 
+          (c.company && c.company.toLowerCase().includes(q)) ||
+          (c.nib && c.nib.toLowerCase().includes(q)) ||
+          (c.npwp && c.npwp.toLowerCase().includes(q));
+        return matchesStatus && matchesSearch;
+      });
+
+      // Rows to display: if on "all" and no search query, show top 4 to match mockup
+      let displayed = filtered;
+      if (currentFilter === 'all' && !searchQuery) {
+        displayed = filtered.slice(0, 4);
+      }
+
+      // Update table header count
+      document.getElementById('tableCountInfo').textContent = 
+        `Menampilkan ${displayed.length} dari ${total} perusahaan`;
+
+      // Render tbody
+      const tbody = document.getElementById('companyTableBody');
+      tbody.innerHTML = '';
+
+      if (displayed.length === 0) {
+        tbody.innerHTML = `
+          <tr class="empty-row">
+            <td colspan="8">Tidak ada data perusahaan yang sesuai kriteria.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      displayed.forEach(c => {
+        const tr = document.createElement('tr');
+
+        // Status badge html
+        let statusHtml = '';
+        if (c.status === 'approved') {
+          statusHtml = `
+            <span class="status-pill approved">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Disetujui
+            </span>
+          `;
+        } else if (c.status === 'rejected') {
+          statusHtml = `
+            <span class="status-pill rejected">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px;">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+              Ditolak
+            </span>
+          `;
+        } else {
+          statusHtml = `
+            <span class="status-pill pending">
+              <span class="dot">●</span>
+              Pending
+            </span>
+          `;
+        }
+
+        // Action buttons: 3 buttons if pending, only eye button if approved/rejected
+        let actionsHtml = '';
+        if (c.status === 'pending') {
+          actionsHtml = `
+            <div class="action-group">
+              <button type="button" class="btn-action approve" title="Setujui Perusahaan" onclick="handleQuickDecision('${c.id}', 'approved')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </button>
+              <button type="button" class="btn-action reject" title="Tolak Perusahaan" onclick="handleQuickDecision('${c.id}', 'rejected')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+              <a href="detail-verifikasi.php?id=${c.id}" class="btn-action view" title="Lihat Detail" onclick="selectCompany('${c.id}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </a>
+            </div>
+          `;
+        } else {
+          actionsHtml = `
+            <div class="action-group">
+              <a href="detail-verifikasi.php?id=${c.id}" class="btn-action view" title="Lihat Detail" onclick="selectCompany('${c.id}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </a>
+            </div>
+          `;
+        }
+
+        tr.innerHTML = `
+          <td class="td-date">${c.date}</td>
+          <td>
+            <div class="user-cell">
+              <div class="user-avatar ${c.avatarClass}">${c.avatar}</div>
+              <div class="user-info">
+                <div class="user-name">${c.name}</div>
+                <div class="user-email">${c.email}</div>
+              </div>
+            </div>
+          </td>
+          <td class="td-dash">${c.phone || '—'}</td>
+          <td class="td-dash">${c.address || '—'}</td>
+          <td class="td-dash">${c.nib || '—'}</td>
+          <td class="td-dash">${c.npwp || '—'}</td>
+          <td>${statusHtml}</td>
+          <td>${actionsHtml}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Quick approve/reject action handler
+    window.handleQuickDecision = function(id, newStatus) {
+      const companies = getCompanies();
+      const comp = companies.find(c => c.id === id);
+      if (comp) {
+        comp.status = newStatus;
+        saveCompanies(companies);
+        render();
+        if (newStatus === 'approved') {
+          showToast(`Perusahaan ${comp.name} berhasil disetujui!`, 'success');
+        } else {
+          showToast(`Perusahaan ${comp.name} telah ditolak.`, 'danger');
+        }
+      }
+    };
+
+    // Store selected company id
+    window.selectCompany = function(id) {
+      localStorage.setItem('staplr_selected_company_id', id);
+    };
+
+    // Setup interactive events
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Search filter event
+      const searchInput = document.getElementById('searchInput');
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        render();
+      });
+
+      // 2. Dropdown menu toggle
+      const filterBtn = document.getElementById('filterDropdownBtn');
+      const filterMenu = document.getElementById('filterDropdownMenu');
+      const selectedText = document.getElementById('selectedFilterText');
+
+      filterBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        filterMenu.classList.toggle('show');
+        filterBtn.classList.toggle('open');
+      });
+
+      // Dropdown option click
+      filterMenu.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', () => {
+          filterMenu.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+
+          currentFilter = item.getAttribute('data-value');
+          selectedText.textContent = item.textContent;
+
+          filterMenu.classList.remove('show');
+          filterBtn.classList.remove('open');
+
+          // Sync active stat card outline
+          document.querySelectorAll('.stat-card').forEach(card => card.classList.remove('active-filter'));
+          if (currentFilter !== 'all') {
+            const matchingCard = document.querySelector(`.stat-card[data-filter="${currentFilter}"]`);
+            if (matchingCard) matchingCard.classList.add('active-filter');
+          }
+
+          render();
+        });
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!filterBtn.contains(e.target) && !filterMenu.contains(e.target)) {
+          filterMenu.classList.remove('show');
+          filterBtn.classList.remove('open');
+        }
+      });
+
+      // 3. Stat Cards as filters
+      document.querySelectorAll('.stat-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const filter = card.getAttribute('data-filter');
+          currentFilter = filter;
+
+          // Update active card styling
+          document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
+          card.classList.add('active-filter');
+
+          // Sync dropdown menu
+          filterMenu.querySelectorAll('.dropdown-item').forEach(item => {
+            if (item.getAttribute('data-value') === filter) {
+              item.classList.add('active');
+              selectedText.textContent = item.textContent;
+            } else {
+              item.classList.remove('active');
+            }
+          });
+
+          render();
+        });
+      });
+
+      // 4. Topbar Admin Profile Button Event
+      const adminProfileBtn = document.getElementById('adminProfileBtn');
+      if (adminProfileBtn) {
+        adminProfileBtn.addEventListener('click', () => {
+          toggleAdminDropdown(event);
+        });
+      }
+
+      // Initial render
+      render();
+    });
+  </script>
+
+  <!-- Popup profil admin -->
+  <script>
+    function toggleAdminDropdown(e) {
+      if (e) e.stopPropagation();
+      document.getElementById('adminDropdown').classList.toggle('show');
+      document.getElementById('adminProfileBtn').classList.toggle('open');
+    }
+    function closeAdminDropdown() {
+      var d = document.getElementById('adminDropdown');
+      var b = document.getElementById('adminProfileBtn');
+      if (d) d.classList.remove('show');
+      if (b) b.classList.remove('open');
+    }
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.topbar-actions')) closeAdminDropdown();
+    });
+    document.getElementById('btnLogout').addEventListener('click', function() {
+      if (confirm('Keluar dari akun admin?')) {
+        closeAdminDropdown();
+        showToast('Anda telah keluar dari akun admin.', 'info');
+      }
+    });
+  </script>
+</body>
+</html>
