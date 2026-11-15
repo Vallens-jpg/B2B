@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riwayat Transaksi - Staplr Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Design tokens — disamakan dengan branch perusahaan (dashboard.css :root) */
+    :root {
+      --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --color-navy: #122f51;
+      --color-navy-dark: #0d223c;
+      --color-yellow: #ffc700;
+      --color-avatar-green: #155f50;
+      --color-bg-main: #f8fafc;
+      --color-card-bg: #ffffff;
+      --color-border: #e8ecf2;
+      --color-text-dark: #0f172a;
+      --color-text-muted: #64748b;
+      --sidebar-width: 215px;
+      --radius-card: 16px;
+      --radius-pill: 999px;
+      --shadow-card: 0 2px 12px -2px rgba(18, 47, 81, 0.04);
+    }
+
+    /* ==========================================================
+       STAPLR ADMIN - RIWAYAT TRANSAKSI (PIXEL-PERFECT REPLICA)
+       ========================================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background: #f8fafc;
+      color: #0f2a4a;
+      overflow-x: hidden;
+    }
+
+    /* ============ SIDEBAR ============ */
+    .sidebar {
+      width: 215px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, #87ab95 0%, #afc5aa 30%, #ebedc8 55%, #d2dcba 75%, #82a78f 100%);
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 2px 8px 18px;
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .sidebar-brand-icon {
+      height: 34px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+    }
+
+    .sidebar-brand-name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #122f51;
+      letter-spacing: -0.02em;
+    }
+
+    .sidebar-brand-dot {
+      color: #ffc700;
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .logo-link {
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 12px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-decoration: none;
+      color: #1a3327;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
+    }
+
+    .menu-item .icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-item .icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      stroke: #ffc700;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .menu-item.active .icon svg {
+      fill: rgba(255, 199, 0, 0.25);
+    }
+
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.28);
+      color: #0d2218;
+    }
+
+    /* Active Riwayat state */
+    .menu-item.active {
+      background: rgba(255, 255, 255, 0.52);
+      color: #0b1f14;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    /* ============ MAIN LAYOUT ============ */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ============ TOPBAR ============ */
+    .topbar {
+      background: #ffffff;
+      padding: 18px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e8ecf2;
+    }
+
+    .topbar h1 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    .admin-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #0f2a4a;
+      cursor: pointer;
+      user-select: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: background 0.15s ease;
+    }
+
+    .admin-profile:hover {
+      background: #f1f5f9;
+    }
+
+    .admin-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #155f50;
+      flex-shrink: 0;
+    }
+
+    /* ============ POPUP PROFIL ADMIN (dropdown di topbar) ============ */
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+
+    .admin-profile .chevron {
+      width: 15px;
+      height: 15px;
+      stroke: #64748b;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    .admin-profile.open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .admin-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 248px;
+      background: #ffffff;
+      border: 1px solid #e8ecf2;
+      border-radius: 16px;
+      box-shadow: 0 12px 32px -8px rgba(18, 47, 81, 0.18);
+      padding: 8px;
+      display: none;
+      z-index: 100;
+    }
+
+    .admin-dropdown.show {
+      display: block;
+    }
+
+    .dropdown-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+    }
+
+    .dropdown-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #155f50;
+      flex-shrink: 0;
+    }
+
+    .dropdown-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.01em;
+    }
+
+    .dropdown-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #16a34a;
+    }
+
+    .dropdown-status::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: #f1f5f9;
+      margin: 4px 4px 6px;
+    }
+
+    .dropdown-logout {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: #dc2626;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .dropdown-logout:hover {
+      background: #fef2f2;
+    }
+
+    .dropdown-logout svg {
+      width: 17px;
+      height: 17px;
+      stroke: #dc2626;
+      flex-shrink: 0;
+    }
+
+    /* ============ CONTENT ============ */
+    .content {
+      padding: 24px 36px 36px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ============ HEADER ROW: TITLE + SEARCH + EXPORT ============ */
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0f2a4a;
+      letter-spacing: -0.2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+      border: 1px solid #e8ecf2;
+      border-radius: 8px;
+      height: 38px;
+      padding: 0 14px;
+      gap: 10px;
+      width: 275px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .search-box:focus-within {
+      border-color: #0f2a4a;
+      box-shadow: 0 0 0 2px rgba(15, 42, 74, 0.08);
+    }
+
+    .search-box svg {
+      width: 15px;
+      height: 15px;
+      color: #94a3b8;
+      flex-shrink: 0;
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 13px;
+      color: #0f2a4a;
+      width: 100%;
+    }
+
+    .search-box input::placeholder {
+      color: #94a3b8;
+    }
+
+    .btn-export {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 38px;
+      padding: 0 16px;
+      background: #ffffff;
+      border: 1px solid #e8ecf2;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0f2a4a;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-export:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+
+    .btn-export svg {
+      width: 15px;
+      height: 15px;
+      color: #0f2a4a;
+    }
+
+    /* ============ STAT CARDS GRID ============ */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border: 1px solid #e8ecf2;
+      border-radius: 16px;
+      padding: 20px 24px;
+      box-shadow: 0 2px 12px -2px rgba(18, 47, 81, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      user-select: none;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(15, 42, 74, 0.06);
+      border-color: #cbd5e1;
+    }
+
+    .stat-card.active-filter {
+      border-color: #0f2a4a;
+      background: #fafcff;
+      box-shadow: 0 0 0 2px rgba(15, 42, 74, 0.1);
+    }
+
+    .stat-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stat-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .stat-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .stat-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f2a4a;
+      letter-spacing: -0.3px;
+    }
+
+    /* ============ DAFTAR TRANSAKSI CARD (FULL WIDTH) ============ */
+    .card {
+      background: #ffffff;
+      border: 1px solid #e8ecf2;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px -2px rgba(18, 47, 81, 0.04);
+    }
+
+    .table-card {
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .table-card-head {
+      padding: 20px 24px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .table-card-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #0f2a4a;
+      letter-spacing: -0.2px;
+    }
+
+    .total-badge {
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    thead {
+      border-top: 1px solid #edf1f6;
+      border-bottom: 1px solid #edf1f6;
+    }
+
+    thead th {
+      background: #f8fafc;
+      padding: 15px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #edf1f6;
+      transition: background-color 0.1s ease;
+    }
+
+    tbody tr:hover {
+      background-color: #fbfcfe;
+    }
+
+    tbody td {
+      padding: 16px 20px;
+      font-size: 14px;
+      color: #334155;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .td-trx-id {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #0f2a4a;
+    }
+
+    /* User Cell with Avatar */
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #eff6ff;
+      color: #2563eb;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #0f2a4a;
+      line-height: 1.3;
+    }
+
+    .user-company {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.3;
+    }
+
+    .td-method {
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .td-total {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #0f2a4a;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-success {
+      background: #ecfdf5;
+      color: #15803d;
+    }
+
+    .badge-pending {
+      background: #fffbeb;
+      color: #b45309;
+    }
+
+    .btn-detail {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 30px;
+      padding: 0 14px;
+      background: #ffffff;
+      border: 1px solid #e8ecf2;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #0f2a4a;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn-detail:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+
+    /* Table Footer & Pagination */
+    .card-footer {
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-info {
+      font-size: 12.5px;
+      color: #64748b;
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .page-btn {
+      height: 32px;
+      padding: 0 12px;
+      background: #ffffff;
+      border: 1px solid #e8ecf2;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #0f2a4a;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    .page-btn.active {
+      background: #0f2a4a;
+      color: #ffffff;
+      border-color: #0f2a4a;
+    }
+
+    .page-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Empty state */
+    .empty-state {
+      padding: 48px 24px;
+      text-align: center;
+      color: #64748b;
+      display: none;
+    }
+
+    .empty-state svg {
+      width: 42px;
+      height: 42px;
+      color: #94a3b8;
+      margin-bottom: 12px;
+    }
+
+    .empty-state h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f2a4a;
+      margin-bottom: 4px;
+    }
+
+    .empty-state p {
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+
+    .btn-reset-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 14px;
+      background: #0f2a4a;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ============ DETAIL MODAL ============ */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 42, 74, 0.45);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 10px 30px rgba(15, 42, 74, 0.15);
+      overflow: hidden;
+      transform: translateY(12px) scale(0.98);
+      transition: transform 0.2s ease;
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #edf1f6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #0f2a4a;
+    }
+
+    .modal-badge {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .btn-close-modal {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: none;
+      background: #f1f5f9;
+      color: #64748b;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .btn-close-modal:hover {
+      background: #e2e8f0;
+      color: #0f2a4a;
+    }
+
+    .modal-body {
+      padding: 24px;
+      max-height: 70vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .modal-info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .modal-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .modal-val {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #0f2a4a;
+    }
+
+    .modal-summary-box {
+      background: #f8fafc;
+      border: 1px solid #edf1f6;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+
+    .summary-row .label {
+      color: #64748b;
+    }
+
+    .summary-row .val {
+      font-weight: 700;
+      color: #0f2a4a;
+    }
+
+    .summary-row.total-row {
+      margin-top: 4px;
+      padding-top: 10px;
+      border-top: 1px dashed #e2e8f0;
+    }
+
+    .summary-row.total-row .label,
+    .summary-row.total-row .val {
+      font-weight: 800;
+      color: #0f2a4a;
+      font-size: 14.5px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px 20px;
+      border-top: 1px solid #edf1f6;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      background: #fafcff;
+    }
+
+    .btn-modal-secondary {
+      height: 38px;
+      padding: 0 16px;
+      background: #ffffff;
+      border: 1px solid #d0d5dd;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0f2a4a;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-modal-secondary:hover {
+      background: #f1f5f9;
+    }
+
+    .btn-modal-primary {
+      height: 38px;
+      padding: 0 18px;
+      background: #0f2a4a;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-modal-primary:hover {
+      background: #163e6e;
+    }
+
+    /* ============ TOAST NOTIFICATION ============ */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: #0f2a4a;
+      color: #ffffff;
+      padding: 14px 22px;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      font-size: 13.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 1100px) {
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 820px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        padding: 20px;
+      }
+      .topbar {
+        padding: 0 20px;
+      }
+      .content {
+        padding: 20px;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .header-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+      .search-box {
+        width: 100%;
+      }
+      .btn-export {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="sidebar">
+    <!-- Logo with shopping basket + yellow dot + Staplr -->
+    <a href="dashboard.php" class="sidebar-brand" title="Dashboard Staplr"><img src="../../assets/img/logo-transparent.png" alt="Staplr Icon" class="sidebar-brand-icon"><span class="sidebar-brand-name">Staplr<span class="sidebar-brand-dot">.</span></span></a>
+
+    <!-- Navigation Menu -->
+    <nav class="menu">
+      <!-- 1. Dashboard -->
+      <a class="menu-item" href="dashboard.php">
+        <span class="icon">
+          
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </span>
+        <span>Dashboard</span>
+      </a>
+
+      <!-- 2. Verifikasi -->
+      <a class="menu-item" href="verifikasi.php">
+        <span class="icon">
+          
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L20 6 V11 C20 16 16.5 20 12 21 C7.5 20 4 16 4 11 V6 Z"/><path d="M9 12 L11 14 L15 10"/></svg>
+        </span>
+        <span>Verifikasi</span>
+      </a>
+
+      <!-- 3. Dispute -->
+      <a class="menu-item" href="dispute.php">
+        <span class="icon">
+          
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </span>
+        <span>Dispute</span>
+      </a>
+
+      <!-- 4. Keuangan -->
+      <a class="menu-item" href="keuangan.php">
+        <span class="icon">
+          
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </span>
+        <span>Keuangan</span>
+      </a>
+
+      <!-- 5. Manajemen User -->
+      <a class="menu-item" href="manajemen-user.php">
+        <span class="icon">
+          
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20 C2.5 16 5.5 14 9 14 C12.5 14 15.5 16 15.5 20"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.5 C18 14.5 20 16 20.5 18"/></svg>
+        </span>
+        <span>Manajemen User</span>
+      </a>
+
+      <!-- 6. Riwayat (Active) -->
+      <a class="menu-item active" href="riwayat.php">
+        <span class="icon">
+          
+          <svg viewBox="0 0 24 24" fill="rgba(255,199,0,0.25)" stroke="#ffc700" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </span>
+        <span>Riwayat</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <h1>Riwayat</h1>
+      <div class="topbar-actions">
+        <div class="admin-profile" id="adminProfileBtn" title="Profil Admin">
+          <div class="admin-avatar"></div>
+          <span>Admin</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+
+        <div class="admin-dropdown" id="adminDropdown">
+          <div class="dropdown-head">
+            <div class="dropdown-avatar"></div>
+            <div>
+              <div class="dropdown-name">Superadmin Staplr</div>
+              <div class="dropdown-status">Aktif</div>
+            </div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <button type="button" class="dropdown-logout" id="btnLogout">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Keluar
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Body -->
+    <section class="content">
+
+      <!-- Header Row: Title + Search Bar + Export Button -->
+      <div class="header-row">
+        <h2 class="page-title">Riwayat Transaksi</h2>
+
+        <div class="header-actions">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchInput" placeholder="Cari transaksi..." autocomplete="off">
+          </div>
+
+          <button type="button" class="btn-export" id="btnExport" title="Ekspor Data Transaksi">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Export</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Stat Cards Grid (3 Columns) -->
+      <div class="stat-grid">
+        <!-- Stat 1: Total Transaksi -->
+        <div class="stat-card" id="cardTotalTrx" title="Klik untuk menampilkan semua transaksi">
+          <div class="stat-head">
+            <span class="stat-icon">
+              <!-- Credit card / payment outline icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="5" width="20" height="14" rx="2"/>
+                <line x1="2" y1="10" x2="22" y2="10"/>
+              </svg>
+            </span>
+            <span class="stat-title">Total Transaksi</span>
+          </div>
+          <div class="stat-value">Rp 12.450.000</div>
+        </div>
+
+        <!-- Stat 2: Transaksi Berhasil -->
+        <div class="stat-card" id="cardTrxSuccess" title="Klik untuk filter transaksi berhasil">
+          <div class="stat-head">
+            <span class="stat-icon">
+              <!-- Check circle icon in emerald -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </span>
+            <span class="stat-title">Transaksi Berhasil</span>
+          </div>
+          <div class="stat-value">1.284</div>
+        </div>
+
+        <!-- Stat 3: Menunggu Verifikasi -->
+        <div class="stat-card" id="cardTrxPending" title="Klik untuk filter transaksi pending">
+          <div class="stat-head">
+            <span class="stat-icon">
+              <!-- Clock icon in amber -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </span>
+            <span class="stat-title">Menunggu Verifikasi</span>
+          </div>
+          <div class="stat-value">24</div>
+        </div>
+      </div>
+
+      <!-- ============ DAFTAR TRANSAKSI CARD (FULL WIDTH) ============ -->
+      <div class="card table-card">
+        <div class="table-card-head">
+          <h3 class="table-card-title">Daftar Transaksi</h3>
+          <span class="total-badge" id="totalBadge">1.284 Total</span>
+        </div>
+
+        <div class="table-responsive">
+          <table id="transactionsTable">
+            <thead>
+              <tr>
+                <th>ID TRANSAKSI</th>
+                <th>PEMBELI</th>
+                <th>METODE</th>
+                <th>TOTAL</th>
+                <th>STATUS</th>
+                <th>AKSI</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <!-- Rows rendered dynamically via JS to support pagination, live search, and modal details -->
+            </tbody>
+          </table>
+
+          <!-- Empty State -->
+          <div class="empty-state" id="emptyState">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <h4>Tidak ada transaksi yang cocok</h4>
+            <p>Coba gunakan kata kunci pencarian yang lain.</p>
+            <button type="button" class="btn-reset-filter" id="btnResetFilter">Reset Pencarian</button>
+          </div>
+        </div>
+
+        <!-- Pagination Footer -->
+        <div class="card-footer">
+          <span class="footer-info" id="footerInfo">Menampilkan 1-3 dari 1.284 transaksi</span>
+          <div class="pagination">
+            <button type="button" class="page-btn" id="btnPrevPage">Sebelumnya</button>
+            <button type="button" class="page-btn active" id="btnPage1">1</button>
+            <button type="button" class="page-btn" id="btnPage2">2</button>
+            <button type="button" class="page-btn" id="btnNextPage">Berikutnya</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ==================== DETAIL MODAL ==================== -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h3 class="modal-title">Detail Transaksi</h3>
+          <span class="modal-badge" id="modalStatusBadge">Berhasil</span>
+        </div>
+        <button type="button" class="btn-close-modal" id="btnCloseModal" title="Tutup">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-grid-2">
+          <div class="modal-info-item">
+            <span class="modal-label">ID Transaksi</span>
+            <span class="modal-val" id="modalTrxId">TRX-2026-001</span>
+          </div>
+          <div class="modal-info-item">
+            <span class="modal-label">Tanggal Transaksi</span>
+            <span class="modal-val" id="modalTrxDate">12 Oktober 2026, 14:30 WIB</span>
+          </div>
+        </div>
+
+        <div class="modal-grid-2">
+          <div class="modal-info-item">
+            <span class="modal-label">Nama Pembeli</span>
+            <span class="modal-val" id="modalBuyerName">Rira W.</span>
+          </div>
+          <div class="modal-info-item">
+            <span class="modal-label">Perusahaan</span>
+            <span class="modal-val" id="modalBuyerCompany">PT Rira Pangan</span>
+          </div>
+        </div>
+
+        <div class="modal-grid-2">
+          <div class="modal-info-item">
+            <span class="modal-label">Metode Pembayaran</span>
+            <span class="modal-val" id="modalPaymentMethod">Transfer Bank BCA</span>
+          </div>
+          <div class="modal-info-item">
+            <span class="modal-label">Nomor Rekening Tujuan</span>
+            <span class="modal-val">8830129482 (Staplr)</span>
+          </div>
+        </div>
+
+        <div class="modal-info-item">
+          <span class="modal-label">Produk Dibeli</span>
+          <span class="modal-val" id="modalProducts">Beras Rojolele Super (500 Kg)</span>
+        </div>
+
+        <!-- Summary Box -->
+        <div class="modal-summary-box">
+          <div class="summary-row">
+            <span class="label">Subtotal</span>
+            <span class="val" id="modalSubtotal">Rp 1.200.000</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Biaya Pengiriman</span>
+            <span class="val" id="modalShipping">Rp 50.000</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Biaya Layanan Admin</span>
+            <span class="val">Rp 0</span>
+          </div>
+          <div class="summary-row total-row">
+            <span class="label">Total Pembayaran</span>
+            <span class="val" id="modalTotal">Rp 1.250.000</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-secondary" id="btnModalInvoice">Cetak Invoice</button>
+        <button type="button" class="btn-modal-primary" id="btnModalReceipt">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Unduh Bukti Transfer</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toastBox">
+    <span id="toastMessage">Aksi berhasil dilakukan</span>
+  </div>
+
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Data Transaksi
+      const transactions = [
+        {
+          id: 'TRX-2026-001',
+          avatar: 'RW',
+          name: 'Rira W.',
+          company: 'PT Rira Pangan',
+          method: 'Transfer Bank',
+          methodDetail: 'Transfer Bank BCA (8830129482)',
+          total: 'Rp 1.250.000',
+          subtotal: 'Rp 1.200.000',
+          shipping: 'Rp 50.000',
+          status: 'Berhasil',
+          date: '12 Oktober 2026, 14:30 WIB',
+          products: 'Beras Rojolele Super (500 Kg)',
+          page: 1
+        },
+        {
+          id: 'TRX-2026-002',
+          avatar: 'AP',
+          name: 'Andi P.',
+          company: 'CV Andi Jaya',
+          method: 'Transfer Bank',
+          methodDetail: 'Transfer Bank Mandiri (1370019283)',
+          total: 'Rp 850.000',
+          subtotal: 'Rp 820.000',
+          shipping: 'Rp 30.000',
+          status: 'Pending',
+          date: '12 Oktober 2026, 11:15 WIB',
+          products: 'Minyak Goreng Sawit 2L (40 Pcs)',
+          page: 1
+        },
+        {
+          id: 'TRX-2026-003',
+          avatar: 'SS',
+          name: 'Sinta S.',
+          company: 'Toko Sinta',
+          method: 'Transfer Bank',
+          methodDetail: 'Transfer Bank BNI (0293817263)',
+          total: 'Rp 4.200.000',
+          subtotal: 'Rp 4.100.000',
+          shipping: 'Rp 100.000',
+          status: 'Berhasil',
+          date: '11 Oktober 2026, 16:45 WIB',
+          products: 'Gula Pasir Kristal Putih (800 Kg)',
+          page: 1
+        },
+        {
+          id: 'TRX-2026-004',
+          avatar: 'BK',
+          name: 'Budi K.',
+          company: 'UD Berkah Tani',
+          method: 'Transfer Bank',
+          methodDetail: 'Transfer Bank BRI (0029182736)',
+          total: 'Rp 2.150.000',
+          subtotal: 'Rp 2.080.000',
+          shipping: 'Rp 70.000',
+          status: 'Berhasil',
+          date: '11 Oktober 2026, 09:20 WIB',
+          products: 'Telur Ayam Broiler (120 Tray)',
+          page: 2
+        },
+        {
+          id: 'TRX-2026-005',
+          avatar: 'MD',
+          name: 'Maya D.',
+          company: 'CV Sumber Rejeki',
+          method: 'Transfer Bank',
+          methodDetail: 'Transfer Bank BCA (8830129482)',
+          total: 'Rp 920.000',
+          subtotal: 'Rp 890.000',
+          shipping: 'Rp 30.000',
+          status: 'Pending',
+          date: '10 Oktober 2026, 15:10 WIB',
+          products: 'Tepung Terigu Segitiga Biru (25 Sak)',
+          page: 2
+        },
+        {
+          id: 'TRX-2026-006',
+          avatar: 'HT',
+          name: 'Hendra T.',
+          company: 'PT Surya Pangan',
+          method: 'Transfer Bank',
+          methodDetail: 'Transfer Bank Permata (7719283746)',
+          total: 'Rp 3.100.000',
+          subtotal: 'Rp 3.000.000',
+          shipping: 'Rp 100.000',
+          status: 'Berhasil',
+          date: '10 Oktober 2026, 08:40 WIB',
+          products: 'Bawang Merah Brebes Super (150 Kg)',
+          page: 2
+        }
+      ];
+
+      // State
+      let currentPage = 1;
+      let activeFilter = 'ALL'; // ALL, Berhasil, Pending
+      let searchQuery = '';
+
+      // Elements
+      const tableBody = document.getElementById('tableBody');
+      const emptyState = document.getElementById('emptyState');
+      const searchInput = document.getElementById('searchInput');
+      const btnExport = document.getElementById('btnExport');
+      const footerInfo = document.getElementById('footerInfo');
+      const totalBadge = document.getElementById('totalBadge');
+      const btnPage1 = document.getElementById('btnPage1');
+      const btnPage2 = document.getElementById('btnPage2');
+      const btnPrevPage = document.getElementById('btnPrevPage');
+      const btnNextPage = document.getElementById('btnNextPage');
+      const btnResetFilter = document.getElementById('btnResetFilter');
+      const adminProfileBtn = document.getElementById('adminProfileBtn');
+
+      // Stat Cards
+      const cardTotalTrx = document.getElementById('cardTotalTrx');
+      const cardTrxSuccess = document.getElementById('cardTrxSuccess');
+      const cardTrxPending = document.getElementById('cardTrxPending');
+
+      // Modal elements
+      const detailModal = document.getElementById('detailModal');
+      const btnCloseModal = document.getElementById('btnCloseModal');
+      const modalTrxId = document.getElementById('modalTrxId');
+      const modalStatusBadge = document.getElementById('modalStatusBadge');
+      const modalTrxDate = document.getElementById('modalTrxDate');
+      const modalBuyerName = document.getElementById('modalBuyerName');
+      const modalBuyerCompany = document.getElementById('modalBuyerCompany');
+      const modalPaymentMethod = document.getElementById('modalPaymentMethod');
+      const modalProducts = document.getElementById('modalProducts');
+      const modalSubtotal = document.getElementById('modalSubtotal');
+      const modalShipping = document.getElementById('modalShipping');
+      const modalTotal = document.getElementById('modalTotal');
+      const btnModalInvoice = document.getElementById('btnModalInvoice');
+      const btnModalReceipt = document.getElementById('btnModalReceipt');
+
+      // Toast function
+      let toastTimer = null;
+      function showToast(message) {
+        const toast = document.getElementById('toastBox');
+        const text = document.getElementById('toastMessage');
+        text.textContent = message;
+        toast.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      }
+
+      // Render Table
+      function renderTable() {
+        const query = searchQuery.trim().toLowerCase();
+        
+        let filtered = transactions.filter(item => {
+          const matchSearch = query === '' || 
+            item.id.toLowerCase().includes(query) ||
+            item.name.toLowerCase().includes(query) ||
+            item.company.toLowerCase().includes(query) ||
+            item.method.toLowerCase().includes(query) ||
+            item.status.toLowerCase().includes(query);
+
+          const matchFilter = (activeFilter === 'ALL') || (item.status === activeFilter);
+
+          return matchSearch && matchFilter;
+        });
+
+        // Pagination when no active query
+        let displayList = filtered;
+        if (query === '' && activeFilter === 'ALL') {
+          displayList = filtered.filter(item => item.page === currentPage);
+          footerInfo.textContent = currentPage === 1 
+            ? 'Menampilkan 1-3 dari 1.284 transaksi' 
+            : 'Menampilkan 4-6 dari 1.284 transaksi';
+          btnPrevPage.disabled = (currentPage === 1);
+          btnNextPage.disabled = (currentPage === 2);
+          btnPage1.classList.toggle('active', currentPage === 1);
+          btnPage2.classList.toggle('active', currentPage === 2);
+        } else {
+          footerInfo.textContent = `Menampilkan ${filtered.length} dari ${transactions.length} transaksi (difilter)`;
+          btnPrevPage.disabled = true;
+          btnNextPage.disabled = true;
+          btnPage1.classList.remove('active');
+          btnPage2.classList.remove('active');
+        }
+
+        if (displayList.length === 0) {
+          tableBody.innerHTML = '';
+          emptyState.style.display = 'block';
+          return;
+        }
+
+        emptyState.style.display = 'none';
+
+        tableBody.innerHTML = displayList.map(item => {
+          const isSuccess = item.status === 'Berhasil';
+          const badgeClass = isSuccess ? 'badge badge-success' : 'badge badge-pending';
+          
+          return `
+            <tr>
+              <td class="td-trx-id">${item.id}</td>
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar">${item.avatar}</div>
+                  <div class="user-info">
+                    <span class="user-name">${item.name}</span>
+                    <span class="user-company">${item.company}</span>
+                  </div>
+                </div>
+              </td>
+              <td class="td-method">${item.method}</td>
+              <td class="td-total">${item.total}</td>
+              <td>
+                <span class="${badgeClass}">${item.status}</span>
+              </td>
+              <td>
+                <a href="detail-riwayat.php?id=${item.id}" class="btn-detail" data-id="${item.id}">Detail</a>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        // Attach event listeners to Detail buttons (if user prefers staying or navigation)
+        document.querySelectorAll('.btn-detail').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            // allows navigation to detail-riwayat.html
+          });
+        });
+      }
+
+      // Open Modal Detail
+      function openDetailModal(trxId) {
+        const item = transactions.find(t => t.id === trxId);
+        if (!item) return;
+
+        modalTrxId.textContent = item.id;
+        modalTrxDate.textContent = item.date;
+        modalBuyerName.textContent = item.name;
+        modalBuyerCompany.textContent = item.company;
+        modalPaymentMethod.textContent = item.methodDetail;
+        modalProducts.textContent = item.products;
+        modalSubtotal.textContent = item.subtotal;
+        modalShipping.textContent = item.shipping;
+        modalTotal.textContent = item.total;
+
+        modalStatusBadge.textContent = item.status;
+        if (item.status === 'Berhasil') {
+          modalStatusBadge.style.background = '#ecfdf5';
+          modalStatusBadge.style.color = '#15803d';
+        } else {
+          modalStatusBadge.style.background = '#fffbeb';
+          modalStatusBadge.style.color = '#b45309';
+        }
+
+        detailModal.classList.add('active');
+      }
+
+      // Close Modal
+      function closeModal() {
+        detailModal.classList.remove('active');
+      }
+
+      btnCloseModal.addEventListener('click', closeModal);
+      detailModal.addEventListener('click', (e) => {
+        if (e.target === detailModal) closeModal();
+      });
+
+      // Search input handler
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        renderTable();
+      });
+
+      // Reset Filter handler
+      btnResetFilter.addEventListener('click', () => {
+        searchQuery = '';
+        searchInput.value = '';
+        activeFilter = 'ALL';
+        cardTotalTrx.classList.remove('active-filter');
+        cardTrxSuccess.classList.remove('active-filter');
+        cardTrxPending.classList.remove('active-filter');
+        currentPage = 1;
+        renderTable();
+        showToast('Pencarian dan filter direset');
+      });
+
+      // Pagination Handlers
+      btnPage1.addEventListener('click', () => {
+        currentPage = 1;
+        searchQuery = '';
+        searchInput.value = '';
+        activeFilter = 'ALL';
+        cardTotalTrx.classList.remove('active-filter');
+        cardTrxSuccess.classList.remove('active-filter');
+        cardTrxPending.classList.remove('active-filter');
+        renderTable();
+      });
+
+      btnPage2.addEventListener('click', () => {
+        currentPage = 2;
+        searchQuery = '';
+        searchInput.value = '';
+        activeFilter = 'ALL';
+        cardTotalTrx.classList.remove('active-filter');
+        cardTrxSuccess.classList.remove('active-filter');
+        cardTrxPending.classList.remove('active-filter');
+        renderTable();
+      });
+
+      btnPrevPage.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderTable();
+        }
+      });
+
+      btnNextPage.addEventListener('click', () => {
+        if (currentPage < 2) {
+          currentPage++;
+          renderTable();
+        }
+      });
+
+      // Stat Cards Handlers
+      cardTotalTrx.addEventListener('click', () => {
+        activeFilter = 'ALL';
+        searchQuery = '';
+        searchInput.value = '';
+        currentPage = 1;
+        cardTotalTrx.classList.add('active-filter');
+        cardTrxSuccess.classList.remove('active-filter');
+        cardTrxPending.classList.remove('active-filter');
+        renderTable();
+        showToast('Menampilkan seluruh data transaksi');
+      });
+
+      cardTrxSuccess.addEventListener('click', () => {
+        if (activeFilter === 'Berhasil') {
+          activeFilter = 'ALL';
+          cardTrxSuccess.classList.remove('active-filter');
+          showToast('Menampilkan semua transaksi');
+        } else {
+          activeFilter = 'Berhasil';
+          cardTrxSuccess.classList.add('active-filter');
+          cardTotalTrx.classList.remove('active-filter');
+          cardTrxPending.classList.remove('active-filter');
+          showToast('Memfilter transaksi: Berhasil');
+        }
+        renderTable();
+      });
+
+      cardTrxPending.addEventListener('click', () => {
+        if (activeFilter === 'Pending') {
+          activeFilter = 'ALL';
+          cardTrxPending.classList.remove('active-filter');
+          showToast('Menampilkan semua transaksi');
+        } else {
+          activeFilter = 'Pending';
+          cardTrxPending.classList.add('active-filter');
+          cardTotalTrx.classList.remove('active-filter');
+          cardTrxSuccess.classList.remove('active-filter');
+          showToast('Memfilter transaksi: Menunggu Verifikasi');
+        }
+        renderTable();
+      });
+
+      // Export Button Handler
+      btnExport.addEventListener('click', () => {
+        showToast('Menyiapkan ekspor laporan transaksi (.csv)...');
+        
+        setTimeout(() => {
+          // Generate CSV data
+          const headers = ['ID Transaksi', 'Pembeli', 'Perusahaan', 'Metode Pembayaran', 'Total', 'Status', 'Tanggal'];
+          const rows = transactions.map(t => [
+            t.id,
+            `"${t.name}"`,
+            `"${t.company}"`,
+            `"${t.method}"`,
+            `"${t.total}"`,
+            `"${t.status}"`,
+            `"${t.date}"`
+          ]);
+
+          const csvContent = 'data:text/csv;charset=utf-8,' + 
+            [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+
+          const encodedUri = encodeURI(csvContent);
+          const link = document.createElement('a');
+          link.setAttribute('href', encodedUri);
+          link.setAttribute('download', 'Laporan_Transaksi_Staplr_2026.csv');
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          showToast('Laporan_Transaksi_Staplr_2026.csv berhasil diunduh');
+        }, 600);
+      });
+
+      // Modal Action Handlers
+      btnModalInvoice.addEventListener('click', () => {
+        showToast(`Mencetak invoice untuk ${modalTrxId.textContent}...`);
+      });
+
+      btnModalReceipt.addEventListener('click', () => {
+        showToast(`Mengunduh bukti transfer ${modalTrxId.textContent}...`);
+      });
+
+      // Admin Profile Handler
+      adminProfileBtn.addEventListener('click', () => {
+        toggleAdminDropdown(event);
+      });
+
+      // Initial Render
+      renderTable();
+    });
+  </script>
+
+  <!-- Popup profil admin -->
+  <script>
+    function toggleAdminDropdown(e) {
+      if (e) e.stopPropagation();
+      document.getElementById('adminDropdown').classList.toggle('show');
+      document.getElementById('adminProfileBtn').classList.toggle('open');
+    }
+    function closeAdminDropdown() {
+      var d = document.getElementById('adminDropdown');
+      var b = document.getElementById('adminProfileBtn');
+      if (d) d.classList.remove('show');
+      if (b) b.classList.remove('open');
+    }
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.topbar-actions')) closeAdminDropdown();
+    });
+    document.getElementById('btnLogout').addEventListener('click', function() {
+      if (confirm('Keluar dari akun admin?')) {
+        closeAdminDropdown();
+        showToast('Anda telah keluar dari akun admin.', 'info');
+      }
+    });
+  </script>
+</body>
+</html>
