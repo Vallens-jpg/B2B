@@ -192,6 +192,119 @@
       flex-shrink: 0;
     }
 
+    /* ============ POPUP PROFIL ADMIN (dropdown di topbar) ============ */
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+
+    .admin-profile .chevron {
+      width: 15px;
+      height: 15px;
+      stroke: #64748b;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    .admin-profile.open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .admin-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 248px;
+      background: #ffffff;
+      border: 1px solid #e8ecf2;
+      border-radius: 16px;
+      box-shadow: 0 12px 32px -8px rgba(18, 47, 81, 0.18);
+      padding: 8px;
+      display: none;
+      z-index: 100;
+    }
+
+    .admin-dropdown.show {
+      display: block;
+    }
+
+    .dropdown-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+    }
+
+    .dropdown-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #155f50;
+      flex-shrink: 0;
+    }
+
+    .dropdown-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.01em;
+    }
+
+    .dropdown-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #16a34a;
+    }
+
+    .dropdown-status::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: #f1f5f9;
+      margin: 4px 4px 6px;
+    }
+
+    .dropdown-logout {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: #dc2626;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .dropdown-logout:hover {
+      background: #fef2f2;
+    }
+
+    .dropdown-logout svg {
+      width: 17px;
+      height: 17px;
+      stroke: #dc2626;
+      flex-shrink: 0;
+    }
+
     /* ============ CONTENT ============ */
     .content {
       padding: 24px 36px 36px;
@@ -668,9 +781,27 @@
     <!-- Topbar -->
     <header class="topbar">
       <h1>Dispute</h1>
-      <div class="admin-profile" id="adminProfileBtn" style="cursor: pointer;" title="Profil Admin">
-        <div class="admin-avatar"></div>
-        <span>Admin</span>
+      <div class="topbar-actions">
+        <div class="admin-profile" id="adminProfileBtn" style="cursor: pointer;" title="Profil Admin">
+          <div class="admin-avatar"></div>
+          <span>Admin</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+
+        <div class="admin-dropdown" id="adminDropdown">
+          <div class="dropdown-head">
+            <div class="dropdown-avatar"></div>
+            <div>
+              <div class="dropdown-name">Superadmin Staplr</div>
+              <div class="dropdown-status">Aktif</div>
+            </div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <button type="button" class="dropdown-logout" id="btnLogout">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Keluar
+          </button>
+        </div>
       </div>
     </header>
 
@@ -1016,8 +1147,32 @@
       const adminProfileBtn = document.getElementById('adminProfileBtn');
       if (adminProfileBtn) {
         adminProfileBtn.addEventListener('click', () => {
-          showToast('Masuk sebagai Administrator Staplr (Superadmin)', 'info');
+          toggleAdminDropdown(event);
         });
+      }
+    });
+  </script>
+
+  <!-- Popup profil admin -->
+  <script>
+    function toggleAdminDropdown(e) {
+      if (e) e.stopPropagation();
+      document.getElementById('adminDropdown').classList.toggle('show');
+      document.getElementById('adminProfileBtn').classList.toggle('open');
+    }
+    function closeAdminDropdown() {
+      var d = document.getElementById('adminDropdown');
+      var b = document.getElementById('adminProfileBtn');
+      if (d) d.classList.remove('show');
+      if (b) b.classList.remove('open');
+    }
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.topbar-actions')) closeAdminDropdown();
+    });
+    document.getElementById('btnLogout').addEventListener('click', function() {
+      if (confirm('Keluar dari akun admin?')) {
+        closeAdminDropdown();
+        showToast('Anda telah keluar dari akun admin.', 'info');
       }
     });
   </script>
