@@ -96,7 +96,8 @@ File `.env` berisi **kata sandi dan nama database untuk laptopmu sendiri**. File
      ```
      cp .env.example .env
      ```
-2. Isinya tidak perlu diubah. Supaya tahu, ini arti tiap barisnya:
+2. **Jangan buat file `.env` manual lewat Notepad.** Windows sering menyimpannya sebagai `.env.txt` (akhiran `.txt` disembunyikan), dan Docker tidak akan mengenalinya — hasilnya error `.env not found` walau filenya terlihat ada. Selalu pakai perintah salin di atas.
+3. Isinya tidak perlu diubah. Supaya tahu, ini arti tiap barisnya:
 
    | Baris di `.env` | Artinya |
    |---|---|
@@ -164,7 +165,7 @@ Semua perintah di bawah dijalankan dari folder `B2B` (tempat file `docker-compos
 | Restart satu layanan saja | `docker compose restart web` |
 | Mengambil kode terbaru dari GitHub (lakukan SEBELUM mulai kerja tiap hari) | `git pull origin main` |
 
-**Jangan jalankan `docker compose down -v`.** Perintah itu menghapus **semua data database** di laptopmu. Pakai `docker compose down` biasa saja.
+**Jangan jalankan `docker compose down -v`.** Perintah itu menghapus **semua data database** di laptopmu. Pakai `docker compose down` biasa saja. Satu-satunya pengecualian: untuk memperbaiki database yang rusak seperti di "Kalau error" nomor 10.
 
 ## 9. Kalau tidak pakai Docker (cara cadangan)
 
@@ -186,9 +187,10 @@ Kalau Docker bermasalah dan belum sempat diperbaiki, website bisa dijalankan sem
 | 4 | `api/health.php` tidak menampilkan "Koneksi DB berhasil" | Database belum siap, atau container `db` tidak jalan | Tunggu 30 detik lalu refresh. Cek `docker compose ps` — baris `db` harus Up. Kalau tidak Up, cek `docker compose logs db` dan kirim hasilnya ke grup. |
 | 5 | `localhost:8080` tidak bisa dibuka (`refused to connect`) | Container `web` tidak jalan | Jalankan `docker compose ps`. Kalau `web` tidak ada atau statusnya Exited, cek `docker compose logs web`, lalu jalankan `docker compose up -d` lagi. |
 | 6 | `Virtualization is not enabled` saat membuka Docker | Virtualisasi mati di BIOS | Aktifkan di BIOS (SVM Mode untuk AMD, Intel VT-x untuk Intel). Kalau ragu, minta bantuan PM. |
-| 7 | File `.env` tidak ditemukan saat `up` | Langkah 5 terlewat atau salah folder | Pastikan kamu di folder `B2B`, ulangi langkah 5. |
+| 7 | File `.env` tidak ditemukan saat `up` | Langkah 5 terlewat, salah folder, atau file-nya sebenarnya bernama `.env.txt` | Pastikan kamu di folder `B2B`, ulangi langkah 5. Kalau file terlihat ada tapi tetap error, cek dengan `dir` — kalau yang muncul `.env.txt`, ganti namanya: `ren .env.txt .env`. |
 | 8 | phpMyAdmin tidak bisa login | Username/password salah | Pakai user `app_user` dan password `app_pass` (dari `.env`), **bukan** password root. |
 | 9 | Laptop jadi sangat lambat saat Docker jalan | RAM kurang atau terlalu banyak aplikasi terbuka | Tutup aplikasi berat. RAM minimal 8 GB (lihat langkah 1). |
+| 10 | `Access denied for user 'app_user'` di `api/health.php` | Database dibuat pertama kali saat `.env` belum ada atau isinya salah, jadi user dan database tidak terbentuk dengan benar. Data lama tersimpan di volume Docker dan tidak berubah sendiri walau `.env` sudah diperbaiki | Hapus data database yang rusak (masih kosong, jadi aman): `docker compose down -v`. Lalu samakan `.env` dengan contoh (`Copy-Item .env.example .env -Force` di PowerShell) dan nyalakan lagi: `docker compose up -d`. Tunggu 30 detik, refresh `health.php` — harus muncul "Koneksi DB berhasil". |
 
 Kalau errormu tidak ada di tabel ini, kirim ke grup **tiga hal ini**:
 1. Screenshot error-nya.
