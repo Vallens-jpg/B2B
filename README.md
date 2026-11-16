@@ -197,6 +197,71 @@ Kalau errormu tidak ada di tabel ini, kirim ke grup **tiga hal ini**:
 2. Hasil perintah `docker compose logs web` dan `docker compose logs db`.
 3. Langkah terakhir yang kamu lakukan sebelum error muncul.
 
+## Daftar halaman dan cara membukanya
+
+Semua halaman bisa dibuka langsung dengan mengetik alamatnya di browser (belum ada login, jadi tidak ada halaman yang terkunci). Alamat dasarnya `http://localhost:8080`.
+
+**Yang perlu dipahami dulu:** tombol-tombol di dalam halaman ini kebanyakan masih **preview** — hanya pindah halaman atau menampilkan data contoh, belum menyimpan apa pun ke database. Fungsi aslinya dibuat di Sprint 1 dan seterusnya. Jadi kalau kamu klik "Simpan" lalu datanya tidak tersimpan, itu normal, bukan error.
+
+### Halaman utama dan akun
+
+| Halaman | Alamat | Gunanya |
+|---|---|---|
+| Halaman utama | `/` | Halaman pertama yang muncul; berisi penjelasan Staplr dan tombol masuk/daftar |
+| Masuk (login) | `/pages/login.php` | Form login. **Masih pura-pura:** email apa saja diterima, belum dicek ke database |
+| Daftar akun | `/pages/daftar.php` | Form pendaftaran akun baru (buyer/perusahaan) |
+| Lupa kata sandi | `/pages/lupa_sandi.php` | Form minta reset kata sandi |
+| Verifikasi OTP email | `/pages/verifikasi_otp.php` | Masukkan kode OTP dari email saat daftar |
+| Profil pengguna | `/pages/profil.php` | Melihat dan mengubah profil |
+| Semua notifikasi | `/pages/notifikasi.php` | Daftar pemberitahuan (pesanan baru, status berubah, dll) |
+
+### Halaman buyer (pembeli)
+
+| Halaman | Alamat | Gunanya |
+|---|---|---|
+| Dashboard buyer | `/pages/dashboard_buyer.php` | Ringkasan untuk buyer: pesanan, status, notifikasi |
+| Detail produk | `/pages/produk_detail.php` | Detail satu produk (harga per kg, stok, penjual) |
+| Detail penjual | `/pages/detail_penjual.php` | Profil perusahaan penjual |
+| Ajukan pesanan (checkout) | `/pages/checkout.php` | Form ajukan pesanan: pilih jumlah (kg), lalu buat pesanan |
+| Status pesanan | `/pages/order_list.php` | Daftar semua pesanan buyer beserta statusnya |
+| Detail pesanan | `/pages/order_detail.php` | Detail satu pesanan + riwayat status + tombol yang boleh ditekan |
+| Konfirmasi pesanan | `/pages/konfirmasi_pesanan.php` | Halaman konfirmasi setelah pesanan dibuat |
+| Pembayaran transfer bank | `/pages/pembayaran.php` | Upload bukti transfer bank |
+| Invoice pembayaran | `/pages/invoice.php` | Tampilan invoice satu pesanan |
+| Status pesanan (varian) | `/pages/status_pesanan.php` | Sama seperti order_list (judul sama), sisa dari branch lama |
+| Ajukan permintaan | `/pages/ajukan_permintaan.php` | Buyer mengajukan permintaan barang ke perusahaan |
+| Permintaan disetujui | `/pages/permintaan_disetujui.php` | Daftar permintaan yang disetujui |
+| Pesanan disetujui | `/pages/pesanan_disetujui.php` | Daftar pesanan yang disetujui |
+
+### Halaman perusahaan (penjual)
+
+| Halaman | Alamat | Gunanya |
+|---|---|---|
+| Dashboard perusahaan | `/pages/dashboard_perusahaan.php` | Ringkasan untuk perusahaan: produk, pesanan masuk, stok |
+
+### Halaman dispute dan ulasan
+
+| Halaman | Alamat | Gunanya |
+|---|---|---|
+| Daftar dispute | `/pages/dispute_list.php` | Daftar tiket dispute buyer |
+| Diskusi dispute | `/pages/dispute_detail.php` | Diskusi 3 pihak (buyer, perusahaan, admin) dalam satu tiket |
+| Pengajuan dispute | `/pages/pengajuan_dispute.php` | Form buyer membuka dispute + upload bukti foto |
+| Ulasan produk | `/pages/ulasan.php` | Form buyer memberi rating/ulasan setelah pesanan selesai |
+
+### Halaman admin
+
+Semua halaman admin ada di `/pages/admin/`. **Catatan:** beberapa halaman admin ada kembarannya (nama file beda, isi mirip) — sisa dari penggabungan branch admin dulu. Jangan hapus dulu sebelum dicek isinya satu per satu.
+
+| Halaman | Alamat | Gunanya |
+|---|---|---|
+| Dashboard admin | `/pages/admin/dashboard.php` | Ringkasan admin |
+| Manajemen user | `/pages/admin/kelola-user.php` (kembar: `admin-kelola-user.php`, `manajemen-user.php`) | Daftar dan kelola pengguna |
+| Verifikasi perusahaan | `/pages/admin/verifikasi.php` (kembar: `detail-verifikasi.php`) | Verifikasi perusahaan baru |
+| Verifikasi dispute | `/pages/admin/verifikasi-dispute.php` (kembar: `admin-verifikasi-dispute.php`) | Admin memeriksa dan memverifikasi dispute |
+| Pencairan dana | `/pages/admin/keuangan.php` (kembar: `admin-keuangan.php`) | Melihat dan memproses pencairan dana escrow |
+| Riwayat transaksi | `/pages/admin/riwayat.php` (kembar: `admin-riwayat.php`, `detail-riwayat.php`, `admin-detail-riwayat.php`) | Riwayat semua transaksi |
+| Daftar dispute | `/pages/admin/dispute.php` (kembar: `daftar-dispute.php`, `detail-dispute.php`, `admin-detail-dispute.php`) | Daftar dan detail tiket dispute |
+
 ## Aturan penting
 
 - Host database di kode PHP adalah `db`, bukan `localhost`. Di dalam Docker, `db` itu nama container database. Kalau kode PHP memakai `localhost`, artinya container web itu sendiri, bukan database — koneksi akan gagal.
