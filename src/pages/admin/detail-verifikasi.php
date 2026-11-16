@@ -1198,9 +1198,9 @@
           showToast(`Status penundaan untuk ${displayCompanyName} disimpan. Mengalihkan...`, 'success');
         }
 
-        // Return to verifikasi.html after brief toast
+        // Return to verifikasi.php after brief toast
         setTimeout(() => {
-          window.location.href = 'verifikasi.html';
+          window.location.href = 'verifikasi.php';
         }, 900);
       }
     });
