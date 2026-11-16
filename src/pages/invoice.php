@@ -572,7 +572,7 @@ $qtyNum = trim(str_replace('kg', '', strtolower($order['qty'] ?? '2')));
 
   <!-- Top Navigation Header -->
   <header class="inv-navbar">
-    <a id="backLink" href="pembayaran.php" class="back-btn-circle" aria-label="Kembali">
+    <a id="backLink" href="pembeli/pembayaran.php" class="back-btn-circle" aria-label="Kembali">
       <svg class="back-arrow-icon" viewBox="0 0 24 24" fill="none">
         <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -829,7 +829,7 @@ $qtyNum = trim(str_replace('kg', '', strtolower($order['qty'] ?? '2')));
       '&qty='      + encodeURIComponent(qty) +
       '&price='    + encodeURIComponent(price) +
       '&subtotal=' + encodeURIComponent(subtotal);
-    const fallbackInv = 'pembayaran.php' + backQ;
+    const fallbackInv = 'pembeli/pembayaran.php' + backQ;
     const invBackBtn = document.getElementById('backLink');
     if (invBackBtn) {
       invBackBtn.href = fallbackInv;
