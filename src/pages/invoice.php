@@ -847,7 +847,7 @@ $qtyNum = trim(str_replace('kg', '', strtolower($order['qty'] ?? '2')));
 
     // Cek detail link
     document.getElementById('cekDetailLink').href =
-      'detail-pesanan.php' +
+      'order_detail.php' +
       '?seller='  + encodeURIComponent(sellerParam) +
       '&product=' + encodeURIComponent(product) +
       '&price='   + encodeURIComponent(price) +

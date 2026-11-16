@@ -1074,7 +1074,7 @@
       document.getElementById('caseUsulan').textContent = dispute.solution;
 
       // Update Back to detail & Stepper link
-      const detailUrl = `detail-dispute.html?id=${encodeURIComponent(dispute.id)}`;
+      const detailUrl = `detail-dispute.php?id=${encodeURIComponent(dispute.id)}`;
       document.getElementById('stepperDetailLink').href = detailUrl;
       document.getElementById('btnBackToDetail').href = detailUrl;
 
@@ -1139,7 +1139,7 @@
 
         showToast(msg, selectedDecision === 'rejected' ? 'danger' : 'success');
         setTimeout(() => {
-          window.location.href = 'dispute.html';
+          window.location.href = 'dispute.php';
         }, 900);
       });
 

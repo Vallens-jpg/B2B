@@ -837,9 +837,9 @@
 
     // Back link — dinamis sesuai asal halaman
     const fromPage = urlParams.get('from');
-    let fallbackDpes = 'pesanan.php';
+    let fallbackDpes = 'order_list.php';
     if (fromPage === 'pesanan') {
-      document.getElementById('backLink').href = 'pesanan.php';
+      document.getElementById('backLink').href = 'order_list.php';
     } else {
       const backQ =
         '?seller='   + encodeURIComponent(sellerParam) +
@@ -847,7 +847,7 @@
         '&qty='      + encodeURIComponent(qty) +
         '&price='    + encodeURIComponent(price) +
         '&subtotal=' + encodeURIComponent(subtotal);
-      fallbackDpes = 'invoice-pembayaran.php' + backQ;
+      fallbackDpes = 'invoice.php' + backQ;
       document.getElementById('backLink').href = fallbackDpes;
     }
 
@@ -867,7 +867,7 @@
 
     // Actions
     function ajukanDispute() {
-      window.location.href = 'pengajuan-dispute.php' +
+      window.location.href = 'pengajuan_dispute.php' +
         '?seller='   + encodeURIComponent(sellerParam) +
         '&product='  + encodeURIComponent(product) +
         '&qty='      + encodeURIComponent(qty) +

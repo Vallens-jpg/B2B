@@ -242,7 +242,7 @@
     document.getElementById('productImg').alt = displayTitle;
     document.getElementById('sellerAddress').innerText = seller.address;
     document.getElementById('sellerInitial').innerText = seller.initial;
-    const fallbackBackUrl = `detail-penjual.php?id=${sellerId}`;
+    const fallbackBackUrl = `detail_penjual.php?id=${sellerId}`;
     const backBtn = document.getElementById('backLink');
     if (backBtn) {
       backBtn.href = fallbackBackUrl;
@@ -259,7 +259,7 @@
     }
 
     document.getElementById('rfqLink').href =
-      `ajukan-pesanan.php?seller=${sellerId}` +
+      `checkout.php?seller=${sellerId}` +
       `&product=${encodeURIComponent(productName)}` +
       `&price=${encodeURIComponent(productPrice)}`;
 

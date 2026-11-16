@@ -602,7 +602,7 @@
     // Preserve back destination
     const cancelBtn = document.getElementById('cancelBtn');
     const backLink = document.getElementById('backLink');
-    const fallbackUl = 'pesanan.php' + (window.location.search || '');
+    const fallbackUl = 'order_list.php' + (window.location.search || '');
     cancelBtn.href = fallbackUl;
     backLink.href = fallbackUl;
 
@@ -680,7 +680,7 @@
         return;
       }
       alert('Terima kasih! Ulasan Anda berhasil dikirim.');
-      window.location.href = 'pesanan.php';
+      window.location.href = 'order_list.php';
     }
   </script>
 </body>

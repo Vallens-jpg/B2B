@@ -55,7 +55,7 @@ if (!isset($_SESSION['active_order'])) {
 if (isset($_GET['action']) && $_GET['action'] === 'approve') {
     $_SESSION['active_order']['status'] = 'approved';
     $_SESSION['pesanan_disetujui'] = $_SESSION['active_order'];
-    header('Location: status-pesanan.php?state=approved');
+    header('Location: status_pesanan.php?state=approved');
     exit;
 }
 
@@ -230,7 +230,7 @@ $isApproved = ($order['status'] === 'approved' || $state === 'approved');
     }
 
     // Tombol kembali ke halaman Ajukan Pesanan
-    const backToAjukan = 'ajukan-pesanan.php' +
+    const backToAjukan = 'checkout.php' +
       '?seller=' + encodeURIComponent(sellerId) +
       '&product=' + encodeURIComponent(productName) +
       '&price=' + encodeURIComponent(productPrice) +

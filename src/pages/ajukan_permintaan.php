@@ -376,7 +376,7 @@
     };
 
     // Tombol kembali & batal selalu mengarah ke halaman Detail Produk
-    const backToProduct = `detail-produk.html?seller=${encodeURIComponent(sellerId)}` +
+    const backToProduct = `produk_detail.php?seller=${encodeURIComponent(sellerId)}` +
       `&product=${encodeURIComponent(productName || 'Telur ayam')}` +
       `&price=${encodeURIComponent(productPrice || 'Rp 250.000')}`;
 
@@ -536,7 +536,7 @@
       const qty = firstRow.querySelector('.form-input-qty').value || '2 kg';
       const subtotalValue = firstRow.querySelector('.subtotal-text').innerText;
 
-      window.location.href = 'status-pesanan.html' +
+      window.location.href = 'status_pesanan.php' +
         '?seller=' + encodeURIComponent(sellerId) +
         '&product=' + encodeURIComponent(product) +
         '&price=' + encodeURIComponent(document.getElementById('priceInput').value) +

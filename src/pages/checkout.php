@@ -33,8 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'created_at' => date('d M Y, H:i')
     ];
 
-    // PRG Pattern: Redirect ke status-pesanan.php
-    header('Location: status-pesanan.php');
+    // PRG Pattern: Redirect ke status_pesanan.php
+    header('Location: status_pesanan.php');
     exit;
 }
 
@@ -418,7 +418,7 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
     }
 
     // Tombol kembali -> Detail Produk (dengan data yang sama)
-    const backToProduct = 'detail-produk.php' +
+    const backToProduct = 'produk_detail.php' +
       '?seller=' + encodeURIComponent(sellerId) +
       (productName ? '&product=' + encodeURIComponent(productName) : '') +
       (productPrice ? '&price=' + encodeURIComponent(productPrice) : '');
@@ -571,7 +571,7 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
       const subtotalValue = firstRow.querySelector('.subtotal-text').innerText;
       const notes = document.querySelector('.textarea-notes').value;
 
-      window.location.href = 'status-pesanan.php' +
+      window.location.href = 'status_pesanan.php' +
         '?seller=' + encodeURIComponent(sellerId) +
         '&product=' + encodeURIComponent(product) +
         '&qty=' + encodeURIComponent(qty) +

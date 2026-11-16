@@ -818,7 +818,7 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
             const ddItem = document.getElementById("ddNotifDisetujui");
             if (ddItem) {
               ddItem.style.display = "flex";
-              if (data.query) ddItem.href = "status-pesanan.php?state=approved" + data.query;
+              if (data.query) ddItem.href = "status_pesanan.php?state=approved" + data.query;
             }
             const ddBody = document.getElementById("ddNotifDisetujuiBody");
             if (ddBody && data.seller) ddBody.textContent = "Pesanan ke " + data.seller + " disetujui. Lanjutkan pembayaran.";
@@ -829,7 +829,7 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
               bellBadge.innerText = cur + 1;
               bellBadge.style.display = '';
             }
-            if (link && data.query) link.href = "status-pesanan.php?state=approved" + data.query;
+            if (link && data.query) link.href = "status_pesanan.php?state=approved" + data.query;
             // Update deskripsi
             const desc = document.getElementById("notifDisetujuiDesc");
             if (desc && data.seller) desc.textContent = "Pesanan Anda ke " + data.seller + " telah disetujui. Silakan lanjutkan pembayaran.";
