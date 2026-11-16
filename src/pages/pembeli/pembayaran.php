@@ -14,7 +14,7 @@ $order = $_SESSION['active_order'] ?? [
 $uploadError = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['bukti_pembayaran']) && $_FILES['bukti_pembayaran']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = __DIR__ . '/../uploads/';
+        $uploadDir = __DIR__ . '/../../uploads/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['active_order']['bukti_bayar'] = $fileName;
             $_SESSION['active_order']['status_bayar'] = 'LUNAS';
             $_SESSION['active_order']['tgl_bayar'] = date('d M Y, H:i') . ' WIB';
-            header('Location: invoice.php');
+            header('Location: ../invoice.php');
             exit;
         } else {
             $uploadError = 'Gagal menyimpan file bukti pembayaran.';
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Staplr - Pembayaran Transfer Bank</title>
-  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
   <style>
     /* ==========================================================================
        Pembayaran Transfer Bank Specific Styles
@@ -826,7 +826,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // ---- Invoice Pembayaran ----
     function bukaInvoice() {
-      window.location.href = 'invoice.php' +
+      window.location.href = '../invoice.php' +
         '?seller='   + encodeURIComponent(sellerParam) +
         '&product='  + encodeURIComponent(productParam) +
         '&price='    + encodeURIComponent(priceParam) +

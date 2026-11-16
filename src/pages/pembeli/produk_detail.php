@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Staplr - Detail Produk</title>
-  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
 </head>
 <body class="dp-body">
 
@@ -35,7 +35,7 @@
   <main class="dp-container">
     <!-- Left: Product Image -->
     <div class="dp-image-box">
-      <img id="productImg" src="../assets/img/prod_grade_a.png" alt="Produk" class="dp-cover-img">
+      <img id="productImg" src="../../assets/img/prod_grade_a.png" alt="Produk" class="dp-cover-img">
     </div>
 
     <!-- Right: Product Info -->

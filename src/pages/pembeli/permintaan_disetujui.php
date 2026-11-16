@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Staplr - Permintaan Disetujui</title>
-  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
   <style>
     /* ==========================================================================
        Permintaan Disetujui Page Styles
@@ -314,7 +314,7 @@
   <header class="dashboard-navbar">
     <div class="navbar-inner">
       <a href="dashboard_buyer.php" class="brand-header" style="text-decoration: none;">
-        <img src="../assets/img/logo/logo staplr.png" alt="Staplr Logo" class="brand-logo-img">
+        <img src="../../assets/img/logo/logo staplr.png" alt="Staplr Logo" class="brand-logo-img">
         <div class="brand-title-group">
           <span class="brand-dot"></span>
           <span class="brand-name">Staplr</span>
@@ -338,7 +338,7 @@
           </svg>
           Pesanan
         </a>
-        <a href="dispute_list.php" class="nav-pill-item">
+        <a href="../dispute_list.php" class="nav-pill-item">
           <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="9" stroke="currentColor"/>
             <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
@@ -361,7 +361,7 @@
           </svg>
           <span class="notification-badge-red" id="notifBadgeRed">3</span>
         </button>
-        <a href="profil.php" class="user-profile-capsule">
+        <a href="../profil.php" class="user-profile-capsule">
           <div class="user-avatar-circle">AD</div>
           <span class="user-name-text">Buyer</span>
         </a>
@@ -393,7 +393,7 @@
             </a>
 
             <!-- Item 2: Pesan Baru di Dispute #DSP-9021 -->
-            <a href="dispute_detail.php" class="notif-item unread">
+            <a href="../dispute_detail.php" class="notif-item unread">
               <div class="notif-icon-circle green">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -411,7 +411,7 @@
             </a>
 
             <!-- Item 3: Dispute Disetujui -->
-            <a href="dispute_list.php" class="notif-item">
+            <a href="../dispute_list.php" class="notif-item">
               <div class="notif-icon-circle yellow">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                   <circle cx="12" cy="12" r="10" stroke="#111827"/>
@@ -429,7 +429,7 @@
           </div>
 
           <div class="notif-footer">
-            <a href="notifikasi.php" class="notif-footer-link">Lihat Semua Notifikasi</a>
+            <a href="../notifikasi.php" class="notif-footer-link">Lihat Semua Notifikasi</a>
           </div>
         </div>
       </div>

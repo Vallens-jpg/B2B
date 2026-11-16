@@ -4625,8 +4625,8 @@
        ========================================================================== -->
   <aside class="sidebar" id="sidebar">
     <!-- Brand Logo -->
-    <a href="../index.html" class="sidebar-brand" title="Kembali ke Beranda Staplr">
-      <img src="../assets/img/logo-staplr-transparent.png" alt="Staplr Icon" class="sidebar-brand-icon">
+    <a href="../../index.html" class="sidebar-brand" title="Kembali ke Beranda Staplr">
+      <img src="../../assets/img/logo-staplr-transparent.png" alt="Staplr Icon" class="sidebar-brand-icon">
       <div class="sidebar-brand-name">
         <span class="sidebar-brand-dot">•</span> Staplr
       </div>
@@ -4714,7 +4714,7 @@
 
     <!-- Footer Sidebar: Link Landing Page -->
     <div class="sidebar-footer">
-      <a href="../index.html" class="sidebar-back-link">
+      <a href="../../index.html" class="sidebar-back-link">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
@@ -4761,7 +4761,7 @@
             </svg>
             Profil Akun
           </a>
-          <a href="../index.html" class="dropdown-item logout">
+          <a href="../../index.html" class="dropdown-item logout">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
               <polyline points="16 17 21 12 16 7"></polyline>
@@ -5798,7 +5798,7 @@
         <div class="invoice-sheet" id="invoiceSheet">
           <div class="inv-head">
             <div class="inv-brand">
-              <img src="../assets/img/logo-staplr-transparent.png" alt="Staplr">
+              <img src="../../assets/img/logo-staplr-transparent.png" alt="Staplr">
               <div>
                 <div class="inv-brand-name">CV Telur Makmur Bersama</div>
                 <div class="inv-brand-tag">Mitra Peternak Terverifikasi</div>

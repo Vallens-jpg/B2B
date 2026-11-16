@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'role' => $role,
         'name' => 'Buyer'
     ];
-    $dashboard = ($role === 'perusahaan') ? 'dashboard_perusahaan.php' : 'dashboard_buyer.php';
+    $dashboard = ($role === 'perusahaan') ? 'perusahaan/dashboard_perusahaan.php' : 'pembeli/dashboard_buyer.php';
     header('Location: ' . $dashboard);
     exit;
 }
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <!-- Login Form -->
-        <form action="dashboard_buyer.php" method="GET" id="loginForm">
+        <form action="pembeli/dashboard_buyer.php" method="GET" id="loginForm">
           <div class="form-group">
             <label for="email" class="form-label">Email</label>
             <input type="email" id="email" class="form-input" placeholder="nama@email.com" name="email">
@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     function handleLogin(e) {
       if (e) e.preventDefault();
       const role = document.getElementById('selectedRole') ? document.getElementById('selectedRole').value : 'pembeli';
-      window.location.href = (role === 'perusahaan') ? 'dashboard_perusahaan.php' : 'dashboard_buyer.php';
+      window.location.href = (role === 'perusahaan') ? 'perusahaan/dashboard_perusahaan.php' : 'pembeli/dashboard_buyer.php';
     }
 
     if (loginForm) {
