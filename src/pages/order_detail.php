@@ -876,7 +876,7 @@
     }
 
     function konfirmasiDiterima() {
-      window.location.href = 'dashboard.php';
+      window.location.href = 'dashboard_buyer.php';
     }
   
     // ---- Lightbox Bukti Pengiriman ----

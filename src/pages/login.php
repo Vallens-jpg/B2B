@@ -10,7 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'role' => $role,
         'name' => 'Buyer'
     ];
-    header('Location: dashboard.php');
+    $dashboard = ($role === 'perusahaan') ? 'dashboard_perusahaan.php' : 'dashboard_buyer.php';
+    header('Location: ' . $dashboard);
     exit;
 }
 ?>
@@ -147,7 +148,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     function handleLogin(e) {
       if (e) e.preventDefault();
-      window.location.href = 'dashboard.php';
+      const role = document.getElementById('selectedRole') ? document.getElementById('selectedRole').value : 'pembeli';
+      window.location.href = (role === 'perusahaan') ? 'dashboard_perusahaan.php' : 'dashboard_buyer.php';
     }
 
     if (loginForm) {

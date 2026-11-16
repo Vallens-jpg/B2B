@@ -402,7 +402,7 @@
         } else if (document.referrer && document.referrer !== window.location.href) {
           window.location.href = document.referrer;
         } else {
-          window.location.href = 'dashboard.php';
+          window.location.href = 'dashboard_buyer.php';
         }
       });
     }  </script>
