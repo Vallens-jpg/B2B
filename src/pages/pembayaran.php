@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['active_order']['bukti_bayar'] = $fileName;
             $_SESSION['active_order']['status_bayar'] = 'LUNAS';
             $_SESSION['active_order']['tgl_bayar'] = date('d M Y, H:i') . ' WIB';
-            header('Location: invoice-pembayaran.php');
+            header('Location: invoice.php');
             exit;
         } else {
             $uploadError = 'Gagal menyimpan file bukti pembayaran.';
@@ -761,7 +761,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       '&qty='      + encodeURIComponent(qtyParam) +
       '&price='    + encodeURIComponent(priceParam) +
       '&subtotal=' + encodeURIComponent(subtotalParam);
-    const fallbackPem = 'status-pesanan.php?state=approved' + backQuery.replace('?', '&');
+    const fallbackPem = 'status_pesanan.php?state=approved' + backQuery.replace('?', '&');
     const pemBackBtn = document.getElementById('backLink');
     if (pemBackBtn) {
       pemBackBtn.href = fallbackPem;
@@ -826,7 +826,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // ---- Invoice Pembayaran ----
     function bukaInvoice() {
-      window.location.href = 'invoice-pembayaran.php' +
+      window.location.href = 'invoice.php' +
         '?seller='   + encodeURIComponent(sellerParam) +
         '&product='  + encodeURIComponent(productParam) +
         '&price='    + encodeURIComponent(priceParam) +

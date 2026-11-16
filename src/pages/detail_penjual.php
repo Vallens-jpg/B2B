@@ -324,7 +324,7 @@
       const card = btn.closest('.product-card');
       const productName = card.querySelector('.product-item-title').innerText.trim();
       const productPrice = card.querySelector('.product-price-display').innerText.replace(/\s*\/\s*kg/i, '').trim();
-      window.location.href = 'detail-produk.php?seller=' + sellerId +
+      window.location.href = 'produk_detail.php?seller=' + sellerId +
         '&product=' + encodeURIComponent(productName) +
         '&price=' + encodeURIComponent(productPrice);
     }
