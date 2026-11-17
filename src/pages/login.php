@@ -118,8 +118,9 @@ if (!empty($_SESSION['user'])) {
           <strong>Akun demo</strong><br>
           Pembeli: <code>guest@staplr.com</code> / <code>guest123</code><br>
           Perusahaan: <code>perusahaan@staplr.com</code> / <code>guest123</code><br>
-          <button type="button" class="btn-submit-primary" id="guestLoginBtn" style="margin-top:0.6rem; width:100%;">Masuk sebagai Guest Demo</button>
-          <p style="font-size:0.8rem; color:#64748B; margin:0.5rem 0 0;">Tombol ini masuk sebagai akun demo sesuai tab role yang aktif di atas (Pembeli atau Perusahaan). Hanya untuk demo di laptop sendiri. Akun pembeli dari <code>database/migrations/02_seed_demo_users.sql</code>, akun perusahaan dari <code>05_seed_demo_perusahaan.sql</code>.</p>
+          <button type="button" class="btn-submit-primary" id="guestLoginPembeliBtn" style="margin-top:0.6rem; width:100%;">Masuk sebagai Guest Demo Pembeli</button>
+          <button type="button" class="btn-submit-primary" id="guestLoginPerusahaanBtn" style="margin-top:0.6rem; width:100%;">Masuk sebagai Guest Demo Perusahaan</button>
+          <p style="font-size:0.8rem; color:#64748B; margin:0.5rem 0 0;">Pilih tombol sesuai peran yang mau dicoba, tidak perlu pindah tab role di atas. Hanya untuk demo di laptop sendiri. Akun pembeli dari <code>database/migrations/02_seed_demo_users.sql</code>, akun perusahaan dari <code>05_seed_demo_perusahaan.sql</code>.</p>
         </div>
 
         <div class="auth-footer">
@@ -194,21 +195,24 @@ if (!empty($_SESSION['user'])) {
       loginForm.addEventListener('submit', handleLogin);
     }
 
-    // Tombol Guest Demo: akun demo sesuai tab role yang aktif (pembeli/perusahaan).
-    const guestBtn = document.getElementById('guestLoginBtn');
-    if (guestBtn) {
-      guestBtn.addEventListener('click', async () => {
-        const roleInput = document.getElementById('selectedRole');
-        const role = roleInput ? roleInput.value : 'pembeli';
-        const email = role === 'perusahaan' ? 'perusahaan@staplr.com' : 'guest@staplr.com';
-        document.getElementById('email').value = email;
-        document.getElementById('password').value = 'guest123';
-        try {
-          await doLogin(email, 'guest123');
-        } catch (err) {
-          showLoginError('Tidak bisa terhubung ke server. Pastikan Docker jalan dan migrasi 01, 02, dan 05 sudah dijalankan.');
-        }
-      });
+    // Tombol Guest Demo: dua tombol terpisah, masing-masing langsung masuk
+    // dengan akun demonya sendiri (tidak tergantung tab role di atas).
+    async function guestLogin(email) {
+      document.getElementById('email').value = email;
+      document.getElementById('password').value = 'guest123';
+      try {
+        await doLogin(email, 'guest123');
+      } catch (err) {
+        showLoginError('Tidak bisa terhubung ke server. Pastikan Docker jalan dan migrasi 01, 02, dan 05 sudah dijalankan.');
+      }
+    }
+    const guestPembeliBtn = document.getElementById('guestLoginPembeliBtn');
+    if (guestPembeliBtn) {
+      guestPembeliBtn.addEventListener('click', function () { guestLogin('guest@staplr.com'); });
+    }
+    const guestPerusahaanBtn = document.getElementById('guestLoginPerusahaanBtn');
+    if (guestPerusahaanBtn) {
+      guestPerusahaanBtn.addEventListener('click', function () { guestLogin('perusahaan@staplr.com'); });
     }
   </script>
 </body>
