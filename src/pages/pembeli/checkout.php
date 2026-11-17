@@ -398,6 +398,7 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
   <script>
     // Data dibawa dari halaman Status Pesanan (setelah penjual menyetujui)
     const urlParams = new URLSearchParams(window.location.search);
+    const produkIdParam = urlParams.get('id');
     const sellerId = urlParams.get('seller') || '1';
     const productName = urlParams.get('product');
     const productPrice = urlParams.get('price');
@@ -563,21 +564,63 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
       });
     }
 
-    // Ajukan Pesanan -> masuk ke pending menunggu persetujuan penjual
-    document.getElementById('ajukanPesananBtn').addEventListener('click', function () {
-      const firstRow = document.querySelector('.item-row-grid');
-      const product = firstRow.querySelector('.form-select').value;
-      const qty = firstRow.querySelector('.form-input-qty').value || '2 kg';
-      const subtotalValue = firstRow.querySelector('.subtotal-text').innerText;
-      const notes = document.querySelector('.textarea-notes').value;
+    // Isi daftar produk dari database (API katalog), supaya harga & id produk asli.
+    var produkByName = {};
+    fetch('../../api/katalog.php')
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res.ok || !res.data || !res.data.produk) return;
+        var select = document.getElementById('productSelect');
+        select.innerHTML = '';
+        res.data.produk.forEach(function (pr) {
+          produkByName[pr.nama] = pr;
+          var opt = document.createElement('option');
+          opt.value = pr.nama;
+          opt.text = pr.nama + ' — Rp ' + Number(pr.harga_per_kg).toLocaleString('id-ID') + '/kg';
+          opt.dataset.id = pr.id;
+          opt.dataset.harga = pr.harga_per_kg;
+          select.appendChild(opt);
+        });
+        var target = null;
+        if (produkIdParam) target = res.data.produk.find(function (pr) { return String(pr.id) === String(produkIdParam); });
+        if (!target && productName) target = produkByName[productName];
+        if (target) {
+          select.value = target.nama;
+          document.getElementById('priceInput').value = 'Rp ' + Number(target.harga_per_kg).toLocaleString('id-ID');
+          recalcSubtotal();
+        }
+      })
+      .catch(function () { /* biarkan opsi statis kalau katalog gagal dimuat */ });
 
-      window.location.href = 'status_pesanan.php' +
-        '?seller=' + encodeURIComponent(sellerId) +
-        '&product=' + encodeURIComponent(product) +
-        '&qty=' + encodeURIComponent(qty) +
-        '&price=' + encodeURIComponent(document.getElementById('priceInput').value) +
-        '&subtotal=' + encodeURIComponent(subtotalValue) +
-        '&notes=' + encodeURIComponent(notes);
+    // Ajukan Pesanan -> buat order asli lewat API, lalu ke detail pesanan.
+    document.getElementById('ajukanPesananBtn').addEventListener('click', function () {
+      var firstRow = document.querySelector('.item-row-grid');
+      var select = firstRow.querySelector('.form-select');
+      var product = select.value;
+      var qtyKg = parseNumber(firstRow.querySelector('.form-input-qty').value) || 0;
+      var btn = this;
+      btn.disabled = true;
+      btn.innerText = 'Memproses...';
+      function kirim(produkId) {
+        fetch('../../api/order/create.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ produk_id: produkId, jumlah_kg: qtyKg })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok) { alert('Gagal membuat pesanan: ' + (res.error || 'tidak diketahui')); btn.disabled = false; btn.innerText = 'Ajukan Pesanan'; return; }
+            window.location.href = '../order_detail.php?id=' + res.data.order_id;
+          })
+          .catch(function () { alert('Gagal membuat pesanan. Pastikan sudah login sebagai pembeli.'); btn.disabled = false; btn.innerText = 'Ajukan Pesanan'; });
+      }
+      var opt = select.options[select.selectedIndex];
+      if (opt && opt.dataset && opt.dataset.id) { kirim(parseInt(opt.dataset.id, 10)); return; }
+      fetch('../../api/katalog.php').then(function (r) { return r.json(); }).then(function (res) {
+        var pr = (res.data && res.data.produk || []).find(function (x) { return x.nama === product; });
+        if (!pr) { alert('Produk tidak ditemukan di katalog.'); btn.disabled = false; btn.innerText = 'Ajukan Pesanan'; return; }
+        kirim(pr.id);
+      }).catch(function () { alert('Gagal memuat katalog.'); btn.disabled = false; btn.innerText = 'Ajukan Pesanan'; });
     });
   </script>
 </body>

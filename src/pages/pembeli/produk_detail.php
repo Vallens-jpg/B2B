@@ -199,6 +199,14 @@
 
       <!-- Order Button -->
       <a id="rfqLink" href="checkout.php?seller=1" class="btn-rfq-primary">Ajukan Pesanan</a>
+      <!-- Buat pesanan langsung dari database (butuh ?id= produk) -->
+      <div id="orderBox" style="margin-top: 1rem; display: none; gap: .5rem; align-items: center; flex-wrap: wrap;">
+        <label style="font-weight: 700;">Jumlah (kg):
+          <input id="qtyKg" type="number" min="1" value="2" style="width: 90px; padding: .5rem; border: 1px solid #e2e8f0; border-radius: 8px;">
+        </label>
+        <button id="buatPesananBtn" type="button" class="btn-rfq-primary" style="border: none; cursor: pointer;">Buat Pesanan</button>
+      </div>
+      <p id="orderMsg" style="margin-top: .5rem;"></p>
     </div>
   </main>
 
@@ -206,7 +214,8 @@
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const sellerId = urlParams.get('seller') || urlParams.get('id') || '1';
+    const produkId = urlParams.get('id');
+    const sellerId = urlParams.get('seller') || '1';
     const productName = urlParams.get('product') || 'Telur Ayam Ras Grade A';
     const productPrice = urlParams.get('price') || 'Rp 28.000';
 
@@ -260,8 +269,52 @@
 
     document.getElementById('rfqLink').href =
       `checkout.php?seller=${sellerId}` +
+      (produkId ? `&id=${encodeURIComponent(produkId)}` : '') +
       `&product=${encodeURIComponent(productName)}` +
       `&price=${encodeURIComponent(productPrice)}`;
+
+    // Kalau dibuka dengan ?id=, ambil data produk asli dari database.
+    if (produkId) {
+      var orderBox = document.getElementById('orderBox');
+      if (orderBox) orderBox.style.display = 'flex';
+      fetch(`../../api/produk/detail.php?id=${encodeURIComponent(produkId)}`)
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) { document.getElementById('orderMsg').innerText = res.error || 'Produk tidak ditemukan.'; return; }
+          var pr = res.data;
+          document.getElementById('productTitle').innerText = pr.nama;
+          document.getElementById('productPrice').innerHTML = `Rp ${Number(pr.harga_per_kg).toLocaleString('id-ID')} <span>/ kg</span>`;
+          var desc = document.querySelector('.dp-about-desc');
+          if (desc && pr.deskripsi) desc.innerText = pr.deskripsi;
+          var stokRow = document.querySelectorAll('.dp-info-value')[0];
+          if (stokRow) stokRow.innerText = 'Stok ' + pr.stok_kg + ' kg';
+          var img = document.getElementById('productImg');
+          if (pr.gambar) img.src = '../../assets/img/' + pr.gambar;
+          img.onerror = function () { img.src = '../../assets/img/prod_grade_a.png'; };
+        })
+        .catch(function () { document.getElementById('orderMsg').innerText = 'Gagal memuat detail produk dari database.'; });
+      var buatBtn = document.getElementById('buatPesananBtn');
+      if (buatBtn) {
+        buatBtn.addEventListener('click', function () {
+          var qty = parseFloat(document.getElementById('qtyKg').value) || 0;
+          var msg = document.getElementById('orderMsg');
+          msg.innerText = 'Membuat pesanan...';
+          fetch('../../api/order/create.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ produk_id: parseInt(produkId, 10), jumlah_kg: qty })
+          })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+              if (!res.ok) { msg.innerText = 'Gagal: ' + (res.error || 'tidak diketahui'); return; }
+              msg.innerHTML = 'Pesanan #' + res.data.order_id + ' dibuat! Total bayar Rp ' + Number(res.data.total_bayar).toLocaleString('id-ID')
+                + ' (fee Rp ' + Number(res.data.fee).toLocaleString('id-ID') + '). Status: menunggu_bayar. '
+                + '<a href="../order_detail.php?id=' + res.data.order_id + '">Lihat detail pesanan &rarr;</a>';
+            })
+            .catch(function () { msg.innerText = 'Gagal membuat pesanan. Pastikan sudah login sebagai pembeli.'; });
+        });
+      }
+    }
 
     // Update peta sesuai lokasi penjual
     const mapRoad = document.getElementById('svgMainRoadName');

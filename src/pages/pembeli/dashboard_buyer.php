@@ -217,6 +217,35 @@
       Jawa Barat <span class="pill-count">3</span>
     </button>
   </div>
+  <!-- Produk dari database (API katalog) -->
+  <section style="max-width: 1200px; margin: 1rem auto 0; padding: 0 1.5rem;">
+    <h2 style="font-size: 1.25rem; font-weight: 800; color: #111827; margin-bottom: 1rem;">Produk Tersedia</h2>
+    <div id="produkDbGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem;">Memuat produk...</div>
+  </section>
+  <script>
+    (function () {
+      var grid = document.getElementById('produkDbGrid');
+      function rp(n) { return 'Rp ' + Number(n).toLocaleString('id-ID'); }
+      fetch('../../api/katalog.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.produk || !res.data.produk.length) {
+            grid.innerHTML = '<p>Katalog belum tersedia. Pastikan migrasi 01 dan 03 sudah dijalankan.</p>';
+            return;
+          }
+          grid.innerHTML = res.data.produk.map(function (pr) {
+            var img = pr.gambar ? '../../assets/img/' + pr.gambar : '../../assets/img/prod_grade_a.png';
+            return '<article style="background:#fff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;">'
+              + '<a href="produk_detail.php?id=' + pr.id + '"><img src="' + img + '" alt="' + pr.nama + '" style="width:100%;height:140px;object-fit:cover;"></a>'
+              + '<div style="padding:1rem;"><h3 style="font-size:1rem;font-weight:800;color:#111827;margin:0 0 .25rem;">' + pr.nama + '</h3>'
+              + '<div style="font-weight:800;color:#059669;">' + rp(pr.harga_per_kg) + ' <span style="font-weight:400;color:#64748b;">/ kg</span></div>'
+              + '<div style="font-size:.85rem;color:#64748b;">Stok: ' + pr.stok_kg + ' kg &middot; Rating: ' + pr.rating + ' (' + pr.jumlah_ulasan + ' ulasan)</div>'
+              + '<a href="produk_detail.php?id=' + pr.id + '" style="display:inline-block;margin-top:.75rem;font-weight:700;color:#152c4e;">Lihat Detail &rarr;</a></div></article>';
+          }).join('');
+        })
+        .catch(function () { grid.innerHTML = '<p>Gagal memuat katalog. Periksa koneksi database.</p>'; });
+    })();
+  </script>
   <!-- Main Content Grid -->
   <main class="dashboard-main-content">
     <div class="cards-grid-layout">

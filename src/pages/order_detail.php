@@ -800,6 +800,7 @@
 
   <script>
     const urlParams   = new URLSearchParams(window.location.search);
+    const orderIdParam = urlParams.get('id');
     const sellerParam = urlParams.get('seller')   || '1';
     const product     = urlParams.get('product')  || 'Telur Ayam Ras Grade A';
     const qty         = urlParams.get('qty')       || '200 kg';
@@ -832,6 +833,26 @@
     if (orderParam) {
       const badge = document.getElementById('orderIdBadge');
       if (badge) badge.innerText = orderParam;
+    }
+    // Kalau dibuka dengan ?id=, ambil order asli dari database.
+    if (orderIdParam) {
+      fetch('../api/order/detail.php?id=' + encodeURIComponent(orderIdParam))
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) return;
+          var o = res.data.order;
+          var badge = document.getElementById('orderIdBadge');
+          if (badge) badge.innerText = '#' + o.id;
+          document.getElementById('productName').innerText = o.nama_produk;
+          document.getElementById('jumlahInfo').innerText = o.jumlah_kg + ' kg @ Rp ' + Number(o.harga_satuan).toLocaleString('id-ID') + ' / kg';
+          document.getElementById('totalHarga').innerText = 'Rp ' + Number(o.total_bayar).toLocaleString('id-ID');
+          document.getElementById('ringkasanValue').innerText = 'Rp ' + Number(o.total_bayar).toLocaleString('id-ID') + ' [' + o.status + ']';
+          var stateEl = document.querySelector('.dp-status-state');
+          if (stateEl) stateEl.innerText = 'Status: ' + o.status;
+          var descEl = document.querySelector('.dp-status-desc');
+          if (descEl) descEl.innerText = 'Pesanan #' + o.id + ' — ' + o.nama_produk + ' (' + o.jumlah_kg + ' kg). Invoice: total Rp ' + Number(o.total).toLocaleString('id-ID') + ' + fee Rp ' + Number(o.fee).toLocaleString('id-ID') + '.';
+        })
+        .catch(function () { /* biarkan tampilan statis kalau API gagal */ });
     }
     document.getElementById('ringkasanValue').innerText = (hasParams ? subtotal : 'Rp 5.000.000') + ' [LUNAS via BCA]';
 

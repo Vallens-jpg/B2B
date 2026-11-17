@@ -735,6 +735,38 @@
   <!-- Floating Navigation for Prototype Walkthrough -->
 
   <script>
+    // Daftar pesanan asli dari database (API order/list). Mengganti kartu contoh statis.
+    (function () {
+      var list = document.getElementById('ordersList');
+      function rp(n) { return 'Rp ' + Number(n).toLocaleString('id-ID'); }
+      fetch('../../api/order/list.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.orders) return;
+          if (!res.data.orders.length) {
+            list.innerHTML = '<p style="padding:1rem;">Belum ada pesanan. Buat pesanan dari halaman produk.</p>';
+            return;
+          }
+          list.innerHTML = res.data.orders.map(function (o) {
+            return '<article class="order-card">'
+              + '<div class="order-card-top">'
+              + '<div class="order-meta-item" style="min-width:120px;"><span class="order-meta-label">tanggal :</span><span class="order-meta-value">' + (o.created_at || '-') + '</span></div>'
+              + '<div class="order-meta-item" style="min-width:140px;"><span class="order-meta-label">order id :</span><span class="order-meta-value">#' + o.id + '</span></div>'
+              + '<div class="order-meta-item" style="min-width:110px;"><span class="order-meta-label">status pesanan :</span><span class="order-status-badge">' + o.status + '</span></div>'
+              + '</div>'
+              + '<div class="order-card-middle"><div class="order-items-info">'
+              + '<div class="order-item-col" style="min-width:170px;"><span class="order-item-label">produk :</span><span class="order-item-val">' + o.nama_produk + '</span></div>'
+              + '<div class="order-item-col"><span class="order-item-label">jumlah :</span><span class="order-item-val">' + o.jumlah_kg + ' kg</span></div>'
+              + '<div class="order-item-col"><span class="order-item-label">total bayar :</span><span class="order-item-val">' + rp(o.total_bayar) + '</span></div>'
+              + '</div></div>'
+              + '<div class="order-card-actions"><a href="../order_detail.php?id=' + o.id + '" style="font-weight:700;">Lihat Detail &rarr;</a></div>'
+              + '</article>';
+          }).join('');
+        })
+        .catch(function () { /* biarkan kartu contoh kalau API gagal */ });
+    })();
+  </script>
+  <script>
     let currentFilter = 'semua';
 
     function filterByStatus(status, cardEl) {
