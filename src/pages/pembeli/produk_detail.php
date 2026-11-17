@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Staplr - Detail Produk</title>
-  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
 </head>
 <body class="dp-body">
 
@@ -35,7 +35,7 @@
   <main class="dp-container">
     <!-- Left: Product Image -->
     <div class="dp-image-box">
-      <img id="productImg" src="../assets/img/prod_grade_a.png" alt="Produk" class="dp-cover-img">
+      <img id="productImg" src="../../assets/img/prod_grade_a.png" alt="Produk" class="dp-cover-img">
     </div>
 
     <!-- Right: Product Info -->
@@ -242,7 +242,7 @@
     document.getElementById('productImg').alt = displayTitle;
     document.getElementById('sellerAddress').innerText = seller.address;
     document.getElementById('sellerInitial').innerText = seller.initial;
-    const fallbackBackUrl = `detail-penjual.php?id=${sellerId}`;
+    const fallbackBackUrl = `detail_penjual.php?id=${sellerId}`;
     const backBtn = document.getElementById('backLink');
     if (backBtn) {
       backBtn.href = fallbackBackUrl;
@@ -259,7 +259,7 @@
     }
 
     document.getElementById('rfqLink').href =
-      `ajukan-pesanan.php?seller=${sellerId}` +
+      `checkout.php?seller=${sellerId}` +
       `&product=${encodeURIComponent(productName)}` +
       `&price=${encodeURIComponent(productPrice)}`;
 

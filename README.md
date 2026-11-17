@@ -219,25 +219,25 @@ Semua halaman bisa dibuka langsung dengan mengetik alamatnya di browser (belum a
 
 | Halaman | Alamat | Gunanya |
 |---|---|---|
-| Dashboard buyer | `/pages/dashboard_buyer.php` | Ringkasan untuk buyer: pesanan, status, notifikasi |
-| Detail produk | `/pages/produk_detail.php` | Detail satu produk (harga per kg, stok, penjual) |
-| Detail penjual | `/pages/detail_penjual.php` | Profil perusahaan penjual |
-| Ajukan pesanan (checkout) | `/pages/checkout.php` | Form ajukan pesanan: pilih jumlah (kg), lalu buat pesanan |
-| Status pesanan | `/pages/order_list.php` | Daftar semua pesanan buyer beserta statusnya |
+| Dashboard buyer | `/pages/pembeli/dashboard_buyer.php` | Ringkasan untuk buyer: pesanan, status, notifikasi |
+| Detail produk | `/pages/pembeli/produk_detail.php` | Detail satu produk (harga per kg, stok, penjual) |
+| Detail penjual | `/pages/pembeli/detail_penjual.php` | Profil perusahaan penjual |
+| Ajukan pesanan (checkout) | `/pages/pembeli/checkout.php` | Form ajukan pesanan: pilih jumlah (kg), lalu buat pesanan |
+| Status pesanan | `/pages/pembeli/order_list.php` | Daftar semua pesanan buyer beserta statusnya |
 | Detail pesanan | `/pages/order_detail.php` | Detail satu pesanan + riwayat status + tombol yang boleh ditekan |
-| Konfirmasi pesanan | `/pages/konfirmasi_pesanan.php` | Halaman konfirmasi setelah pesanan dibuat |
-| Pembayaran transfer bank | `/pages/pembayaran.php` | Upload bukti transfer bank |
+| Konfirmasi pesanan | `/pages/pembeli/konfirmasi_pesanan.php` | Halaman konfirmasi setelah pesanan dibuat |
+| Pembayaran transfer bank | `/pages/pembeli/pembayaran.php` | Upload bukti transfer bank |
 | Invoice pembayaran | `/pages/invoice.php` | Tampilan invoice satu pesanan |
-| Status pesanan (varian) | `/pages/status_pesanan.php` | Sama seperti order_list (judul sama), sisa dari branch lama |
-| Ajukan permintaan | `/pages/ajukan_permintaan.php` | Buyer mengajukan permintaan barang ke perusahaan |
-| Permintaan disetujui | `/pages/permintaan_disetujui.php` | Daftar permintaan yang disetujui |
-| Pesanan disetujui | `/pages/pesanan_disetujui.php` | Daftar pesanan yang disetujui |
+| Status pesanan (varian) | `/pages/pembeli/status_pesanan.php` | Sama seperti order_list (judul sama), sisa dari branch lama |
+| Ajukan permintaan | `/pages/pembeli/ajukan_permintaan.php` | Buyer mengajukan permintaan barang ke perusahaan |
+| Permintaan disetujui | `/pages/pembeli/permintaan_disetujui.php` | Daftar permintaan yang disetujui |
+| Pesanan disetujui | `/pages/pembeli/pesanan_disetujui.php` | Daftar pesanan yang disetujui |
 
 ### Halaman perusahaan (penjual)
 
 | Halaman | Alamat | Gunanya |
 |---|---|---|
-| Dashboard perusahaan | `/pages/dashboard_perusahaan.php` | Ringkasan untuk perusahaan: produk, pesanan masuk, stok |
+| Dashboard perusahaan | `/pages/perusahaan/dashboard_perusahaan.php` | Ringkasan untuk perusahaan: produk, pesanan masuk, stok |
 
 ### Halaman dispute dan ulasan
 
@@ -246,7 +246,7 @@ Semua halaman bisa dibuka langsung dengan mengetik alamatnya di browser (belum a
 | Daftar dispute | `/pages/dispute_list.php` | Daftar tiket dispute buyer |
 | Diskusi dispute | `/pages/dispute_detail.php` | Diskusi 3 pihak (buyer, perusahaan, admin) dalam satu tiket |
 | Pengajuan dispute | `/pages/pengajuan_dispute.php` | Form buyer membuka dispute + upload bukti foto |
-| Ulasan produk | `/pages/ulasan.php` | Form buyer memberi rating/ulasan setelah pesanan selesai |
+| Ulasan produk | `/pages/pembeli/ulasan.php` | Form buyer memberi rating/ulasan setelah pesanan selesai |
 
 ### Halaman admin
 
@@ -255,7 +255,7 @@ Semua halaman admin ada di `/pages/admin/`. **Catatan:** beberapa halaman admin 
 | Halaman | Alamat | Gunanya |
 |---|---|---|
 | Dashboard admin | `/pages/admin/dashboard.php` | Ringkasan admin |
-| Manajemen user | `/pages/admin/kelola-user.php` (kembar: `admin-kelola-user.php`, `manajemen-user.php`) | Daftar dan kelola pengguna |
+| Manajemen user | `/pages/admin/manajemen-user.php` | Daftar dan kelola pengguna |
 | Verifikasi perusahaan | `/pages/admin/verifikasi.php` (kembar: `detail-verifikasi.php`) | Verifikasi perusahaan baru |
 | Verifikasi dispute | `/pages/admin/verifikasi-dispute.php` (kembar: `admin-verifikasi-dispute.php`) | Admin memeriksa dan memverifikasi dispute |
 | Pencairan dana | `/pages/admin/keuangan.php` (kembar: `admin-keuangan.php`) | Melihat dan memproses pencairan dana escrow |

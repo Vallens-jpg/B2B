@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Staplr - Ulasan Produk</title>
-  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
   <style>
     /* ==========================================================================
        Ulasan Produk Page Styles
@@ -497,7 +497,7 @@
       <div class="ulasan-subcard">
         <h2 class="ulasan-subcard-title">RINGKASAN PESANAN</h2>
         <div class="ulasan-product-box">
-          <img src="../assets/img/prod_grade_a.png" alt="Telur ayam" class="ulasan-product-img" id="summaryImg">
+          <img src="../../assets/img/prod_grade_a.png" alt="Telur ayam" class="ulasan-product-img" id="summaryImg">
           <div class="ulasan-product-info">
             <h3 class="ulasan-product-name" id="summaryTitle">Telur ayam</h3>
             <div class="ulasan-product-meta">
@@ -602,7 +602,7 @@
     // Preserve back destination
     const cancelBtn = document.getElementById('cancelBtn');
     const backLink = document.getElementById('backLink');
-    const fallbackUl = 'pesanan.php' + (window.location.search || '');
+    const fallbackUl = 'order_list.php' + (window.location.search || '');
     cancelBtn.href = fallbackUl;
     backLink.href = fallbackUl;
 
@@ -680,7 +680,7 @@
         return;
       }
       alert('Terima kasih! Ulasan Anda berhasil dikirim.');
-      window.location.href = 'pesanan.php';
+      window.location.href = 'order_list.php';
     }
   </script>
 </body>

@@ -294,7 +294,7 @@
   <!-- Navbar Header -->
   <header class="dashboard-navbar">
     <div class="navbar-inner">
-      <a href="dashboard_buyer.php" class="brand-header" style="text-decoration: none;">
+      <a href="pembeli/dashboard_buyer.php" class="brand-header" style="text-decoration: none;">
         <img src="../assets/img/logo/logo staplr.png" alt="Staplr Logo" class="brand-logo-img">
         <div class="brand-title-group">
           <span class="brand-dot"></span>
@@ -303,7 +303,7 @@
       </a>
 
       <nav class="nav-pills-container">
-        <a href="dashboard_buyer.php" class="nav-pill-item">
+        <a href="pembeli/dashboard_buyer.php" class="nav-pill-item">
           <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
             <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor"/>
             <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor"/>
@@ -312,7 +312,7 @@
           </svg>
           Dashboard
         </a>
-        <a href="order_list.php" class="nav-pill-item">
+        <a href="pembeli/order_list.php" class="nav-pill-item">
           <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
             <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor"/>
             <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-linecap="round"/>
@@ -326,7 +326,7 @@
           </svg>
           Dispute
         </a>
-        <a href="pesanan_disetujui.php" class="nav-pill-item">
+        <a href="pembeli/pesanan_disetujui.php" class="nav-pill-item">
           <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
             <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -355,7 +355,7 @@
 
           <div class="notif-list">
             <!-- Item 1: Permintaan Disetujui -->
-            <a href="permintaan_disetujui.php" class="notif-item unread">
+            <a href="pembeli/permintaan_disetujui.php" class="notif-item unread">
               <div class="notif-icon-circle green">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>

@@ -1240,7 +1240,7 @@
       document.getElementById('fieldUsulan').textContent = dispute.solution;
 
       // Update stepper link and forward button to point to verifikasi with this ID
-      const verifikasiUrl = `verifikasi-dispute.html?id=${encodeURIComponent(dispute.id)}`;
+      const verifikasiUrl = `verifikasi-dispute.php?id=${encodeURIComponent(dispute.id)}`;
       document.getElementById('stepperVerifikasiLink').href = verifikasiUrl;
       const btnForward = document.getElementById('btnForwardDispute');
       btnForward.href = verifikasiUrl;
@@ -1340,7 +1340,7 @@
 
         showToast(`Dispute ${dispute.id} berhasil ditolak! Mengalihkan ke daftar...`, 'danger');
         setTimeout(() => {
-          window.location.href = 'dispute.html';
+          window.location.href = 'dispute.php';
         }, 900);
       });
 

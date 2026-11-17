@@ -14,7 +14,7 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Staplr - Pesanan Disetujui</title>
-  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
   <style>
     body.pd-body {
       background-color: #FAF6ED;
@@ -216,7 +216,7 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
   <header class="dashboard-navbar">
     <div class="navbar-inner">
       <a href="dashboard_buyer.php" class="brand-header" style="text-decoration: none;">
-        <img src="../assets/img/logo/logo staplr.png" alt="Staplr Logo" class="brand-logo-img">
+        <img src="../../assets/img/logo/logo staplr.png" alt="Staplr Logo" class="brand-logo-img">
         <div class="brand-title-group">
           <span class="brand-dot"></span>
           <span class="brand-name">Staplr</span>
@@ -240,7 +240,7 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
           </svg>
           Pesanan
         </a>
-        <a href="dispute_list.php" class="nav-pill-item">
+        <a href="../dispute_list.php" class="nav-pill-item">
           <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="9" stroke="currentColor"/>
             <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
@@ -262,7 +262,7 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
           </svg>
           <span class="notification-badge-red" id="notifBadgeRed">3</span>
         </button>
-        <a href="profil.php" class="user-profile-capsule" style="text-decoration: none;">
+        <a href="../profil.php" class="user-profile-capsule" style="text-decoration: none;">
           <div class="user-avatar-circle">AD</div>
           <span class="user-name-text">Buyer</span>
         </a>
@@ -288,7 +288,7 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
                 <p class="notif-item-body">Pesanan Anda telah disetujui. Lanjutkan pembayaran.</p>
               </div>
             </a>
-            <a href="dispute_detail.php" class="notif-item unread">
+            <a href="../dispute_detail.php" class="notif-item unread">
               <div class="notif-icon-circle green">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -302,7 +302,7 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
                 <p class="notif-item-body">Seller: "Kami sudah mengirim bukti foto ulang..."</p>
               </div>
             </a>
-            <a href="dispute_list.php" class="notif-item">
+            <a href="../dispute_list.php" class="notif-item">
               <div class="notif-icon-circle yellow">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <circle cx="12" cy="12" r="10" stroke="#111827"/>
@@ -319,7 +319,7 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
             </a>
           </div>
           <div class="notif-footer">
-            <a href="notifikasi.php" class="notif-footer-link">Lihat Semua Notifikasi</a>
+            <a href="../notifikasi.php" class="notif-footer-link">Lihat Semua Notifikasi</a>
           </div>
         </div>
       </div>

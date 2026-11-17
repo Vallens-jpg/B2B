@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Staplr - Status Pesanan</title>
-  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
   <style>
     /* ==========================================================================
        Menu Pesanan / Status Pesanan Hub Styles
@@ -374,7 +374,7 @@
   <header class="dashboard-navbar">
     <div class="navbar-inner">
       <a href="dashboard_buyer.php" class="brand-header" style="text-decoration: none;">
-        <img src="../assets/img/logo/logo staplr.png" alt="Staplr Logo" class="brand-logo-img">
+        <img src="../../assets/img/logo/logo staplr.png" alt="Staplr Logo" class="brand-logo-img">
         <div class="brand-title-group">
           <span class="brand-dot"></span>
           <span class="brand-name">Staplr</span>
@@ -398,7 +398,7 @@
           </svg>
           Pesanan
         </a>
-        <a href="dispute_list.php" class="nav-pill-item">
+        <a href="../dispute_list.php" class="nav-pill-item">
           <svg class="nav-pill-icon" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="9" stroke="currentColor"/>
             <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
@@ -420,7 +420,7 @@
           </svg>
           <span class="notification-badge-red" id="notifBadgeRed">3</span>
         </button>
-        <a href="profil.php" class="user-profile-capsule">
+        <a href="../profil.php" class="user-profile-capsule">
           <div class="user-avatar-circle">AD</div>
           <span class="user-name-text">Buyer</span>
         </a>
@@ -452,7 +452,7 @@
             </a>
 
             <!-- Item 2: Pesan Baru di Dispute #DSP-9021 -->
-            <a href="dispute_detail.php" class="notif-item unread">
+            <a href="../dispute_detail.php" class="notif-item unread">
               <div class="notif-icon-circle green">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -470,7 +470,7 @@
             </a>
 
             <!-- Item 3: Dispute Disetujui -->
-            <a href="dispute_list.php" class="notif-item">
+            <a href="../dispute_list.php" class="notif-item">
               <div class="notif-icon-circle yellow">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                   <circle cx="12" cy="12" r="10" stroke="#111827"/>
@@ -488,7 +488,7 @@
           </div>
 
           <div class="notif-footer">
-            <a href="notifikasi.php" class="notif-footer-link">Lihat Semua Notifikasi</a>
+            <a href="../notifikasi.php" class="notif-footer-link">Lihat Semua Notifikasi</a>
           </div>
         </div>
       </div>
@@ -568,7 +568,7 @@
         <!-- Card 1: #ORD-2026-103 (Dikirim) -->
         <article class="order-card" data-status="dikirim" data-supplier="PT Telur Makmur" data-orderid="#ORD-2026-103">
           <div class="order-card-top">
-            <img src="../assets/img/prod_grade_a.png" alt="Telur Ayam Grade A" class="order-prod-thumb">
+            <img src="../../assets/img/prod_grade_a.png" alt="Telur Ayam Grade A" class="order-prod-thumb">
             
             <div class="order-meta-item" style="min-width: 120px;">
               <span class="order-meta-label">tanggal :</span>
@@ -608,7 +608,7 @@
             </div>
 
             <div class="order-card-actions">
-              <a href="order_detail.php?seller=1&product=Telur%20Ayam%20Grade%20A&qty=2%20Kg&price=Rp%20120.000&subtotal=Rp%20240.000&from=pesanan" class="btn-pill-action">
+              <a href="../order_detail.php?seller=1&product=Telur%20Ayam%20Grade%20A&qty=2%20Kg&price=Rp%20120.000&subtotal=Rp%20240.000&from=pesanan" class="btn-pill-action">
                 <svg viewBox="0 0 24 24">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                   <polyline points="14 2 14 8 20 8"/>
@@ -649,7 +649,7 @@
         <!-- Card 2: #ORD-2026-098 (Selesai) -->
         <article class="order-card" data-status="selesai" data-supplier="PT Telur Makmur" data-orderid="#ORD-2026-098">
           <div class="order-card-top">
-            <img src="../assets/img/prod_grade_b.png" alt="Telur Ayam Ras Grade B" class="order-prod-thumb">
+            <img src="../../assets/img/prod_grade_b.png" alt="Telur Ayam Ras Grade B" class="order-prod-thumb">
             
             <div class="order-meta-item" style="min-width: 120px;">
               <span class="order-meta-label">tanggal :</span>
@@ -689,7 +689,7 @@
             </div>
 
             <div class="order-card-actions">
-              <a href="order_detail.php?seller=1&product=Telur%20Ayam%20Ras%20Grade%20B&qty=5%20Kg&price=Rp%20110.000&subtotal=Rp%20550.000&from=pesanan" class="btn-pill-action">
+              <a href="../order_detail.php?seller=1&product=Telur%20Ayam%20Ras%20Grade%20B&qty=5%20Kg&price=Rp%20110.000&subtotal=Rp%20550.000&from=pesanan" class="btn-pill-action">
                 <svg viewBox="0 0 24 24">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                   <polyline points="14 2 14 8 20 8"/>
@@ -700,7 +700,7 @@
                 detail pesanan
               </a>
 
-              <a href="invoice.php?subtotal=Rp%20550.000" class="btn-pill-action">
+              <a href="../invoice.php?subtotal=Rp%20550.000" class="btn-pill-action">
                 <svg viewBox="0 0 24 24">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                   <polyline points="14 2 14 8 20 8"/>

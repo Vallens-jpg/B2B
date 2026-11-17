@@ -532,7 +532,7 @@
     // Preserve back / cancel button destination
     const cancelBtn = document.getElementById('cancelBtn');
     const backLink = document.getElementById('backLink');
-    const fallbackPd = 'detail-pesanan.php' + (window.location.search || '');
+    const fallbackPd = 'order_detail.php' + (window.location.search || '');
     cancelBtn.href = fallbackPd;
     backLink.href = fallbackPd;
 
@@ -594,13 +594,13 @@
       });
     }
 
-    // Submit pengajuan dispute -> proceeds to diskusi-dispute.php (Diskusi 3 Pihak)
+    // Submit pengajuan dispute -> proceeds to dispute_detail.php (Diskusi 3 Pihak)
     function submitPengajuanDispute() {
       const reason = document.getElementById('disputeReason').value.trim();
       
       // Navigate to the 3-party dispute discussion page
       const targetQuery = window.location.search ? window.location.search : '';
-      window.location.href = 'diskusi-dispute.php' + targetQuery;
+      window.location.href = 'dispute_detail.php' + targetQuery;
     }
   </script>
 </body>

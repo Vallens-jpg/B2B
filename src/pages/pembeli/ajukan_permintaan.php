@@ -1,59 +1,13 @@
-<?php
-session_start();
-
-$sellersMap = [
-    '1' => 'PT Telur Makmur',
-    '2' => 'Mitra Unggas Sejahtera',
-    '3' => 'Tunas Farm',
-    '4' => 'Berkah Telur Utama',
-    '5' => 'Ternak Mandiri',
-    '6' => 'Sinar Jaya Poultry'
-];
-
-// Self-handling: proses form POST di halaman yang sama
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $sellerId = $_POST['seller'] ?? '1';
-    $company = $_POST['seller_name'] ?? ($sellersMap[$sellerId] ?? 'PT Telur Makmur');
-    $product = $_POST['product'] ?? 'Telur Ayam Ras Grade A';
-    $price = $_POST['price'] ?? 'Rp 28.000';
-    $qty = $_POST['qty'] ?? '2 kg';
-    $subtotal = $_POST['subtotal'] ?? 'Rp 56.000';
-    $notes = $_POST['notes'] ?? '';
-
-    $_SESSION['active_order'] = [
-        'order_id' => '#ORD-2026-' . rand(100, 999),
-        'seller_id' => $sellerId,
-        'seller' => $company,
-        'product' => $product,
-        'price' => $price,
-        'qty' => $qty,
-        'subtotal' => $subtotal,
-        'notes' => $notes,
-        'status' => 'pending',
-        'created_at' => date('d M Y, H:i')
-    ];
-
-    // PRG Pattern: Redirect ke status-pesanan.php
-    header('Location: status-pesanan.php');
-    exit;
-}
-
-$sellerId = $_GET['seller'] ?? '1';
-$product = $_GET['product'] ?? 'Telur Ayam Ras Grade A';
-$price = $_GET['price'] ?? 'Rp 28.000';
-$qty = $_GET['qty'] ?? '2 kg';
-$sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Staplr - Ajukan Pesanan</title>
-  <link rel="stylesheet" href="../assets/css/styles.css">
+  <title>Staplr - Ajukan Permintaan</title>
+  <link rel="stylesheet" href="../../assets/css/styles.css">
   <style>
     /* ==========================================================================
-       Ajukan Pesanan Specific Styles
+       Ajukan Permintaan Specific Styles
        ========================================================================== */
     .ajukan-body {
       background-color: var(--bg-dashboard);
@@ -240,23 +194,43 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
       font-family: var(--font-family);
     }
 
-    /* Satu tombol aksi di tengah */
-    .action-footer-single {
+    .action-footer-buttons {
       display: flex;
-      justify-content: center;
+      align-items: center;
+      justify-content: space-between;
       max-width: 780px;
       margin: 2rem auto 0 auto;
       padding: 0 1.5rem;
+      gap: 1.5rem;
     }
 
-    .btn-ajukan-primary {
-      width: 300px;
-      padding: 0.95rem;
+    .btn-batal-outline {
+      flex: 1;
+      padding: 0.9rem;
+      background-color: #ffffff;
+      border: 1.5px solid #dc2626;
+      color: #dc2626;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-batal-outline:hover {
+      background-color: #fef2f2;
+    }
+
+    .btn-kirim-primary {
+      flex: 1;
+      padding: 0.9rem;
       background-color: var(--primary-navy);
       border: none;
       color: #ffffff;
       border-radius: 10px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
       text-align: center;
@@ -264,7 +238,7 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
       box-shadow: 0 4px 12px rgba(21, 44, 78, 0.15);
     }
 
-    .btn-ajukan-primary:hover {
+    .btn-kirim-primary:hover {
       background-color: var(--primary-navy-hover);
     }
 
@@ -279,9 +253,6 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
         border-radius: 10px;
         margin-bottom: 1rem;
       }
-      .btn-ajukan-primary {
-        width: 100%;
-      }
     }
   </style>
 </head>
@@ -294,7 +265,7 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
         <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </a>
-    <h1 class="detail-page-heading">Ajukan Pesanan</h1>
+    <h1 class="detail-page-heading">Ajukan Permintaan</h1>
     <div class="navbar-actions">
       <button type="button" class="notification-bell-btn" aria-label="Notifikasi">
         <svg class="bell-icon" viewBox="0 0 24 24">
@@ -312,9 +283,9 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
   <!-- Form Container -->
   <div class="form-container-center">
     <div class="ajukan-card">
-      <h2 class="ajukan-card-title">Ajukan Pesanan</h2>
+      <h2 class="ajukan-card-title">Ajukan Permintaan</h2>
 
-      <form action="#" method="POST" id="ajukanPesananForm">
+      <form action="#" method="POST" id="ajukanForm">
         <!-- Perusahaan -->
         <div class="form-group" style="margin-bottom: 1.75rem;">
           <label class="field-label-sm">Perusahaan :</label>
@@ -380,29 +351,20 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
     </div>
   </div>
 
-  <!-- Action Footer Button (tunggal, di tengah) -->
-  <form method="POST" action="checkout.php" id="orderSubmitForm">
-        <input type="hidden" name="seller" id="postSeller" value="<?= htmlspecialchars($sellerId) ?>">
-        <input type="hidden" name="seller_name" id="postSellerName" value="<?= htmlspecialchars($sellerName) ?>">
-        <input type="hidden" name="product" id="postProduct" value="<?= htmlspecialchars($product) ?>">
-        <input type="hidden" name="price" id="postPrice" value="<?= htmlspecialchars($price) ?>">
-        <input type="hidden" name="qty" id="postQty" value="<?= htmlspecialchars($qty) ?>">
-        <input type="hidden" name="subtotal" id="postSubtotal" value="Rp 56.000">
-        <input type="hidden" name="notes" id="postNotes" value="">
-        <div class="action-footer-single">
-    <button type="button" id="ajukanPesananBtn" class="btn-ajukan-primary">Ajukan Pesanan</button>
+  <!-- Action Footer Buttons -->
+  <div class="action-footer-buttons">
+    <a href="produk_detail.php" id="cancelLink" class="btn-batal-outline">Batal</a>
+    <button type="button" id="kirimBtn" class="btn-kirim-primary">Kirim Permintaan</button>
   </div>
 
   <!-- Floating Navigation -->
 
   <script>
-    // Data dibawa dari halaman Status Pesanan (setelah penjual menyetujui)
+    // Handle seller and product parameters from detail page
     const urlParams = new URLSearchParams(window.location.search);
     const sellerId = urlParams.get('seller') || '1';
     const productName = urlParams.get('product');
     const productPrice = urlParams.get('price');
-    const qtyParam = urlParams.get('qty');
-    const subtotalParam = urlParams.get('subtotal');
 
     const sellersMap = {
       '1': 'PT Telur Makmur',
@@ -413,18 +375,15 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
       '6': 'Sinar Jaya Poultry'
     };
 
-    if (sellersMap[sellerId]) {
-      document.getElementById('companyInput').value = sellersMap[sellerId];
-    }
+    // Tombol kembali & batal selalu mengarah ke halaman Detail Produk
+    const backToProduct = `produk_detail.php?seller=${encodeURIComponent(sellerId)}` +
+      `&product=${encodeURIComponent(productName || 'Telur ayam')}` +
+      `&price=${encodeURIComponent(productPrice || 'Rp 250.000')}`;
 
-    // Tombol kembali -> Detail Produk (dengan data yang sama)
-    const backToProduct = 'detail-produk.php' +
-      '?seller=' + encodeURIComponent(sellerId) +
-      (productName ? '&product=' + encodeURIComponent(productName) : '') +
-      (productPrice ? '&price=' + encodeURIComponent(productPrice) : '');
     document.getElementById('backLink').href = backToProduct;
+    document.getElementById('cancelLink').href = backToProduct;
 
-    function handleSmartBackApes() {
+    function handleSmartBack() {
       if (window.history.length > 1) {
         window.history.back();
       } else if (document.referrer && document.referrer !== window.location.href) {
@@ -434,23 +393,28 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
       }
     }
 
-    const apesBackBtn = document.getElementById('backLink');
-    const apesCancelBtn = document.getElementById('cancelLink');
-    if (apesBackBtn) {
-      apesBackBtn.addEventListener('click', function(e) {
+    const backBtn = document.getElementById('backLink');
+    const cancelBtn = document.getElementById('cancelLink');
+    if (backBtn) {
+      backBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        handleSmartBackApes();
+        handleSmartBack();
       });
     }
-    if (apesCancelBtn) {
-      apesCancelBtn.addEventListener('click', function(e) {
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        handleSmartBackApes();
+        handleSmartBack();
       });
+    }
+
+    if (sellersMap[sellerId]) {
+      document.getElementById('companyInput').value = sellersMap[sellerId];
     }
 
     if (productName) {
       const select = document.getElementById('productSelect');
+      // check if option exists, otherwise add it
       let found = false;
       for (let opt of select.options) {
         if (opt.value === productName) {
@@ -470,9 +434,6 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
 
     if (productPrice) {
       document.getElementById('priceInput').value = productPrice;
-    }
-    if (qtyParam) {
-      document.getElementById('qtyInput').value = qtyParam;
     }
 
     // Format rupiah otomatis & hitung subtotal
@@ -506,10 +467,13 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
       recalcSubtotal();
     });
 
+    // Hitung ulang saat halaman dimuat (harga bisa berubah dari parameter URL)
     recalcSubtotal();
 
     // Tambah Item baru
+    let itemCounter = 1;
     document.querySelector('.btn-tambah-item').addEventListener('click', function () {
+      itemCounter++;
       const row = document.createElement('div');
       row.className = 'item-row-grid';
       row.innerHTML = `
@@ -538,6 +502,7 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
       bindRowEvents(row);
     });
 
+    // Ikon hapus pada baris pertama
     bindRowEvents(document.querySelector('.item-row-grid'));
 
     function bindRowEvents(row) {
@@ -563,21 +528,20 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
       });
     }
 
-    // Ajukan Pesanan -> masuk ke pending menunggu persetujuan penjual
-    document.getElementById('ajukanPesananBtn').addEventListener('click', function () {
-      const firstRow = document.querySelector('.item-row-grid');
+    // Kirim Permintaan -> halaman Status Pesanan (membawa data pesanan)
+    document.getElementById('kirimBtn').addEventListener('click', function () {
+      const rows = document.querySelectorAll('.item-row-grid');
+      const firstRow = rows[0];
       const product = firstRow.querySelector('.form-select').value;
       const qty = firstRow.querySelector('.form-input-qty').value || '2 kg';
       const subtotalValue = firstRow.querySelector('.subtotal-text').innerText;
-      const notes = document.querySelector('.textarea-notes').value;
 
-      window.location.href = 'status-pesanan.php' +
+      window.location.href = 'status_pesanan.php' +
         '?seller=' + encodeURIComponent(sellerId) +
         '&product=' + encodeURIComponent(product) +
-        '&qty=' + encodeURIComponent(qty) +
         '&price=' + encodeURIComponent(document.getElementById('priceInput').value) +
-        '&subtotal=' + encodeURIComponent(subtotalValue) +
-        '&notes=' + encodeURIComponent(notes);
+        '&qty=' + encodeURIComponent(qty.replace(/\s*kg/i, '').trim() + ' kg') +
+        '&subtotal=' + encodeURIComponent(subtotalValue);
     });
   </script>
 </body>

@@ -842,15 +842,15 @@
       });
 
       document.getElementById('cardVerifikasi').addEventListener('click', function() {
-        window.location.href = 'verifikasi.html';
+        window.location.href = 'verifikasi.php';
       });
 
       document.getElementById('cardDispute').addEventListener('click', function() {
-        window.location.href = 'dispute.html';
+        window.location.href = 'dispute.php';
       });
 
       document.getElementById('cardSaldo').addEventListener('click', function() {
-        window.location.href = 'keuangan.html';
+        window.location.href = 'keuangan.php';
       });
 
       // Period button

@@ -55,7 +55,7 @@ if (!isset($_SESSION['active_order'])) {
 if (isset($_GET['action']) && $_GET['action'] === 'approve') {
     $_SESSION['active_order']['status'] = 'approved';
     $_SESSION['pesanan_disetujui'] = $_SESSION['active_order'];
-    header('Location: status-pesanan.php?state=approved');
+    header('Location: status_pesanan.php?state=approved');
     exit;
 }
 
@@ -74,7 +74,7 @@ $isApproved = ($order['status'] === 'approved' || $state === 'approved');
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Staplr - Status Pesanan</title>
-  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
   <style>
     .btn-acc-simulasi {
       margin-top: 0.75rem;
@@ -110,7 +110,7 @@ $isApproved = ($order['status'] === 'approved' || $state === 'approved');
     </a>
     <h1 class="detail-page-heading">Status Pesanan</h1>
     <div class="navbar-actions">
-      <a href="notifikasi.php" class="notification-bell-btn" aria-label="Notifikasi" style="text-decoration:none">
+      <a href="../notifikasi.php" class="notification-bell-btn" aria-label="Notifikasi" style="text-decoration:none">
         <svg class="bell-icon" viewBox="0 0 24 24">
           <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
         </svg>
@@ -230,7 +230,7 @@ $isApproved = ($order['status'] === 'approved' || $state === 'approved');
     }
 
     // Tombol kembali ke halaman Ajukan Pesanan
-    const backToAjukan = 'ajukan-pesanan.php' +
+    const backToAjukan = 'checkout.php' +
       '?seller=' + encodeURIComponent(sellerId) +
       '&product=' + encodeURIComponent(productName) +
       '&price=' + encodeURIComponent(productPrice) +

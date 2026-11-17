@@ -616,7 +616,7 @@
 
     <!-- Top Navigation Row ke Daftar Pesanan -->
     <div class="dp-top-nav-row">
-      <a href="order_list.php" class="dp-link-daftar-pesanan">
+      <a href="pembeli/order_list.php" class="dp-link-daftar-pesanan">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
@@ -769,7 +769,7 @@
   <!-- Bottom Action Bar -->
   <div class="dp-action-bar">
     <div class="dp-action-bar-inner">
-      <a href="order_list.php" class="btn-daftar-pesanan" id="btnDaftarPesanan">
+      <a href="pembeli/order_list.php" class="btn-daftar-pesanan" id="btnDaftarPesanan">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
           <rect x="9" y="3" width="6" height="4" rx="1"/>
@@ -837,9 +837,9 @@
 
     // Back link — dinamis sesuai asal halaman
     const fromPage = urlParams.get('from');
-    let fallbackDpes = 'pesanan.php';
+    let fallbackDpes = 'pembeli/order_list.php';
     if (fromPage === 'pesanan') {
-      document.getElementById('backLink').href = 'pesanan.php';
+      document.getElementById('backLink').href = 'pembeli/order_list.php';
     } else {
       const backQ =
         '?seller='   + encodeURIComponent(sellerParam) +
@@ -847,7 +847,7 @@
         '&qty='      + encodeURIComponent(qty) +
         '&price='    + encodeURIComponent(price) +
         '&subtotal=' + encodeURIComponent(subtotal);
-      fallbackDpes = 'invoice-pembayaran.php' + backQ;
+      fallbackDpes = 'invoice.php' + backQ;
       document.getElementById('backLink').href = fallbackDpes;
     }
 
@@ -867,7 +867,7 @@
 
     // Actions
     function ajukanDispute() {
-      window.location.href = 'pengajuan-dispute.php' +
+      window.location.href = 'pengajuan_dispute.php' +
         '?seller='   + encodeURIComponent(sellerParam) +
         '&product='  + encodeURIComponent(product) +
         '&qty='      + encodeURIComponent(qty) +
@@ -876,7 +876,7 @@
     }
 
     function konfirmasiDiterima() {
-      window.location.href = 'dashboard.php';
+      window.location.href = 'pembeli/dashboard_buyer.php';
     }
   
     // ---- Lightbox Bukti Pengiriman ----

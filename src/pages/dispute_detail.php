@@ -885,7 +885,7 @@
     // Preserve back navigation query params
     const urlParams = new URLSearchParams(window.location.search);
     const backBtn = document.getElementById('backLink');
-    const fallbackDd = 'pengajuan-dispute.php' + (window.location.search || '');
+    const fallbackDd = 'pengajuan_dispute.php' + (window.location.search || '');
     backBtn.href = fallbackDd;
     backBtn.addEventListener('click', function(e) {
       e.preventDefault();

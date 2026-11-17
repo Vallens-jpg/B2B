@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Staplr - Detail Penjual</title>
-  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
   <style>
     /* ── Dropdown Filter Fungsional ── */
     .dropdown-filter {
@@ -85,7 +85,7 @@
   <main class="detail-container">
     <!-- Banner Image -->
     <div class="banner-container">
-      <img id="bannerImg" src="../assets/img/banner_pt_telur_makmur.png" alt="Banner Peternakan" class="banner-img">
+      <img id="bannerImg" src="../../assets/img/banner_pt_telur_makmur.png" alt="Banner Peternakan" class="banner-img">
     </div>
 
     <!-- Merchant Header Info -->
@@ -168,7 +168,7 @@
         <!-- Product 1 -->
         <article class="product-card" data-jenis="omega" data-grade="premium">
           <div class="product-img-box">
-            <img src="../assets/img/prod_omega.png" alt="Telur Omega" class="product-cover-img">
+            <img src="../../assets/img/prod_omega.png" alt="Telur Omega" class="product-cover-img">
           </div>
           <div class="product-card-body">
             <span class="badge-grade premium">
@@ -184,7 +184,7 @@
         <!-- Product 2 -->
         <article class="product-card" data-jenis="kampung" data-grade="premium">
           <div class="product-img-box">
-            <img src="../assets/img/prod_kampung.png" alt="Telur Ayam Kampung" class="product-cover-img">
+            <img src="../../assets/img/prod_kampung.png" alt="Telur Ayam Kampung" class="product-cover-img">
           </div>
           <div class="product-card-body">
             <span class="badge-grade premium">
@@ -200,7 +200,7 @@
         <!-- Product 3 -->
         <article class="product-card" data-jenis="ras" data-grade="grade-a">
           <div class="product-img-box">
-            <img src="../assets/img/prod_grade_a.png" alt="Telur Ayam Ras Grade A" class="product-cover-img">
+            <img src="../../assets/img/prod_grade_a.png" alt="Telur Ayam Ras Grade A" class="product-cover-img">
           </div>
           <div class="product-card-body">
             <span class="badge-grade grade-a">
@@ -216,7 +216,7 @@
         <!-- Product 4 -->
         <article class="product-card" data-jenis="ras" data-grade="grade-b">
           <div class="product-img-box">
-            <img src="../assets/img/prod_grade_b.png" alt="Telur Ayam Ras Grade B" class="product-cover-img">
+            <img src="../../assets/img/prod_grade_b.png" alt="Telur Ayam Ras Grade B" class="product-cover-img">
           </div>
           <div class="product-card-body">
             <span class="badge-grade grade-b">
@@ -232,7 +232,7 @@
         <!-- Product 5 -->
         <article class="product-card" data-jenis="ras" data-grade="grade-c">
           <div class="product-img-box">
-            <img src="../assets/img/prod_grade_c.png" alt="Telur Ayam Ras Grade C" class="product-cover-img">
+            <img src="../../assets/img/prod_grade_c.png" alt="Telur Ayam Ras Grade C" class="product-cover-img">
           </div>
           <div class="product-card-body">
             <span class="badge-grade grade-c">
@@ -324,7 +324,7 @@
       const card = btn.closest('.product-card');
       const productName = card.querySelector('.product-item-title').innerText.trim();
       const productPrice = card.querySelector('.product-price-display').innerText.replace(/\s*\/\s*kg/i, '').trim();
-      window.location.href = 'detail-produk.php?seller=' + sellerId +
+      window.location.href = 'produk_detail.php?seller=' + sellerId +
         '&product=' + encodeURIComponent(productName) +
         '&price=' + encodeURIComponent(productPrice);
     }
@@ -402,7 +402,7 @@
         } else if (document.referrer && document.referrer !== window.location.href) {
           window.location.href = document.referrer;
         } else {
-          window.location.href = 'dashboard.php';
+          window.location.href = 'dashboard_buyer.php';
         }
       });
     }  </script>

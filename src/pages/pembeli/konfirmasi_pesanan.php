@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Staplr - Konfirmasi Pesanan</title>
-  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
   <style>
     /* ==========================================================================
        Konfirmasi Pesanan Specific Styles
@@ -561,7 +561,7 @@
       '&qty=' + encodeURIComponent(qtyParam) +
       '&price=' + encodeURIComponent(priceParam) +
       '&subtotal=' + encodeURIComponent(subtotalParam);
-    const fallbackKp = 'ajukan-pesanan.html' + backQuery;
+    const fallbackKp = 'checkout.php' + backQuery;
     document.getElementById('backLink').href = fallbackKp;
     document.getElementById('editLink').href = fallbackKp;
 
@@ -581,7 +581,7 @@
 
     // Konfirmasi Pesanan -> halaman Pembayaran Transfer Bank
     document.getElementById('confirmBtn').addEventListener('click', function () {
-      window.location.href = 'pembayaran.html' +
+      window.location.href = 'pembayaran.php' +
         '?seller='   + encodeURIComponent(sellerId) +
         '&product='  + encodeURIComponent(product) +
         '&price='    + encodeURIComponent(priceParam) +
