@@ -217,38 +217,6 @@
       Jawa Barat <span class="pill-count">3</span>
     </button>
   </div>
-  <!-- Produk dari database (API katalog) — memakai desain kartu penjual yang sudah ada -->
-  <section style="max-width: 1200px; margin: 1rem auto 0; padding: 0 1.5rem;">
-    <h2 style="font-size: 1.25rem; font-weight: 800; color: #111827; margin-bottom: 1rem;">Produk Tersedia</h2>
-    <div class="cards-grid-layout" id="produkDbGrid">Memuat produk...</div>
-  </section>
-  <script>
-    (function () {
-      var grid = document.getElementById('produkDbGrid');
-      function rp(n) { return 'Rp ' + Number(n).toLocaleString('id-ID'); }
-      fetch('../../api/katalog.php')
-        .then(function (r) { return r.json(); })
-        .then(function (res) {
-          if (!res.ok || !res.data || !res.data.produk || !res.data.produk.length) {
-            grid.innerHTML = '<p>Katalog belum tersedia. Pastikan migrasi 01 dan 03 sudah dijalankan.</p>';
-            return;
-          }
-          grid.innerHTML = res.data.produk.map(function (pr) {
-            var img = pr.gambar ? '../../assets/img/' + pr.gambar : '../../assets/img/prod_grade_a.png';
-            return '<article class="seller-card">'
-              + '<div class="card-image-wrapper"><a href="produk_detail.php?id=' + pr.id + '"><img src="' + img + '" alt="' + pr.nama + '" class="card-cover-img"></a></div>'
-              + '<div class="card-body-content">'
-              + '<h2 class="card-title-name">' + pr.nama + '</h2>'
-              + '<div class="card-location-text">Stok: ' + pr.stok_kg + ' kg &middot; Rating: ' + pr.rating + ' (' + pr.jumlah_ulasan + ' ulasan)</div>'
-              + '<p class="card-jenis-text">' + (pr.deskripsi || '') + '</p>'
-              + '<div class="card-price-text">Mulai dari <strong>' + rp(pr.harga_per_kg) + ' / kg</strong></div>'
-              + '<a href="produk_detail.php?id=' + pr.id + '" class="btn-detail-penjual">Lihat Detail</a>'
-              + '</div></article>';
-          }).join('');
-        })
-        .catch(function () { grid.innerHTML = '<p>Gagal memuat katalog. Periksa koneksi database.</p>'; });
-    })();
-  </script>
   <!-- Main Content Grid -->
   <main class="dashboard-main-content">
     <div class="cards-grid-layout">
