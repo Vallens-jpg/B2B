@@ -319,15 +319,50 @@
       if (priceEl) priceEl.innerHTML = `${data.prices[i-1]} <span>/ kg</span>`;
     }
 
-    // Pindah ke halaman Detail Produk dengan membawa data produk & penjual
+    // Pindah ke halaman Detail Produk dengan membawa data produk & penjual.
+    // Kalau kartu punya data-id (dari database), bawa id supaya halaman detail
+    // bisa memuat data asli dan tombol Buat Pesanan berfungsi.
     function requestProduct(btn) {
       const card = btn.closest('.product-card');
       const productName = card.querySelector('.product-item-title').innerText.trim();
       const productPrice = card.querySelector('.product-price-display').innerText.replace(/\s*\/\s*kg/i, '').trim();
+      const produkId = card.getAttribute('data-id');
       window.location.href = 'produk_detail.php?seller=' + sellerId +
+        (produkId ? '&id=' + encodeURIComponent(produkId) : '') +
         '&product=' + encodeURIComponent(productName) +
         '&price=' + encodeURIComponent(productPrice);
     }
+
+    // Daftar Produk dari database (API katalog), memakai desain .product-card
+    // yang sudah ada di halaman ini. Harga & stok dari database menggantikan
+    // harga contoh statis; kalau API gagal, kartu contoh tetap tampil.
+    (function () {
+      var grid = document.querySelector('.product-cards-grid');
+      if (!grid) return;
+      fetch('../../api/katalog.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.produk || !res.data.produk.length) return;
+          var lokasi = (typeof data !== 'undefined' && data.location) ? data.location : 'Solo, Jawa Tengah';
+          grid.innerHTML = res.data.produk.map(function (pr, i) {
+            var nama = pr.nama || '';
+            var jenis = /kampung/i.test(nama) ? 'kampung' : (/omega/i.test(nama) ? 'omega' : 'ras');
+            var grade = /grade a/i.test(nama) ? 'grade-a' : (/grade b/i.test(nama) ? 'grade-b' : (/grade c/i.test(nama) ? 'grade-c' : 'premium'));
+            var badge = /grade a/i.test(nama) ? 'Grade A' : (/grade b/i.test(nama) ? 'Grade B' : (/grade c/i.test(nama) ? 'Grade C' : 'Premium'));
+            var img = pr.gambar ? '../../assets/img/' + pr.gambar : '../../assets/img/prod_grade_a.png';
+            return '<article class="product-card" data-id="' + pr.id + '" data-jenis="' + jenis + '" data-grade="' + grade + '">'
+              + '<div class="product-img-box"><img src="' + img + '" alt="' + nama + '" class="product-cover-img"></div>'
+              + '<div class="product-card-body">'
+              + '<span class="badge-grade ' + grade + '"><span class="badge-dot-inner"></span> ' + badge + '</span>'
+              + '<h4 class="product-item-title">' + nama + '</h4>'
+              + '<div class="product-location-sub">' + lokasi + '</div>'
+              + '<div class="product-price-display">Rp ' + Number(pr.harga_per_kg).toLocaleString('id-ID') + ' <span>/ kg</span></div>'
+              + '<button type="button" class="btn-product-detail" onclick="requestProduct(this)">Lihat Detail</button>'
+              + '</div></article>';
+          }).join('');
+        })
+        .catch(function () { /* biarkan kartu contoh kalau katalog gagal dimuat */ });
+    })();
 
     /* ── State filter aktif ── */
     let activeJenis = 'semua';

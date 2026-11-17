@@ -113,13 +113,13 @@ if (!empty($_SESSION['user'])) {
         <input type="hidden" name="role" id="selectedRole" value="pembeli">
         </form>
 
-        <!-- Akun demo guest -->
+        <!-- Akun demo guest: pembeli dan perusahaan, password sama -->
         <div style="margin-top:1rem; padding:0.9rem; border:1px dashed #CBD5E1; border-radius:0.75rem; background:#F8FAFC;">
           <strong>Akun demo</strong><br>
-          Email: <code>guest@staplr.com</code><br>
-          Password: <code>guest123</code><br>
+          Pembeli: <code>guest@staplr.com</code> / <code>guest123</code><br>
+          Perusahaan: <code>perusahaan@staplr.com</code> / <code>guest123</code><br>
           <button type="button" class="btn-submit-primary" id="guestLoginBtn" style="margin-top:0.6rem; width:100%;">Masuk sebagai Guest Demo</button>
-          <p style="font-size:0.8rem; color:#64748B; margin:0.5rem 0 0;">Hanya untuk demo di laptop sendiri. Akun ini dibuat dari <code>database/migrations/02_seed_demo_users.sql</code>.</p>
+          <p style="font-size:0.8rem; color:#64748B; margin:0.5rem 0 0;">Tombol ini masuk sebagai akun demo sesuai tab role yang aktif di atas (Pembeli atau Perusahaan). Hanya untuk demo di laptop sendiri. Akun pembeli dari <code>database/migrations/02_seed_demo_users.sql</code>, akun perusahaan dari <code>05_seed_demo_perusahaan.sql</code>.</p>
         </div>
 
         <div class="auth-footer">
@@ -194,16 +194,19 @@ if (!empty($_SESSION['user'])) {
       loginForm.addEventListener('submit', handleLogin);
     }
 
-    // Tombol Guest Demo: isi akun demo lalu login.
+    // Tombol Guest Demo: akun demo sesuai tab role yang aktif (pembeli/perusahaan).
     const guestBtn = document.getElementById('guestLoginBtn');
     if (guestBtn) {
       guestBtn.addEventListener('click', async () => {
-        document.getElementById('email').value = 'guest@staplr.com';
+        const roleInput = document.getElementById('selectedRole');
+        const role = roleInput ? roleInput.value : 'pembeli';
+        const email = role === 'perusahaan' ? 'perusahaan@staplr.com' : 'guest@staplr.com';
+        document.getElementById('email').value = email;
         document.getElementById('password').value = 'guest123';
         try {
-          await doLogin('guest@staplr.com', 'guest123');
+          await doLogin(email, 'guest123');
         } catch (err) {
-          showLoginError('Tidak bisa terhubung ke server. Pastikan Docker jalan dan migrasi 01 + 02 sudah dijalankan.');
+          showLoginError('Tidak bisa terhubung ke server. Pastikan Docker jalan dan migrasi 01, 02, dan 05 sudah dijalankan.');
         }
       });
     }

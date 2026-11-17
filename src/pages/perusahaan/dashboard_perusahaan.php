@@ -5988,11 +5988,33 @@
     /* --------------------------------------------------------------------------
        B. DATA PRODUK (Hanya Satuan kg)
        -------------------------------------------------------------------------- */
-    let PRODUCTS_DATA = [
-      { jenis: 'Telur Ayam Ras', grade: 'Grade A', gradeKey: 'A', harga: 'Rp 25.000', stok: '1.200 kg', minOrder: '10 kg', satuan: 'kg' },
-      { jenis: 'Telur Ayam Ras', grade: 'Grade B', gradeKey: 'B', harga: 'Rp 25.000', stok: '1.200 kg', minOrder: '10 kg', satuan: 'kg' },
-      { jenis: 'Telur Ayam Ras', grade: 'Grade C', gradeKey: 'C', harga: 'Rp 25.000', stok: '1.200 kg', minOrder: '10 kg', satuan: 'kg' }
-    ];
+    // Produk dari database (API katalog, hanya produk milik perusahaan yang login).
+    // Bentuk datanya disamakan dengan yang dipakai renderProductsTable().
+    let PRODUCTS_DATA = [];
+    function muatProdukPerusahaan() {
+      return fetch('../../api/katalog.php?perusahaan_id=saya')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.produk) return;
+          PRODUCTS_DATA = res.data.produk.map(function (pr) {
+            var gradeKey = /grade b/i.test(pr.nama) ? 'B' : (/grade c/i.test(pr.nama) ? 'C' : 'A');
+            var jenis = /kampung/i.test(pr.nama) ? 'Telur Ayam Kampung' : (/omega/i.test(pr.nama) ? 'Telur Omega' : 'Telur Ayam Ras');
+            return {
+              id: pr.id,
+              jenis: jenis,
+              grade: 'Grade ' + gradeKey,
+              gradeKey: gradeKey,
+              harga: 'Rp ' + Number(pr.harga_per_kg).toLocaleString('id-ID'),
+              stok: Number(pr.stok_kg).toLocaleString('id-ID') + ' kg',
+              minOrder: '10 kg',
+              satuan: 'kg'
+            };
+          });
+          renderProductsTable();
+        })
+        .catch(function () { /* biarkan tabel kosong kalau katalog gagal dimuat */ });
+    }
+    muatProdukPerusahaan();
 
     /* --------------------------------------------------------------------------
        C. VIEW SWITCHER (DASHBOARD VS PRODUK VS PESANAN)
@@ -6301,10 +6323,20 @@
 
     function handleDeleteProduct(index) {
       const item = PRODUCTS_DATA[index];
+      if (!item || !item.id) { showToast('Produk ini belum tersimpan di database'); return; }
       if (confirm(`Apakah Anda yakin ingin menghapus "${item.jenis} (Grade ${item.gradeKey})"?`)) {
-        PRODUCTS_DATA.splice(index, 1);
-        renderProductsTable();
-        showToast('Produk berhasil dihapus');
+        fetch('../../api/produk/hapus.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ produk_id: item.id })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok) { showToast('Gagal menghapus: ' + (res.error || 'tidak diketahui')); return; }
+            muatProdukPerusahaan();
+            showToast('Produk berhasil dihapus');
+          })
+          .catch(function () { showToast('Gagal menghapus produk. Pastikan sudah login sebagai perusahaan.'); });
       }
     }
 
@@ -6420,17 +6452,33 @@
         satuan: 'KG'
       };
 
-      if (index >= 0 && index < PRODUCTS_DATA.length) {
-        // Edit existing product
-        PRODUCTS_DATA[index] = productPayload;
-        showToast('Detail produk berhasil diperbarui');
-      } else {
-        // Add new product
-        PRODUCTS_DATA.push(productPayload);
-        showToast('Produk baru berhasil ditambahkan');
-      }
+      // Simpan ke database lewat API (nama disusun dari jenis + grade).
+      var namaProduk = productPayload.jenis === 'Telur Ayam Ras'
+        ? 'Telur Ayam Ras Grade ' + gradeSelected
+        : productPayload.jenis;
+      var produkId = (index >= 0 && index < PRODUCTS_DATA.length && PRODUCTS_DATA[index].id) ? PRODUCTS_DATA[index].id : 0;
+      var hargaNum = parseInt(String(productPayload.harga).replace(/[^0-9]/g, ''), 10) || 0;
+      var stokNum = parseFloat(String(productPayload.stok).replace(/[^0-9.]/g, '')) || 0;
+      fetch('../../api/produk/simpan.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: produkId,
+          nama: namaProduk,
+          deskripsi: '',
+          harga_per_kg: hargaNum,
+          stok_kg: stokNum,
+          satuan: 'kg'
+        })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) { showToast('Gagal menyimpan: ' + (res.error || 'tidak diketahui')); return; }
+          showToast(produkId ? 'Detail produk berhasil diperbarui' : 'Produk baru berhasil ditambahkan');
+          muatProdukPerusahaan();
+        })
+        .catch(function () { showToast('Gagal menyimpan produk. Pastikan sudah login sebagai perusahaan.'); });
 
-      renderProductsTable();
       closeProductModal();
     }
 
@@ -6878,43 +6926,53 @@
     const PESANAN_STATUS = {
       'menunggu-persetujuan': { label: 'Menunggu Persetujuan', cls: 'menunggu-persetujuan' },
       'menunggu-pembayaran': { label: 'Menunggu Pembayaran', cls: 'menunggu-pembayaran' },
+      'diproses': { label: 'Diproses', cls: 'menunggu-pembayaran' },
+      'diterima': { label: 'Diterima', cls: 'dikirim' },
       'dikirim': { label: 'Dikirim', cls: 'dikirim' },
       'selesai': { label: 'Selesai', cls: 'selesai' },
       'dibatalkan': { label: 'Dibatalkan', cls: 'dibatalkan' }
     };
 
-    let PESANAN_DATA = [
-      {
-        id: '#ORD-2027-001',
-        pembeli: 'Rira W.',
-        jadwal: '2027-10-12',
-        jadwalLabel: '12 Okt 2027',
-        status: 'menunggu-persetujuan',
-        catatan: 'Kirim produk secepatnya',
-        pembayaran: 500000,
-        items: [{ produk: 'Telur Ayam', qty: 2, harga: 250000 }]
-      },
-      {
-        id: '#ORD-2027-003',
-        pembeli: 'Rira W.',
-        jadwal: '2027-10-12',
-        jadwalLabel: '12 Okt 2027',
-        status: 'menunggu-persetujuan',
-        catatan: 'Kirim sebelum jam 10 pagi',
-        pembayaran: 500000,
-        items: [{ produk: 'Telur Ayam', qty: 2, harga: 250000 }]
-      },
-      {
-        id: '#ORD-2027-002',
-        pembeli: 'Rania',
-        jadwal: '2027-10-17',
-        jadwalLabel: '17 Okt 2027',
-        status: 'dikirim',
-        catatan: 'Telur dipisah per rak',
-        pembayaran: 900000,
-        items: [{ produk: 'Telur Ayam', qty: 3, harga: 300000 }]
-      }
-    ];
+    // Pesanan dari database (API order/list) — order yang sama yang dibuat
+    // pembeli, dilihat dari sisi perusahaan. Status database dipetakan ke
+    // status halaman ini: menunggu_bayar -> menunggu-pembayaran,
+    // dibayar -> menunggu-persetujuan (perlu diproses), diproses -> diproses,
+    // dikirim -> dikirim, diterima -> diterima, selesai -> selesai.
+    let PESANAN_DATA = [];
+    function muatPesananPerusahaan() {
+      return fetch('../../api/order/list.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.orders) return;
+          var petaStatus = {
+            'menunggu_bayar': 'menunggu-pembayaran',
+            'dibayar': 'menunggu-persetujuan',
+            'diproses': 'diproses',
+            'dikirim': 'dikirim',
+            'diterima': 'diterima',
+            'selesai': 'selesai',
+            'dibatalkan': 'dibatalkan'
+          };
+          PESANAN_DATA = res.data.orders.map(function (o) {
+            var tgl = (o.created_at || '').slice(0, 10);
+            return {
+              id: '#' + o.id,
+              orderId: o.id,
+              pembeli: o.nama_buyer || 'Pembeli',
+              jadwal: tgl,
+              jadwalLabel: tgl ? formatTanggalPesanan(tgl) : '-',
+              status: petaStatus[o.status] || o.status,
+              statusDb: o.status,
+              catatan: 'Total bayar Rp ' + Number(o.total_bayar).toLocaleString('id-ID'),
+              pembayaran: o.total_bayar,
+              items: [{ produk: o.nama_produk, qty: o.jumlah_kg, harga: o.harga_satuan }]
+            };
+          });
+          renderPesananTable();
+        })
+        .catch(function () { /* biarkan tabel kosong kalau API gagal dimuat */ });
+    }
+    muatPesananPerusahaan();
 
     let pesananFilter = 'semua';
     let pesananMode = 'list';
@@ -6987,7 +7045,9 @@
         const aksi = order.status === 'menunggu-persetujuan'
           ? '<button class="btn-pesanan-tolak" type="button" onclick="aksiPesanan(\'' + order.id + '\', \'tolak\')">Tolak</button>' +
             '<button class="btn-pesanan-setujui" type="button" onclick="aksiPesanan(\'' + order.id + '\', \'setujui\')">Setujui</button>'
-          : '<button class="btn-pesanan-detail" type="button" onclick="aksiPesanan(\'' + order.id + '\', \'detail\')">Detail</button>';
+          : (order.status === 'diproses'
+            ? '<button class="btn-pesanan-setujui" type="button" onclick="aksiPesanan(\'' + order.id + '\', \'kirim\')">Kirim</button>'
+            : '<button class="btn-pesanan-detail" type="button" onclick="aksiPesanan(\'' + order.id + '\', \'detail\')">Detail</button>');
 
         return '<tr>' +
           '<td class="pesanan-id">' + escapeHtmlPesanan(order.id) + '</td>' +
@@ -7272,17 +7332,36 @@
         return;
       }
 
+      // Setujui = proses order yang sudah dibayar; Tolak = batalkan;
+      // Kirim = kirim order yang sedang diproses (DP 50% cair).
+      var orderIdNum = order.orderId || parseInt(String(id).replace(/[^0-9]/g, ''), 10) || 0;
+      function panggilOrderApi(namaFile, pesanSukses) {
+        fetch('../../api/order/' + namaFile + '.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order_id: orderIdNum })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok) { showToast('Gagal: ' + (res.error || 'tidak diketahui')); return; }
+            showToast(pesanSukses);
+            muatPesananPerusahaan();
+          })
+          .catch(function () { showToast('Gagal menghubungi server. Pastikan sudah login sebagai perusahaan.'); });
+      }
       if (aksi === 'setujui') {
-        order.status = 'menunggu-pembayaran';
-        renderPesananTable();
-        showToast('Pesanan ' + id + ' disetujui');
+        panggilOrderApi('proses', 'Pesanan ' + id + ' disetujui dan diproses');
         return;
       }
 
       if (aksi === 'tolak') {
-        order.status = 'dibatalkan';
-        renderPesananTable();
-        showToast('Pesanan ' + id + ' ditolak');
+        panggilOrderApi('batal', 'Pesanan ' + id + ' ditolak');
+        return;
+      }
+
+      if (aksi === 'kirim') {
+        panggilOrderApi('kirim', 'Pesanan ' + id + ' dikirim (DP 50% cair)');
+        return;
       }
     }
 
