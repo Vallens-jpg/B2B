@@ -5995,7 +5995,7 @@
       return fetch('../../api/katalog.php?perusahaan_id=saya')
         .then(function (r) { return r.json(); })
         .then(function (res) {
-          if (!res.ok || !res.data || !res.data.produk) return;
+          if (!res.ok || !res.data || !res.data.produk) { showToast('Gagal memuat produk: ' + (res.error || 'tidak diketahui')); return; }
           PRODUCTS_DATA = res.data.produk.map(function (pr) {
             var gradeKey = /grade b/i.test(pr.nama) ? 'B' : (/grade c/i.test(pr.nama) ? 'C' : 'A');
             var jenis = /kampung/i.test(pr.nama) ? 'Telur Ayam Kampung' : (/omega/i.test(pr.nama) ? 'Telur Omega' : 'Telur Ayam Ras');

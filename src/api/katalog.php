@@ -32,7 +32,7 @@ try {
         $params[] = "%$cari%";
         $params[] = "%$cari%";
     }
-    $stmt = $pdo->prepare("SELECT COUNT(*) AS total FROM produk $where");
+    $stmt = $pdo->prepare("SELECT COUNT(*) AS total FROM produk p $where");
     $stmt->execute($params);
     $total = (int) $stmt->fetchColumn();
 
