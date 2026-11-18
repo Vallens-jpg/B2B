@@ -397,12 +397,12 @@
     </a>
     <h1 class="detail-page-heading">Konfirmasi Pesanan</h1>
     <div class="navbar-actions">
-      <button type="button" class="notification-bell-btn" aria-label="Notifikasi">
+      <a href="../notifikasi.php" class="notification-bell-btn" aria-label="Notifikasi">
         <svg class="bell-icon" viewBox="0 0 24 24">
           <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
         </svg>
-        <span class="notification-badge-red">3</span>
-      </button>
+        <span class="notification-badge-red" id="kpBellBadge" style="display:none">0</span>
+      </a>
       <div class="user-profile-capsule">
         <div class="user-avatar-circle">AD</div>
         <span class="user-name-text">Buyer</span>
@@ -422,15 +422,15 @@
 
       <div class="kp-summary-row">
         <span class="kp-summary-label">Total pesanan</span>
-        <span id="summaryTotal" class="kp-summary-value">Rp 500.000</span>
+        <span id="summaryTotal" class="kp-summary-value">—</span>
       </div>
       <div class="kp-summary-row">
-        <span class="kp-summary-label">Jadwal kirim</span>
-        <span class="kp-summary-value">12 Okt 2027</span>
+        <span class="kp-summary-label">Tanggal Pesanan</span>
+        <span id="summaryTanggal" class="kp-summary-value">—</span>
       </div>
 
       <div class="kp-summary-notes-label">Catatan pesanan</div>
-      <div id="summaryNotes" class="kp-summary-notes-box">Mohon kemas setiap produk secara terpisah.</div>
+      <div id="summaryNotes" class="kp-summary-notes-box">—</div>
     </aside>
 
     <!-- Right: Tinjau Pesanan -->
@@ -441,8 +441,8 @@
       <!-- Perusahaan -->
       <h3 class="kp-section-title">Perusahaan</h3>
       <div class="kp-company-box">
-        <div id="companyAvatar" class="kp-company-avatar">R</div>
-        <span id="companyName" class="kp-company-name">PT Telur Makmur</span>
+        <div id="companyAvatar" class="kp-company-avatar">–</div>
+        <span id="companyName" class="kp-company-name">Memuat…</span>
       </div>
 
       <div class="kp-divider"></div>
@@ -462,11 +462,11 @@
               <ellipse cx="12" cy="13" rx="7" ry="9" fill="#f59e0b" stroke="#b45309" stroke-width="1.6"/>
             </svg>
           </span>
-          <span id="productName">Telur Ayam Grade A</span>
+          <span id="productName">Memuat…</span>
         </div>
-        <div id="productQty">2</div>
-        <div id="productPrice">Rp 250.000</div>
-        <div id="productSubtotal" class="kp-sub-cell">Rp 500.000</div>
+        <div id="productQty">—</div>
+        <div id="productPrice">—</div>
+        <div id="productSubtotal" class="kp-sub-cell">—</div>
       </div>
 
       <div class="kp-divider" style="margin-top: 1.25rem;"></div>
@@ -475,13 +475,13 @@
       <h3 class="kp-section-title">Pengiriman &amp; pembayaran</h3>
       <div class="kp-notes-box">
         <div class="kp-notes-label">Catatan pesanan (opsional)</div>
-        <div id="notesDisplay" class="kp-notes-text">Mohon kemas setiap produk secara terpisah.</div>
-        <input id="notesInput" type="text" class="kp-notes-input" value="Mohon kemas setiap produk secara terpisah." style="display:none;">
+        <div id="notesDisplay" class="kp-notes-text">—</div>
+        <input id="notesInput" type="text" class="kp-notes-input" value="" style="display:none;">
       </div>
 
       <div class="kp-total-box">
         <span class="kp-total-label">Total pesanan</span>
-        <span id="totalValue" class="kp-total-value">Rp 500.000</span>
+        <span id="totalValue" class="kp-total-value">—</span>
       </div>
 
       <div class="kp-info-line">
@@ -509,63 +509,42 @@
   <!-- Floating Navigation -->
 
   <script>
+    // Data asli: produk dari api/produk/detail.php (?id=), pesanan dibuat lewat API.
     const urlParams = new URLSearchParams(window.location.search);
-    const sellerId = urlParams.get('seller') || '1';
-    const product = urlParams.get('product') || 'Telur Ayam Grade A';
-    const qtyParam = urlParams.get('qty') || '2 kg';
-    const priceParam = urlParams.get('price') || 'Rp 250.000';
-    const subtotalParam = urlParams.get('subtotal') || 'Rp 500.000';
-    const notesParam = urlParams.get('notes');
+    const produkIdParam = urlParams.get('id');
+    const qtyParam = parseInt((urlParams.get('qty') || '2').replace(/[^0-9]/g, ''), 10) || 2;
+    const notesParam = urlParams.get('notes') || '';
 
-    const sellersMap = {
-      '1': 'PT Telur Makmur',
-      '2': 'Mitra Unggas Sejahtera',
-      '3': 'Tunas Farm',
-      '4': 'Berkah Telur Utama',
-      '5': 'Ternak Mandiri',
-      '6': 'Sinar Jaya Poultry'
-    };
-
-    const hasParams = urlParams.get('product') || urlParams.get('seller');
-    const company = hasParams
-      ? (sellersMap[sellerId] || 'PT Telur Makmur')
-      : 'PT Telur Makmur';
-
-    // Isi data pesanan
-    document.getElementById('companyName').innerText = company;
-    document.getElementById('companyAvatar').innerText = company.charAt(0);
-    document.getElementById('productName').innerText = product;
-    document.getElementById('productQty').innerText = qtyParam.replace(/\s*kg/i, '').trim();
-    document.getElementById('productPrice').innerText = priceParam;
-    document.getElementById('productSubtotal').innerText = subtotalParam;
-    document.getElementById('totalValue').innerText = subtotalParam;
-    document.getElementById('summaryTotal').innerText = subtotalParam;
-
-    if (notesParam) {
-      document.getElementById('notesInput').value = notesParam;
-      document.getElementById('notesDisplay').innerText = notesParam;
+    function formatRupiah(num) {
+      return 'Rp ' + Number(num).toLocaleString('id-ID');
     }
 
-    // Catatan yang diedit pengguna ikut tampil di ringkasan kiri
-    const notesInput = document.getElementById('notesInput');
-    notesInput.addEventListener('input', function () {
-      const val = this.value.trim() ? this.value : '—';
-      document.getElementById('summaryNotes').innerText = val;
-      document.getElementById('notesDisplay').innerText = val;
-    });
+    const confirmBtn = document.getElementById('confirmBtn');
+    const editLink = document.getElementById('editLink');
+    const backLink = document.getElementById('backLink');
 
-    // Tautan kembali & edit -> halaman Ajukan Pesanan dengan data yang sama
-    const backQuery =
-      '?seller=' + encodeURIComponent(sellerId) +
-      '&product=' + encodeURIComponent(product) +
-      '&qty=' + encodeURIComponent(qtyParam) +
-      '&price=' + encodeURIComponent(priceParam) +
-      '&subtotal=' + encodeURIComponent(subtotalParam);
-    const fallbackKp = 'checkout.php' + backQuery;
-    document.getElementById('backLink').href = fallbackKp;
-    document.getElementById('editLink').href = fallbackKp;
+    // Lonceng: jumlah notifikasi belum dibaca yang asli
+    fetch('../../api/notifikasi.php')
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res.ok || !res.data) return;
+        const unread = res.data.filter(function (n) { return !n.dibaca; }).length;
+        const badge = document.getElementById('kpBellBadge');
+        if (badge) {
+          badge.textContent = unread;
+          badge.style.display = unread > 0 ? '' : 'none';
+        }
+      })
+      .catch(function () {});
 
-    const kpBackBtn = document.getElementById('backLink');
+    // Tautan kembali & edit -> halaman Ajukan Pesanan untuk produk yang sama
+    const fallbackKp = produkIdParam
+      ? 'checkout.php?id=' + encodeURIComponent(produkIdParam)
+      : 'checkout.php';
+    backLink.href = fallbackKp;
+    editLink.href = fallbackKp;
+
+    const kpBackBtn = backLink;
     if (kpBackBtn) {
       kpBackBtn.addEventListener('click', function(e) {
         e.preventDefault();
@@ -579,14 +558,79 @@
       });
     }
 
-    // Konfirmasi Pesanan -> halaman Pembayaran Transfer Bank
-    document.getElementById('confirmBtn').addEventListener('click', function () {
-      window.location.href = 'pembayaran.php' +
-        '?seller='   + encodeURIComponent(sellerId) +
-        '&product='  + encodeURIComponent(product) +
-        '&price='    + encodeURIComponent(priceParam) +
-        '&qty='      + encodeURIComponent(qtyParam) +
-        '&subtotal=' + encodeURIComponent(subtotalParam);
+    // Catatan yang diedit pengguna ikut tampil di ringkasan kiri
+    const notesInput = document.getElementById('notesInput');
+    notesInput.addEventListener('input', function () {
+      const val = this.value.trim() ? this.value : '—';
+      document.getElementById('summaryNotes').innerText = val;
+      document.getElementById('notesDisplay').innerText = val;
+    });
+
+    if (notesParam) {
+      notesInput.value = notesParam;
+      document.getElementById('notesDisplay').innerText = notesParam;
+      document.getElementById('summaryNotes').innerText = notesParam;
+    }
+
+    // Tanggal pesanan = hari ini
+    document.getElementById('summaryTanggal').innerText =
+      new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+    if (!produkIdParam) {
+      document.getElementById('productName').innerText =
+        'Produk tidak ditemukan. Buka halaman ini dari Detail Produk atau Checkout.';
+      document.getElementById('companyName').innerText = '—';
+      if (confirmBtn) confirmBtn.disabled = true;
+    } else {
+      // Isi data pesanan dari produk asli
+      fetch('../../api/produk/detail.php?id=' + encodeURIComponent(produkIdParam))
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.produk) {
+            document.getElementById('productName').innerText = 'Produk tidak ditemukan.';
+            if (confirmBtn) confirmBtn.disabled = true;
+            return;
+          }
+          const pr = res.data.produk;
+          const harga = Number(pr.harga_per_kg) || 0;
+          const subtotal = qtyParam * harga;
+          const company = pr.nama_perusahaan || '—';
+          document.getElementById('companyName').innerText = company;
+          document.getElementById('companyAvatar').innerText = company.charAt(0);
+          document.getElementById('productName').innerText = pr.nama;
+          document.getElementById('productQty').innerText = String(qtyParam);
+          document.getElementById('productPrice').innerText = formatRupiah(harga);
+          document.getElementById('productSubtotal').innerText = formatRupiah(subtotal);
+          document.getElementById('totalValue').innerText = formatRupiah(subtotal);
+          document.getElementById('summaryTotal').innerText = formatRupiah(subtotal);
+        })
+        .catch(function () {
+          document.getElementById('productName').innerText = 'Gagal memuat produk.';
+          if (confirmBtn) confirmBtn.disabled = true;
+        });
+    }
+
+    // Konfirmasi Pesanan -> buat pesanan asli lewat API, lalu ke detail pesanan
+    confirmBtn.addEventListener('click', async function () {
+      if (!produkIdParam) return;
+      confirmBtn.disabled = true;
+      try {
+        const res = await fetch('../../api/order/create.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ produk_id: Number(produkIdParam), jumlah_kg: qtyParam })
+        });
+        const data = await res.json();
+        if (!data.ok) {
+          alert(data.error || 'Gagal membuat pesanan.');
+          confirmBtn.disabled = false;
+          return;
+        }
+        window.location.href = '../order_detail.php?id=' + data.data.order_id;
+      } catch (e) {
+        alert('Gagal menghubungi server.');
+        confirmBtn.disabled = false;
+      }
     });
   </script>
 </body>
