@@ -267,12 +267,12 @@
     </a>
     <h1 class="detail-page-heading">Ajukan Permintaan</h1>
     <div class="navbar-actions">
-      <button type="button" class="notification-bell-btn" aria-label="Notifikasi">
+      <a href="../notifikasi.php" class="notification-bell-btn" aria-label="Notifikasi">
         <svg class="bell-icon" viewBox="0 0 24 24">
           <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
         </svg>
-        <span class="notification-badge-red">3</span>
-      </button>
+        <span class="notification-badge-red" id="ajukanBellBadge" style="display:none">0</span>
+      </a>
       <div class="user-profile-capsule">
         <div class="user-avatar-circle">AD</div>
         <span class="user-name-text">Buyer</span>
@@ -289,7 +289,7 @@
         <!-- Perusahaan -->
         <div class="form-group" style="margin-bottom: 1.75rem;">
           <label class="field-label-sm">Perusahaan :</label>
-          <input type="text" id="companyInput" class="input-readonly" value="PT Telur Makmur" readonly>
+          <input type="text" id="companyInput" class="input-readonly" value="" readonly>
         </div>
 
         <div class="section-divider"></div>
@@ -308,12 +308,11 @@
         <div class="item-row-grid">
           <div class="select-wrapper">
             <select class="form-select" id="productSelect">
-              <option value="Telur ayam">Telur ayam</option>
-              <option value="Telur Omega">Telur Omega</option>
+              <option value="Telur Ayam Grade A">Telur Ayam Grade A</option>
+              <option value="Telur Ayam Grade B">Telur Ayam Grade B</option>
+              <option value="Telur Ayam Grade C">Telur Ayam Grade C</option>
               <option value="Telur Ayam Kampung">Telur Ayam Kampung</option>
-              <option value="Telur Ayam Ras Grade A">Telur Ayam Ras Grade A</option>
-              <option value="Telur Ayam Ras Grade B">Telur Ayam Ras Grade B</option>
-              <option value="Telur Ayam Ras Grade C">Telur Ayam Ras Grade C</option>
+              <option value="Telur Omega">Telur Omega</option>
             </select>
             <svg class="select-arrow" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
           </div>
@@ -321,10 +320,10 @@
             <input type="text" id="qtyInput" class="form-input-qty" value="2 kg">
           </div>
           <div>
-            <input type="text" id="priceInput" class="form-input-price" value="Rp 250.000">
+            <input type="text" id="priceInput" class="form-input-price" value="">
           </div>
           <div>
-            <span id="subtotalText" class="subtotal-text">Rp 500.000</span>
+            <span id="subtotalText" class="subtotal-text">Rp 0</span>
           </div>
           <div>
             <button type="button" class="btn-delete-row" aria-label="Hapus item">
@@ -345,7 +344,7 @@
         <!-- Catatan Pesanan -->
         <div class="form-group" style="margin-bottom: 0;">
           <label class="field-label-sm">Catatan pesanan <span style="color: #94a3b8; font-weight: 400;">(opsional)</span></label>
-          <textarea class="textarea-notes" placeholder="Tulis catatan pesanan di sini...">Mohon kemas setiap produk secara terpisah.</textarea>
+          <textarea class="textarea-notes" placeholder="Tulis catatan pesanan di sini..."></textarea>
         </div>
       </form>
     </div>
@@ -360,26 +359,38 @@
   <!-- Floating Navigation -->
 
   <script>
-    // Handle seller and product parameters from detail page
+    // Data asli: produk & perusahaan dari API, pesanan dibuat lewat API.
     const urlParams = new URLSearchParams(window.location.search);
-    const sellerId = urlParams.get('seller') || '1';
-    const productName = urlParams.get('product');
-    const productPrice = urlParams.get('price');
+    const produkIdParam = urlParams.get('id');
 
-    const sellersMap = {
-      '1': 'PT Telur Makmur',
-      '2': 'Mitra Unggas Sejahtera',
-      '3': 'Tunas Farm',
-      '4': 'Berkah Telur Utama',
-      '5': 'Ternak Mandiri',
-      '6': 'Sinar Jaya Poultry'
-    };
+    let produkByName = {};
+    let penjualNamaById = {};
 
-    // Tombol kembali & batal selalu mengarah ke halaman Detail Produk
-    const backToProduct = `produk_detail.php?seller=${encodeURIComponent(sellerId)}` +
-      `&product=${encodeURIComponent(productName || 'Telur ayam')}` +
-      `&price=${encodeURIComponent(productPrice || 'Rp 250.000')}`;
+    function parseNumber(str) {
+      return parseInt(String(str).replace(/[^0-9]/g, '')) || 0;
+    }
 
+    function formatRupiah(num) {
+      return 'Rp ' + num.toLocaleString('id-ID');
+    }
+
+    function isiPerusahaan(namaProduk) {
+      const p = produkByName[namaProduk];
+      const el = document.getElementById('companyInput');
+      if (!el) return;
+      if (p && p.perusahaan_id && penjualNamaById[p.perusahaan_id]) {
+        el.value = penjualNamaById[p.perusahaan_id];
+      } else if (p && p.perusahaan_id) {
+        el.value = 'Perusahaan #' + p.perusahaan_id;
+      } else {
+        el.value = '';
+      }
+    }
+
+    // Tombol kembali & batal -> halaman Detail Produk (atau Dashboard)
+    const backToProduct = produkIdParam
+      ? 'produk_detail.php?id=' + encodeURIComponent(produkIdParam)
+      : 'dashboard_buyer.php';
     document.getElementById('backLink').href = backToProduct;
     document.getElementById('cancelLink').href = backToProduct;
 
@@ -408,46 +419,24 @@
       });
     }
 
-    if (sellersMap[sellerId]) {
-      document.getElementById('companyInput').value = sellersMap[sellerId];
-    }
-
-    if (productName) {
-      const select = document.getElementById('productSelect');
-      // check if option exists, otherwise add it
-      let found = false;
-      for (let opt of select.options) {
-        if (opt.value === productName) {
-          opt.selected = true;
-          found = true;
-          break;
+    // Lonceng: jumlah notifikasi belum dibaca yang asli
+    fetch('../../api/notifikasi.php')
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res.ok || !res.data) return;
+        const unread = res.data.filter(function (n) { return !n.dibaca; }).length;
+        const badge = document.getElementById('ajukanBellBadge');
+        if (badge) {
+          badge.textContent = unread;
+          badge.style.display = unread > 0 ? '' : 'none';
         }
-      }
-      if (!found) {
-        const newOpt = document.createElement('option');
-        newOpt.value = productName;
-        newOpt.text = productName;
-        newOpt.selected = true;
-        select.add(newOpt);
-      }
-    }
-
-    if (productPrice) {
-      document.getElementById('priceInput').value = productPrice;
-    }
+      })
+      .catch(function () {});
 
     // Format rupiah otomatis & hitung subtotal
     const qtyInput = document.getElementById('qtyInput');
     const priceInput = document.getElementById('priceInput');
     const subtotalText = document.getElementById('subtotalText');
-
-    function parseNumber(str) {
-      return parseInt(String(str).replace(/[^0-9]/g, '')) || 0;
-    }
-
-    function formatRupiah(num) {
-      return 'Rp ' + num.toLocaleString('id-ID');
-    }
 
     function recalcSubtotal() {
       const qty = parseNumber(qtyInput.value);
@@ -467,8 +456,51 @@
       recalcSubtotal();
     });
 
-    // Hitung ulang saat halaman dimuat (harga bisa berubah dari parameter URL)
-    recalcSubtotal();
+    // Isi daftar produk dari database (API katalog), supaya harga & id produk asli.
+    const productSelect = document.getElementById('productSelect');
+    fetch('../../api/penjual.php')
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res.ok && res.data && res.data.penjual) {
+          res.data.penjual.forEach(function (pj) { penjualNamaById[pj.id] = pj.nama; });
+        }
+      })
+      .catch(function () {});
+    fetch('../../api/katalog.php')
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res.ok || !res.data || !res.data.produk) return;
+        productSelect.innerHTML = '';
+        res.data.produk.forEach(function (pr) {
+          produkByName[pr.nama] = pr;
+          const opt = document.createElement('option');
+          opt.value = pr.nama;
+          opt.text = pr.nama + ' — Rp ' + Number(pr.harga_per_kg).toLocaleString('id-ID') + '/kg';
+          opt.dataset.harga = pr.harga_per_kg;
+          productSelect.appendChild(opt);
+        });
+        let target = null;
+        if (produkIdParam) {
+          target = res.data.produk.find(function (pr) { return String(pr.id) === String(produkIdParam); });
+        }
+        if (!target && res.data.produk.length) target = res.data.produk[0];
+        if (target) {
+          productSelect.value = target.nama;
+          priceInput.value = 'Rp ' + Number(target.harga_per_kg).toLocaleString('id-ID');
+          isiPerusahaan(target.nama);
+          recalcSubtotal();
+        }
+      })
+      .catch(function () {});
+
+    productSelect.addEventListener('change', function () {
+      const pr = produkByName[this.value];
+      if (pr) {
+        priceInput.value = 'Rp ' + Number(pr.harga_per_kg).toLocaleString('id-ID');
+        isiPerusahaan(pr.nama);
+        recalcSubtotal();
+      }
+    });
 
     // Tambah Item baru
     let itemCounter = 1;
@@ -479,12 +511,11 @@
       row.innerHTML = `
         <div class="select-wrapper">
           <select class="form-select">
-            <option>Telur ayam</option>
-            <option>Telur Omega</option>
+            <option>Telur Ayam Grade A</option>
+            <option>Telur Ayam Grade B</option>
+            <option>Telur Ayam Grade C</option>
             <option>Telur Ayam Kampung</option>
-            <option>Telur Ayam Ras Grade A</option>
-            <option>Telur Ayam Ras Grade B</option>
-            <option>Telur Ayam Ras Grade C</option>
+            <option>Telur Omega</option>
           </select>
           <svg class="select-arrow" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
         </div>
@@ -528,20 +559,36 @@
       });
     }
 
-    // Kirim Permintaan -> halaman Status Pesanan (membawa data pesanan)
-    document.getElementById('kirimBtn').addEventListener('click', function () {
+    // Kirim Permintaan -> buat pesanan asli lewat API, lalu ke detail pesanan
+    document.getElementById('kirimBtn').addEventListener('click', async function () {
       const rows = document.querySelectorAll('.item-row-grid');
       const firstRow = rows[0];
       const product = firstRow.querySelector('.form-select').value;
-      const qty = firstRow.querySelector('.form-input-qty').value || '2 kg';
-      const subtotalValue = firstRow.querySelector('.subtotal-text').innerText;
-
-      window.location.href = 'status_pesanan.php' +
-        '?seller=' + encodeURIComponent(sellerId) +
-        '&product=' + encodeURIComponent(product) +
-        '&price=' + encodeURIComponent(document.getElementById('priceInput').value) +
-        '&qty=' + encodeURIComponent(qty.replace(/\s*kg/i, '').trim() + ' kg') +
-        '&subtotal=' + encodeURIComponent(subtotalValue);
+      const qty = parseNumber(firstRow.querySelector('.form-input-qty').value);
+      const p = produkByName[product];
+      if (!p) {
+        alert('Produk tidak ditemukan di katalog.');
+        return;
+      }
+      if (!qty || qty <= 0) {
+        alert('Jumlah harus lebih dari 0.');
+        return;
+      }
+      try {
+        const res = await fetch('../../api/order/create.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ produk_id: p.id, jumlah_kg: qty })
+        });
+        const data = await res.json();
+        if (!data.ok) {
+          alert(data.error || 'Gagal membuat pesanan.');
+          return;
+        }
+        window.location.href = '../order_detail.php?id=' + data.data.order_id;
+      } catch (e) {
+        alert('Gagal menghubungi server.');
+      }
     });
   </script>
 </body>
