@@ -21,7 +21,7 @@
         <svg class="bell-icon" viewBox="0 0 24 24">
           <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
         </svg>
-        <span class="notification-badge-red">3</span>
+        <span class="notification-badge-red" id="notifBadgeRed" style="display:none"></span>
       </a>
       <div class="user-profile-capsule">
         <div class="user-avatar-circle">AD</div>
@@ -235,6 +235,31 @@
       if (caption) caption.innerText = 'Belum ada pesanan';
       if (cancelLink) cancelLink.style.display = 'none';
     }
+  </script>
+  <script>
+    // Badge lonceng asli: jumlah notifikasi belum dibaca dari API.
+    (function () {
+      var badge = document.getElementById('notifBadgeRed');
+      if (!badge) return;
+      fetch('../../api/notifikasi.php').then(function (r) { return r.json(); }).then(function (res) {
+        if (!res || !res.ok || !res.data || !res.data.notifikasi) return;
+        var belum = 0;
+        res.data.notifikasi.forEach(function (n) { if (!n.dibaca) belum++; });
+        if (belum > 0) { badge.textContent = belum; badge.style.display = ''; }
+      }).catch(function () {});
+    })();
+  </script>
+  <script>
+    // Avatar & nama dari user yang sedang login (bukan "AD" hardcode).
+    (function () {
+      fetch('../../api/auth/me.php').then(function (r) { return r.json(); }).then(function (res) {
+        if (!res || !res.ok || !res.data || !res.data.nama) return;
+        var nama = res.data.nama;
+        var inisial = nama.trim().split(/\s+/).map(function (w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
+        document.querySelectorAll('.user-avatar-circle, .ulasan-user-avatar, .pd-user-avatar').forEach(function (el) { el.textContent = inisial; });
+        document.querySelectorAll('.user-name-text').forEach(function (el) { el.textContent = nama; });
+      }).catch(function () {});
+    })();
   </script>
 </body>
 </html>

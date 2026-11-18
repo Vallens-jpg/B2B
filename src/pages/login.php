@@ -128,7 +128,7 @@ if (!empty($_SESSION['user'])) {
         </div>
 
         <div class="auth-footer">
-          Belum punya akun? <a href="#" class="link-highlight">Daftar</a>
+          Belum punya akun? <a href="daftar.php" class="link-highlight">Daftar</a>
         </div>
       </div>
     </div>
