@@ -233,7 +233,20 @@
       .then(function (r) { return r.json(); })
       .then(function (res) {
         if (res && res.ok && res.data && res.data.orders && res.data.orders.length) {
-          tampilkanPesananAsli(res.data.orders);
+          // Bila dibuka dengan ?id=N (misalnya setelah bayar dari detail
+          // pesanan), kartu utama = pesanan itu, bukan sekadar yang terbaru.
+          var idParam = urlParams.get('id');
+          if (idParam) {
+            var dipilih = res.data.orders.filter(function (o) { return String(o.id) === String(idParam); });
+            if (dipilih.length) {
+              var lainnya = res.data.orders.filter(function (o) { return String(o.id) !== String(idParam); });
+              tampilkanPesananAsli(dipilih.concat(lainnya));
+            } else {
+              tampilkanKosong('Pesanan #' + idParam + ' tidak ditemukan.');
+            }
+          } else {
+            tampilkanPesananAsli(res.data.orders);
+          }
         } else {
           tampilkanKosong();
         }
