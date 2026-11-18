@@ -4788,8 +4788,8 @@
               <span class="metric-label">Stok Produk</span>
               <span class="metric-active-dot"></span>
             </div>
-            <div class="metric-value">18.400</div>
-            <div class="metric-subtext">butir tersedia</div>
+            <div class="metric-value">0</div>
+            <div class="metric-subtext">kg tersedia</div>
           </article>
 
           <!-- Card 2: Pesanan Baru (Figma S-2) -->
@@ -4798,7 +4798,7 @@
               <span class="metric-label">Pesanan Baru</span>
               <span class="metric-active-dot"></span>
             </div>
-            <div class="metric-value">60</div>
+            <div class="metric-value">0</div>
             <div class="metric-subtext">pesanan minggu ini</div>
           </article>
 
@@ -4808,7 +4808,7 @@
               <span class="metric-label">Pesanan Diproses</span>
               <span class="metric-active-dot"></span>
             </div>
-            <div class="metric-value">12</div>
+            <div class="metric-value">0</div>
             <div class="metric-subtext">sedang diproses</div>
           </article>
 
@@ -4818,7 +4818,7 @@
               <span class="metric-label">Pendapatan Minggu Ini</span>
               <span class="metric-active-dot"></span>
             </div>
-            <div class="metric-value">Rp 36.000.000</div>
+            <div class="metric-value">Rp 0</div>
             <div class="metric-subtext">7 hari terakhir</div>
           </article>
         </section>
@@ -5901,89 +5901,242 @@
     /* --------------------------------------------------------------------------
        A. DASHBOARD S-1, S-2, S-3, S-4 CONFIGURATIONS
        -------------------------------------------------------------------------- */
-    const DASHBOARD_CONFIGS = {
+    // Grafik dashboard dihitung dari data asli (PRODUCTS_DATA + PESANAN_DATA),
+    // bukan angka hardcode. Nilai awal 0/empty: diisi ulang oleh
+    // bangunGrafikDashboard() setiap kali produk atau pesanan selesai dimuat.
+    let DASHBOARD_CONFIGS = {
       'stok': {
         type: 'single-chart',
         title: 'Stok produk',
         subtitle: 'Total stok tersedia',
-        total: '18.400 butir',
-        maxVal: 12000,
-        yTicks: [12000, 8000, 4000, 0],
+        total: '0 kg',
+        maxVal: 1,
+        yTicks: [1, 0],
         formatY: (val) => val === 0 ? '0' : val.toLocaleString('id-ID'),
-        bars: [
-          { label: 'Telur Omega', value: 1400, displayVal: '1.400' },
-          { label: 'Telur A', value: 10000, displayVal: '10.000' },
-          { label: 'Telur B', value: 3000, displayVal: '3.000' },
-          { label: 'Telur C', value: 4000, displayVal: '4.000' }
-        ]
+        bars: []
       },
       'pesanan-baru': {
         type: 'single-chart',
         title: 'Pesanan baru per hari',
         subtitle: 'Jumlah pesanan',
-        total: '60 pesanan',
-        maxVal: 15,
-        yTicks: [15, 10, 5, 0],
-        formatY: (val) => val.toString(),
-        bars: [
-          { label: 'Senin', value: 8, displayVal: '8' },
-          { label: 'Selasa', value: 10, displayVal: '10' },
-          { label: 'Rabu', value: 12, displayVal: '12' },
-          { label: 'Kamis', value: 9, displayVal: '9' },
-          { label: 'Jumat', value: 11, displayVal: '11' },
-          { label: 'Sabtu', value: 6, displayVal: '6' },
-          { label: 'Minggu', value: 4, displayVal: '4' }
-        ]
+        total: '0 pesanan',
+        maxVal: 1,
+        yTicks: [1, 0],
+        formatY: (val) => String(Math.round(val)),
+        bars: []
       },
       'pesanan-proses': {
         type: 'table',
         title: 'Pesanan Terbaru',
         buttonText: 'Lihat Semua',
-        orders: [
-          { id: '#ORD-2027-001', buyer: 'UD Lancar Jaya', product: 'Telur Ayam', total: 'Rp 707.000', date: '07 Jun 2027', status: 'Diproses', statusClass: 'diproses' },
-          { id: '#ORD-2027-002', buyer: 'Nina W', product: 'Telur Ayam', total: 'Rp 750.000', date: '07 Jun 2027', status: 'Baru', statusClass: 'baru' },
-          { id: '#ORD-2027-003', buyer: 'PT Boga Jaya', product: 'Telur Omega', total: 'Rp 1.430.000', date: '06 Jun 2027', status: 'Selesai', statusClass: 'selesai' },
-          { id: '#ORD-2027-004', buyer: 'CV Sembako', product: 'Telur Ayam B', total: 'Rp 980.000', date: '05 Jun 2027', status: 'Diproses', statusClass: 'diproses' }
-        ]
+        orders: []
       },
       'pendapatan': {
         type: 'dual-charts',
         chartLeft: {
-          title: 'Volume telur (butir)',
+          title: 'Volume telur (kg)',
           subtitle: 'Pendapatan minggu ini',
-          total: '18.000',
-          maxVal: 4000,
-          yTicks: [4000, 2000, 0],
+          total: '0',
+          maxVal: 1,
+          yTicks: [1, 0],
           formatY: (val) => val === 0 ? '0' : val.toLocaleString('id-ID'),
-          bars: [
-            { label: 'Sen', value: 2400, displayVal: '2.400' },
-            { label: 'Sel', value: 3100, displayVal: '3.100' },
-            { label: 'Rab', value: 3500, displayVal: '3.500' },
-            { label: 'Kam', value: 2700, displayVal: '2.700' },
-            { label: 'Jum', value: 1900, displayVal: '1.900' },
-            { label: 'Sab', value: 3600, displayVal: '3.600' },
-            { label: 'Min', value: 1200, displayVal: '1.200' }
-          ]
+          bars: []
         },
         chartRight: {
           title: 'Pendapatan (Rp juta)',
           subtitle: 'Pendapatan minggu ini',
-          total: 'Rp 36 jt',
-          maxVal: 8,
-          yTicks: [8, 6, 4, 2, 0],
+          total: 'Rp 0 jt',
+          maxVal: 1,
+          yTicks: [1, 0],
           formatY: (val) => val === 0 ? '0' : val.toString(),
-          bars: [
-            { label: 'Sen', value: 4.8, displayVal: '4,8' },
-            { label: 'Sel', value: 6.0, displayVal: '6,0' },
-            { label: 'Rab', value: 6.8, displayVal: '6,8' },
-            { label: 'Kam', value: 5.4, displayVal: '5,4' },
-            { label: 'Jum', value: 3.8, displayVal: '3,8' },
-            { label: 'Sab', value: 7.2, displayVal: '7,2' },
-            { label: 'Min', value: 2.4, displayVal: '2,4' }
-          ]
+          bars: []
         }
       }
     };
+
+    // Skala sumbu-Y "bagus" (1-2-5 x 10^n) untuk stok, volume, dan pendapatan.
+    function skalaBagus(nilaiMaks) {
+      if (!nilaiMaks || nilaiMaks <= 0) return { maxVal: 1, yTicks: [1, 0] };
+      var magnitude = Math.pow(10, Math.floor(Math.log10(nilaiMaks)));
+      var ternormalisasi = nilaiMaks / magnitude;
+      var langkah = ternormalisasi <= 1 ? 1 : (ternormalisasi <= 2 ? 2 : (ternormalisasi <= 5 ? 5 : 10));
+      var maks = langkah * magnitude;
+      return { maxVal: maks, yTicks: [maks, maks / 2, 0] };
+    }
+
+    // Skala sumbu-Y bilangan bulat untuk jumlah pesanan.
+    function skalaHitung(nilaiMaks) {
+      var maks = Math.max(1, Math.ceil(nilaiMaks || 0));
+      var tengah = Math.ceil(maks / 2);
+      var ticks = tengah === maks ? [maks, 0] : [maks, tengah, 0];
+      return { maxVal: maks, yTicks: ticks };
+    }
+
+    // 7 hari terakhir (termasuk hari ini), label hari singkat Indonesia.
+    function tujuhHariTerakhir() {
+      var namaHari = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+      var hariIni = new Date();
+      hariIni.setHours(0, 0, 0, 0);
+      var hasil = [];
+      for (var i = 6; i >= 0; i--) {
+        var tgl = new Date(hariIni.getTime() - i * 86400000);
+        hasil.push({
+          iso: tgl.getFullYear() + '-' + String(tgl.getMonth() + 1).padStart(2, '0') + '-' + String(tgl.getDate()).padStart(2, '0'),
+          label: namaHari[tgl.getDay()]
+        });
+      }
+      return hasil;
+    }
+
+    // Label pendek produk untuk sumbu-X grafik stok ("Telur Ayam Grade A" -> "Grade A").
+    function labelPendekProduk(nama) {
+      return String(nama || '').replace(/^Telur Ayam\s*/i, '').trim() || String(nama || '');
+    }
+
+    function labelStatusPesanan(status) {
+      var peta = {
+        'menunggu-pembayaran': 'Menunggu Pembayaran',
+        'menunggu-persetujuan': 'Menunggu Persetujuan',
+        'diproses': 'Diproses',
+        'dikirim': 'Dikirim',
+        'diterima': 'Diterima',
+        'selesai': 'Selesai',
+        'dibatalkan': 'Dibatalkan'
+      };
+      return peta[status] || status;
+    }
+
+    function kelasStatusPesanan(status) {
+      if (status === 'dibatalkan') return 'gagal';
+      if (status === 'selesai' || status === 'diterima') return 'selesai';
+      if (status === 'diproses' || status === 'dikirim') return 'diproses';
+      return 'baru';
+    }
+
+    // Bangun ulang grafik + kartu metrik dari data asli.
+    // Dipanggil setiap kali PRODUCTS_DATA atau PESANAN_DATA selesai dimuat.
+    function bangunGrafikDashboard() {
+      var produk = (typeof PRODUCTS_DATA !== 'undefined' && PRODUCTS_DATA) || [];
+      var pesanan = (typeof PESANAN_DATA !== 'undefined' && PESANAN_DATA) || [];
+
+      // --- S-1 Stok: stok kg per produk (satuan di database adalah kg). ---
+      var totalStok = 0;
+      var stokBars = produk.map(function (pr) {
+        var stokKg = Number(pr.stokKg) || 0;
+        totalStok += stokKg;
+        return { label: labelPendekProduk(pr.nama), value: stokKg, displayVal: stokKg.toLocaleString('id-ID') };
+      });
+      var skalaStok = skalaBagus(Math.max.apply(null, stokBars.map(function (b) { return b.value; }).concat([0])));
+
+      // --- Pesanan 7 hari terakhir. ---
+      var hari = tujuhHariTerakhir();
+      var awal = hari[0].iso;
+      var pesananMingguIni = pesanan.filter(function (o) { return o.jadwal && o.jadwal >= awal; });
+      var perHari = hari.map(function (h) {
+        var orderHari = pesananMingguIni.filter(function (o) { return o.jadwal === h.iso; });
+        var dibayar = orderHari.filter(function (o) { return o.statusDb && o.statusDb !== 'menunggu_bayar' && o.statusDb !== 'dibatalkan'; });
+        var volumeKg = 0;
+        var pendapatanRp = 0;
+        dibayar.forEach(function (o) {
+          (o.items || []).forEach(function (item) { volumeKg += Number(item.qty) || 0; });
+          pendapatanRp += Number(o.pembayaran) || 0;
+        });
+        return { label: h.label, jumlah: orderHari.length, volumeKg: volumeKg, pendapatanRp: pendapatanRp };
+      });
+      var totalPesananMinggu = perHari.reduce(function (s, d) { return s + d.jumlah; }, 0);
+      var totalVolume = perHari.reduce(function (s, d) { return s + d.volumeKg; }, 0);
+      var totalPendapatan = perHari.reduce(function (s, d) { return s + d.pendapatanRp; }, 0);
+      var skalaPesanan = skalaHitung(Math.max.apply(null, perHari.map(function (d) { return d.jumlah; }).concat([0])));
+      var skalaVolume = skalaBagus(Math.max.apply(null, perHari.map(function (d) { return d.volumeKg; }).concat([0])));
+      var pendapatanJt = perHari.map(function (d) { return d.pendapatanRp / 1000000; });
+      var skalaPendapatan = skalaBagus(Math.max.apply(null, pendapatanJt.concat([0])));
+
+      // --- S-3 Pesanan Terbaru: 4 pesanan terakhir (API sudah mengurutkan terbaru dulu). ---
+      var pesananTerbaru = pesanan.slice(0, 4).map(function (o) {
+        var itemPertama = (o.items && o.items[0]) || {};
+        return {
+          id: o.id,
+          buyer: o.pembeli || 'Pembeli',
+          product: itemPertama.produk || '-',
+          total: 'Rp ' + Number(o.pembayaran || 0).toLocaleString('id-ID'),
+          date: o.jadwalLabel || '-',
+          status: labelStatusPesanan(o.status),
+          statusClass: kelasStatusPesanan(o.status)
+        };
+      });
+      // Pesanan dalam proses: sudah dibayar (menunggu diproses), diproses, atau dikirim.
+      var dalamProses = pesanan.filter(function (o) {
+        return o.statusDb === 'dibayar' || o.statusDb === 'diproses' || o.statusDb === 'dikirim';
+      }).length;
+
+      DASHBOARD_CONFIGS = {
+        'stok': {
+          type: 'single-chart',
+          title: 'Stok produk',
+          subtitle: 'Total stok tersedia',
+          total: totalStok.toLocaleString('id-ID') + ' kg',
+          maxVal: skalaStok.maxVal,
+          yTicks: skalaStok.yTicks,
+          formatY: (val) => val === 0 ? '0' : val.toLocaleString('id-ID'),
+          bars: stokBars
+        },
+        'pesanan-baru': {
+          type: 'single-chart',
+          title: 'Pesanan baru per hari',
+          subtitle: 'Jumlah pesanan',
+          total: totalPesananMinggu + ' pesanan',
+          maxVal: skalaPesanan.maxVal,
+          yTicks: skalaPesanan.yTicks,
+          formatY: (val) => String(Math.round(val)),
+          bars: perHari.map(function (d) { return { label: d.label, value: d.jumlah, displayVal: String(d.jumlah) }; })
+        },
+        'pesanan-proses': {
+          type: 'table',
+          title: 'Pesanan Terbaru',
+          buttonText: 'Lihat Semua',
+          orders: pesananTerbaru
+        },
+        'pendapatan': {
+          type: 'dual-charts',
+          chartLeft: {
+            title: 'Volume telur (kg)',
+            subtitle: 'Pendapatan minggu ini',
+            total: totalVolume.toLocaleString('id-ID'),
+            maxVal: skalaVolume.maxVal,
+            yTicks: skalaVolume.yTicks,
+            formatY: (val) => val === 0 ? '0' : val.toLocaleString('id-ID'),
+            bars: perHari.map(function (d) { return { label: d.label, value: d.volumeKg, displayVal: d.volumeKg.toLocaleString('id-ID') }; })
+          },
+          chartRight: {
+            title: 'Pendapatan (Rp juta)',
+            subtitle: 'Pendapatan minggu ini',
+            total: 'Rp ' + (totalPendapatan / 1000000).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' jt',
+            maxVal: skalaPendapatan.maxVal,
+            yTicks: skalaPendapatan.yTicks,
+            formatY: (val) => val === 0 ? '0' : val.toString(),
+            bars: perHari.map(function (d, idx) {
+              var jt = pendapatanJt[idx];
+              return { label: d.label, value: jt, displayVal: jt.toLocaleString('id-ID', { maximumFractionDigits: 1 }) };
+            })
+          }
+        }
+      };
+
+      // Kartu metrik di atas grafik mengikuti angka asli yang sama.
+      var kartuStok = document.querySelector('.metric-card[data-metric="stok"] .metric-value');
+      if (kartuStok) kartuStok.textContent = totalStok.toLocaleString('id-ID');
+      var kartuBaru = document.querySelector('.metric-card[data-metric="pesanan-baru"] .metric-value');
+      if (kartuBaru) kartuBaru.textContent = String(totalPesananMinggu);
+      var kartuProses = document.querySelector('.metric-card[data-metric="pesanan-proses"] .metric-value');
+      if (kartuProses) kartuProses.textContent = String(dalamProses);
+      var kartuPendapatan = document.querySelector('.metric-card[data-metric="pendapatan"] .metric-value');
+      if (kartuPendapatan) kartuPendapatan.textContent = 'Rp ' + totalPendapatan.toLocaleString('id-ID');
+
+      // Gambar ulang panel yang sedang aktif (default: stok).
+      var aktif = document.querySelector('.metric-card.active');
+      var kunciAktif = (aktif && aktif.dataset && aktif.dataset.metric) || 'stok';
+      if (DASHBOARD_CONFIGS[kunciAktif]) renderPanel(DASHBOARD_CONFIGS[kunciAktif]);
+    }
 
     /* --------------------------------------------------------------------------
        B. DATA PRODUK (Hanya Satuan kg)
@@ -6001,6 +6154,9 @@
             var jenis = /kampung/i.test(pr.nama) ? 'Telur Ayam Kampung' : (/omega/i.test(pr.nama) ? 'Telur Omega' : 'Telur Ayam Ras');
             return {
               id: pr.id,
+              nama: pr.nama,
+              stokKg: Number(pr.stok_kg) || 0,
+              hargaPerKg: Number(pr.harga_per_kg) || 0,
               deskripsi: pr.deskripsi || '',
               jenis: jenis,
               grade: 'Grade ' + gradeKey,
@@ -6012,6 +6168,7 @@
             };
           });
           renderProductsTable();
+          bangunGrafikDashboard();
         })
         .catch(function () { /* biarkan tabel kosong kalau katalog gagal dimuat */ });
     }
@@ -6175,7 +6332,10 @@
 
     function createTableHTML(cfg) {
       let rowsHTML = '';
-      cfg.orders.forEach(order => {
+      if (!cfg.orders || !cfg.orders.length) {
+        rowsHTML = '<tr><td colspan="6" style="text-align:center;padding:16px;">Belum ada pesanan.</td></tr>';
+      }
+      (cfg.orders || []).forEach(order => {
         rowsHTML += `
           <tr>
             <td class="order-code">${order.id}</td>
@@ -6975,6 +7135,7 @@
             };
           });
           renderPesananTable();
+          bangunGrafikDashboard();
         })
         .catch(function () { /* biarkan tabel kosong kalau API gagal dimuat */ });
     }
