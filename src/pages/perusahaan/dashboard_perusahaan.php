@@ -4751,7 +4751,7 @@
         <!-- Profile Dropdown -->
         <div class="profile-dropdown" id="profileDropdown">
           <div class="dropdown-header">
-            <div class="dropdown-user-name">CV Telur Makmur Bersama</div>
+            <div class="dropdown-user-name">-</div>
             <div class="dropdown-user-role">Mitra Peternak Terverifikasi</div>
           </div>
           <a href="#profil" class="dropdown-item" id="dropdownProfil" onclick="switchMainView('profil', event)">
@@ -5015,8 +5015,8 @@
           <!-- Kartu Ringkasan Profil -->
           <aside class="profile-summary-card">
             <div class="profile-avatar-large"></div>
-            <div class="profile-summary-name">PT. Maju Jaya Abadi</div>
-            <div class="profile-summary-email">supplier@majuabadi.co.id</div>
+            <div class="profile-summary-name">-</div>
+            <div class="profile-summary-email">-</div>
             <span class="profile-verified-badge">
               <span class="profile-verified-dot"></span>
               Supplier Terverifikasi
@@ -5030,23 +5030,23 @@
               <div class="profile-field-grid">
                 <div class="profile-field">
                   <label class="profile-label" for="profileNamaUsaha">Nama Usaha</label>
-                  <input class="profile-input" id="profileNamaUsaha" type="text" value="PT. Maju Jaya Abadi">
+                  <input class="profile-input" id="profileNamaUsaha" type="text" value="">
                 </div>
                 <div class="profile-field">
                   <label class="profile-label" for="profileEmail">Email</label>
-                  <input class="profile-input" id="profileEmail" type="email" value="supplier@majuabadi.co.id">
+                  <input class="profile-input" id="profileEmail" type="email" value="">
                 </div>
                 <div class="profile-field">
                   <label class="profile-label" for="profileTelepon">Nomor Telepon</label>
-                  <input class="profile-input" id="profileTelepon" type="text" value="+00000000">
+                  <input class="profile-input" id="profileTelepon" type="text" value="">
                 </div>
                 <div class="profile-field">
                   <label class="profile-label" for="profileKota">Kota</label>
-                  <input class="profile-input" id="profileKota" type="text" value="Jakarta Timur">
+                  <input class="profile-input" id="profileKota" type="text" value="">
                 </div>
                 <div class="profile-field full">
                   <label class="profile-label" for="profileAlamat">Alamat Lengkap</label>
-                  <input class="profile-input" id="profileAlamat" type="text" value="Jl. Raya Industri No. 123">
+                  <input class="profile-input" id="profileAlamat" type="text" value="">
                 </div>
                 <div class="profile-field">
                   <label class="profile-label" for="profileNibInput">NIB</label>
@@ -5085,7 +5085,8 @@
                 <div class="profile-field">
                   <label class="profile-label" for="profileBank">Nama Bank</label>
                   <select class="profile-input" id="profileBank">
-                    <option selected>Bank Mandiri</option>
+                    <option value="" selected>— Pilih bank —</option>
+                    <option>Bank Mandiri</option>
                     <option>Bank BCA</option>
                     <option>Bank BNI</option>
                     <option>Bank BRI</option>
@@ -5094,11 +5095,11 @@
                 </div>
                 <div class="profile-field">
                   <label class="profile-label" for="profileNoRek">Nomor Rekening</label>
-                  <input class="profile-input" id="profileNoRek" type="text" value="00-000-00">
+                  <input class="profile-input" id="profileNoRek" type="text" value="">
                 </div>
                 <div class="profile-field full">
                   <label class="profile-label" for="profileAtasNama">Atas Nama Rekening</label>
-                  <input class="profile-input" id="profileAtasNama" type="text" value="PT. Maju Jaya Abadi">
+                  <input class="profile-input" id="profileAtasNama" type="text" value="">
                 </div>
               </div>
             </section>
@@ -5744,7 +5745,7 @@
             <div class="inv-brand">
               <img src="../../assets/img/logo-staplr-transparent.png" alt="Staplr">
               <div>
-                <div class="inv-brand-name">CV Telur Makmur Bersama</div>
+                <div class="inv-brand-name">-</div>
                 <div class="inv-brand-tag">Mitra Peternak Terverifikasi</div>
               </div>
             </div>
@@ -5777,7 +5778,7 @@
             </div>
             <div class="inv-party-box">
               <div class="inv-label">Penjual</div>
-              <div class="inv-party-name">CV Telur Makmur Bersama</div>
+              <div class="inv-party-name">-</div>
               <div class="inv-party-line">Solo, Jawa Tengah<br>staplrindonesia@gmail.com &middot; +62 85666895</div>
             </div>
           </div>
@@ -5826,7 +5827,7 @@
             <div class="inv-sign-box">
               <div class="inv-sign-label">Hormat kami,</div>
               <div class="inv-sign-space"></div>
-              <div class="inv-sign-name">CV Telur Makmur Bersama</div>
+              <div class="inv-sign-name">-</div>
             </div>
           </div>
         </div>
@@ -6584,24 +6585,70 @@
     /* --------------------------------------------------------------------------
        F2. PROFIL AKUN LOGIC
        -------------------------------------------------------------------------- */
-    const PROFILE_DEFAULTS = {
-      profileNamaUsaha: 'PT. Maju Jaya Abadi',
-      profileEmail: 'supplier@majuabadi.co.id',
-      profileTelepon: '+00000000',
-      profileKota: 'Jakarta Timur',
-      profileAlamat: 'Jl. Raya Industri No. 123',
-      profileBank: 'Bank Mandiri',
-      profileNoRek: '00-000-00',
-      profileAtasNama: 'PT. Maju Jaya Abadi'
-    };
+    // Profil dari database (api/auth/me.php): hanya nama dan email yang
+    // tersimpan di tabel users. Telepon, kota, alamat, bank, dan nomor
+    // rekening belum punya kolom di database, jadi kolom itu dikosongkan
+    // (bukan diisi contoh) dan tidak ikut tersimpan saat tombol Simpan ditekan.
+    const PROFILE_FIELD_IDS = [
+      'profileNamaUsaha',
+      'profileEmail',
+      'profileTelepon',
+      'profileKota',
+      'profileAlamat',
+      'profileBank',
+      'profileNoRek',
+      'profileAtasNama'
+    ];
 
     // Nilai profil yang tersimpan (dipakai saat tombol Batal ditekan)
-    let profileSaved = { ...PROFILE_DEFAULTS };
+    let profileSaved = {};
+    PROFILE_FIELD_IDS.forEach(function (id) {
+      const el = document.getElementById(id);
+      profileSaved[id] = el ? el.value : '';
+    });
+
+    // Nama perusahaan tampil di beberapa tempat: kartu ringkasan profil,
+    // menu pengguna, dan nama penjual di invoice.
+    function terapkanNamaPerusahaan(nama) {
+      const dropdownNama = document.querySelector('.dropdown-user-name');
+      if (dropdownNama) dropdownNama.textContent = nama;
+      document.querySelectorAll('.inv-brand-name, .inv-sign-name').forEach(function (el) {
+        el.textContent = nama;
+      });
+      const penjualInvoice = document.querySelectorAll('.inv-party-name');
+      // Penjual adalah kotak pihak kedua di modal invoice.
+      if (penjualInvoice.length > 1) penjualInvoice[1].textContent = nama;
+    }
+
+    function muatProfilPerusahaan() {
+      return fetch('../../api/auth/me.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data) {
+            if (res && res.error) showToast('Gagal memuat profil: ' + res.error);
+            return;
+          }
+          const nama = res.data.nama || '';
+          const email = res.data.email || '';
+          const isi = function (id, nilai) {
+            const el = document.getElementById(id);
+            if (el) el.value = nilai;
+            profileSaved[id] = nilai;
+          };
+          isi('profileNamaUsaha', nama);
+          isi('profileEmail', email);
+          isi('profileAtasNama', nama);
+          applyProfileSummary();
+          terapkanNamaPerusahaan(nama);
+        })
+        .catch(function () { /* biarkan form kosong kalau API gagal dimuat */ });
+    }
+    muatProfilPerusahaan();
 
     function resetProfileForm() {
-      Object.keys(PROFILE_DEFAULTS).forEach(id => {
+      PROFILE_FIELD_IDS.forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.value = profileSaved[id];
+        if (el) el.value = profileSaved[id] || '';
       });
       const nibName = document.getElementById('profileNibName');
       const npwpName = document.getElementById('profileNpwpName');
@@ -6614,8 +6661,8 @@
     function applyProfileSummary() {
       const summaryName = document.querySelector('.profile-summary-name');
       const summaryEmail = document.querySelector('.profile-summary-email');
-      if (summaryName) summaryName.textContent = profileSaved.profileNamaUsaha;
-      if (summaryEmail) summaryEmail.textContent = profileSaved.profileEmail;
+      if (summaryName) summaryName.textContent = profileSaved.profileNamaUsaha || '-';
+      if (summaryEmail) summaryEmail.textContent = profileSaved.profileEmail || '-';
     }
 
     function simpanProfile() {
@@ -6634,18 +6681,43 @@
         return;
       }
 
-      Object.keys(PROFILE_DEFAULTS).forEach(id => {
+      // Hanya nama dan email yang bisa tersimpan (api/auth/update.php).
+      const adaIsianTambahan = ['profileTelepon', 'profileKota', 'profileAlamat', 'profileBank', 'profileNoRek'].some(function (id) {
         const el = document.getElementById(id);
-        if (el) profileSaved[id] = el.value.trim();
+        return el && String(el.value || '').trim() !== '';
       });
 
-      applyProfileSummary();
-      showToast('Perubahan profil berhasil disimpan');
+      fetch('../../api/auth/update.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nama: namaEl.value.trim(), email: emailEl.value.trim() })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) {
+            showToast(res.error || 'Gagal menyimpan profil');
+            return;
+          }
+          profileSaved.profileNamaUsaha = res.data.nama;
+          profileSaved.profileEmail = res.data.email;
+          profileSaved.profileAtasNama = namaEl.value.trim();
+          const atasNamaEl = document.getElementById('profileAtasNama');
+          if (atasNamaEl) atasNamaEl.value = profileSaved.profileAtasNama;
 
-      // Kembali otomatis ke Dashboard setelah perubahan tersimpan
-      setTimeout(() => {
-        switchMainView('dashboard');
-      }, 800);
+          applyProfileSummary();
+          terapkanNamaPerusahaan(res.data.nama);
+          if (adaIsianTambahan) {
+            showToast('Nama & email tersimpan. Telepon, alamat & rekening belum tersimpan (belum ada kolom di database).');
+          } else {
+            showToast('Perubahan profil berhasil disimpan');
+          }
+
+          // Kembali otomatis ke Dashboard setelah perubahan tersimpan
+          setTimeout(() => {
+            switchMainView('dashboard');
+          }, 800);
+        })
+        .catch(function () { showToast('Gagal menyimpan profil'); });
     }
 
     /* --------------------------------------------------------------------------
