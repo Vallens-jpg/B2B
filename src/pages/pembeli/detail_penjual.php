@@ -102,8 +102,8 @@
         </p>
       </div>
       <div class="merchant-action-buttons">
-        <button type="button" class="btn-hubungi-penjual">Hubungi Penjual</button>
-        <button type="button" class="btn-bagikan-profil">Bagikan Profil</button>
+        <button type="button" class="btn-hubungi-penjual" id="btnHubungiPenjual">Hubungi Penjual</button>
+        <button type="button" class="btn-bagikan-profil" id="btnBagikanProfil">Bagikan Profil</button>
       </div>
     </div>
 
@@ -440,6 +440,56 @@
           window.location.href = 'dashboard_buyer.php';
         }
       });
-    }  </script>
+    }
+
+    // Toast kecil untuk umpan balik tombol Hubungi / Bagikan.
+    var dpToastEl = document.getElementById('dpToast');
+    var dpToastTimer = null;
+    function dpShowToast(pesan) {
+      if (!dpToastEl) return;
+      dpToastEl.textContent = pesan;
+      dpToastEl.style.opacity = '1';
+      dpToastEl.style.transform = 'translateX(-50%) translateY(0)';
+      if (dpToastTimer) clearTimeout(dpToastTimer);
+      dpToastTimer = setTimeout(function () {
+        dpToastEl.style.opacity = '0';
+        dpToastEl.style.transform = 'translateX(-50%) translateY(20px)';
+      }, 3000);
+    }
+    function dpSalin(teks, pesanOk) {
+      function done(ok) { dpShowToast(ok ? pesanOk : 'Gagal menyalin. Salin manual: ' + teks); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(teks).then(function () { done(true); }, function () { done(false); });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = teks;
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        done(ok);
+      }
+    }
+    // Hubungi Penjual: semua produk di halaman ini milik akun perusahaan
+    // demo, jadi email dibuka ke alamat perusahaan itu. Chat di dalam
+    // aplikasi belum ada — itu butuh fitur pesan tersendiri.
+    var btnHubungi = document.getElementById('btnHubungiPenjual');
+    if (btnHubungi) {
+      btnHubungi.addEventListener('click', function () {
+        var nama = (typeof data !== 'undefined' && data.name) ? data.name : 'penjual';
+        window.location.href = 'mailto:perusahaan@staplr.com?subject=' + encodeURIComponent('Pertanyaan tentang ' + nama + ' di Staplr');
+        dpShowToast('Membuka aplikasi email untuk menghubungi penjual…');
+      });
+    }
+    // Bagikan Profil: salin tautan halaman ini.
+    var btnBagikan = document.getElementById('btnBagikanProfil');
+    if (btnBagikan) {
+      btnBagikan.addEventListener('click', function () {
+        dpSalin(window.location.href, 'Tautan profil disalin ke clipboard.');
+      });
+    }
+  </script>
+  <div id="dpToast" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#111827;color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:9999;"></div>
 </body>
 </html>
