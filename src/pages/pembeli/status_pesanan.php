@@ -1,73 +1,3 @@
-<?php
-session_start();
-
-$sellersMap = [
-    '1' => 'PT Telur Makmur',
-    '2' => 'Mitra Unggas Sejahtera',
-    '3' => 'Tunas Farm',
-    '4' => 'Berkah Telur Utama',
-    '5' => 'Ternak Mandiri',
-    '6' => 'Sinar Jaya Poultry'
-];
-
-// Handle new order submission via POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $sellerId = $_POST['seller'] ?? '1';
-    $company = $_POST['seller_name'] ?? ($sellersMap[$sellerId] ?? 'PT Telur Makmur');
-    $product = $_POST['product'] ?? 'Telur Ayam Ras Grade A';
-    $price = $_POST['price'] ?? 'Rp 28.000';
-    $qty = $_POST['qty'] ?? '2 kg';
-    $subtotal = $_POST['subtotal'] ?? 'Rp 56.000';
-    $notes = $_POST['notes'] ?? '';
-
-    $_SESSION['active_order'] = [
-        'order_id' => '#ORD-2026-' . rand(100, 999),
-        'seller_id' => $sellerId,
-        'seller' => $company,
-        'product' => $product,
-        'price' => $price,
-        'qty' => $qty,
-        'subtotal' => $subtotal,
-        'notes' => $notes,
-        'status' => 'pending',
-        'created_at' => date('d M Y, H:i')
-    ];
-}
-
-// Fallback init jika dibuka langsung dengan GET atau session
-if (!isset($_SESSION['active_order'])) {
-    $sellerId = $_GET['seller'] ?? '1';
-    $_SESSION['active_order'] = [
-        'order_id' => '#ORD-2026-' . rand(100, 999),
-        'seller_id' => $sellerId,
-        'seller' => $sellersMap[$sellerId] ?? 'PT Telur Makmur',
-        'product' => $_GET['product'] ?? 'Telur Ayam Ras Grade A',
-        'price' => $_GET['price'] ?? 'Rp 28.000',
-        'qty' => $_GET['qty'] ?? '2 kg',
-        'subtotal' => $_GET['subtotal'] ?? 'Rp 56.000',
-        'notes' => $_GET['notes'] ?? '',
-        'status' => 'pending',
-        'created_at' => date('d M Y, H:i')
-    ];
-}
-
-// Handle simulation ACC penjual via PHP GET action
-if (isset($_GET['action']) && $_GET['action'] === 'approve') {
-    $_SESSION['active_order']['status'] = 'approved';
-    $_SESSION['pesanan_disetujui'] = $_SESSION['active_order'];
-    header('Location: status_pesanan.php?state=approved');
-    exit;
-}
-
-$state = $_GET['state'] ?? ($_SESSION['active_order']['status'] ?? 'pending');
-if ($state === 'approved') {
-    $_SESSION['active_order']['status'] = 'approved';
-    $_SESSION['pesanan_disetujui'] = $_SESSION['active_order'];
-}
-
-$order = $_SESSION['active_order'];
-$isApproved = ($order['status'] === 'approved' || $state === 'approved');
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -75,29 +5,6 @@ $isApproved = ($order['status'] === 'approved' || $state === 'approved');
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Staplr - Status Pesanan</title>
   <link rel="stylesheet" href="../../assets/css/styles.css">
-  <style>
-    .btn-acc-simulasi {
-      margin-top: 0.75rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.45rem 0.95rem;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #065f46;
-      background: #d1fae5;
-      border: 1.5px solid #6ee7b7;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.15s ease;
-    }
-    .btn-acc-simulasi:hover {
-      background: #a7f3d0;
-      color: #064e3b;
-      transform: translateY(-1px);
-    }
-  </style>
 </head>
 <body class="sp-body">
 
@@ -127,14 +34,10 @@ $isApproved = ($order['status'] === 'approved' || $state === 'approved');
   <main class="sp-container">
     <!-- Alert Banner -->
     <div class="sp-alert-banner" id="alertBanner">
-      <div class="sp-alert-title" id="alertTitle">Menunggu Persetujuan Penjual</div>
+      <div class="sp-alert-title" id="alertTitle">Memuat status pesanan…</div>
       <p class="sp-alert-desc" id="alertDesc">
-        Pesanan Anda telah dikirim ke <strong id="bannerCompany">PT Telur Makmur</strong>.
-        Penjual sedang meninjau pesanan dan ketersediaan stok Anda. Tombol pembayaran akan aktif setelah pesanan disetujui penjual.
+      Mengambil data pesanan Anda…
       </p>
-      <button type="button" id="btnSimulateApprove" class="btn-acc-simulasi" onclick="approveOrder()">
-        Simulasikan ACC Penjual (Setujui Sekarang)
-      </button>
     </div>
 
     <div class="sp-inner">
@@ -147,7 +50,7 @@ $isApproved = ($order['status'] === 'approved' || $state === 'approved');
 
         <div class="sp-row">
           <span class="sp-row-label">Nilai Pesanan</span>
-          <span id="orderValue" class="sp-row-value strong">Rp 500.000</span>
+          <span id="orderValue" class="sp-row-value strong">Memuat…</span>
         </div>
         <div class="sp-row">
           <span class="sp-row-label">Metode Pembayaran</span>
@@ -159,19 +62,19 @@ $isApproved = ($order['status'] === 'approved' || $state === 'approved');
         </div>
         <div class="sp-row">
           <span class="sp-row-label">Nomor Pesanan</span>
-          <span id="orderNumber" class="sp-row-value">#ORD-2026-103</span>
+          <span id="orderNumber" class="sp-row-value">—</span>
         </div>
         <div class="sp-row">
           <span class="sp-row-label">Perusahaan</span>
-          <span id="orderCompany" class="sp-row-value">PT Jaya Makmur</span>
+          <span id="orderCompany" class="sp-row-value">—</span>
         </div>
         <div class="sp-row">
           <span class="sp-row-label">Item Pesanan</span>
-          <span id="orderItem" class="sp-row-value">Telur Ayam (2 Peti) – Rp 500.000</span>
+          <span id="orderItem" class="sp-row-value">Memuat…</span>
         </div>
         <div class="sp-row">
           <span class="sp-row-label">Jadwal Kirim</span>
-          <span class="sp-row-value">12 Okt 2027</span>
+          <span class="sp-row-value">—</span>
         </div>
       </div>
 
@@ -209,25 +112,6 @@ $isApproved = ($order['status'] === 'approved' || $state === 'approved');
     const hasParams = urlParams.get('seller') || urlParams.get('product');
     const company = sellersMap[sellerId] || 'PT Telur Makmur';
 
-    document.getElementById('bannerCompany').innerText = company;
-    document.getElementById('orderCompany').innerText = company;
-    document.getElementById('orderValue').innerText = subtotal;
-    document.getElementById('orderItem').innerText = `${productName} (${qty}) – ${subtotal}`;
-    
-    // Simpan atau buat order ID konsisten
-    const orderId = sessionStorage.getItem('currentOrderId') || ('#ORD-2026-' + (Math.floor(Math.random() * 899) + 100));
-    sessionStorage.setItem('currentOrderId', orderId);
-    document.getElementById('orderNumber').innerText = orderId;
-
-    // Tanggal kirim besok
-    const tglKirim = new Date();
-    tglKirim.setDate(tglKirim.getDate() + 1);
-    const optionsTgl = { day: 'numeric', month: 'short', year: 'numeric' };
-    const tglKirimStr = tglKirim.toLocaleDateString('id-ID', optionsTgl);
-    const tglEl = document.querySelectorAll('.sp-row-value');
-    if (tglEl.length >= 7) {
-      tglEl[6].innerText = tglKirimStr;
-    }
 
     // Tombol kembali ke halaman Ajukan Pesanan
     const backToAjukan = 'checkout.php' +
@@ -253,53 +137,8 @@ $isApproved = ($order['status'] === 'approved' || $state === 'approved');
       });
     }
 
-    // Query untuk ke halaman Pembayaran setelah disetujui
-    const paymentQuery =
-      '?seller=' + encodeURIComponent(sellerId) +
-      '&product=' + encodeURIComponent(productName) +
-      '&qty=' + encodeURIComponent(qty) +
-      '&price=' + encodeURIComponent(productPrice) +
-      '&subtotal=' + encodeURIComponent(subtotal) +
-      '&notes=' + encodeURIComponent(notes);
-
-    // Fungsi saat penjual menyetujui pesanan
-    function approveOrder() {
-      const banner = document.getElementById('alertBanner');
-      const title = document.getElementById('alertTitle');
-      const desc = document.getElementById('alertDesc');
-      const simBtn = document.getElementById('btnSimulateApprove');
-      const paymentBtn = document.getElementById('paymentBtn');
-      const caption = document.getElementById('reviewCaption');
-
-      banner.classList.add('sp-banner-approved');
-      // Simpan notifikasi ke localStorage agar muncul di halaman notifikasi
-      try {
-        const q = '&seller=' + encodeURIComponent(sellerParam)
-          + '&product=' + encodeURIComponent(productParam)
-          + '&qty=' + encodeURIComponent(qtyParam)
-          + '&price=' + encodeURIComponent(priceParam)
-          + '&subtotal=' + encodeURIComponent(subtotalParam);
-        localStorage.setItem('pesananDisetujui', JSON.stringify({ seller: company, query: q }));
-      } catch(e) {}
-      title.innerHTML = 'Pesanan Disetujui Penjual';
-      desc.innerHTML = `Pesanan Anda telah disetujui oleh <strong>${company}</strong>. Stok tersedia dan siap dikirim. Silakan selesaikan pembayaran untuk memproses pesanan.`;
-
-      if (simBtn) simBtn.style.display = 'none';
-
-      paymentBtn.classList.remove('btn-tinjau-disabled');
-      paymentBtn.classList.add('btn-tinjau-active');
-      paymentBtn.style.pointerEvents = 'auto';
-      paymentBtn.style.cursor = 'pointer';
-      paymentBtn.innerText = 'Lanjut ke Pembayaran';
-      paymentBtn.href = 'pembayaran.php' + paymentQuery;
-
-      caption.innerHTML = 'Pesanan disetujui, silakan lakukan pembayaran';
-      caption.style.color = '#059669';
-      caption.style.fontWeight = '600';
-    }
-
     // ---- Data asli dari API: daftar pesanan pembeli yang login ----
-    // Kartu contoh di atas hanya fallback bila API gagal / belum login.
+    // Kartu utama diisi dari API; bila belum ada pesanan, tampilkan keadaan kosong.
     const labelStatusPesanan = {
       menunggu_bayar: 'Menunggu Pembayaran',
       dibayar: 'Dibayar',
@@ -323,6 +162,7 @@ $isApproved = ($order['status'] === 'approved' || $state === 'approved');
       document.getElementById('orderNumber').innerText = '#' + pertama.id;
       document.getElementById('orderValue').innerText = rupiahSp(pertama.total_bayar);
       document.getElementById('orderItem').innerText = pertama.nama_produk + ' (' + pertama.jumlah_kg + ' kg) – ' + rupiahSp(pertama.total_bayar);
+      document.getElementById('orderCompany').innerText = pertama.nama_perusahaan || '-';
       const tgl = pertama.created_at ? new Date(pertama.created_at.replace(' ', 'T')) : null;
       const tglEl = document.querySelectorAll('.sp-row-value');
       if (tgl && !isNaN(tgl) && tglEl.length >= 7) {
@@ -332,11 +172,9 @@ $isApproved = ($order['status'] === 'approved' || $state === 'approved');
       const banner = document.getElementById('alertBanner');
       const title = document.getElementById('alertTitle');
       const desc = document.getElementById('alertDesc');
-      const simBtn = document.getElementById('btnSimulateApprove');
       const paymentBtn = document.getElementById('paymentBtn');
       const caption = document.getElementById('reviewCaption');
       const statusLabel = labelStatusPesanan[pertama.status] || pertama.status;
-      if (simBtn) simBtn.style.display = 'none';
       const judulBanner = {
         menunggu_bayar: 'Menunggu Pembayaran',
         dibayar: 'Pembayaran Diterima',
@@ -356,6 +194,8 @@ $isApproved = ($order['status'] === 'approved' || $state === 'approved');
         paymentBtn.style.cursor = 'pointer';
         paymentBtn.innerText = 'Lanjut ke Pembayaran';
         paymentBtn.href = '../order_detail.php?id=' + pertama.id;
+        const cancelLink = document.getElementById('cancelReqLink');
+        if (cancelLink) cancelLink.href = '../order_detail.php?id=' + pertama.id;
         caption.innerText = 'Pesanan dibuat, silakan selesaikan pembayaran';
         caption.style.color = '#d97706';
         caption.style.fontWeight = '600';
@@ -387,39 +227,35 @@ $isApproved = ($order['status'] === 'approved' || $state === 'approved');
       return true;
     }
 
-    // Ambil pesanan asli; kalau gagal, pakai simulasi/fallback di bawah.
+    // Ambil pesanan asli; bila belum ada pesanan / API gagal, tampilkan
+    // keadaan kosong yang jujur — tanpa simulasi persetujuan / data contoh.
     fetch('../../api/order/list.php')
       .then(function (r) { return r.json(); })
       .then(function (res) {
         if (res && res.ok && res.data && res.data.orders && res.data.orders.length) {
           tampilkanPesananAsli(res.data.orders);
         } else {
-          mulaiSimulasiFallback();
+          tampilkanKosong();
         }
       })
-      .catch(function () { mulaiSimulasiFallback(); });
+      .catch(function () { tampilkanKosong('Gagal memuat pesanan. Periksa koneksi atau login kembali.'); });
 
-    // Simulasi ACC hanya dipakai sebagai fallback bila API gagal (data contoh).
-    function mulaiSimulasiFallback() {
-      if (spModeSelesai) return;
+    function tampilkanKosong(pesan) {
       spModeSelesai = true;
-      const state = urlParams.get('state');
-      if (state === 'approved') {
-        approveOrder();
-      } else {
-        // Simulasikan persetujuan otomatis setelah 4 detik untuk kenyamanan pengujian
-        const autoTimer = setTimeout(() => {
-          approveOrder();
-        }, 4000);
-
-        // Jika tombol simulasi diklik duluan, hentikan timer
-        const simBtn = document.getElementById('btnSimulateApprove');
-        if (simBtn) {
-          simBtn.addEventListener('click', () => {
-            clearTimeout(autoTimer);
-          });
-        }
-      }
+      const title = document.getElementById('alertTitle');
+      const desc = document.getElementById('alertDesc');
+      const caption = document.getElementById('reviewCaption');
+      const cancelLink = document.getElementById('cancelReqLink');
+      if (title) title.innerText = 'Belum ada pesanan';
+      if (desc) desc.innerText = pesan || 'Kamu belum punya pesanan. Buat pesanan dari katalog, lalu statusnya akan tampil di sini.';
+      document.getElementById('orderNumber').innerText = '—';
+      document.getElementById('orderValue').innerText = '—';
+      document.getElementById('orderCompany').innerText = '—';
+      document.getElementById('orderItem').innerText = 'Belum ada pesanan';
+      const tglEl = document.querySelectorAll('.sp-row-value');
+      if (tglEl.length >= 7) tglEl[6].innerText = '—';
+      if (caption) caption.innerText = 'Belum ada pesanan';
+      if (cancelLink) cancelLink.style.display = 'none';
     }
   </script>
 </body>
