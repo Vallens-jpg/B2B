@@ -12,7 +12,7 @@ $role = $user['role'] ?? '';
 try {
     $pdo = db();
     $sql = 'SELECT d.id, d.order_id, d.judul, d.status, d.putusan, d.created_at,'
-        . ' o.total_bayar, o.jumlah_kg, p.nama AS nama_produk,'
+        . ' o.total + o.fee AS total_bayar, o.jumlah_kg, p.nama AS nama_produk,'
         . ' u.nama AS nama_perusahaan, ub.nama AS nama_buyer'
         . ' FROM dispute d'
         . ' JOIN orders o ON o.id = d.order_id'
