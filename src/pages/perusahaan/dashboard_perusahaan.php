@@ -5418,15 +5418,6 @@
                 <input class="riwayat-date-input" id="riwayatTanggalAkhir" type="date" max="2027-12-31" aria-label="Tanggal akhir" onchange="renderRiwayatTable()">
               </div>
             </div>
-
-            <div class="riwayat-filter-group">
-              <label class="riwayat-filter-label" for="riwayatMetode">Metode Bayar:</label>
-              <select class="riwayat-select" id="riwayatMetode" onchange="renderRiwayatTable()">
-                <option value="semua">Semua</option>
-                <option value="Transfer Bank">Transfer Bank</option>
-                <option value="Virtual Account">Virtual Account</option>
-              </select>
-            </div>
           </div>
 
           <div class="riwayat-tabs">
@@ -7653,9 +7644,9 @@
     }
 
     function riwayatSesuaiFilter() {
-      const metode = document.getElementById('riwayatMetode');
-      const metodeDipilih = metode ? metode.value : 'semua';
-
+      // Filter Metode Bayar dihapus: metode bayar tidak tersimpan di
+      // database (trx.metode selalu '-'), jadi pilihannya tidak pernah
+      // bisa cocok. Tersisa filter status dan rentang tanggal.
       const mulaiEl = document.getElementById('riwayatTanggalMulai');
       const akhirEl = document.getElementById('riwayatTanggalAkhir');
       const mulai = mulaiEl ? mulaiEl.value : '';
@@ -7663,9 +7654,8 @@
 
       return RIWAYAT_DATA.filter(trx => {
         const cocokStatus = riwayatFilter === 'semua' || trx.status === riwayatFilter;
-        const cocokMetode = metodeDipilih === 'semua' || trx.metode === metodeDipilih;
         const cocokTanggal = (!mulai || (trx.iso && trx.iso >= mulai)) && (!akhir || (trx.iso && trx.iso <= akhir));
-        return cocokStatus && cocokMetode && cocokTanggal;
+        return cocokStatus && cocokTanggal;
       });
     }
 
