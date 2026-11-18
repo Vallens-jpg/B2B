@@ -6358,28 +6358,20 @@
     const inputSatuan = document.getElementById('inputSatuan');
 
     // Dynamic Grade Options: Telur Ayam Kampung & Telur Omega only have Grade A
+    // Setiap jenis produk punya grade A, B, dan C — bukan hanya A.
     function updateGradeOptions(selectedGrade = 'A') {
-      const jenis = inputJenis.value;
       inputGrade.innerHTML = '';
 
-      if (jenis === 'Telur Ayam Kampung' || jenis === 'Telur Omega') {
+      ['A', 'B', 'C'].forEach(g => {
         const opt = document.createElement('option');
-        opt.value = 'A';
-        opt.textContent = 'A';
+        opt.value = g;
+        opt.textContent = g;
         inputGrade.appendChild(opt);
-        inputGrade.value = 'A';
+      });
+      if (['A', 'B', 'C'].includes(selectedGrade)) {
+        inputGrade.value = selectedGrade;
       } else {
-        ['A', 'B', 'C'].forEach(g => {
-          const opt = document.createElement('option');
-          opt.value = g;
-          opt.textContent = g;
-          inputGrade.appendChild(opt);
-        });
-        if (['A', 'B', 'C'].includes(selectedGrade)) {
-          inputGrade.value = selectedGrade;
-        } else {
-          inputGrade.value = 'A';
-        }
+        inputGrade.value = 'A';
       }
     }
 
@@ -6453,10 +6445,18 @@
         satuan: 'KG'
       };
 
-      // Simpan ke database lewat API (nama disusun dari jenis + grade).
-      var namaProduk = productPayload.jenis === 'Telur Ayam Ras'
-        ? 'Telur Ayam Grade ' + gradeSelected
-        : productPayload.jenis;
+      // Nama produk mengikuti skema database: Ras selalu pakai grade
+      // ("Telur Ayam Grade A"); Kampung/Omega tanpa grade untuk A
+      // ("Telur Ayam Kampung") dan pakai grade untuk B/C
+      // ("Telur Ayam Kampung Grade B") supaya namanya tidak bentrok.
+      var namaProduk;
+      if (productPayload.jenis === 'Telur Ayam Ras') {
+        namaProduk = 'Telur Ayam Grade ' + gradeSelected;
+      } else if (gradeSelected === 'A') {
+        namaProduk = productPayload.jenis;
+      } else {
+        namaProduk = productPayload.jenis + ' Grade ' + gradeSelected;
+      }
       var produkId = (index >= 0 && index < PRODUCTS_DATA.length && PRODUCTS_DATA[index].id) ? PRODUCTS_DATA[index].id : 0;
       // Edit: pertahankan deskripsi lama dari database (modal tidak punya
       // kolom deskripsi) supaya edit tidak menghapusnya jadi kosong.
