@@ -925,12 +925,11 @@
     }
 
     function ajukanDispute() {
-      window.location.href = 'pengajuan_dispute.php' +
-        '?seller='   + encodeURIComponent(sellerParam) +
-        '&product='  + encodeURIComponent(product) +
-        '&qty='      + encodeURIComponent(qty) +
-        '&price='    + encodeURIComponent(price) +
-        '&subtotal=' + encodeURIComponent(subtotal);
+      if (!orderIdParam) {
+        alert('Buka halaman ini dari Daftar Pesanan.');
+        return;
+      }
+      window.location.href = 'pengajuan_dispute.php?order_id=' + encodeURIComponent(orderIdParam);
     }
 
     function bayarPesanan() {

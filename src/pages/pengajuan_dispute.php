@@ -254,94 +254,6 @@
       box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.15);
     }
 
-    /* Section: Unggah Bukti Foto */
-    .pd-dropzone {
-      border: 1.5px dashed #CBD5E1;
-      border-radius: 12px;
-      padding: 2.25rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.9rem;
-      cursor: pointer;
-      background-color: #FAFAFA;
-      transition: border-color 0.2s ease, background-color 0.2s ease;
-    }
-
-    .pd-dropzone:hover {
-      border-color: #94A3B8;
-      background-color: #F8FAFC;
-    }
-
-    .pd-dropzone.dragover {
-      border-color: #152C4E;
-      background-color: #EEF2F6;
-    }
-
-    .pd-upload-icon-box {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      background-color: #EEF2F6;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .pd-upload-icon-box svg {
-      width: 24px;
-      height: 24px;
-      fill: #374151;
-    }
-
-    .pd-dropzone-text {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: #111827;
-      text-align: center;
-    }
-
-    /* Upload Previews */
-    .pd-preview-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 1rem;
-    }
-
-    .pd-preview-item {
-      position: relative;
-      width: 76px;
-      height: 76px;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid #E5E7EB;
-    }
-
-    .pd-preview-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .pd-preview-remove {
-      position: absolute;
-      top: 3px;
-      right: 3px;
-      width: 18px;
-      height: 18px;
-      background-color: rgba(0, 0, 0, 0.65);
-      color: #ffffff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      cursor: pointer;
-      line-height: 1;
-    }
-
     /* Buttons Row */
     .pd-action-buttons {
       display: flex;
@@ -435,12 +347,12 @@
     </a>
     <h1 class="pd-nav-title">PENGAJUAN DISPUTE</h1>
     <div class="pd-nav-actions">
-      <button type="button" class="pd-bell-btn" aria-label="Notifikasi">
+      <a href="notifikasi.php" class="pd-bell-btn" aria-label="Notifikasi">
         <svg viewBox="0 0 24 24">
           <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
         </svg>
-        <span class="pd-bell-badge">3</span>
-      </button>
+        <span class="pd-bell-badge" id="pdBellBadge" style="display:none">0</span>
+      </a>
       <div class="pd-user-pill">
         <div class="pd-user-avatar">AD</div>
         <span class="pd-user-name">Buyer</span>
@@ -455,12 +367,12 @@
       <!-- 1. RINGKASAN PESANAN -->
       <h2 class="pd-section-heading">RINGKASAN PESANAN</h2>
       <div class="pd-product-box">
-        <img src="../assets/img/prod_grade_a.png" alt="Telur ayam" class="pd-product-thumb" id="summaryImg">
+        <img src="../assets/img/prod_grade_a.png" alt="Produk" class="pd-product-thumb" id="summaryImg">
         <div class="pd-product-details">
-          <h3 class="pd-product-title" id="summaryTitle">Telur ayam</h3>
+          <h3 class="pd-product-title" id="summaryTitle">Memuat…</h3>
           <div class="pd-product-amount-row">
             <span class="pd-product-amount-label">Jumlah:</span>
-            <span class="pd-product-amount-value" id="summaryAmount">Rp 1.250.000</span>
+            <span class="pd-product-amount-value" id="summaryAmount">—</span>
           </div>
         </div>
       </div>
@@ -468,6 +380,14 @@
       <!-- 2. ALASAN DISPUTE -->
       <div class="pd-section-spacing">
         <h2 class="pd-section-heading">ALASAN DISPUTE</h2>
+        <div class="pd-sub-label">Judul Dispute</div>
+        <input
+          type="text"
+          id="disputeJudul"
+          class="pd-textarea-field"
+          placeholder="Contoh: Telur pecah saat diterima"
+          style="margin-bottom:1rem;"
+        >
         <div class="pd-sub-label">Deskripsi Detail</div>
         <textarea
           id="disputeReason"
@@ -475,36 +395,6 @@
           placeholder="Jelaskan kondisi kendala pada produk secara detail..."
           rows="4"
         ></textarea>
-      </div>
-
-      <!-- 3. UNGGAH BUKTI FOTO -->
-      <div class="pd-section-spacing">
-        <h2 class="pd-section-heading">UNGGAH BUKTI FOTO</h2>
-        <div
-          class="pd-dropzone"
-          id="dropzone"
-          onclick="document.getElementById('buktiFileInput').click()"
-        >
-          <div class="pd-upload-icon-box">
-            <svg viewBox="0 0 24 24">
-              <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
-            </svg>
-          </div>
-          <div class="pd-dropzone-text">Klik atau seret foto/video ke sini</div>
-        </div>
-
-        <!-- Hidden input for file selection -->
-        <input
-          type="file"
-          id="buktiFileInput"
-          accept="image/*,video/*"
-          multiple
-          style="display: none;"
-          onchange="handleBuktiFiles(this.files)"
-        >
-
-        <!-- Preview grid -->
-        <div class="pd-preview-grid" id="previewGrid"></div>
       </div>
 
       <!-- 4. ACTION BUTTONS -->
@@ -521,18 +411,34 @@
   <!-- Floating Navigation for Prototype Walkthrough -->
 
   <script>
-    // Read URL query params
+    // Ringkasan asli dari API (?order_id=)
     const urlParams = new URLSearchParams(window.location.search);
-    const productParam = urlParams.get('product') || 'Telur ayam';
-    const subtotalParam = urlParams.get('subtotal') || 'Rp 1.250.000';
-
-    document.getElementById('summaryTitle').innerText = productParam;
-    document.getElementById('summaryAmount').innerText = subtotalParam;
+    const orderId = parseInt(urlParams.get('order_id') || urlParams.get('id') || '0', 10);
+    function rupiah(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); }
+    if (!orderId) {
+      document.getElementById('summaryTitle').innerText = 'Pesanan tidak ditemukan. Buka halaman ini dari Detail Pesanan.';
+    } else {
+      fetch('../api/order/detail.php?id=' + orderId)
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res || !res.ok || !res.data || !res.data.order) {
+            document.getElementById('summaryTitle').innerText = (res && res.message) || 'Pesanan tidak ditemukan.';
+            return;
+          }
+          var o = res.data.order;
+          document.getElementById('summaryTitle').innerText = o.nama_produk;
+          document.getElementById('summaryAmount').innerText = o.jumlah_kg + ' kg — ' + rupiah(o.total_bayar);
+          document.getElementById('summaryImg').alt = o.nama_produk;
+        })
+        .catch(function () {
+          document.getElementById('summaryTitle').innerText = 'Gagal memuat pesanan.';
+        });
+    }
 
     // Preserve back / cancel button destination
     const cancelBtn = document.getElementById('cancelBtn');
     const backLink = document.getElementById('backLink');
-    const fallbackPd = 'order_detail.php' + (window.location.search || '');
+    const fallbackPd = orderId ? ('order_detail.php?id=' + orderId) : 'order_list.php';
     cancelBtn.href = fallbackPd;
     backLink.href = fallbackPd;
 
@@ -554,54 +460,46 @@
       handleSmartBackPd();
     });
 
-    // Drag and Drop support
-    const dropzone = document.getElementById('dropzone');
-
-    dropzone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropzone.classList.add('dragover');
-    });
-
-    dropzone.addEventListener('dragleave', () => {
-      dropzone.classList.remove('dragover');
-    });
-
-    dropzone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropzone.classList.remove('dragover');
-      handleBuktiFiles(e.dataTransfer.files);
-    });
-
-    let uploadedFiles = [];
-
-    function handleBuktiFiles(files) {
-      const previewGrid = document.getElementById('previewGrid');
-      Array.from(files).forEach((file) => {
-        uploadedFiles.push(file);
-        if (file.type.startsWith('image/')) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const previewItem = document.createElement('div');
-            previewItem.className = 'pd-preview-item';
-            previewItem.innerHTML = `
-              <img src="${e.target.result}" alt="${file.name}" class="pd-preview-img">
-              <span class="pd-preview-remove" onclick="this.parentElement.remove()">&times;</span>
-            `;
-            previewGrid.appendChild(previewItem);
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-    }
-
-    // Submit pengajuan dispute -> proceeds to dispute_detail.php (Diskusi 3 Pihak)
+    // Submit pengajuan dispute (buat asli ke API)
     function submitPengajuanDispute() {
+      const judul = document.getElementById('disputeJudul').value.trim();
       const reason = document.getElementById('disputeReason').value.trim();
-      
-      // Navigate to the 3-party dispute discussion page
-      const targetQuery = window.location.search ? window.location.search : '';
-      window.location.href = 'dispute_detail.php' + targetQuery;
+      if (!orderId) {
+        alert('Pesanan tidak ditemukan.');
+        return;
+      }
+      if (!judul || !reason) {
+        alert('Judul dan deskripsi dispute wajib diisi.');
+        return;
+      }
+      fetch('../api/dispute/buat.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: orderId, judul: judul, deskripsi: reason })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res || !res.ok) {
+            alert((res && res.message) || 'Gagal mengirim pengajuan dispute.');
+            return;
+          }
+          window.location.href = 'dispute_detail.php?id=' + res.data.dispute_id;
+        })
+        .catch(function () { alert('Gagal mengirim pengajuan dispute. Periksa koneksi.'); });
     }
+    // Badge lonceng: jumlah notifikasi belum dibaca.
+    (function () {
+      var badge = document.getElementById('pdBellBadge');
+      fetch('../api/notifikasi.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!badge || !res || !res.ok || !res.data || !res.data.notifikasi) return;
+          var belum = 0;
+          res.data.notifikasi.forEach(function (n) { if (!n.dibaca) belum++; });
+          if (belum > 0) { badge.innerText = belum; badge.style.display = ''; }
+        })
+        .catch(function () {});
+    })();
   </script>
 </body>
 </html>
