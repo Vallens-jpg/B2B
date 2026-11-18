@@ -5672,7 +5672,7 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="inputMinOrder">Minimal Pembelian</label>
-            <input type="text" class="form-input" id="inputMinOrder" placeholder="10 kg" required>
+            <input type="text" class="form-input" id="inputMinOrder" placeholder="10 kg">
           </div>
 
           <div class="form-group">
@@ -5758,7 +5758,7 @@
             <div class="inv-party-box">
               <div class="inv-label">Penjual</div>
               <div class="inv-party-name">-</div>
-              <div class="inv-party-line">Solo, Jawa Tengah<br>staplrindonesia@gmail.com &middot; +62 85666895</div>
+              <div class="inv-party-line">—</div>
             </div>
           </div>
 
@@ -5902,7 +5902,10 @@
               harga: 'Rp ' + Number(pr.harga_per_kg).toLocaleString('id-ID'),
               stok: Number(pr.stok_kg).toLocaleString('id-ID') + ' kg',
               stokKg: Number(pr.stok_kg),
-              minOrder: '10 kg',
+              // Minimal order tidak ada kolomnya di tabel produk dan tidak
+              // disimpan api/produk/simpan.php, jadi ditampilkan '-' saja
+              // (sebelumnya '10 kg' karangan untuk semua produk).
+              minOrder: '—',
               satuan: 'kg'
             };
           });
@@ -6449,12 +6452,15 @@
       btnModalSubmit.textContent = 'Simpan Produk';
       editIndexInput.value = '-1';
 
-      // Reset form default
+      // Reset form: kolom isian dikosongkan supaya tidak ada angka karangan
+      // yang ikut tersimpan (placeholder di HTML hanya contoh format).
+      // Jenis/grade tetap pada pilihan pertama karena itu pilihan select,
+      // bukan isian angka; satuan selalu KG.
       inputJenis.value = 'Telur Ayam Ras';
       updateGradeOptions('A');
-      inputHarga.value = 'Rp 25.000';
-      inputStok.value = '1.200 kg';
-      inputMinOrder.value = '10 kg';
+      inputHarga.value = '';
+      inputStok.value = '';
+      inputMinOrder.value = '';
       inputSatuan.value = 'KG';
 
       modalOverlay.classList.add('show');
@@ -6474,7 +6480,9 @@
       updateGradeOptions(prod.gradeKey);
       inputHarga.value = prod.harga;
       inputStok.value = prod.stok;
-      inputMinOrder.value = prod.minOrder;
+      // Minimal order tidak tersimpan di database: jangan isi '-' ke
+      // dalam input, biarkan kosong.
+      inputMinOrder.value = (prod.minOrder && prod.minOrder !== '—') ? prod.minOrder : '';
       inputSatuan.value = 'KG';
 
       modalOverlay.classList.add('show');
