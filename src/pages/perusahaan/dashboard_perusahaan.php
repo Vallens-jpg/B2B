@@ -4864,7 +4864,7 @@
           </div>
 
           <footer class="product-mgmt-footer">
-            <div class="product-count-info" id="productCountInfo">Menampilkan 1-3 dari 3 produk</div>
+            <div class="product-count-info" id="productCountInfo">Menampilkan 0 dari 0 produk</div>
           </footer>
         </div>
       </div>
@@ -4916,7 +4916,7 @@
             </div>
 
             <footer class="pesanan-list-footer">
-              <span class="pesanan-count" id="pesananCountInfo">Menampilkan 1-3 dari 3 pesanan</span>
+              <span class="pesanan-count" id="pesananCountInfo">Menampilkan 0 dari 0 pesanan</span>
             </footer>
           </section>
         </div>
@@ -5179,7 +5179,7 @@
           <nav class="dispute-breadcrumb" aria-label="Breadcrumb">
             <a href="#dispute" onclick="showDisputeList(event)">Daftar Dispute</a>
             <span class="sep">/</span>
-            <a href="#pesanan" onclick="switchMainView('pesanan', event)" id="disputeBreadcrumbOrder">#ORD-2041</a>
+            <a href="#pesanan" onclick="switchMainView('pesanan', event)" id="disputeBreadcrumbOrder">—</a>
             <span class="sep">/</span>
             <span class="current">Dispute</span>
           </nav>
