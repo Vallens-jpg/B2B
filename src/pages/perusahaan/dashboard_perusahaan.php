@@ -5461,7 +5461,7 @@
             <div>
               <div class="riwayat-detail-title-row">
                 <h2 class="riwayat-detail-title" id="riwayatDetailTitle">Rincian Transaksi Selesai</h2>
-                <span class="riwayat-status-pill" id="riwayatDetailStatus">• Selesai · 11 Okt 2026</span>
+                <span class="riwayat-status-pill" id="riwayatDetailStatus">• —</span>
               </div>
               <div class="riwayat-detail-id" id="riwayatDetailId">-</div>
             </div>
@@ -5745,7 +5745,7 @@
             </div>
             <div>
               <div class="inv-label">Status Pembayaran</div>
-              <div class="inv-value"><span class="inv-status" id="invStatus">• Lunas</span></div>
+              <div class="inv-value"><span class="inv-status" id="invStatus">• —</span></div>
             </div>
           </div>
 
