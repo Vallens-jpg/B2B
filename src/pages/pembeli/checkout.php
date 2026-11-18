@@ -314,7 +314,7 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
     <div class="ajukan-card">
       <h2 class="ajukan-card-title">Ajukan Pesanan</h2>
 
-      <form action="#" method="POST" id="ajukanPesananForm">
+      <form action="#" method="POST" id="ajukanPesananForm" onsubmit="return false;">
         <!-- Perusahaan -->
         <div class="form-group" style="margin-bottom: 1.75rem;">
           <label class="field-label-sm">Perusahaan :</label>

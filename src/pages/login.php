@@ -5,7 +5,10 @@ session_start();
 
 if (!empty($_SESSION['user'])) {
     $role = $_SESSION['user']['role'] ?? 'pembeli';
-    $dashboard = ($role === 'perusahaan') ? 'perusahaan/dashboard_perusahaan.php' : 'pembeli/dashboard_buyer.php';
+    // Admin ke dashboard admin, perusahaan ke dashboard perusahaan,
+    // pembeli (dan role lain) ke dashboard pembeli.
+    $dashboard = ($role === 'admin') ? 'admin/dashboard.php'
+        : (($role === 'perusahaan') ? 'perusahaan/dashboard_perusahaan.php' : 'pembeli/dashboard_buyer.php');
     header('Location: ' . $dashboard);
     exit;
 }
@@ -118,6 +121,7 @@ if (!empty($_SESSION['user'])) {
           <strong>Akun demo</strong><br>
           Pembeli: <code>guest@staplr.com</code> / <code>guest123</code><br>
           Perusahaan: <code>perusahaan@staplr.com</code> / <code>guest123</code><br>
+          Admin: <code>admin@staplr.com</code> / <code>guest123</code> (ketik manual di form di atas, migrasi <code>06_seed_demo_admin.sql</code>)<br>
           <button type="button" class="btn-submit-primary" id="guestLoginPembeliBtn" style="margin-top:0.6rem; width:100%;">Masuk sebagai Guest Demo Pembeli</button>
           <button type="button" class="btn-submit-primary" id="guestLoginPerusahaanBtn" style="margin-top:0.6rem; width:100%;">Masuk sebagai Guest Demo Perusahaan</button>
           <p style="font-size:0.8rem; color:#64748B; margin:0.5rem 0 0;">Pilih tombol sesuai peran yang mau dicoba, tidak perlu pindah tab role di atas. Hanya untuk demo di laptop sendiri. Akun pembeli dari <code>database/migrations/02_seed_demo_users.sql</code>, akun perusahaan dari <code>05_seed_demo_perusahaan.sql</code>.</p>
@@ -172,7 +176,10 @@ if (!empty($_SESSION['user'])) {
         return false;
       }
       const role = result.data && result.data.role ? result.data.role : 'pembeli';
-      window.location.href = (role === 'perusahaan') ? 'perusahaan/dashboard_perusahaan.php' : 'pembeli/dashboard_buyer.php';
+      // Admin ke dashboard admin, perusahaan ke dashboard perusahaan,
+      // pembeli ke dashboard pembeli (sebelumnya admin jatuh ke dashboard pembeli).
+      window.location.href = (role === 'admin') ? 'admin/dashboard.php'
+        : ((role === 'perusahaan') ? 'perusahaan/dashboard_perusahaan.php' : 'pembeli/dashboard_buyer.php');
       return true;
     }
 

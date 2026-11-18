@@ -447,6 +447,24 @@
       border: 1px solid #fde68a;
     }
 
+    .badge-approved {
+      background: #e3f6ec;
+      color: #14803f;
+      border: 1px solid #a7f3d0;
+    }
+
+    .badge-rejected {
+      background: #fde8e8;
+      color: #b42318;
+      border: 1px solid #fecaca;
+    }
+
+    .badge-waiting {
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
     /* ============ RIGHT CARD: PILIH PUTUSAN ============ */
     .right-card h3 {
       font-size: 18px;
@@ -961,6 +979,30 @@
     const STORAGE_KEY = 'staplr_dispute_list';
     let selectedDecision = 'approved';
 
+    // ID dispute asli (angka) dari ?id= — dipakai untuk memanggil API putusan.
+    // Hanya ?id= yang seluruhnya angka yang dianggap ID asli; kode contoh
+    // ('#RET-2026-001') bukan ID asli, jadi putusan tetap jalan lokal
+    // seperti sebelumnya (tanpa API).
+    function disputeIdDariParam(param) {
+      const raw = String(param == null ? '' : param).trim();
+      return /^\d+$/.test(raw) ? parseInt(raw, 10) : 0;
+    }
+
+    const BULAN_ID = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+    function formatTanggalApi(waktu) {
+      if (!waktu) return '—';
+      const m = String(waktu).match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (!m) return String(waktu);
+      return parseInt(m[3], 10) + ' ' + BULAN_ID[parseInt(m[2], 10) - 1] + ' ' + m[1];
+    }
+
+    // Pemetaan pilihan di halaman ini ke nilai putusan API
+    // (../../api/dispute/putuskan.php hanya menerima dua nilai ini):
+    // 'Setujui usulan refund' -> uang kembali ke buyer,
+    // 'Tolak usulan refund' -> lanjut ke perusahaan.
+    // 'Minta revisi usulan' TIDAK punya nilai di API, jadi tetap lokal.
+    const PUTUSAN_BY_DECISION = { approved: 'uang_kembali', rejected: 'lanjut_perusahaan' };
+
     const defaultDisputes = [
       {
         id: '#RET-2026-001',
@@ -1058,6 +1100,47 @@
       const disputes = getDisputes();
       let dispute = disputes.find(d => d.id === selectedId) || disputes[0];
 
+      // ID dispute asli (angka) bila dibuka lewat ?id=<angka> atau pilihan
+      // terakhir yang tersimpan juga angka; 0 = masih data contoh.
+      const disputeIdApi = disputeIdDariParam(selectedId);
+
+      // Data dispute asli dari API bila ada ID angka; menimpa isi kartu
+      // contoh di bawah. Nama pembeli/produk diambil dari detail order.
+      if (disputeIdApi > 0) {
+        fetch('../../api/dispute/detail.php?id=' + disputeIdApi)
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok || !res.data) return;
+            const d = res.data;
+            document.getElementById('pageContentTitle').textContent = 'Verifikasi Dispute #' + d.id;
+            document.getElementById('caseIdRetur').textContent = 'Dispute #' + d.id;
+            document.getElementById('caseIdPesanan').textContent = 'Order #' + d.order_id;
+            document.getElementById('casePembeli').textContent = 'Pembeli #' + d.buyer_id;
+            document.getElementById('caseProduk').textContent = 'Produk #' + d.produk_id;
+            document.getElementById('caseTglBeli').textContent = '—';
+            document.getElementById('caseTglKomplain').textContent = formatTanggalApi(d.created_at);
+            document.getElementById('caseAlasan').textContent = d.judul || '—';
+            document.getElementById('caseBukti').textContent = d.bukti_foto || '—';
+            document.getElementById('caseUsulan').textContent = d.deskripsi || '—';
+            let badgeHtml = '<span class="badge badge-pending"><span class="badge-dot">●</span> Menunggu Verifikasi Admin</span>';
+            if (d.status === 'diproses') badgeHtml = '<span class="badge badge-waiting"><span class="badge-dot">●</span> Diproses</span>';
+            if (d.status === 'diputuskan' && d.putusan === 'uang_kembali') badgeHtml = '<span class="badge badge-approved"><span class="badge-dot">●</span> Diputuskan: Uang Kembali</span>';
+            if (d.status === 'diputuskan' && d.putusan === 'lanjut_perusahaan') badgeHtml = '<span class="badge badge-rejected"><span class="badge-dot">●</span> Diputuskan: Lanjut Perusahaan</span>';
+            document.getElementById('caseStatusBadge').innerHTML = badgeHtml;
+            return fetch('../../api/order/detail.php?id=' + d.order_id)
+              .then(function (r) { return r.json(); })
+              .then(function (resOrder) {
+                if (!resOrder.ok || !resOrder.data || !resOrder.data.order) return;
+                const o = resOrder.data.order;
+                document.getElementById('casePembeli').textContent = o.nama_buyer || ('Pembeli #' + d.buyer_id);
+                document.getElementById('caseProduk').textContent = (o.nama_produk || ('Produk #' + d.produk_id)) + ' (' + Number(o.jumlah_kg).toLocaleString('id-ID') + ' Kg)';
+                document.getElementById('caseTglBeli').textContent = formatTanggalApi(o.created_at);
+              })
+              .catch(function () { /* biarkan 'Pembeli #id' / 'Produk #id' */ });
+          })
+          .catch(function () { /* biarkan data contoh kalau API gagal dimuat */ });
+      }
+
       // Save as active selected
       localStorage.setItem('staplr_selected_dispute_id', dispute.id);
 
@@ -1115,6 +1198,34 @@
       // 4. Submit Putusan Button
       const btnSubmit = document.getElementById('btnSubmitPutusan');
       btnSubmit.addEventListener('click', () => {
+        // Putusan asli lewat API (admin only): POST ../../api/dispute/putuskan.php
+        // dengan { dispute_id, putusan }. Nominal refund & catatan di form ini
+        // tidak dikirim karena API putuskan.php tidak punya field untuk itu.
+        const putusan = PUTUSAN_BY_DECISION[selectedDecision];
+        if (disputeIdApi > 0 && putusan) {
+          btnSubmit.disabled = true;
+          fetch('../../api/dispute/putuskan.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dispute_id: disputeIdApi, putusan: putusan })
+          })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+              if (!res.ok) throw new Error(res.error || 'Putusan gagal');
+              showToast('Putusan dispute #' + disputeIdApi + ' berhasil ditetapkan: ' + (putusan === 'uang_kembali' ? 'uang kembali ke buyer.' : 'lanjut ke perusahaan.'), 'success');
+              setTimeout(() => {
+                window.location.href = 'dispute.php';
+              }, 900);
+            })
+            .catch(function (err) {
+              btnSubmit.disabled = false;
+              showToast(err.message || 'Putusan gagal. Pastikan sudah login sebagai admin.', 'danger');
+            });
+          return;
+        }
+
+        // Fallback lokal seperti sebelumnya: tanpa ID dispute asli, atau
+        // pilihan 'Minta revisi usulan' (tidak ada nilai putusannya di API).
         const allDisputes = getDisputes();
         const d = allDisputes.find(item => item.id === dispute.id);
         if (d) {

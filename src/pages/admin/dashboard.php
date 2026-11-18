@@ -512,6 +512,162 @@
       flex: 1;
     }
 
+    /* ============ TABEL ORDER TERBARU (desain .table-card yang sama
+       dengan halaman admin dispute / manajemen-user) ============ */
+    .orders-card {
+      margin-top: 24px;
+    }
+
+    .orders-head {
+      padding: 22px 26px 0;
+    }
+
+    .orders-head h2 {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f2a4a;
+      letter-spacing: -0.2px;
+    }
+
+    .table-card {
+      background: #ffffff;
+      border: 1px solid #e8ecf2;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px -2px rgba(18, 47, 81, 0.04);
+      overflow: hidden;
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .table-container table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .table-container thead {
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .table-container thead th {
+      background: #f8fafc;
+      padding: 15px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .table-container tbody tr {
+      border-bottom: 1px solid #edf1f6;
+      transition: background-color 0.1s ease;
+    }
+
+    .table-container tbody tr:hover {
+      background-color: #fbfcfe;
+    }
+
+    .table-container tbody td {
+      padding: 16px 20px;
+      font-size: 14px;
+      color: #334155;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .td-id {
+      font-weight: 700;
+      color: #0f2a4a;
+      font-size: 13.5px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      height: 26px;
+      box-sizing: border-box;
+    }
+
+    .badge-dot {
+      font-size: 9px;
+      line-height: 1;
+    }
+
+    .badge-pending {
+      background: #fff4cc;
+      color: #8a6400;
+      border: 1px solid #fde68a;
+    }
+
+    .badge-waiting {
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    .badge-approved {
+      background: #e3f6ec;
+      color: #14803f;
+      border: 1px solid #a7f3d0;
+    }
+
+    .badge-rejected {
+      background: #fde8e8;
+      color: #b42318;
+      border: 1px solid #fecaca;
+    }
+
+    .btn-detail {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 35px;
+      padding: 0 18px;
+      background: #ffffff;
+      border: 1px solid #d0d5dd;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0f2a4a;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    .btn-detail:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    .card-footer {
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid #edf1f6;
+      background: #ffffff;
+    }
+
+    .footer-info {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
     /* ============ RESPONSIVE ============ */
     @media (max-width: 1200px) {
       .stat-grid {
@@ -646,7 +802,8 @@
               </svg>
             </div>
           </div>
-          <div class="stat-value">12,840</div>
+          <!-- Nilai diisi dari ../../api/admin/pengguna.php; 12,840 hanya angka contoh bila API gagal. -->
+          <div class="stat-value" id="statTotalUser">12,840</div>
         </div>
 
         <!-- 2. Verifikasi Pending -->
@@ -803,6 +960,36 @@
         </div>
       </div>
 
+      <!-- ===== Daftar Order Terbaru (dari ../../api/admin/order_list.php) ===== -->
+      <div class="table-card orders-card">
+        <div class="orders-head">
+          <h2>Order Terbaru</h2>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID ORDER</th>
+                <th>PEMBELI</th>
+                <th>PRODUK</th>
+                <th>JUMLAH</th>
+                <th>TOTAL</th>
+                <th>STATUS</th>
+                <th>AKSI</th>
+              </tr>
+            </thead>
+            <tbody id="orderTableBody">
+              <tr>
+                <td colspan="7" style="text-align: center; padding: 32px 20px; color: #64748b;">Memuat daftar order…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer">
+          <span class="footer-info" id="orderFooterInfo">Memuat daftar order…</span>
+        </div>
+      </div>
+
     </section>
   </main>
 
@@ -836,9 +1023,13 @@
         }, 3200);
       }
 
+      // Total User asli dari API (pengguna.php); null = masih angka contoh statis.
+      let totalUserReal = null;
+
       // Stat card clicks
       document.getElementById('cardTotalUser').addEventListener('click', function() {
-        showToast('Total User terdaftar: 12,840 user aktif di platform Staplr.', 'info');
+        const jumlah = (totalUserReal !== null) ? totalUserReal : '12,840';
+        showToast('Total User terdaftar: ' + jumlah + ' user aktif di platform Staplr.', 'info');
       });
 
       document.getElementById('cardVerifikasi').addEventListener('click', function() {
@@ -857,6 +1048,63 @@
       document.getElementById('btnPeriod').addEventListener('click', function() {
         showToast('Menampilkan statistik transaksi tahun ini (Jan \u2013 Okt 2026).', 'info');
       });
+
+      // Data asli dari API admin (butuh login sebagai admin).
+      // Kalau API gagal (belum login / migrasi belum jalan), angka contoh
+      // statis di atas dan pesan di tabel tetap tampil.
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      function orderBadge(status) {
+        if (status === 'selesai') return '<span class="badge badge-approved"><span class="badge-dot">●</span> Selesai</span>';
+        if (status === 'dibatalkan') return '<span class="badge badge-rejected"><span class="badge-dot">●</span> Dibatalkan</span>';
+        if (status === 'menunggu_bayar') return '<span class="badge badge-pending"><span class="badge-dot">●</span> Menunggu Bayar</span>';
+        var label = status.replace(/_/g, ' ');
+        label = label.charAt(0).toUpperCase() + label.slice(1);
+        return '<span class="badge badge-waiting"><span class="badge-dot">●</span> ' + esc(label) + '</span>';
+      }
+
+      fetch('../../api/admin/order_list.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          var tbody = document.getElementById('orderTableBody');
+          var footer = document.getElementById('orderFooterInfo');
+          if (!res.ok || !Array.isArray(res.data)) throw new Error((res && res.error) || 'API order gagal');
+          var orders = res.data.slice(0, 5);
+          if (!orders.length) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 32px 20px; color: #64748b;">Belum ada order.</td></tr>';
+            footer.textContent = 'Menampilkan 0 dari 0 order';
+            return;
+          }
+          tbody.innerHTML = orders.map(function (o) {
+            return '<tr>'
+              + '<td class="td-id">#' + o.id + '</td>'
+              + '<td>' + esc(o.nama_buyer) + '</td>'
+              + '<td>' + esc(o.nama_produk) + '</td>'
+              + '<td>' + Number(o.jumlah_kg).toLocaleString('id-ID') + ' kg</td>'
+              + '<td>Rp ' + Number(o.total).toLocaleString('id-ID') + '</td>'
+              + '<td>' + orderBadge(o.status) + '</td>'
+              + '<td><a class="btn-detail" href="../order_detail.php?id=' + o.id + '">Detail</a></td>'
+              + '</tr>';
+          }).join('');
+          footer.textContent = 'Menampilkan ' + orders.length + ' order terbaru dari ' + res.data.length + ' order';
+        })
+        .catch(function () {
+          document.getElementById('orderTableBody').innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 32px 20px; color: #64748b;">Gagal memuat daftar order. Pastikan sudah login sebagai admin dan migrasi 01 &amp; 03 sudah dijalankan.</td></tr>';
+          document.getElementById('orderFooterInfo').textContent = 'Daftar order tidak dapat dimuat';
+        });
+
+      fetch('../../api/admin/pengguna.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !Array.isArray(res.data)) return;
+          totalUserReal = res.data.length;
+          document.getElementById('statTotalUser').textContent = totalUserReal.toLocaleString('id-ID');
+        })
+        .catch(function () { /* biarkan angka contoh 12,840 kalau API gagal */ });
 
       // Admin profile
       document.getElementById('adminProfileBtn').addEventListener('click', function() {

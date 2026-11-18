@@ -764,6 +764,12 @@
       <div></div>
     </div>
 
+    <!-- Riwayat Status Pesanan (diisi dari API order/detail.php; tampil hanya bila dibuka dengan ?id=) -->
+    <div class="dp-ringkasan-card" id="riwayatCard" style="display:none">
+      <div class="dp-ringkasan-title">Riwayat Status</div>
+      <div id="riwayatList"></div>
+    </div>
+
   </div>
 
   <!-- Bottom Action Bar -->
@@ -851,6 +857,24 @@
           if (stateEl) stateEl.innerText = 'Status: ' + o.status;
           var descEl = document.querySelector('.dp-status-desc');
           if (descEl) descEl.innerText = 'Pesanan #' + o.id + ' — ' + o.nama_produk + ' (' + o.jumlah_kg + ' kg). Invoice: total Rp ' + Number(o.total).toLocaleString('id-ID') + ' + fee Rp ' + Number(o.fee).toLocaleString('id-ID') + '.';
+          // Riwayat status dari API (field: status_lama, status_baru, created_at).
+          var riwayat = res.data.riwayat || [];
+          var riwayatCard = document.getElementById('riwayatCard');
+          var riwayatList = document.getElementById('riwayatList');
+          if (riwayatCard && riwayatList) {
+            var labelStatus = { menunggu_bayar: 'Menunggu Pembayaran', dibayar: 'Dibayar', diproses: 'Diproses', dikirim: 'Dikirim', diterima: 'Diterima', selesai: 'Selesai', dibatalkan: 'Dibatalkan' };
+            if (riwayat.length === 0) {
+              riwayatList.innerHTML = '<div class="dp-info-row"><div class="dp-info-value">Belum ada riwayat perubahan status.</div></div>';
+            } else {
+              riwayatList.innerHTML = riwayat.map(function (r) {
+                var lama = r.status_lama ? (labelStatus[r.status_lama] || r.status_lama) : 'Baru dibuat';
+                var baru = labelStatus[r.status_baru] || r.status_baru;
+                var waktu = r.created_at ? new Date(r.created_at.replace(' ', 'T')).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+                return '<div class="dp-info-row"><div class="dp-info-label">' + waktu + '</div><div class="dp-info-value">' + lama + ' &rarr; ' + baru + '</div></div>';
+              }).join('');
+            }
+            riwayatCard.style.display = 'block';
+          }
         })
         .catch(function () { /* biarkan tampilan statis kalau API gagal */ });
     }

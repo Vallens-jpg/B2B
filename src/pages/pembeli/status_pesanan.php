@@ -298,22 +298,127 @@ $isApproved = ($order['status'] === 'approved' || $state === 'approved');
       caption.style.fontWeight = '600';
     }
 
-    // Jika parameter state=approved, langsung tampilkan disetujui
-    const state = urlParams.get('state');
-    if (state === 'approved') {
-      approveOrder();
-    } else {
-      // Simulasikan persetujuan otomatis setelah 4 detik untuk kenyamanan pengujian
-      const autoTimer = setTimeout(() => {
-        approveOrder();
-      }, 4000);
+    // ---- Data asli dari API: daftar pesanan pembeli yang login ----
+    // Kartu contoh di atas hanya fallback bila API gagal / belum login.
+    const labelStatusPesanan = {
+      menunggu_bayar: 'Menunggu Pembayaran',
+      dibayar: 'Dibayar',
+      diproses: 'Diproses',
+      dikirim: 'Dikirim',
+      diterima: 'Diterima',
+      selesai: 'Selesai',
+      dibatalkan: 'Dibatalkan'
+    };
+    let spModeSelesai = false; // true setelah data asli tampil / fallback diputuskan
 
-      // Jika tombol simulasi diklik duluan, hentikan timer
+    function rupiahSp(n) {
+      return 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+    }
+
+    function tampilkanPesananAsli(orders) {
+      if (!orders || !orders.length) return false;
+      spModeSelesai = true;
+      const pertama = orders[0];
+      // Kartu utama = pesanan terbaru pembeli.
+      document.getElementById('orderNumber').innerText = '#' + pertama.id;
+      document.getElementById('orderValue').innerText = rupiahSp(pertama.total_bayar);
+      document.getElementById('orderItem').innerText = pertama.nama_produk + ' (' + pertama.jumlah_kg + ' kg) – ' + rupiahSp(pertama.total_bayar);
+      const tgl = pertama.created_at ? new Date(pertama.created_at.replace(' ', 'T')) : null;
+      const tglEl = document.querySelectorAll('.sp-row-value');
+      if (tgl && !isNaN(tgl) && tglEl.length >= 7) {
+        tglEl[6].innerText = tgl.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+      }
+      // Banner + tombol sesuai status asli (tanpa simulasi ACC).
+      const banner = document.getElementById('alertBanner');
+      const title = document.getElementById('alertTitle');
+      const desc = document.getElementById('alertDesc');
       const simBtn = document.getElementById('btnSimulateApprove');
-      if (simBtn) {
-        simBtn.addEventListener('click', () => {
-          clearTimeout(autoTimer);
-        });
+      const paymentBtn = document.getElementById('paymentBtn');
+      const caption = document.getElementById('reviewCaption');
+      const statusLabel = labelStatusPesanan[pertama.status] || pertama.status;
+      if (simBtn) simBtn.style.display = 'none';
+      const judulBanner = {
+        menunggu_bayar: 'Menunggu Pembayaran',
+        dibayar: 'Pembayaran Diterima',
+        diproses: 'Pesanan Diproses',
+        dikirim: 'Pesanan Dikirim',
+        diterima: 'Pesanan Diterima',
+        selesai: 'Pesanan Selesai',
+        dibatalkan: 'Pesanan Dibatalkan'
+      };
+      title.innerText = judulBanner[pertama.status] || ('Status: ' + statusLabel);
+      desc.innerHTML = 'Pesanan #' + pertama.id + ' — ' + pertama.nama_produk + ' (' + pertama.jumlah_kg + ' kg). Status saat ini: <strong>' + statusLabel + '</strong>.';
+      if (pertama.status === 'menunggu_bayar') {
+        banner.classList.remove('sp-banner-approved');
+        paymentBtn.classList.remove('btn-tinjau-disabled');
+        paymentBtn.classList.add('btn-tinjau-active');
+        paymentBtn.style.pointerEvents = 'auto';
+        paymentBtn.style.cursor = 'pointer';
+        paymentBtn.innerText = 'Lanjut ke Pembayaran';
+        paymentBtn.href = '../order_detail.php?id=' + pertama.id;
+        caption.innerText = 'Pesanan dibuat, silakan selesaikan pembayaran';
+        caption.style.color = '#d97706';
+        caption.style.fontWeight = '600';
+      } else if (pertama.status === 'dibatalkan') {
+        caption.innerText = 'Pesanan ini dibatalkan';
+      } else {
+        banner.classList.add('sp-banner-approved');
+        caption.innerText = 'Status pesanan: ' + statusLabel;
+        caption.style.color = '#059669';
+        caption.style.fontWeight = '600';
+      }
+      // Pesanan lain pembeli, memakai kartu .sp-detail-card yang sama.
+      const inner = document.querySelector('.sp-inner');
+      const actions = document.querySelector('.sp-actions');
+      orders.slice(1).forEach(function (o) {
+        const card = document.createElement('div');
+        card.className = 'sp-detail-card';
+        card.style.marginTop = '1rem';
+        const label = labelStatusPesanan[o.status] || o.status;
+        const tglO = o.created_at ? new Date(o.created_at.replace(' ', 'T')).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+        card.innerHTML =
+          '<div class="sp-card-head"><span class="sp-card-head-title">Pesanan #' + o.id + '</span><span class="sp-ringkasan-badge">' + label + '</span></div>' +
+          '<div class="sp-row"><span class="sp-row-label">Item Pesanan</span><span class="sp-row-value">' + o.nama_produk + ' (' + o.jumlah_kg + ' kg)</span></div>' +
+          '<div class="sp-row"><span class="sp-row-label">Nilai Pesanan</span><span class="sp-row-value strong">' + rupiahSp(o.total_bayar) + '</span></div>' +
+          '<div class="sp-row"><span class="sp-row-label">Tanggal</span><span class="sp-row-value">' + tglO + '</span></div>' +
+          '<div class="sp-row"><span class="sp-row-label">Detail</span><span class="sp-row-value"><a href="../order_detail.php?id=' + o.id + '">Lihat Detail ›</a></span></div>';
+        if (inner && actions) inner.insertBefore(card, actions);
+      });
+      return true;
+    }
+
+    // Ambil pesanan asli; kalau gagal, pakai simulasi/fallback di bawah.
+    fetch('../../api/order/list.php')
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.ok && res.data && res.data.orders && res.data.orders.length) {
+          tampilkanPesananAsli(res.data.orders);
+        } else {
+          mulaiSimulasiFallback();
+        }
+      })
+      .catch(function () { mulaiSimulasiFallback(); });
+
+    // Simulasi ACC hanya dipakai sebagai fallback bila API gagal (data contoh).
+    function mulaiSimulasiFallback() {
+      if (spModeSelesai) return;
+      spModeSelesai = true;
+      const state = urlParams.get('state');
+      if (state === 'approved') {
+        approveOrder();
+      } else {
+        // Simulasikan persetujuan otomatis setelah 4 detik untuk kenyamanan pengujian
+        const autoTimer = setTimeout(() => {
+          approveOrder();
+        }, 4000);
+
+        // Jika tombol simulasi diklik duluan, hentikan timer
+        const simBtn = document.getElementById('btnSimulateApprove');
+        if (simBtn) {
+          simBtn.addEventListener('click', () => {
+            clearTimeout(autoTimer);
+          });
+        }
       }
     }
   </script>

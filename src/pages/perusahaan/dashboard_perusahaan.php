@@ -6001,6 +6001,7 @@
             var jenis = /kampung/i.test(pr.nama) ? 'Telur Ayam Kampung' : (/omega/i.test(pr.nama) ? 'Telur Omega' : 'Telur Ayam Ras');
             return {
               id: pr.id,
+              deskripsi: pr.deskripsi || '',
               jenis: jenis,
               grade: 'Grade ' + gradeKey,
               gradeKey: gradeKey,
@@ -6457,15 +6458,20 @@
         ? 'Telur Ayam Ras Grade ' + gradeSelected
         : productPayload.jenis;
       var produkId = (index >= 0 && index < PRODUCTS_DATA.length && PRODUCTS_DATA[index].id) ? PRODUCTS_DATA[index].id : 0;
+      // Edit: pertahankan deskripsi lama dari database (modal tidak punya
+      // kolom deskripsi) supaya edit tidak menghapusnya jadi kosong.
+      var deskripsiLama = (produkId && PRODUCTS_DATA[index] && PRODUCTS_DATA[index].deskripsi) ? PRODUCTS_DATA[index].deskripsi : '';
       var hargaNum = parseInt(String(productPayload.harga).replace(/[^0-9]/g, ''), 10) || 0;
-      var stokNum = parseFloat(String(productPayload.stok).replace(/[^0-9.]/g, '')) || 0;
+      // Stok tampil format Indonesia ("1.200 kg"): hapus titik pemisah ribuan
+      // DULU sebelum parseFloat — kalau tidak, "1.200" terbaca 1,2 kg.
+      var stokNum = parseFloat(String(productPayload.stok).replace(/\./g, '').replace(',', '.').replace(/[^0-9.]/g, '')) || 0;
       fetch('../../api/produk/simpan.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id: produkId,
           nama: namaProduk,
-          deskripsi: '',
+          deskripsi: deskripsiLama,
           harga_per_kg: hargaNum,
           stok_kg: stokNum,
           satuan: 'kg'

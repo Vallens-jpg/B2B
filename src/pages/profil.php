@@ -357,6 +357,7 @@
         <div class="profil-gradient-circle"></div>
         <h2 class="profil-business-name" id="displayBusinessName">Catering Berkah</h2>
         <p class="profil-business-email" id="displayEmail">buyer@gmail.com</p>
+        <p class="profil-business-email" id="displayRole">Pembeli</p>
       </aside>
 
       <!-- Right Column: Form Sections & Actions -->
@@ -442,6 +443,38 @@
   <!-- Floating Navigation for Prototype Walkthrough -->
 
   <script>
+    // ---- Profil asli dari API me.php (fallback: nilai contoh di HTML) ----
+    (function () {
+      const labelRole = { pembeli: 'Pembeli', perusahaan: 'Perusahaan', admin: 'Admin' };
+      fetch('../api/auth/me.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res || !res.ok || !res.data) return;
+          const u = res.data;
+          if (u.nama) {
+            document.getElementById('displayBusinessName').innerText = u.nama;
+            const namaUsaha = document.getElementById('namaUsaha');
+            if (namaUsaha) namaUsaha.value = u.nama;
+            document.querySelectorAll('.user-name-text').forEach(function (el) { el.innerText = u.nama; });
+            const avatar = document.querySelector('.user-avatar-circle');
+            if (avatar) {
+              const inisial = u.nama.trim().split(/\s+/).slice(0, 2).map(function (w) { return w.charAt(0).toUpperCase(); }).join('');
+              avatar.innerText = inisial || 'U';
+            }
+          }
+          if (u.email) {
+            document.getElementById('displayEmail').innerText = u.email;
+            const emailUsaha = document.getElementById('emailUsaha');
+            if (emailUsaha) emailUsaha.value = u.email;
+          }
+          if (u.role) {
+            const roleEl = document.getElementById('displayRole');
+            if (roleEl) roleEl.innerText = labelRole[u.role] || u.role;
+          }
+        })
+        .catch(function () { /* biarkan nilai contoh bila API gagal / belum login */ });
+    })();
+
     function simpanProfil() {
       const nama = document.getElementById('namaUsaha').value.trim();
       const email = document.getElementById('emailUsaha').value.trim();

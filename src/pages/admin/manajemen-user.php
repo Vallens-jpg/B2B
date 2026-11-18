@@ -1289,7 +1289,8 @@
             const parsed = JSON.parse(stored);
             if (Array.isArray(parsed) && parsed.length > 0) {
               parsed.forEach(u => {
-                if (u.role === 'admin' || u.role === 'seller') {
+                // 'seller' lama = perusahaan; 'admin' dipertahankan apa adanya.
+                if (u.role === 'seller') {
                   u.role = 'company';
                   u.roleLabel = 'Perusahaan';
                 }
@@ -1313,6 +1314,44 @@
       }
 
       let users = loadUsers();
+
+      // Daftar pengguna asli dari API admin (../../api/admin/pengguna.php),
+      // memakai desain tabel yang sudah ada di halaman ini. Kalau API gagal
+      // (belum login sebagai admin / migrasi belum jalan), data contoh di
+      // atas (localStorage / DEFAULT_USERS) tetap tampil — pola yang sama
+      // dengan halaman pembeli (detail_penjual.php).
+      const BULAN_ID = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+      function formatApiDate(createdAt) {
+        if (!createdAt) return '—';
+        const m = String(createdAt).match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (!m) return String(createdAt);
+        return parseInt(m[3], 10) + ' ' + BULAN_ID[parseInt(m[2], 10) - 1] + ' ' + m[1];
+      }
+      function mapApiUser(u) {
+        const role = (u.role === 'perusahaan') ? 'company' : ((u.role === 'admin') ? 'admin' : 'buyer');
+        return {
+          id: '#USR-' + String(u.id).padStart(4, '0'),
+          name: u.nama || ('User #' + u.id),
+          company: '',
+          email: u.email || '',
+          phone: '',
+          role: role,
+          roleLabel: role === 'company' ? 'Perusahaan' : (role === 'admin' ? 'Admin' : 'Pembeli'),
+          nib: '—',
+          npwp: '—',
+          date: formatApiDate(u.created_at),
+          status: 'active'
+        };
+      }
+      fetch('../../api/admin/pengguna.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !Array.isArray(res.data)) return;
+          users = res.data.map(mapApiUser);
+          saveUsers(users); // simpan sebagai cache fallback bila API gagal di kunjungan berikut
+          renderTable();
+        })
+        .catch(function () { /* biarkan data contoh kalau API gagal dimuat */ });
 
       // Current filter & sort state
       let currentRole = 'all';     // 'all' | 'buyer' | 'seller' | 'admin'
@@ -1439,6 +1478,10 @@
             if (user.role === 'company') {
               badgeRoleClass = 'badge-company';
               roleLabelText = 'Perusahaan';
+            } else if (user.role === 'admin') {
+              // Admin memakai badge biru yang sudah ada (belum ada warna khusus admin).
+              badgeRoleClass = 'badge-company';
+              roleLabelText = 'Admin';
             }
 
             // Status badge class & label
@@ -1498,14 +1541,11 @@
       }
 
       function updateCountsAndFooter(visibleCount) {
-        // Calculate counts based on base 128 plus any additional added users
-        const addedCount = Math.max(0, users.length - DEFAULT_USERS.length);
-        const addedBuyer = users.slice(0, addedCount).filter(u => u.role === 'buyer').length;
-        const addedCompany = users.slice(0, addedCount).filter(u => u.role === 'company').length;
-
-        const totalAll = 128 + addedCount;
-        const totalCompany = 33 + addedCompany;
-        const totalBuyer = 95 + addedBuyer;
+        // Jumlah asli dari data yang sedang tampil (API bila berhasil,
+        // data contoh bila API gagal) — bukan lagi angka contoh 128/33/95.
+        const totalAll = users.length;
+        const totalCompany = users.filter(u => u.role === 'company').length;
+        const totalBuyer = users.filter(u => u.role === 'buyer').length;
 
         const elAll = document.getElementById('countAll');
         if (elAll) elAll.textContent = totalAll;

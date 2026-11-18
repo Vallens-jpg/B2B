@@ -467,6 +467,24 @@
       border: 1px solid #fde68a;
     }
 
+    .badge-approved {
+      background: #e3f6ec;
+      color: #14803f;
+      border: 1px solid #a7f3d0;
+    }
+
+    .badge-rejected {
+      background: #fde8e8;
+      color: #b42318;
+      border: 1px solid #fecaca;
+    }
+
+    .badge-waiting {
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
     /* ============ RIGHT CARD: DETAIL DISPUTE ============ */
     .right-card-header {
       display: flex;
@@ -1189,6 +1207,30 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     }
 
+    // ID dispute asli (angka) dari ?id= — dipakai untuk memanggil API.
+    // Hanya ?id= yang seluruhnya angka yang dianggap ID asli; kode contoh
+    // ('#RET-2026-001') bukan ID asli.
+    function disputeIdDariParam(param) {
+      const raw = String(param == null ? '' : param).trim();
+      return /^\d+$/.test(raw) ? parseInt(raw, 10) : 0;
+    }
+
+    const BULAN_ID = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+    function formatTanggalApi(waktu) {
+      if (!waktu) return '—';
+      const m = String(waktu).match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (!m) return String(waktu);
+      return parseInt(m[3], 10) + ' ' + BULAN_ID[parseInt(m[2], 10) - 1] + ' ' + m[1];
+    }
+
+    // Badge untuk status asli dari API (dibuka/diproses/diputuskan).
+    function badgeForApi(d) {
+      if (d.status === 'diproses') return '<span class="badge badge-waiting"><span class="badge-dot">●</span> Diproses</span>';
+      if (d.status === 'diputuskan' && d.putusan === 'uang_kembali') return '<span class="badge badge-approved"><span class="badge-dot">●</span> Diputuskan: Uang Kembali</span>';
+      if (d.status === 'diputuskan' && d.putusan === 'lanjut_perusahaan') return '<span class="badge badge-rejected"><span class="badge-dot">●</span> Diputuskan: Lanjut Perusahaan</span>';
+      return '<span class="badge badge-pending"><span class="badge-dot">●</span> Pending</span>';
+    }
+
     function showToast(message, type = 'info') {
       const toast = document.getElementById('toastNotification');
       toast.className = `staplr-toast ${type} show`;
@@ -1205,6 +1247,9 @@
 
       const disputes = getDisputes();
       let dispute = disputes.find(d => d.id === selectedId) || disputes[0];
+
+      // ID dispute asli (angka) bila dibuka lewat ?id=<angka>; 0 = data contoh.
+      const disputeIdApi = disputeIdDariParam(selectedId);
 
       // Save as active selected
       localStorage.setItem('staplr_selected_dispute_id', dispute.id);
@@ -1245,15 +1290,62 @@
       const btnForward = document.getElementById('btnForwardDispute');
       btnForward.href = verifikasiUrl;
 
-      // 4. Render Attachment items
-      const attachmentList = document.getElementById('attachmentList');
-      attachmentList.innerHTML = '';
+      // Data dispute asli dari API bila ada ID angka; menimpa isi contoh di
+      // atas. Nama pembeli/produk diambil dari detail order. Link ke
+      // verifikasi ikut diperbarui ke ?id=<angka> supaya putusan di halaman
+      // verifikasi juga memanggil API yang sama.
+      if (disputeIdApi > 0) {
+        fetch('../../api/dispute/detail.php?id=' + disputeIdApi)
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok || !res.data) return;
+            const d = res.data;
+            dispute = { ...dispute, id: String(d.id), orderId: 'Order #' + d.order_id };
+            document.getElementById('caseIdRetur').textContent = 'Dispute #' + d.id;
+            document.getElementById('caseIdPesanan').textContent = 'Order #' + d.order_id;
+            document.getElementById('casePembeli').textContent = 'Pembeli #' + d.buyer_id;
+            document.getElementById('caseProduk').textContent = 'Produk #' + d.produk_id;
+            document.getElementById('caseTglBeli').textContent = '—';
+            document.getElementById('caseTglKomplain').textContent = formatTanggalApi(d.created_at);
+            document.getElementById('caseAlasan').textContent = d.judul || '—';
+            document.getElementById('caseBukti').textContent = d.bukti_foto ? '1 Foto' : 'Tidak ada bukti foto';
+            document.getElementById('caseStatusBadge').innerHTML = badgeForApi(d);
+            document.getElementById('rightCardTitle').textContent = 'Detail Dispute #' + d.id;
+            document.getElementById('rightCardBadge').innerHTML = badgeForApi(d);
+            document.getElementById('fieldKomplain').textContent = d.deskripsi || '—';
+            document.getElementById('fieldUsulan').textContent = '—';
+            const verifikasiUrlApi = `verifikasi-dispute.php?id=${disputeIdApi}`;
+            document.getElementById('stepperVerifikasiLink').href = verifikasiUrlApi;
+            btnForward.href = verifikasiUrlApi;
+            const att = d.bukti_foto
+              ? [{ type: String(d.bukti_foto).split('.').pop().toUpperCase(), title: d.bukti_foto, desc: 'Lampiran foto bukti dari pembeli' }]
+              : [];
+            renderAttachments(att);
+            return fetch('../../api/order/detail.php?id=' + d.order_id)
+              .then(function (r) { return r.json(); })
+              .then(function (resOrder) {
+                if (!resOrder.ok || !resOrder.data || !resOrder.data.order) return;
+                const o = resOrder.data.order;
+                document.getElementById('casePembeli').textContent = o.nama_buyer || ('Pembeli #' + d.buyer_id);
+                document.getElementById('caseProduk').textContent = (o.nama_produk || ('Produk #' + d.produk_id)) + ' (' + Number(o.jumlah_kg).toLocaleString('id-ID') + ' Kg)';
+                document.getElementById('caseTglBeli').textContent = formatTanggalApi(o.created_at);
+              })
+              .catch(function () { /* biarkan 'Pembeli #id' / 'Produk #id' */ });
+          })
+          .catch(function () { /* biarkan data contoh kalau API gagal dimuat */ });
+      }
 
-      const attachments = dispute.attachments || [
-        { type: 'JPG', title: 'Foto 1 - Bukti Masalah', desc: 'Lampiran foto bukti dari pembeli' }
-      ];
+      // 4. Render Attachment items (dipakai juga saat data asli dari API tiba)
+      function renderAttachments(attachments) {
+        const attachmentList = document.getElementById('attachmentList');
+        attachmentList.innerHTML = '';
 
-      attachments.forEach((att, idx) => {
+        if (!attachments || !attachments.length) {
+          attachmentList.innerHTML = '<div style="padding: 13px 16px; font-size: 14px; color: #64748b;">Tidak ada bukti yang dilampirkan.</div>';
+          return;
+        }
+
+        attachments.forEach((att, idx) => {
         const item = document.createElement('div');
         item.className = 'attachment-item';
         item.setAttribute('data-index', idx);
@@ -1287,7 +1379,12 @@
         });
 
         attachmentList.appendChild(item);
-      });
+        });
+      }
+
+      renderAttachments(dispute.attachments || [
+        { type: 'JPG', title: 'Foto 1 - Bukti Masalah', desc: 'Lampiran foto bukti dari pembeli' }
+      ]);
 
       // 5. Modal Attachment Preview Controls
       const modal = document.getElementById('attachmentModal');
@@ -1330,6 +1427,32 @@
       // 6. Tolak Dispute Button Event
       const btnReject = document.getElementById('btnRejectDispute');
       btnReject.addEventListener('click', () => {
+        // Tolak = klaim refund ditolak, order lanjut ke perusahaan.
+        // Putusan asli lewat API (admin only): POST ../../api/dispute/putuskan.php
+        // dengan { dispute_id, putusan: 'lanjut_perusahaan' }.
+        if (disputeIdApi > 0) {
+          btnReject.disabled = true;
+          fetch('../../api/dispute/putuskan.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dispute_id: disputeIdApi, putusan: 'lanjut_perusahaan' })
+          })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+              if (!res.ok) throw new Error(res.error || 'Putusan gagal');
+              showToast(`Dispute #${disputeIdApi} berhasil ditolak (lanjut ke perusahaan)! Mengalihkan ke daftar...`, 'danger');
+              setTimeout(() => {
+                window.location.href = 'dispute.php';
+              }, 900);
+            })
+            .catch(function (err) {
+              btnReject.disabled = false;
+              showToast(err.message || 'Putusan gagal. Pastikan sudah login sebagai admin.', 'danger');
+            });
+          return;
+        }
+
+        // Fallback lokal seperti sebelumnya (tanpa ID dispute asli).
         const allDisputes = getDisputes();
         const target = allDisputes.find(item => item.id === dispute.id);
         if (target) {

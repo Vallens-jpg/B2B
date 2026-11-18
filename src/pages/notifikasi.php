@@ -745,10 +745,12 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
 
       // Hide yesterday group if mode is unread (yesterday has only read items)
       const groupKemarin = document.getElementById('groupKemarin');
-      if (mode === 'unread') {
-        groupKemarin.style.display = 'none';
-      } else {
-        groupKemarin.style.display = 'block';
+      if (groupKemarin) {
+        if (mode === 'unread') {
+          groupKemarin.style.display = 'none';
+        } else {
+          groupKemarin.style.display = 'block';
+        }
       }
     }
 
@@ -848,6 +850,49 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
         } catch(e) {}
       }
     })();
+    // ---- Notifikasi asli dari API (riwayat_status): ganti daftar contoh ----
+    // Daftar contoh di atas hanya fallback bila API gagal / belum login.
+    (function () {
+      fetch('../api/notifikasi.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res || !res.ok || !res.data || !res.data.notifikasi || !res.data.notifikasi.length) return;
+          const items = res.data.notifikasi;
+          const g1 = document.getElementById('groupHariIni');
+          const g2 = document.getElementById('groupKemarin');
+          if (!g1) return;
+          if (g2) g2.remove();
+          const group = document.createElement('div');
+          group.className = 'notif-section-group';
+          group.id = 'groupTerbaru';
+          group.innerHTML = '<div class="notif-section-label">Terbaru <span class="notif-section-count">(' + items.length + ')</span></div>';
+          items.forEach(function (n) {
+            const art = document.createElement('article');
+            art.className = 'notif-row-item unread';
+            art.setAttribute('data-read', 'false');
+            const waktu = n.created_at ? new Date(n.created_at.replace(' ', 'T')).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+            art.innerHTML =
+              '<div class="notif-row-left"><div class="notif-circle-icon green">' +
+              '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+              '<div class="notif-row-text-group"><h2 class="notif-row-title green">' + n.judul + '</h2>' +
+              '<p class="notif-row-desc">' + n.isi + '</p>' +
+              '<div class="notif-row-meta">Pesanan #' + n.order_id + ' • ' + waktu + '</div></div></div>' +
+              '<div class="notif-row-right"><span class="notif-status-indicator unread"><span class="status-dot-blue"></span> Belum dibaca</span>' +
+              '<a href="order_detail.php?id=' + n.order_id + '" class="notif-action-link">Lihat pesanan ›</a></div>';
+            group.appendChild(art);
+          });
+          g1.replaceWith(group);
+          // Perbarui hitungan (semua item dari API dianggap belum dibaca).
+          const badge = document.getElementById('unreadCountBadge');
+          if (badge) badge.innerText = items.length + ' belum dibaca';
+          const countSemua = document.getElementById('countSemua');
+          if (countSemua) countSemua.innerText = items.length;
+          const countUnread = document.getElementById('countUnread');
+          if (countUnread) countUnread.innerText = items.length;
+        })
+        .catch(function () { /* biarkan daftar contoh bila API gagal */ });
+    })();
+
     document.addEventListener('click', function (e) {
       const dd = document.getElementById('notifDropdown');
       const btn = document.getElementById('notifBellBtn');
