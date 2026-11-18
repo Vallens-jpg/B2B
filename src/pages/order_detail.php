@@ -805,6 +805,9 @@
       <button class="btn-dispute" id="btnBatalkan" style="display:none" onclick="batalkanPesanan()">
         Batalkan Pesanan
       </button>
+      <button class="btn-konfirmasi-diterima" id="btnUlasan" style="display:none" onclick="beriUlasan()">
+        Beri Ulasan
+      </button>
     </div>
   </div>
 
@@ -869,6 +872,8 @@
           if (btnBayar && o.status === 'menunggu_bayar') btnBayar.style.display = '';
           if (btnBatal && (o.status === 'menunggu_bayar' || o.status === 'dibayar')) btnBatal.style.display = '';
           if (btnTerima && (o.status === 'dikirim' || o.status === 'diterima')) btnTerima.style.display = '';
+          var btnUlasan = document.getElementById('btnUlasan');
+          if (btnUlasan && o.status === 'selesai') btnUlasan.style.display = '';
           // Riwayat status dari API (field: status_lama, status_baru, created_at).
           var riwayat = res.data.riwayat || [];
           var riwayatCard = document.getElementById('riwayatCard');
@@ -915,6 +920,10 @@
     }
 
     // Actions
+    function beriUlasan() {
+      window.location.href = 'pembeli/ulasan.php?order_id=' + encodeURIComponent(orderIdParam);
+    }
+
     function ajukanDispute() {
       window.location.href = 'pengajuan_dispute.php' +
         '?seller='   + encodeURIComponent(sellerParam) +

@@ -297,93 +297,6 @@
       box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.15);
     }
 
-    /* Unggah Foto Dropzone */
-    .ulasan-dropzone {
-      border: 1.5px dashed #CBD5E1;
-      border-radius: 12px;
-      padding: 2.25rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.85rem;
-      cursor: pointer;
-      background-color: #FAFAFA;
-      transition: border-color 0.2s ease, background-color 0.2s ease;
-    }
-
-    .ulasan-dropzone:hover {
-      border-color: #94A3B8;
-      background-color: #F8FAFC;
-    }
-
-    .ulasan-dropzone.dragover {
-      border-color: #152C4E;
-      background-color: #EEF2F6;
-    }
-
-    .ulasan-icon-box {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background-color: #EEF2F6;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .ulasan-icon-box svg {
-      width: 24px;
-      height: 24px;
-      fill: #374151;
-    }
-
-    .ulasan-dropzone-text {
-      font-size: 0.885rem;
-      font-weight: 700;
-      color: #111827;
-      text-align: center;
-    }
-
-    .ulasan-preview-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 1rem;
-    }
-
-    .ulasan-preview-item {
-      position: relative;
-      width: 76px;
-      height: 76px;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid #E5E7EB;
-    }
-
-    .ulasan-preview-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .ulasan-preview-remove {
-      position: absolute;
-      top: 3px;
-      right: 3px;
-      width: 18px;
-      height: 18px;
-      background-color: rgba(0, 0, 0, 0.65);
-      color: #ffffff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      cursor: pointer;
-      line-height: 1;
-    }
-
     /* Action Buttons */
     .ulasan-actions {
       display: flex;
@@ -476,12 +389,12 @@
     </a>
     <h1 class="ulasan-nav-title">ULASAN PRODUK</h1>
     <div class="ulasan-nav-actions">
-      <button type="button" class="ulasan-bell-btn" aria-label="Notifikasi">
+      <a href="../notifikasi.php" class="ulasan-bell-btn" aria-label="Notifikasi">
         <svg viewBox="0 0 24 24">
           <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
         </svg>
-        <span class="ulasan-bell-badge">3</span>
-      </button>
+        <span class="ulasan-bell-badge" id="ulasanBellBadge" style="display:none">0</span>
+      </a>
       <div class="ulasan-user-pill">
         <div class="ulasan-user-avatar">AD</div>
         <span class="ulasan-user-name">Buyer</span>
@@ -497,12 +410,16 @@
       <div class="ulasan-subcard">
         <h2 class="ulasan-subcard-title">RINGKASAN PESANAN</h2>
         <div class="ulasan-product-box">
-          <img src="../../assets/img/prod_grade_a.png" alt="Telur ayam" class="ulasan-product-img" id="summaryImg">
+          <img src="../../assets/img/prod_grade_a.png" alt="Produk" class="ulasan-product-img" id="summaryImg">
           <div class="ulasan-product-info">
-            <h3 class="ulasan-product-name" id="summaryTitle">Telur ayam</h3>
+            <h3 class="ulasan-product-name" id="summaryTitle">Memuat…</h3>
             <div class="ulasan-product-meta">
               <span>Jumlah:</span>
-              <strong id="summaryAmount">Rp 1.250.000</strong>
+              <strong id="summaryQty">—</strong>
+            </div>
+            <div class="ulasan-product-meta">
+              <span>Total:</span>
+              <strong id="summaryAmount">—</strong>
             </div>
           </div>
         </div>
@@ -549,34 +466,6 @@
         ></textarea>
       </div>
 
-      <!-- 3. UNGGAH FOTO (OPSIONAL) -->
-      <div class="ulasan-subcard">
-        <h2 class="ulasan-subcard-title">UNGGAH FOTO (OPSIONAL)</h2>
-        <div
-          class="ulasan-dropzone"
-          id="dropzone"
-          onclick="document.getElementById('reviewFileInput').click()"
-        >
-          <div class="ulasan-icon-box">
-            <svg viewBox="0 0 24 24">
-              <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
-            </svg>
-          </div>
-          <div class="ulasan-dropzone-text">Klik atau seret foto/video ke sini</div>
-        </div>
-
-        <input
-          type="file"
-          id="reviewFileInput"
-          accept="image/*,video/*"
-          multiple
-          style="display: none;"
-          onchange="handleReviewFiles(this.files)"
-        >
-
-        <div class="ulasan-preview-grid" id="previewGrid"></div>
-      </div>
-
       <!-- 4. ACTION BUTTONS -->
       <div class="ulasan-actions">
         <a id="cancelBtn" href="order_list.php" class="btn-ulasan-batal">BATAL</a>
@@ -591,13 +480,31 @@
   <!-- Floating Navigation for Prototype Walkthrough -->
 
   <script>
-    // URL params handling
+    // Ringkasan asli dari API (?order_id=)
     const urlParams = new URLSearchParams(window.location.search);
-    const productParam = urlParams.get('product') || 'Telur ayam';
-    const subtotalParam = urlParams.get('subtotal') || 'Rp 1.250.000';
-
-    document.getElementById('summaryTitle').innerText = productParam;
-    document.getElementById('summaryAmount').innerText = subtotalParam;
+    const orderId = parseInt(urlParams.get('order_id') || urlParams.get('id') || '0', 10);
+    function rupiah(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); }
+    if (!orderId) {
+      document.getElementById('summaryTitle').innerText = 'Pesanan tidak ditemukan. Buka halaman ini dari Detail Pesanan.';
+    } else {
+      fetch('../../api/order/detail.php?id=' + orderId)
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res || !res.ok || !res.data || !res.data.order) {
+            document.getElementById('summaryTitle').innerText = (res && res.message) || 'Pesanan tidak ditemukan.';
+            return;
+          }
+          var o = res.data.order;
+          document.getElementById('summaryTitle').innerText = o.nama_produk;
+          document.getElementById('summaryImg').alt = o.nama_produk;
+          document.getElementById('summaryAmount').innerText = rupiah(o.total_bayar);
+          var q = document.getElementById('summaryQty');
+          if (q) q.innerText = o.jumlah_kg + ' kg';
+        })
+        .catch(function () {
+          document.getElementById('summaryTitle').innerText = 'Gagal memuat pesanan.';
+        });
+    }
 
     // Preserve back destination
     const cancelBtn = document.getElementById('cancelBtn');
@@ -639,49 +546,45 @@
       });
     }
 
-    // Drag & Drop
-    const dropzone = document.getElementById('dropzone');
-    dropzone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropzone.classList.add('dragover');
-    });
-    dropzone.addEventListener('dragleave', () => {
-      dropzone.classList.remove('dragover');
-    });
-    dropzone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropzone.classList.remove('dragover');
-      handleReviewFiles(e.dataTransfer.files);
-    });
-
-    function handleReviewFiles(files) {
-      const previewGrid = document.getElementById('previewGrid');
-      Array.from(files).forEach(file => {
-        if (file.type.startsWith('image/')) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const previewItem = document.createElement('div');
-            previewItem.className = 'ulasan-preview-item';
-            previewItem.innerHTML = `
-              <img src="${e.target.result}" alt="${file.name}" class="ulasan-preview-img">
-              <span class="ulasan-preview-remove" onclick="this.parentElement.remove()">&times;</span>
-            `;
-            previewGrid.appendChild(previewItem);
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-    }
-
-    // Submit Review
+    // Submit Review (kirim asli ke API)
     function kirimUlasan() {
       if (currentRating === 0) {
         alert('Silakan pilih rating bintang terlebih dahulu.');
         return;
       }
-      alert('Terima kasih! Ulasan Anda berhasil dikirim.');
-      window.location.href = 'order_list.php';
+      if (!orderId) {
+        alert('Pesanan tidak ditemukan.');
+        return;
+      }
+      fetch('../../api/ulasan/simpan.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: orderId, rating: currentRating, komentar: document.getElementById('reviewDetail').value.trim() })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res || !res.ok) {
+            alert((res && res.message) || 'Gagal mengirim ulasan.');
+            return;
+          }
+          alert('Terima kasih! Ulasan Anda berhasil dikirim.');
+          window.location.href = 'order_list.php';
+        })
+        .catch(function () { alert('Gagal mengirim ulasan. Periksa koneksi.'); });
     }
+    // Badge lonceng: jumlah notifikasi belum dibaca.
+    (function () {
+      var badge = document.getElementById('ulasanBellBadge');
+      fetch('../../api/notifikasi.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!badge || !res || !res.ok || !res.data || !res.data.notifikasi) return;
+          var belum = 0;
+          res.data.notifikasi.forEach(function (n) { if (!n.dibaca) belum++; });
+          if (belum > 0) { badge.innerText = belum; badge.style.display = ''; }
+        })
+        .catch(function () {});
+    })();
   </script>
 </body>
 </html>
