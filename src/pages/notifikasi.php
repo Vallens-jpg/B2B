@@ -483,16 +483,24 @@
 
     }
 
-    function markAllNotificationsRead() {
+    // Ubah tampilan semua notifikasi menjadi sudah dibaca (dipakai setelah API berhasil).
+    function tandaiSemuaDibacaTampilan() {
       // Mark all rows as read
       document.querySelectorAll('.notif-row-item').forEach(item => {
         item.classList.remove('unread');
         item.setAttribute('data-read', 'true');
+        const titleEl = item.querySelector('.notif-row-title');
+        if (titleEl) titleEl.classList.remove('green');
         const statusEl = item.querySelector('.notif-status-indicator');
         if (statusEl) {
           statusEl.className = 'notif-status-indicator read';
           statusEl.innerHTML = 'Sudah dibaca';
         }
+      });
+
+      // Dropdown lonceng juga ikut terbaca
+      document.querySelectorAll('#ddNotifList .notif-item.unread').forEach(item => {
+        item.classList.remove('unread');
       });
 
       // Update badge counts
@@ -514,6 +522,12 @@
       if (filterMode === 'unread') {
         setNotifFilter('unread');
       }
+    }
+
+    function markAllNotificationsRead() {
+      // Simpan ke database supaya tidak kembali setelah muat ulang.
+      fetch('../api/notifikasi/tandai-dibaca.php', { method: 'POST' }).catch(function () {});
+      tandaiSemuaDibacaTampilan();
     }
 
     // Top navbar dropdown
@@ -550,23 +564,32 @@
           return;
         }
         ddList.innerHTML = items.slice(0, 3).map(function (n) {
-          return '<a href="order_detail.php?id=' + n.order_id + '" class="notif-item unread">'
+          return '<a href="order_detail.php?id=' + n.order_id + '" class="notif-item' + (n.dibaca ? '' : ' unread') + '">'
             + '<div class="notif-icon-circle green"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg></div>'
             + '<div class="notif-content"><div class="notif-item-top"><span class="notif-item-title">' + escapeHtml(n.judul) + '</span></div>'
             + '<p class="notif-item-body">' + escapeHtml(n.isi) + '</p></div></a>';
         }).join('');
+        var belum = 0;
+        items.forEach(function (n) { if (!n.dibaca) belum++; });
         if (badge) {
-          badge.innerText = items.length;
-          badge.style.display = '';
+          if (belum > 0) {
+            badge.innerText = belum;
+            badge.style.display = '';
+          } else {
+            badge.style.display = 'none';
+          }
         }
       }
-      function perbaruiHitungan(jumlah) {
+      function perbaruiHitungan(items) {
+        items = items || [];
+        var belum = 0;
+        items.forEach(function (n) { if (!n.dibaca) belum++; });
         var badge = document.getElementById('unreadCountBadge');
-        if (badge) badge.innerText = jumlah + ' belum dibaca';
+        if (badge) badge.innerText = belum + ' belum dibaca';
         var countSemua = document.getElementById('countSemua');
-        if (countSemua) countSemua.innerText = jumlah;
+        if (countSemua) countSemua.innerText = items.length;
         var countUnread = document.getElementById('countUnread');
-        if (countUnread) countUnread.innerText = jumlah;
+        if (countUnread) countUnread.innerText = belum;
       }
       fetch('../api/notifikasi.php')
         .then(function (r) {
@@ -578,7 +601,7 @@
           if (!res.ok || !res.data || !res.data.notifikasi || !res.data.notifikasi.length) {
             if (wadah) wadah.innerHTML = '<div class="notif-section-label">Terbaru</div><p style="padding:1rem;">Belum ada notifikasi. Perubahan status pesanan akan muncul di sini.</p>';
             isiDropdown([]);
-            perbaruiHitungan(0);
+            perbaruiHitungan([]);
             return;
           }
           const items = res.data.notifikasi;
@@ -588,29 +611,40 @@
           group.id = 'groupTerbaru';
           group.innerHTML = '<div class="notif-section-label">Terbaru <span class="notif-section-count">(' + items.length + ')</span></div>';
           items.forEach(function (n) {
+            const sudahDibaca = !!n.dibaca;
             const art = document.createElement('article');
-            art.className = 'notif-row-item unread';
-            art.setAttribute('data-read', 'false');
+            art.className = 'notif-row-item' + (sudahDibaca ? '' : ' unread');
+            art.setAttribute('data-read', sudahDibaca ? 'true' : 'false');
             const waktu = n.created_at ? new Date(n.created_at.replace(' ', 'T')).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
             art.innerHTML =
               '<div class="notif-row-left"><div class="notif-circle-icon green">' +
               '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>' +
-              '<div class="notif-row-text-group"><h2 class="notif-row-title green">' + escapeHtml(n.judul) + '</h2>' +
+              '<div class="notif-row-text-group"><h2 class="notif-row-title' + (sudahDibaca ? '' : ' green') + '">' + escapeHtml(n.judul) + '</h2>' +
               '<p class="notif-row-desc">' + escapeHtml(n.isi) + '</p>' +
               '<div class="notif-row-meta">Pesanan #' + n.order_id + ' • ' + waktu + '</div></div></div>' +
-              '<div class="notif-row-right"><span class="notif-status-indicator unread"><span class="status-dot-blue"></span> Belum dibaca</span>' +
+              '<div class="notif-row-right">' + (sudahDibaca
+                ? '<span class="notif-status-indicator read">Sudah dibaca</span>'
+                : '<span class="notif-status-indicator unread"><span class="status-dot-blue"></span> Belum dibaca</span>') +
               '<a href="order_detail.php?id=' + n.order_id + '" class="notif-action-link">Lihat pesanan ›</a></div>';
             group.appendChild(art);
           });
           wadah.innerHTML = '';
           wadah.appendChild(group);
           isiDropdown(items);
-          perbaruiHitungan(items.length);
+          perbaruiHitungan(items);
+          // Sudah dilihat: tandai semua sebagai dibaca supaya statusnya hilang.
+          fetch('../api/notifikasi/tandai-dibaca.php', { method: 'POST' })
+            .then(function (r) { return r.json(); })
+            .then(function (tandai) {
+              if (!tandai || !tandai.ok) return;
+              tandaiSemuaDibacaTampilan();
+            })
+            .catch(function () { /* biarkan status belum dibaca bila gagal */ });
         })
         .catch(function () {
           if (wadah) wadah.innerHTML = '<div class="notif-section-label">Terbaru</div><p style="padding:1rem;">Gagal memuat notifikasi. Periksa koneksi atau login kembali.</p>';
           isiDropdown([]);
-          perbaruiHitungan(0);
+          perbaruiHitungan([]);
         });
     })();
 
