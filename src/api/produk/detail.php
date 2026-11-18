@@ -10,8 +10,8 @@ if ($id <= 0) {
 
 try {
     $stmt = db()->prepare(
-        "SELECT p.*, COALESCE(AVG(u.rating), 0) AS rating, COUNT(u.id) AS jumlah_ulasan " .
-        "FROM produk p LEFT JOIN ulasan u ON u.produk_id = p.id WHERE p.id = ? GROUP BY p.id"
+        "SELECT p.*, u2.nama AS nama_perusahaan, u2.email AS email_perusahaan, COALESCE(AVG(u.rating), 0) AS rating, COUNT(u.id) AS jumlah_ulasan " .
+        "FROM produk p LEFT JOIN ulasan u ON u.produk_id = p.id LEFT JOIN users u2 ON u2.id = p.perusahaan_id WHERE p.id = ? GROUP BY p.id"
     );
     $stmt->execute([$id]);
     $produk = $stmt->fetch();

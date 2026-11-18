@@ -41,8 +41,8 @@
     <!-- Right: Product Info -->
     <div class="dp-info-column">
       <span class="dp-badge-pill">Detail Produk</span>
-      <h2 id="productTitle" class="dp-product-title">Telur Ayam Grade A</h2>
-      <div id="productPrice" class="dp-product-price">Rp 50.000 <span>/ kg</span></div>
+      <h2 id="productTitle" class="dp-product-title">Memuat…</h2>
+      <div id="productPrice" class="dp-product-price">—</div>
 
       <!-- Tentang Produk Card -->
       <div class="dp-card">
@@ -153,7 +153,7 @@
                 <rect id="svgBadgeRect" x="180" y="15" width="160" height="26" rx="13" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
                 <circle id="svgBadgeCircle" cx="196" cy="28" r="6" fill="#15803d"/>
                 <path id="svgBadgeCheck" d="M193.5 28 L195.5 30 L198.5 26.5" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                <text id="svgSellerBadgeText" x="207" y="31.5" fill="#0f172a" font-size="9" font-weight="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">PT Telur Makmur</text>
+                <text id="svgSellerBadgeText" x="207" y="31.5" fill="#0f172a" font-size="9" font-weight="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">—</text>
               </g>
             </g>
           </svg>
@@ -189,16 +189,16 @@
           </div>
         </div>
         <div class="dp-seller-row">
-          <div id="sellerInitial" class="dp-seller-avatar">U</div>
+          <div id="sellerInitial" class="dp-seller-avatar">?</div>
           <div>
-            <div class="dp-seller-label">Lokasi penjual</div>
-            <div id="sellerAddress" class="dp-seller-address">Jl. Peternakan Raya No. 12</div>
+            <div class="dp-seller-label">Penjual</div>
+            <div id="sellerAddress" class="dp-seller-address">—</div>
           </div>
         </div>
       </div>
 
       <!-- Order Button -->
-      <a id="rfqLink" href="checkout.php?seller=1" class="btn-rfq-primary">Ajukan Pesanan</a>
+      <a id="rfqLink" href="#" class="btn-rfq-primary" style="display:none">Ajukan Pesanan</a>
       <!-- Buat pesanan langsung dari database (butuh ?id= produk) -->
       <div id="orderBox" style="margin-top: 1rem; display: none; gap: .5rem; align-items: center; flex-wrap: wrap;">
         <label style="font-weight: 700;">Jumlah (kg):
@@ -215,44 +215,10 @@
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const produkId = urlParams.get('id');
-    const sellerId = urlParams.get('seller') || '1';
-    const productName = urlParams.get('product') || 'Telur Ayam Ras Grade A';
-    const productPrice = urlParams.get('price') || 'Rp 28.000';
+    var penjualNama = '';
 
-    const sellersInfo = {
-      '1': { name: 'PT Telur Makmur', address: 'Jl. Peternakan Raya No. 12', initial: 'U' },
-      '2': { name: 'Mitra Unggas Sejahtera', address: 'Jl. Raya Blitar No. 45', initial: 'U' },
-      '3': { name: 'Tunas Farm', address: 'Jl. Peternakan Dramaga No. 7', initial: 'U' },
-      '4': { name: 'Berkah Telur Utama', address: 'Jl. Kenanga No. 21', initial: 'U' },
-      '5': { name: 'Ternak Mandiri', address: 'Jl. Puncak Raya No. 3', initial: 'U' },
-      '6': { name: 'Sinar Jaya Poultry', address: 'Jl. Cihampelas No. 88', initial: 'U' }
-    };
-
-    // Nama tampil di halaman detail (Title Case rapi)
-    const displayTitle = productName
-      .split(' ')
-      .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-      .join(' ');
-
-    const productImages = {
-      'Telur Omega': 'images/prod_omega.png',
-      'Telur Ayam Kampung': 'images/prod_kampung.png',
-      'Telur Ayam Ras Grade A': 'images/prod_grade_a.png',
-      'Telur Ayam Ras Grade B': 'images/prod_grade_b.png',
-      'Telur Ayam Ras Grade C': 'images/prod_grade_c.png',
-      'Telur ayam': 'images/prod_grade_a.png'
-    };
-
-    const seller = sellersInfo[sellerId] || sellersInfo['1'];
-
-    document.getElementById('productTitle').innerText = displayTitle;
-    document.getElementById('productPrice').innerHTML = `${productPrice} <span>/ kg</span>`;
-    document.getElementById('productImg').src = productImages[productName] || 'images/prod_grade_a.png';
-    document.getElementById('productImg').alt = displayTitle;
-    document.getElementById('sellerAddress').innerText = seller.address;
-    document.getElementById('sellerInitial').innerText = seller.initial;
-    const fallbackBackUrl = `detail_penjual.php?id=${sellerId}`;
     const backBtn = document.getElementById('backLink');
+    const fallbackBackUrl = 'dashboard_buyer.php';
     if (backBtn) {
       backBtn.href = fallbackBackUrl;
       backBtn.addEventListener('click', function(e) {
@@ -266,12 +232,6 @@
         }
       });
     }
-
-    document.getElementById('rfqLink').href =
-      `checkout.php?seller=${sellerId}` +
-      (produkId ? `&id=${encodeURIComponent(produkId)}` : '') +
-      `&product=${encodeURIComponent(productName)}` +
-      `&price=${encodeURIComponent(productPrice)}`;
 
     // Kalau dibuka dengan ?id=, ambil data produk asli dari database.
     if (produkId) {
@@ -291,6 +251,20 @@
           var img = document.getElementById('productImg');
           if (pr.gambar) img.src = '../../assets/img/' + pr.gambar;
           img.onerror = function () { img.src = '../../assets/img/prod_grade_a.png'; };
+          img.alt = pr.nama;
+          // Penjual asli dari database.
+          penjualNama = pr.nama_perusahaan || '';
+          var sellerEl = document.getElementById('sellerAddress');
+          if (sellerEl) sellerEl.innerText = penjualNama || '—';
+          var initEl = document.getElementById('sellerInitial');
+          if (initEl) initEl.innerText = (penjualNama || '?').trim().charAt(0).toUpperCase();
+          isiPetaPenjual();
+          if (backBtn && pr.perusahaan_id) backBtn.href = 'detail_penjual.php?id=' + pr.perusahaan_id;
+          var rfq = document.getElementById('rfqLink');
+          if (rfq) {
+            rfq.href = 'checkout.php?id=' + encodeURIComponent(produkId);
+            rfq.style.display = '';
+          }
         })
         .catch(function () { document.getElementById('orderMsg').innerText = 'Gagal memuat detail produk dari database.'; });
       var buatBtn = document.getElementById('buatPesananBtn');
@@ -314,44 +288,42 @@
             .catch(function () { msg.innerText = 'Gagal membuat pesanan. Pastikan sudah login sebagai pembeli.'; });
         });
       }
+    } else {
+      document.getElementById('orderMsg').innerText = 'Produk tidak ditemukan. Buka halaman ini dari Detail Penjual atau Dashboard.';
     }
 
-    // Update peta sesuai lokasi penjual
-    const mapRoad = document.getElementById('svgMainRoadName');
-    const mapBadge = document.getElementById('svgSellerBadgeText');
-    const badgeRect = document.getElementById('svgBadgeRect');
-    const openMapsBtn = document.getElementById('btnOpenGoogleMaps');
-    const mapBox = document.getElementById('dpMapBox');
-
-    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(seller.name + ', ' + seller.address)}`;
-
-    if (mapRoad) {
-      const streetOnly = seller.address.split(' No.')[0];
-      mapRoad.textContent = streetOnly;
-    }
-    if (mapBadge) {
-      mapBadge.textContent = seller.name;
-      const badgeWidth = Math.max(140, Math.min(240, seller.name.length * 8.5 + 44));
-      if (badgeRect) {
-        badgeRect.setAttribute('width', badgeWidth);
-        badgeRect.setAttribute('x', 260 - badgeWidth / 2);
-        const circle = document.getElementById('svgBadgeCircle');
-        const check = document.getElementById('svgBadgeCheck');
-        if (circle) circle.setAttribute('cx', 260 - badgeWidth / 2 + 16);
-        if (check) check.setAttribute('transform', `translate(${260 - badgeWidth / 2 - 177.5}, 0)`);
-        mapBadge.setAttribute('x', 260 - badgeWidth / 2 + 27);
+    // Peta: badge + tautan Maps dari nama penjual asli.
+    function isiPetaPenjual() {
+      const mapBadge = document.getElementById('svgSellerBadgeText');
+      const badgeRect = document.getElementById('svgBadgeRect');
+      const openMapsBtn = document.getElementById('btnOpenGoogleMaps');
+      const mapBox = document.getElementById('dpMapBox');
+      const googleMapsUrl = penjualNama ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(penjualNama)}` : '#';
+      if (mapBadge) {
+        mapBadge.textContent = penjualNama || '—';
+        const badgeWidth = Math.max(140, Math.min(240, (penjualNama || '').length * 8.5 + 44));
+        if (badgeRect) {
+          badgeRect.setAttribute('width', badgeWidth);
+          badgeRect.setAttribute('x', 260 - badgeWidth / 2);
+          const circle = document.getElementById('svgBadgeCircle');
+          const check = document.getElementById('svgBadgeCheck');
+          if (circle) circle.setAttribute('cx', 260 - badgeWidth / 2 + 16);
+          if (check) check.setAttribute('transform', `translate(${260 - badgeWidth / 2 - 177.5}, 0)`);
+          mapBadge.setAttribute('x', 260 - badgeWidth / 2 + 27);
+        }
+      }
+      if (openMapsBtn) {
+        openMapsBtn.href = googleMapsUrl;
+      }
+      if (mapBox) {
+        mapBox.addEventListener('click', (e) => {
+          if (!e.target.closest('.dp-map-zoom-controls') && !e.target.closest('.dp-map-open-btn')) {
+            window.open(googleMapsUrl, '_blank', 'noopener,noreferrer');
+          }
+        });
       }
     }
-    if (openMapsBtn) {
-      openMapsBtn.href = googleMapsUrl;
-    }
-    if (mapBox) {
-      mapBox.addEventListener('click', (e) => {
-        if (!e.target.closest('.dp-map-zoom-controls') && !e.target.closest('.dp-map-open-btn')) {
-          window.open(googleMapsUrl, '_blank', 'noopener,noreferrer');
-        }
-      });
-    }
+    isiPetaPenjual();
 
     // Kontrol Zoom Peta
     let currentZoom = 1;

@@ -154,168 +154,11 @@
     </div>
   </header>
 
-  <!-- Filter Lokasi -->
-  <div class="filter-lokasi-bar">
-    <span class="filter-lokasi-label">
-      <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-      Filter Lokasi:
-    </span>
-    <button class="filter-pill active" data-filter="semua" onclick="filterLokasi(this)">
-      Semua <span class="pill-count">6</span>
-    </button>
-    <button class="filter-pill" data-filter="jawa-tengah" onclick="filterLokasi(this)">
-      Jawa Tengah <span class="pill-count">1</span>
-    </button>
-    <button class="filter-pill" data-filter="jawa-timur" onclick="filterLokasi(this)">
-      Jawa Timur <span class="pill-count">2</span>
-    </button>
-    <button class="filter-pill" data-filter="jawa-barat" onclick="filterLokasi(this)">
-      Jawa Barat <span class="pill-count">3</span>
-    </button>
-  </div>
   <!-- Main Content Grid -->
   <main class="dashboard-main-content">
-    <div class="cards-grid-layout">
+    <div class="cards-grid-layout" id="sellerCardsContainer">
+      <p id="sellerCardsEmpty" style="text-align:center;padding:2rem;color:#6B7280;">Memuat penjual…</p>
 
-      <!-- Card 1: PT Telur Makmur -->
-      <article class="seller-card" data-location="jawa-tengah">
-        <div class="card-image-wrapper">
-          <img src="../../assets/img/card1.png" alt="PT Telur Makmur" class="card-cover-img">
-        </div>
-        <div class="card-body-content">
-          <h2 class="card-title-name">PT Telur Makmur</h2>
-          <div class="card-location-text">
-            <svg class="location-pin-icon" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-            Solo, Jawa Tengah
-          </div>
-          <p class="card-jenis-text">
-            <strong>Jenis:</strong> Telur Ayam Ras (Grade A, B, C), Telur Omega, Telur Ayam Kampung
-          </p>
-          <div class="card-price-text">
-            Mulai dari <strong>Rp 19.000 / kg</strong>
-          </div>
-          <a href="detail_penjual.php?id=1" class="btn-detail-penjual">Lihat Detail Penjual</a>
-        </div>
-      </article>
-
-      <!-- Card 2: Mitra Unggas Sejahtera -->
-      <article class="seller-card" data-location="jawa-timur">
-        <div class="card-image-wrapper">
-          <img src="../../assets/img/card2.png" alt="Mitra Unggas Sejahtera" class="card-cover-img">
-        </div>
-        <div class="card-body-content">
-          <h2 class="card-title-name">Mitra Unggas Sejahtera</h2>
-          <div class="card-location-text">
-            <svg class="location-pin-icon" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-            Blitar, Jawa Timur
-          </div>
-          <p class="card-jenis-text">
-            <strong>Jenis:</strong> Telur Ayam Ras (Grade A, B, C), Telur Omega, Telur Ayam Kampung
-          </p>
-          <div class="card-price-text">
-            Mulai dari <strong>Rp 19.500 / kg</strong>
-          </div>
-          <a href="detail_penjual.php?id=2" class="btn-detail-penjual">Lihat Detail Penjual</a>
-        </div>
-      </article>
-
-      <!-- Card 3: Tunas Farm -->
-      <article class="seller-card" data-location="jawa-barat">
-        <div class="card-image-wrapper">
-          <img src="../../assets/img/card3.png" alt="Tunas Farm" class="card-cover-img">
-        </div>
-        <div class="card-body-content">
-          <h2 class="card-title-name">Tunas Farm</h2>
-          <div class="card-location-text">
-            <svg class="location-pin-icon" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-            Bogor, Jawa Barat
-          </div>
-          <p class="card-jenis-text">
-            <strong>Jenis:</strong> Telur Ayam Ras (Grade A, B, C), Telur Omega, Telur Ayam Kampung
-          </p>
-          <div class="card-price-text">
-            Mulai dari <strong>Rp 21.000 / kg</strong>
-          </div>
-          <a href="detail_penjual.php?id=3" class="btn-detail-penjual">Lihat Detail Penjual</a>
-        </div>
-      </article>
-
-      <!-- Card 4: Berkah Telur Utama -->
-      <article class="seller-card" data-location="jawa-timur">
-        <div class="card-image-wrapper">
-          <img src="../../assets/img/card4.png" alt="Berkah Telur Utama" class="card-cover-img">
-        </div>
-        <div class="card-body-content">
-          <h2 class="card-title-name">Berkah Telur Utama</h2>
-          <div class="card-location-text">
-            <svg class="location-pin-icon" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-            Blitar, Jawa Timur
-          </div>
-          <p class="card-jenis-text">
-            <strong>Jenis:</strong> Telur Ayam Ras (Grade A, B, C), Telur Omega, Telur Ayam Kampung
-          </p>
-          <div class="card-price-text">
-            Mulai dari <strong>Rp 21.500 / kg</strong>
-          </div>
-          <a href="detail_penjual.php?id=4" class="btn-detail-penjual">Lihat Detail Penjual</a>
-        </div>
-      </article>
-
-      <!-- Card 5: Ternak Mandiri -->
-      <article class="seller-card" data-location="jawa-barat">
-        <div class="card-image-wrapper">
-          <img src="../../assets/img/card5.png" alt="Ternak Mandiri" class="card-cover-img">
-        </div>
-        <div class="card-body-content">
-          <h2 class="card-title-name">Ternak Mandiri</h2>
-          <div class="card-location-text">
-            <svg class="location-pin-icon" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-            Bogor, Jawa Barat
-          </div>
-          <p class="card-jenis-text">
-            <strong>Jenis:</strong> Telur Ayam Ras (Grade A, B, C), Telur Omega, Telur Ayam Kampung
-          </p>
-          <div class="card-price-text">
-            Mulai dari <strong>Rp 20.500 / kg</strong>
-          </div>
-          <a href="detail_penjual.php?id=5" class="btn-detail-penjual">Lihat Detail Penjual</a>
-        </div>
-      </article>
-
-      <!-- Card 6: Sinar Jaya Poultry -->
-      <article class="seller-card" data-location="jawa-barat">
-        <div class="card-image-wrapper">
-          <img src="../../assets/img/card6.png" alt="Sinar Jaya Poultry" class="card-cover-img">
-        </div>
-        <div class="card-body-content">
-          <h2 class="card-title-name">Sinar Jaya Poultry</h2>
-          <div class="card-location-text">
-            <svg class="location-pin-icon" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-            Bandung, Jawa Barat
-          </div>
-          <p class="card-jenis-text">
-            <strong>Jenis:</strong> Telur Ayam Ras (Grade A, B, C), Telur Omega, Telur Ayam Kampung
-          </p>
-          <div class="card-price-text">
-            Mulai dari <strong>Rp 18.500 / kg</strong>
-          </div>
-          <a href="detail_penjual.php?id=6" class="btn-detail-penjual">Lihat Detail Penjual</a>
-        </div>
-      </article>
-
-    </div>
   </main>
 
 
@@ -393,20 +236,42 @@
       }
     });
 
-    function filterLokasi(btn) {
-      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-
-      const filter = btn.getAttribute('data-filter');
-      const cards = document.querySelectorAll('.seller-card');
-
-      cards.forEach(card => {
-        if (filter === 'semua' || card.getAttribute('data-location') === filter) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }  </script>
+    // ---- Daftar penjual asli dari API ----
+    (function () {
+      var grid = document.getElementById('sellerCardsContainer');
+      function rupiah(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); }
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      fetch('../../api/penjual.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!grid) return;
+          if (!res || !res.ok || !res.data || !res.data.penjual) {
+            grid.innerHTML = '<p style="text-align:center;padding:2rem;color:#6B7280;">Gagal memuat penjual. Periksa koneksi atau login kembali.</p>';
+            return;
+          }
+          var items = res.data.penjual;
+          if (!items.length) {
+            grid.innerHTML = '<p style="text-align:center;padding:2rem;color:#6B7280;">Belum ada penjual.</p>';
+            return;
+          }
+          grid.innerHTML = items.map(function (s) {
+            var jenis = s.produk_nama ? s.produk_nama : '—';
+            var harga = s.harga_termurah !== null ? ('Mulai dari <strong>' + rupiah(s.harga_termurah) + ' / kg</strong>') : '';
+            return '<article class="seller-card">'
+              + '<div class="card-image-wrapper"><img src="../../assets/img/card1.png" alt="' + escapeHtml(s.nama) + '" class="card-cover-img"></div>'
+              + '<div class="card-body-content">'
+              + '<h2 class="card-title-name">' + escapeHtml(s.nama) + '</h2>'
+              + '<p class="card-jenis-text"><strong>Jenis:</strong> ' + escapeHtml(jenis) + '</p>'
+              + '<div class="card-price-text">' + harga + '</div>'
+              + '<a href="detail_penjual.php?id=' + s.id + '" class="btn-detail-penjual">Lihat Detail Penjual</a>'
+              + '</div></article>';
+          }).join('');
+        })
+        .catch(function () {
+          if (grid) grid.innerHTML = '<p style="text-align:center;padding:2rem;color:#6B7280;">Gagal memuat penjual. Periksa koneksi atau login kembali.</p>';
+        });
+    })();  </script>
 </body>
 </html>

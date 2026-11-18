@@ -92,14 +92,12 @@
     <div class="merchant-info-header">
       <div>
         <div class="merchant-title-row">
-          <h2 id="merchantName" class="merchant-main-title">PT TELUR MAKMUR</h2>
+          <h2 id="merchantName" class="merchant-main-title">Memuat…</h2>
           <span class="verified-badge">
             <span class="verified-dot"></span> Mitra Terverifikasi
           </span>
         </div>
-        <p id="merchantDesc" class="merchant-subtitle-desc">
-          Produsen dan distributor telur ayam berkualitas dari Solo, Jawa Tengah
-        </p>
+        <p id="merchantDesc" class="merchant-subtitle-desc">—</p>
       </div>
       <div class="merchant-action-buttons">
         <button type="button" class="btn-hubungi-penjual" id="btnHubungiPenjual">Hubungi Penjual</button>
@@ -111,24 +109,18 @@
     <div class="meta-badges-row">
       <div class="meta-pill">
         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 5h2v5h-2z"/></svg>
-        Kapasitas: <strong>10 Ton/Hari</strong>
-      </div>
-      <div class="meta-pill">
-        <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
-        Min. Order: <strong>100 kg</strong>
+        Total Stok: <strong id="metaStok">—</strong>
       </div>
       <div class="meta-pill">
         <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-        Terdaftar Sejak: <strong>2021</strong>
+        Terdaftar Sejak: <strong id="metaTerdaftar">—</strong>
       </div>
     </div>
 
     <!-- Tentang Peternakan -->
     <section class="about-section">
       <h3 class="section-heading-lg">Tentang Peternakan</h3>
-      <p id="aboutText" class="about-description">
-        PT Telur Makmur merupakan perusahaan peternakan dan distributor komoditas telur ayam terintegrasi yang berkomitmen menyajikan pasokan telur segar berkualitas tinggi langsung dari fasilitas kandang modern kami. Dengan menerapkan standar operasional yang ketat, menjaga kebersihan lingkungan kandang, serta memastikan nutrisi pakan ternak terpenuhi secara optimal, kami mampu menghasilkan telur yang sehat, bernutrisi tinggi, dan konsisten secara ukuran maupun kualitas.
-      </p>
+      <p id="aboutText" class="about-description">Memuat…</p>
     </section>
 
     <!-- Daftar Produk -->
@@ -163,88 +155,8 @@
       </div>
 
       <!-- 5 Product Cards Grid -->
-      <div class="product-cards-grid">
-
-        <!-- Product 1 -->
-        <article class="product-card" data-jenis="omega" data-grade="premium">
-          <div class="product-img-box">
-            <img src="../../assets/img/prod_omega.png" alt="Telur Omega" class="product-cover-img">
-          </div>
-          <div class="product-card-body">
-            <span class="badge-grade premium">
-              <span class="badge-dot-inner"></span> Premium
-            </span>
-            <h4 class="product-item-title">Telur Omega</h4>
-            <div id="locProd1" class="product-location-sub">Solo, Jawa Tengah</div>
-            <div id="priceProd1" class="product-price-display">Rp 40.000 <span>/ kg</span></div>
-            <button type="button" class="btn-product-detail" onclick="requestProduct(this)">Lihat Detail</button>
-          </div>
-        </article>
-
-        <!-- Product 2 -->
-        <article class="product-card" data-jenis="kampung" data-grade="premium">
-          <div class="product-img-box">
-            <img src="../../assets/img/prod_kampung.png" alt="Telur Ayam Kampung" class="product-cover-img">
-          </div>
-          <div class="product-card-body">
-            <span class="badge-grade premium">
-              <span class="badge-dot-inner"></span> Premium
-            </span>
-            <h4 class="product-item-title">Telur Ayam Kampung</h4>
-            <div id="locProd2" class="product-location-sub">Solo, Jawa Tengah</div>
-            <div id="priceProd2" class="product-price-display">Rp 45.000 <span>/ kg</span></div>
-            <button type="button" class="btn-product-detail" onclick="requestProduct(this)">Lihat Detail</button>
-          </div>
-        </article>
-
-        <!-- Product 3 -->
-        <article class="product-card" data-jenis="ras" data-grade="grade-a">
-          <div class="product-img-box">
-            <img src="../../assets/img/prod_grade_a.png" alt="Telur Ayam Ras Grade A" class="product-cover-img">
-          </div>
-          <div class="product-card-body">
-            <span class="badge-grade grade-a">
-              <span class="badge-dot-inner"></span> Grade A
-            </span>
-            <h4 class="product-item-title">Telur Ayam Ras Grade A</h4>
-            <div id="locProd3" class="product-location-sub">Solo, Jawa Tengah</div>
-            <div id="priceProd3" class="product-price-display">Rp 28.000 <span>/ kg</span></div>
-            <button type="button" class="btn-product-detail" onclick="requestProduct(this)">Lihat Detail</button>
-          </div>
-        </article>
-
-        <!-- Product 4 -->
-        <article class="product-card" data-jenis="ras" data-grade="grade-b">
-          <div class="product-img-box">
-            <img src="../../assets/img/prod_grade_b.png" alt="Telur Ayam Ras Grade B" class="product-cover-img">
-          </div>
-          <div class="product-card-body">
-            <span class="badge-grade grade-b">
-              <span class="badge-dot-inner"></span> Grade B
-            </span>
-            <h4 class="product-item-title">Telur Ayam Ras Grade B</h4>
-            <div id="locProd4" class="product-location-sub">Solo, Jawa Tengah</div>
-            <div id="priceProd4" class="product-price-display">Rp 25.000 <span>/ kg</span></div>
-            <button type="button" class="btn-product-detail" onclick="requestProduct(this)">Lihat Detail</button>
-          </div>
-        </article>
-
-        <!-- Product 5 -->
-        <article class="product-card" data-jenis="ras" data-grade="grade-c">
-          <div class="product-img-box">
-            <img src="../../assets/img/prod_grade_c.png" alt="Telur Ayam Ras Grade C" class="product-cover-img">
-          </div>
-          <div class="product-card-body">
-            <span class="badge-grade grade-c">
-              <span class="badge-dot-inner"></span> Grade C
-            </span>
-            <h4 class="product-item-title">Telur Ayam Ras Grade C</h4>
-            <div id="locProd5" class="product-location-sub">Solo, Jawa Tengah</div>
-            <div id="priceProd5" class="product-price-display">Rp 19.000 <span>/ kg</span></div>
-            <button type="button" class="btn-product-detail" onclick="requestProduct(this)">Lihat Detail</button>
-          </div>
-        </article>
-
+      <div class="product-cards-grid" id="productGrid">
+        <p style="text-align:center;padding:1rem;color:#6B7280;">Memuat produk…</p>
       </div>
     </section>
   </main>
@@ -254,96 +166,53 @@
     const urlParams = new URLSearchParams(window.location.search);
     const sellerId = urlParams.get('id') || urlParams.get('seller') || '1';
 
-    const sellersData = {
-      '1': {
-        name: 'PT TELUR MAKMUR',
-        location: 'Solo, Jawa Tengah',
-        banner: 'images/banner_pt_telur_makmur.png',
-        desc: 'Produsen dan distributor telur ayam berkualitas dari Solo, Jawa Tengah',
-        about: 'PT Telur Makmur merupakan perusahaan peternakan dan distributor komoditas telur ayam terintegrasi yang berkomitmen menyajikan pasokan telur segar berkualitas tinggi langsung dari fasilitas kandang modern kami. Dengan menerapkan standar operasional yang ketat, menjaga kebersihan lingkungan kandang, serta memastikan nutrisi pakan ternak terpenuhi secara optimal, kami mampu menghasilkan telur yang sehat, bernutrisi tinggi, dan konsisten secara ukuran maupun kualitas.',
-        prices: ['Rp 40.000', 'Rp 45.000', 'Rp 28.000', 'Rp 25.000', 'Rp 19.000']
-      },
-      '2': {
-        name: 'MITRA UNGGAS SEJAHTERA',
-        location: 'Blitar, Jawa Timur',
-        banner: 'images/banner_pt_telur_makmur.png',
-        desc: 'Produsen dan distributor telur ayam berkualitas dari Blitar, Jawa Timur',
-        about: 'PT Mitra Unggas Sejahtera merupakan distributor dan peternakan telur ayam terpadu yang berdedikasi menyediakan telur segar bermutu tinggi dari kandang modern. Melalui penerapan standar kerja yang disiplin, pemeliharaan kebersihan lingkungan, serta pemberian pakan bernutrisi terjamin, kami memproduksi telur yang sehat, bergizi, dan memiliki mutu yang stabil.',
-        prices: ['Rp 39.000', 'Rp 46.000', 'Rp 27.000', 'Rp 26.000', 'Rp 19.500']
-      },
-      '3': {
-        name: 'TUNAS FARM',
-        location: 'Bogor, Jawa Barat',
-        banner: 'images/banner_pt_telur_makmur.png',
-        desc: 'Produsen dan distributor telur ayam berkualitas dari Bogor, Jawa Barat',
-        about: 'Tunas Farm Sebagai penyedia dan peternakan telur ayam terintegrasi, PT Telur Makmur menjamin kesegaran produk unggulan kami langsung dari fasilitas peternakan modern. Kami menerapkan SOP ketat, memprioritaskan sanitasi kandang, dan memastikan pakan ayam terpenuhi dengan baik untuk menghasilkan telur yang bernutrisi tinggi serta konsisten dalam ukuran maupun kualitas..',
-        prices: ['Rp 40.500', 'Rp 45.500', 'Rp 26.500', 'Rp 23.000', 'Rp 21.000']
-      },
-      '4': {
-        name: 'BERKAH TELUR UTAMA',
-        location: 'Blitar, Jawa Timur',
-        banner: 'images/banner_pt_telur_makmur.png',
-        desc: 'Produsen dan distributor telur ayam berkualitas dari Blitar, Jawa Timur',
-        about: 'Berkah Telur Utama mengintegrasikan peternakan modern dan distribusi untuk menghadirkan pasokan telur ayam segar berkualitas secara konsisten. Kebersihan kandang yang terjaga, standar operasional yang ketat, serta kecukupan nutrisi pakan menjadi kunci kami dalam memproduksi telur sehat dan kaya gizi bagi pelanggan.',
-        prices: ['Rp 39.500', 'Rp 43.000', 'Rp 26.500', 'Rp 25.500', 'Rp 21.500']
-      },
-      '5': {
-        name: 'TERNAK MANDIRI',
-        location: 'Bogor, Jawa Barat',
-        banner: 'images/banner_pt_telur_makmur.png',
-        desc: 'Produsen dan distributor telur ayam berkualitas dari Bogor, Jawa Barat',
-        about: 'Ternak Mandiri Berkomitmen menghadirkan produk telur ayam berkualitas premium, PT Telur Makmur mengelola peternakan dan jaringan distribusi secara terpadu melalui fasilitas kandang modern. Pengawasan operasional yang disiplin, kebersihan area ternak, dan pakan bernutrisi optimal memastikan setiap telur yang kami hasilkan selalu sehat, bergizi, serta seragam mutu dan ukurannya.',
-        prices: ['Rp 38.000', 'Rp 41.000', 'Rp 26.500', 'Rp 24.500', 'Rp 20.500']
-      },
-      '6': {
-        name: 'SINAR JAYA POULTRY',
-        location: 'Bandung, Jawa Barat',
-        banner: 'images/banner_pt_telur_makmur.png',
-        desc: 'Produsen dan distributor telur ayam berkualitas dari Bandung, Jawa Barat',
-        about: 'Sinar Jaya Poultry mengelola rantai peternakan dan distribusi telur ayam secara terintegrasi demi menjaga pasokan telur segar berkualitas terbaik dari kandang modern kami. Lewat kontrol operasional yang ketat, sanitasi lingkungan yang terjaga, serta pakan bergizi seimbang, kami menjamin setiap produk telur yang kami distribusikan selalu sehat, kaya nutrisi, dan konsisten dari segi ukuran.',
-        prices: ['Rp 43.500', 'Rp 47.500', 'Rp 25.500', 'Rp 22.500', 'Rp 18.500']
-      }
-    };
-
-    const data = sellersData[sellerId] || sellersData['1'];
-
-    document.getElementById('merchantName').innerText = data.name;
-    document.getElementById('merchantDesc').innerText = data.desc;
-    document.getElementById('aboutText').innerText = data.about;
-    document.getElementById('bannerImg').src = data.banner;
-
-    for (let i = 1; i <= 5; i++) {
-      const locEl = document.getElementById(`locProd${i}`);
-      const priceEl = document.getElementById(`priceProd${i}`);
-      if (locEl) locEl.innerText = data.location;
-      if (priceEl) priceEl.innerHTML = `${data.prices[i-1]} <span>/ kg</span>`;
-    }
-
-    // Pindah ke halaman Detail Produk dengan membawa data produk & penjual.
-    // Kalau kartu punya data-id (dari database), bawa id supaya halaman detail
-    // bisa memuat data asli dan tombol Buat Pesanan berfungsi.
-    function requestProduct(btn) {
-      const card = btn.closest('.product-card');
-      const productName = card.querySelector('.product-item-title').innerText.trim();
-      const productPrice = card.querySelector('.product-price-display').innerText.replace(/\s*\/\s*kg/i, '').trim();
-      const produkId = card.getAttribute('data-id');
-      window.location.href = 'produk_detail.php?seller=' + sellerId +
-        (produkId ? '&id=' + encodeURIComponent(produkId) : '') +
-        '&product=' + encodeURIComponent(productName) +
-        '&price=' + encodeURIComponent(productPrice);
-    }
-
-    // Daftar Produk dari database (API katalog), memakai desain .product-card
-    // yang sudah ada di halaman ini. Harga & stok dari database menggantikan
-    // harga contoh statis; kalau API gagal, kartu contoh tetap tampil.
-    (function () {
-      var grid = document.querySelector('.product-cards-grid');
-      if (!grid) return;
-      fetch('../../api/katalog.php')
+    // ---- Identitas penjual asli dari API ----
+    var penjualNama = '';
+    var penjualEmail = '';
+    function muatPenjual() {
+      fetch('../../api/penjual.php?id=' + encodeURIComponent(sellerId))
         .then(function (r) { return r.json(); })
         .then(function (res) {
-          if (!res.ok || !res.data || !res.data.produk || !res.data.produk.length) return;
-          var lokasi = (typeof data !== 'undefined' && data.location) ? data.location : 'Solo, Jawa Tengah';
+          if (!res || !res.ok || !res.data) {
+            document.getElementById('merchantName').innerText = 'Penjual tidak ditemukan.';
+            return;
+          }
+          var s = res.data;
+          penjualNama = s.nama || '';
+          penjualEmail = s.email || '';
+          document.getElementById('merchantName').innerText = (s.nama || '').toUpperCase();
+          document.getElementById('merchantDesc').innerText = s.email || '';
+          document.getElementById('aboutText').innerText = (s.nama || 'Penjual') + ' — akun perusahaan di Staplr, menjual ' + s.jumlah_produk + ' produk.';
+          var stokEl = document.getElementById('metaStok');
+          if (stokEl) stokEl.innerText = Number(s.total_stok).toLocaleString('id-ID') + ' kg';
+          var daftarEl = document.getElementById('metaTerdaftar');
+          if (daftarEl) daftarEl.innerText = String(s.created_at || '').slice(0, 4) || '—';
+          muatProduk();
+        })
+        .catch(function () {
+          document.getElementById('merchantName').innerText = 'Gagal memuat penjual.';
+        });
+    }
+
+    // Pindah ke halaman Detail Produk (bawa id produk asli).
+    function requestProduct(btn) {
+      const card = btn.closest('.product-card');
+      const produkId = card.getAttribute('data-id');
+      if (!produkId) return;
+      window.location.href = 'produk_detail.php?id=' + encodeURIComponent(produkId);
+    }
+
+    // Daftar Produk dari database (API katalog), hanya milik penjual ini.
+    function muatProduk() {
+      var grid = document.getElementById('productGrid');
+      if (!grid) return;
+      fetch('../../api/katalog.php?perusahaan_id=' + encodeURIComponent(sellerId))
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.produk || !res.data.produk.length) {
+            grid.innerHTML = '<p style="text-align:center;padding:1rem;color:#6B7280;">Belum ada produk.</p>';
+            return;
+          }
           grid.innerHTML = res.data.produk.map(function (pr, i) {
             var nama = pr.nama || '';
             var jenis = /kampung/i.test(nama) ? 'kampung' : (/omega/i.test(nama) ? 'omega' : 'ras');
@@ -355,14 +224,16 @@
               + '<div class="product-card-body">'
               + '<span class="badge-grade ' + grade + '"><span class="badge-dot-inner"></span> ' + badge + '</span>'
               + '<h4 class="product-item-title">' + nama + '</h4>'
-              + '<div class="product-location-sub">' + lokasi + '</div>'
               + '<div class="product-price-display">Rp ' + Number(pr.harga_per_kg).toLocaleString('id-ID') + ' <span>/ kg</span></div>'
               + '<button type="button" class="btn-product-detail" onclick="requestProduct(this)">Lihat Detail</button>'
               + '</div></article>';
           }).join('');
         })
-        .catch(function () { /* biarkan kartu contoh kalau katalog gagal dimuat */ });
-    })();
+        .catch(function () {
+          grid.innerHTML = '<p style="text-align:center;padding:1rem;color:#6B7280;">Gagal memuat produk. Periksa koneksi atau login kembali.</p>';
+        });
+    }
+    muatPenjual();
 
     /* ── State filter aktif ── */
     let activeJenis = 'semua';
@@ -471,14 +342,14 @@
         done(ok);
       }
     }
-    // Hubungi Penjual: semua produk di halaman ini milik akun perusahaan
-    // demo, jadi email dibuka ke alamat perusahaan itu. Chat di dalam
+    // Hubungi Penjual: email penjual asli dari API. Chat di dalam
     // aplikasi belum ada — itu butuh fitur pesan tersendiri.
     var btnHubungi = document.getElementById('btnHubungiPenjual');
     if (btnHubungi) {
       btnHubungi.addEventListener('click', function () {
-        var nama = (typeof data !== 'undefined' && data.name) ? data.name : 'penjual';
-        window.location.href = 'mailto:perusahaan@staplr.com?subject=' + encodeURIComponent('Pertanyaan tentang ' + nama + ' di Staplr');
+        var email = penjualEmail || 'perusahaan@staplr.com';
+        var nama = penjualNama || 'penjual';
+        window.location.href = 'mailto:' + email + '?subject=' + encodeURIComponent('Pertanyaan tentang ' + nama + ' di Staplr');
         dpShowToast('Membuka aplikasi email untuk menghubungi penjual…');
       });
     }
