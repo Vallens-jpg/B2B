@@ -5125,10 +5125,9 @@
 
           <div class="dispute-tabs">
             <button class="dispute-tab active" type="button" onclick="filterDispute('semua', this)">Semua</button>
-            <button class="dispute-tab" type="button" onclick="filterDispute('ditinjau', this)">Perlu Ditinjau (1)</button>
-            <button class="dispute-tab" type="button" onclick="filterDispute('menunggu', this)">Menunggu Barang</button>
-            <button class="dispute-tab" type="button" onclick="filterDispute('disetujui', this)">Disetujui</button>
-            <button class="dispute-tab" type="button" onclick="filterDispute('ditolak', this)">Ditolak</button>
+            <button class="dispute-tab" type="button" onclick="filterDispute('dibuka', this)">Dibuka</button>
+            <button class="dispute-tab" type="button" onclick="filterDispute('diproses', this)">Diproses</button>
+            <button class="dispute-tab" type="button" onclick="filterDispute('diputuskan', this)">Diputuskan</button>
           </div>
 
           <section class="dispute-table-card">
@@ -5150,7 +5149,7 @@
             </div>
 
             <footer class="dispute-list-footer">
-              <span class="dispute-list-count" id="disputeCountInfo">Menampilkan 1–3 dari 3 retur</span>
+              <span class="dispute-list-count" id="disputeCountInfo">Memuat dispute…</span>
             </footer>
           </section>
         </div>
@@ -5162,10 +5161,10 @@
         <header class="dispute-head">
           <div class="dispute-head-top">
             <div class="dispute-title-row">
-              <h2 class="dispute-title" id="disputeDetailTitle">Dispute #DSP-0012</h2>
+              <h2 class="dispute-title" id="disputeDetailTitle">Dispute —</h2>
               <span class="dispute-status-badge" id="disputeDetailBadge">
                 <span class="status-dot"></span>
-                <span id="disputeDetailBadgeText">Ditinjau Admin</span>
+                <span id="disputeDetailBadgeText">—</span>
               </span>
             </div>
             <button class="dispute-btn-back" type="button" onclick="showDisputeList(event)">
@@ -5189,19 +5188,19 @@
         <section class="dispute-summary">
           <div class="dispute-summary-item">
             <div class="dispute-summary-label">Buyer</div>
-            <div class="dispute-summary-value" id="disputeSummaryBuyer">Rira W.</div>
+            <div class="dispute-summary-value" id="disputeSummaryBuyer">—</div>
           </div>
           <div class="dispute-summary-item">
             <div class="dispute-summary-label">Perusahaan</div>
-            <div class="dispute-summary-value" id="disputeSummaryCompany">CV Telur Makmur Bersama</div>
+            <div class="dispute-summary-value" id="disputeSummaryCompany">—</div>
           </div>
           <div class="dispute-summary-item">
             <div class="dispute-summary-label">Nilai Pesanan</div>
-            <div class="dispute-summary-value" id="disputeSummaryValue">Rp 48.000.000</div>
+            <div class="dispute-summary-value" id="disputeSummaryValue">—</div>
           </div>
           <div class="dispute-summary-item">
             <div class="dispute-summary-label">Dana Dibekukan</div>
-            <div class="dispute-summary-value" id="disputeSummaryFrozen">Rp 24.000.000</div>
+            <div class="dispute-summary-value" id="disputeSummaryFrozen">—</div>
           </div>
         </section>
 
@@ -5212,61 +5211,11 @@
               <h3 class="dispute-card-title">Diskusi &amp; Bukti</h3>
 
               <div class="dispute-thread" id="disputeThread">
-                <article class="dispute-message">
-                  <div class="message-avatar avatar-buyer">B</div>
-                  <div class="message-body">
-                    <div class="message-head">
-                      <span class="message-name">CV Maju Jaya</span>
-                      <span class="message-role role-buyer">Buyer</span>
-                      <span class="message-time">8 Okt 2026, 14:20</span>
-                    </div>
-                    <p class="message-text">Sekitar 12% telur pecah saat diterima dari total pengiriman. Mohon ditindaklanjuti.</p>
-                    <div class="message-attachments">
-                      <span>Lampiran:</span>
-                      <span class="attachment-chip">foto_1.jpg</span>
-                      <span class="attachment-chip">foto_2.jpg</span>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="dispute-message">
-                  <div class="message-avatar avatar-seller">P</div>
-                  <div class="message-body">
-                    <div class="message-head">
-                      <span class="message-name">PT Telur Nusantara</span>
-                      <span class="message-role role-seller">Perusahaan</span>
-                      <span class="message-time">9 Okt 2026, 09:05</span>
-                    </div>
-                    <p class="message-text">Pengiriman sudah sesuai standar packing.</p>
-                    <div class="message-attachments">
-                      <span>Lampiran:</span>
-                      <span class="attachment-chip">foto_packing.jpg</span>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="dispute-message">
-                  <div class="message-avatar avatar-admin">A</div>
-                  <div class="message-body">
-                    <div class="message-head">
-                      <span class="message-name">Admin Sistem</span>
-                      <span class="message-role role-admin">Admin</span>
-                      <span class="message-time">12 Okt 2026, 10:30</span>
-                    </div>
-                    <p class="message-text">Buyer mohon unggah foto per rak dan nota penerimaan.</p>
-                  </div>
-                </article>
               </div>
 
               <form class="dispute-composer" onsubmit="kirimKomentarDispute(event)">
                 <textarea id="disputeCommentInput" placeholder="Tulis komentar Anda..." aria-label="Tulis komentar"></textarea>
-                <div class="dispute-attachment-preview" id="disputeAttachmentPreview" hidden>
-                  <span>Lampiran dipilih:</span>
-                  <span class="attachment-chip" id="disputeAttachmentName"></span>
-                </div>
-                <input type="file" id="disputeFileInput" accept="image/*,.pdf" hidden onchange="pilihLampiranDispute(this)">
                 <div class="dispute-composer-actions">
-                  <button type="button" class="btn-dispute-attach" onclick="document.getElementById('disputeFileInput').click()">Lampirkan Foto / Dokumen</button>
                   <button type="submit" class="btn-dispute-send">Kirim Komentar</button>
                 </div>
               </form>
@@ -5291,15 +5240,15 @@
               <dl class="dispute-detail-list">
                 <div class="dispute-detail-row">
                   <dt>Jenis</dt>
-                  <dd id="disputeDetailJenis">Barang tidak sesuai</dd>
+                  <dd id="disputeDetailJenis">—</dd>
                 </div>
                 <div class="dispute-detail-row">
                   <dt>Diajukan</dt>
-                  <dd id="disputeDetailDiajukan">8 Okt 2026, 14:20</dd>
+                  <dd id="disputeDetailDiajukan">—</dd>
                 </div>
                 <div class="dispute-detail-row">
                   <dt>Batas tanggapan Perusahaan</dt>
-                  <dd id="disputeDetailBatas">10 Okt 2026</dd>
+                  <dd id="disputeDetailBatas">—</dd>
                 </div>
               </dl>
             </section>
@@ -5308,7 +5257,7 @@
               <h3 class="dispute-card-title">Dana dibekukan</h3>
               <div class="dispute-fund-row">
                 <span class="label">Sisa pelunasan</span>
-                <span class="value" id="disputeFundValue">Rp 24.000.000</span>
+                <span class="value" id="disputeFundValue">—</span>
               </div>
               <div class="dispute-fund-row">
                 <span class="label">Status dana</span>
@@ -6030,7 +5979,7 @@
         pageTitle.textContent = 'Dispute';
         if (disputeView) disputeView.style.display = 'flex';
         showDisputeList();
-        renderDisputeTable();
+        muatDisputePerusahaan();
         window.location.hash = 'dispute';
       } else if (viewName === 'keuangan') {
         if (navKeuangan) navKeuangan.classList.add('active');
@@ -6694,125 +6643,51 @@
     /* --------------------------------------------------------------------------
        F3. DISPUTE LOGIC
        -------------------------------------------------------------------------- */
-    const DISPUTE_DATA = [
-      {
-        id: '#RET-2026-001',
-        disputeId: '#DSP-0012',
-        order: '#ORD-2041',
-        tanggal: '11 Okt 2026',
-        pembeli: 'Rira W.',
-        pembeliDetail: 'Rira W. (PT Rira Pangan)',
-        perusahaan: 'CV Telur Makmur Bersama',
-        kategori: 'Barang Rusak/Pecah',
-        bukti: '2 Foto dan 1 Video',
-        keputusan: 'ditinjau',
-        keputusanLabel: 'Pending',
-        jenis: 'Barang tidak sesuai',
-        nilai: 48000000,
-        dana: 24000000,
-        diajukan: '8 Okt 2026, 14:20',
-        batas: '10 Okt 2026',
-        stepDone: 2,
-        stepCurrent: 2,
-        messages: [
-          {
-            role: 'buyer', name: 'Rira W.', initial: 'R', time: '8 Okt 2026, 14:20',
-            text: 'Sekitar 12% telur pecah saat diterima dari total pengiriman. Mohon ditindaklanjuti.',
-            attachments: ['foto_1.jpg', 'foto_2.jpg']
-          },
-          {
-            role: 'seller', name: 'CV Telur Makmur Bersama', initial: 'C', time: '9 Okt 2026, 09:05',
-            text: 'Pengiriman sudah sesuai standar packing.',
-            attachments: ['foto_packing.jpg']
-          },
-          {
-            role: 'admin', name: 'Admin Sistem', initial: 'A', time: '12 Okt 2026, 10:30',
-            text: 'Buyer mohon unggah foto per rak dan nota penerimaan.',
-            attachments: []
-          }
-        ]
-      },
-      {
-        id: '#RET-2026-002',
-        disputeId: '#DSP-0011',
-        order: '#ORD-2038',
-        tanggal: '09 Okt 2026',
-        pembeli: 'PT Boga Jaya',
-        pembeliDetail: 'PT Boga Jaya',
-        perusahaan: 'CV Telur Makmur Bersama',
-        kategori: 'Kuantitas Kurang',
-        bukti: '1 Foto',
-        keputusan: 'disetujui',
-        keputusanLabel: 'Disetujui',
-        jenis: 'Kuantitas kurang',
-        nilai: 23000000,
-        dana: 1840000,
-        diajukan: '9 Okt 2026, 09:15',
-        batas: '11 Okt 2026',
-        stepDone: 4,
-        stepCurrent: 3,
-        messages: [
-          {
-            role: 'buyer', name: 'PT Boga Jaya', initial: 'B', time: '9 Okt 2026, 09:15',
-            text: 'Dari 500 kg yang dipesan, hanya 460 kg yang diterima. Selisih 40 kg mohon dikembalikan.',
-            attachments: ['surat_jalan.jpg']
-          },
-          {
-            role: 'seller', name: 'CV Telur Makmur Bersama', initial: 'C', time: '9 Okt 2026, 13:40',
-            text: 'Kami sudah cek ulang timbangan dan nota. Selisih 40 kg akan dikembalikan.',
-            attachments: []
-          },
-          {
-            role: 'admin', name: 'Admin Sistem', initial: 'A', time: '10 Okt 2026, 11:00',
-            text: 'Dispute disetujui. Pengembalian dana Rp 1.840.000 akan diproses ke rekening pembeli.',
-            attachments: []
-          }
-        ]
-      },
-      {
-        id: '#RET-2026-003',
-        disputeId: '#DSP-0010',
-        order: '#ORD-2031',
-        tanggal: '05 Okt 2026',
-        pembeli: 'CV Sembako',
-        pembeliDetail: 'CV Sembako',
-        perusahaan: 'CV Telur Makmur Bersama',
-        kategori: 'Tidak Sesuai Specs',
-        bukti: '3 Foto',
-        keputusan: 'ditolak',
-        keputusanLabel: 'Ditolak',
-        jenis: 'Tidak sesuai spesifikasi',
-        nilai: 14500000,
-        dana: 0,
-        diajukan: '5 Okt 2026, 10:05',
-        batas: '7 Okt 2026',
-        stepDone: 5,
-        stepCurrent: 4,
-        messages: [
-          {
-            role: 'buyer', name: 'CV Sembako', initial: 'S', time: '5 Okt 2026, 10:05',
-            text: 'Telur yang diterima ukurannya lebih kecil dari spesifikasi grade A yang disepakati.',
-            attachments: ['foto_ukuran_1.jpg', 'foto_ukuran_2.jpg', 'foto_nota.jpg']
-          },
-          {
-            role: 'seller', name: 'CV Telur Makmur Bersama', initial: 'C', time: '6 Okt 2026, 08:30',
-            text: 'Produk yang dikirim sudah sesuai grade A. Terlampir hasil sortir sebelum pengiriman.',
-            attachments: ['hasil_sortir.jpg']
-          },
-          {
-            role: 'admin', name: 'Admin Sistem', initial: 'A', time: '7 Okt 2026, 15:10',
-            text: 'Berdasarkan bukti yang diunggah kedua pihak, komplain ditolak karena produk sesuai spesifikasi.',
-            attachments: []
-          }
-        ]
-      }
-    ];
+    let DISPUTE_DATA = [];
+
+    function muatDisputePerusahaan() {
+      return fetch('../../api/dispute/list.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.dispute) return;
+          DISPUTE_DATA = res.data.dispute.map(function (d) {
+            let keputusan = 'ditinjau';
+            let label = 'Dibuka';
+            if (d.status === 'diproses') { keputusan = 'ditinjau'; label = 'Diproses'; }
+            else if (d.status === 'diputuskan' && d.putusan === 'uang_kembali') { keputusan = 'disetujui'; label = 'Disetujui'; }
+            else if (d.status === 'diputuskan') { keputusan = 'ditolak'; label = 'Ditolak'; }
+            const tgl = (d.created_at || '').slice(0, 10);
+            return {
+              id: '#DSP-' + String(d.id).padStart(4, '0'),
+              disputeId: d.id,
+              order: '#ORD-2026-' + String(d.order_id).padStart(3, '0'),
+              orderId: d.order_id,
+              tanggal: tgl ? new Date(tgl + 'T00:00:00').toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-',
+              pembeli: d.nama_buyer || 'Pembeli',
+              pembeliDetail: d.nama_buyer || 'Pembeli',
+              perusahaan: d.nama_perusahaan || '—',
+              kategori: d.judul || '-',
+              bukti: '—',
+              keputusan: keputusan,
+              keputusanLabel: label,
+              status: d.status,
+              putusan: d.putusan,
+              judul: d.judul,
+              nama_produk: d.nama_produk,
+              total_bayar: d.total_bayar,
+              jumlah_kg: d.jumlah_kg
+            };
+          });
+          renderDisputeTable();
+        })
+        .catch(function () { /* biarkan tabel kosong kalau API gagal dimuat */ });
+    }
 
     let disputeFilter = 'semua';
     let disputeAktifId = null;
 
     function disputeSesuaiFilter() {
-      return DISPUTE_DATA.filter(item => disputeFilter === 'semua' || item.keputusan === disputeFilter);
+      return DISPUTE_DATA.filter(item => disputeFilter === 'semua' || item.status === disputeFilter);
     }
 
     function renderDisputeTable() {
@@ -6882,72 +6757,102 @@
       if (scroller) scroller.scrollTop = 0;
     }
 
-    function bukaThreadDispute(item) {
+    function escapeHtmlDispute(nilai) {
+      return String(nilai == null ? '' : nilai).replace(/[&<>"']/g, function (ch) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+      });
+    }
+
+    function formatTanggalDispute(iso) {
+      if (!iso) return '—';
+      const d = new Date(String(iso).replace(' ', 'T'));
+      if (isNaN(d.getTime())) return String(iso).slice(0, 10);
+      return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function bukaThreadDispute(item, detail, pesanList) {
       const list = document.getElementById('disputeListView');
-      const detail = document.getElementById('disputeDetailView');
+      const detailView = document.getElementById('disputeDetailView');
       if (list) list.style.display = 'none';
-      if (detail) detail.style.display = 'flex';
+      if (detailView) detailView.style.display = 'flex';
 
       const setText = (elId, value) => {
         const el = document.getElementById(elId);
         if (el) el.textContent = value;
       };
 
-      setText('disputeDetailTitle', `Dispute ${item.disputeId}`);
-      setText('disputeDetailBadgeText', item.keputusan === 'ditinjau' ? 'Ditinjau Admin' : item.keputusanLabel);
+      const esc = detail.escrow || null;
+      const danaDitahan = esc ? Math.max(0, (Number(esc.jumlah_ditahan) || 0) - (Number(esc.dp_cair) || 0) - (Number(esc.sisa_cair) || 0)) : 0;
+
+      setText('disputeDetailTitle', 'Dispute ' + item.id);
+      setText('disputeDetailBadgeText', item.keputusanLabel);
       setText('disputeBreadcrumbOrder', item.order);
-      setText('disputeSummaryBuyer', item.pembeli);
-      setText('disputeSummaryCompany', item.perusahaan);
-      setText('disputeSummaryValue', formatRupiah(item.nilai));
-      setText('disputeSummaryFrozen', formatRupiah(item.dana));
-      setText('disputeDetailJenis', item.jenis);
-      setText('disputeDetailDiajukan', item.diajukan);
-      setText('disputeDetailBatas', item.batas);
-      setText('disputeFundValue', formatRupiah(item.dana));
+      setText('disputeSummaryBuyer', detail.nama_buyer || '—');
+      setText('disputeSummaryCompany', detail.nama_perusahaan || '—');
+      setText('disputeSummaryValue', formatRupiah(detail.total_bayar || 0));
+      setText('disputeSummaryFrozen', formatRupiah(danaDitahan));
+      setText('disputeDetailJenis', detail.judul || '—');
+      setText('disputeDetailDiajukan', formatTanggalDispute(detail.created_at));
+      setText('disputeDetailBatas', '—');
+      setText('disputeFundValue', formatRupiah(danaDitahan));
 
       const badge = document.getElementById('disputeDetailBadge');
       if (badge) {
         badge.className = 'dispute-status-badge' + (item.keputusan === 'ditinjau' ? '' : ' ' + item.keputusan);
       }
 
-      const langkah = ['Dibuka', 'Menunggu Tanggapan', 'Ditinjau Admin', 'Diputuskan', 'Ditutup'];
+      // Alur asli dispute: Dibuka -> Diproses -> Diputuskan
+      const langkah = ['Dibuka', 'Diproses', 'Diputuskan'];
+      let stepDone = 0;
+      let stepCurrent = 0;
+      if (detail.status === 'diproses') { stepDone = 1; stepCurrent = 1; }
+      else if (detail.status === 'diputuskan') { stepDone = 3; stepCurrent = -1; }
       const steps = document.getElementById('disputeSteps');
       if (steps) {
         steps.innerHTML = langkah.map((label, index) => {
           let cls = 'dispute-step';
-          if (index < item.stepDone) cls += ' done';
-          if (index === item.stepCurrent) cls += ' current';
+          if (index < stepDone) cls += ' done';
+          if (index === stepCurrent) cls += ' current';
           return `<li class="${cls}"><span class="dispute-step-dot"></span>${label}</li>`;
         }).join('');
       }
 
-      const thread = document.getElementById('disputeThread');
-      if (thread) {
-        thread.innerHTML = item.messages.map(msg => `
+      // Diskusi: pesan pembuka (deskripsi pembeli) + balasan dari API
+      const peran = { 'pembeli': ['buyer', 'Buyer'], 'perusahaan': ['seller', 'Perusahaan'], 'admin': ['admin', 'Admin'] };
+      function artikelPesan(nama, role, waktu, teks, lampiran) {
+        const p = peran[role] || ['buyer', 'Buyer'];
+        const inisial = (nama || '?').trim().charAt(0).toUpperCase();
+        return `
           <article class="dispute-message">
-            <div class="message-avatar avatar-${msg.role}">${msg.initial}</div>
+            <div class="message-avatar avatar-${p[0]}">${escapeHtmlDispute(inisial)}</div>
             <div class="message-body">
               <div class="message-head">
-                <span class="message-name">${msg.name}</span>
-                <span class="message-role role-${msg.role}">${msg.role === 'buyer' ? 'Buyer' : msg.role === 'seller' ? 'Perusahaan' : 'Admin'}</span>
-                <span class="message-time">${msg.time}</span>
+                <span class="message-name">${escapeHtmlDispute(nama)}</span>
+                <span class="message-role role-${p[0]}">${p[1]}</span>
+                <span class="message-time">${escapeHtmlDispute(waktu)}</span>
               </div>
-              <p class="message-text">${msg.text}</p>
-              ${msg.attachments && msg.attachments.length ? `
+              <p class="message-text">${escapeHtmlDispute(teks)}</p>
+              ${lampiran ? `
                 <div class="message-attachments">
                   <span>Lampiran:</span>
-                  ${msg.attachments.map(file => `<span class="attachment-chip">${file}</span>`).join('')}
+                  <span class="attachment-chip">${escapeHtmlDispute(lampiran)}</span>
                 </div>
               ` : ''}
             </div>
           </article>
-        `).join('');
+        `;
+      }
+      const thread = document.getElementById('disputeThread');
+      if (thread) {
+        let html = artikelPesan(detail.nama_buyer || 'Pembeli', 'pembeli', formatTanggalDispute(detail.created_at), detail.deskripsi || '', detail.bukti_foto || '');
+        (pesanList || []).forEach(function (ps) {
+          html += artikelPesan(ps.nama || '', ps.role || 'pembeli', formatTanggalDispute(ps.created_at), ps.pesan || '', '');
+        });
+        thread.innerHTML = html;
       }
 
       const composerInput = document.getElementById('disputeCommentInput');
       if (composerInput) composerInput.value = '';
-      const preview = document.getElementById('disputeAttachmentPreview');
-      if (preview) preview.hidden = true;
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -6956,20 +6861,21 @@
       const item = DISPUTE_DATA.find(row => row.id === id);
       if (!item) return;
       disputeAktifId = id;
-      bukaThreadDispute(item);
+      Promise.all([
+        fetch('../../api/dispute/detail.php?id=' + encodeURIComponent(item.disputeId)).then(function (r) { return r.json(); }),
+        fetch('../../api/dispute/pesan.php?dispute_id=' + encodeURIComponent(item.disputeId)).then(function (r) { return r.json(); })
+      ]).then(function (hasil) {
+        const detailRes = hasil[0];
+        const pesanRes = hasil[1];
+        if (!detailRes.ok || !detailRes.data) {
+          showToast('Gagal memuat dispute: ' + (detailRes.error || 'tidak diketahui'));
+          return;
+        }
+        const pesanList = (pesanRes.ok && pesanRes.data && pesanRes.data.pesan) ? pesanRes.data.pesan : [];
+        bukaThreadDispute(item, detailRes.data, pesanList);
+      }).catch(function () { showToast('Gagal memuat dispute.'); });
     }
 
-    function pilihLampiranDispute(input) {
-      const preview = document.getElementById('disputeAttachmentPreview');
-      const nameEl = document.getElementById('disputeAttachmentName');
-
-      if (input.files && input.files.length > 0) {
-        nameEl.textContent = input.files[0].name;
-        preview.hidden = false;
-      } else {
-        preview.hidden = true;
-      }
-    }
 
     function kirimKomentarDispute(event) {
       if (event) event.preventDefault();
@@ -6983,72 +6889,25 @@
         return;
       }
 
-      const thread = document.getElementById('disputeThread');
-      const fileInput = document.getElementById('disputeFileInput');
-      const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+      const aktif = DISPUTE_DATA.find(item => item.id === disputeAktifId);
+      if (!aktif) return;
 
-      const article = document.createElement('article');
-      article.className = 'dispute-message';
-
-      const avatar = document.createElement('div');
-      avatar.className = 'message-avatar avatar-seller';
-      avatar.textContent = 'C';
-
-      const body = document.createElement('div');
-      body.className = 'message-body';
-
-      const head = document.createElement('div');
-      head.className = 'message-head';
-      head.innerHTML = '<span class="message-name">CV Telur Makmur Bersama</span>' +
-        '<span class="message-role role-seller">Perusahaan</span>' +
-        '<span class="message-time">Baru saja</span>';
-
-      const messageText = document.createElement('p');
-      messageText.className = 'message-text';
-      messageText.textContent = text;
-
-      body.appendChild(head);
-      body.appendChild(messageText);
-
-      if (file) {
-        const attachments = document.createElement('div');
-        attachments.className = 'message-attachments';
-
-        const label = document.createElement('span');
-        label.textContent = 'Lampiran:';
-
-        const chip = document.createElement('span');
-        chip.className = 'attachment-chip';
-        chip.textContent = file.name;
-
-        attachments.appendChild(label);
-        attachments.appendChild(chip);
-        body.appendChild(attachments);
-      }
-
-      article.appendChild(avatar);
-      article.appendChild(body);
-      if (thread) thread.appendChild(article);
-
-      const disputeAktif = DISPUTE_DATA.find(item => item.id === disputeAktifId);
-      if (disputeAktif) {
-        disputeAktif.messages.push({
-          role: 'seller',
-          name: 'CV Telur Makmur Bersama',
-          initial: 'C',
-          time: 'Baru saja',
-          text,
-          attachments: file ? [file.name] : []
-        });
-      }
-
-      input.value = '';
-      if (fileInput) fileInput.value = '';
-
-      const preview = document.getElementById('disputeAttachmentPreview');
-      if (preview) preview.hidden = true;
-
-      showToast('Komentar berhasil dikirim');
+      fetch('../../api/dispute/pesan.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dispute_id: aktif.disputeId, pesan: text })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) {
+            showToast('Gagal mengirim: ' + (res.error || 'tidak diketahui'));
+            return;
+          }
+          if (input) input.value = '';
+          showToast('Komentar berhasil dikirim');
+          openDisputeDetail(disputeAktifId);
+        })
+        .catch(function () { showToast('Gagal mengirim komentar.'); });
     }
 
     /* --------------------------------------------------------------------------

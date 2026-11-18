@@ -30,10 +30,18 @@ try {
     if (!$boleh) {
         json_error('Dispute ini bukan milik Anda', 403);
     }
+    $esc = $pdo->prepare('SELECT jumlah_ditahan, dp_cair, sisa_cair, status FROM escrow WHERE order_id = ? LIMIT 1');
+    $esc->execute([(int) $dispute['order_id']]);
+    $dispute['escrow'] = $esc->fetch() ?: null;
 } catch (Throwable $e) {
     json_error('Database belum siap. Jalankan migrasi 01 dan 03 dulu.', 500);
 }
 
 $dispute['id'] = (int) $dispute['id'];
 $dispute['total_bayar'] = (float) ($dispute['total_bayar'] ?? 0);
+if (!empty($dispute['escrow'])) {
+    $dispute['escrow']['jumlah_ditahan'] = (float) $dispute['escrow']['jumlah_ditahan'];
+    $dispute['escrow']['dp_cair'] = (float) $dispute['escrow']['dp_cair'];
+    $dispute['escrow']['sisa_cair'] = (float) $dispute['escrow']['sisa_cair'];
+}
 json_ok($dispute);
