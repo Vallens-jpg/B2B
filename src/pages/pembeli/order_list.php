@@ -564,169 +564,7 @@
       <h2 class="pesanan-section-title">Daftar kartu pesanan</h2>
 
       <div id="ordersList">
-
-        <!-- Card 1: #ORD-2026-103 (Dikirim) -->
-        <article class="order-card" data-status="dikirim" data-supplier="PT Telur Makmur" data-orderid="#ORD-2026-103">
-          <div class="order-card-top">
-            <img src="../../assets/img/prod_grade_a.png" alt="Telur Ayam Grade A" class="order-prod-thumb">
-            
-            <div class="order-meta-item" style="min-width: 120px;">
-              <span class="order-meta-label">tanggal :</span>
-              <span class="order-meta-value">24 Jan 2026</span>
-            </div>
-
-            <div class="order-meta-item" style="min-width: 160px;">
-              <span class="order-meta-label">nama supplier :</span>
-              <span class="order-meta-value">PT Telur Makmur</span>
-            </div>
-
-            <div class="order-meta-item" style="min-width: 140px;">
-              <span class="order-meta-label">order id :</span>
-              <span class="order-meta-value">#ORD-2026-103</span>
-            </div>
-
-            <div class="order-meta-item" style="min-width: 110px;">
-              <span class="order-meta-label">status pesanan :</span>
-              <span class="order-status-badge">Dikirim</span>
-            </div>
-          </div>
-
-          <div class="order-card-middle">
-            <div class="order-items-info">
-              <div class="order-item-col" style="min-width: 170px;">
-                <span class="order-item-label">nama barang</span>
-                <span class="order-item-val">Telur Ayam Grade A</span>
-              </div>
-              <div class="order-item-col" style="min-width: 80px;">
-                <span class="order-item-label">jumlah</span>
-                <span class="order-item-val">2 Kg</span>
-              </div>
-              <div class="order-item-col" style="min-width: 110px;">
-                <span class="order-item-label">total</span>
-                <span class="order-item-val">Rp 240.000</span>
-              </div>
-            </div>
-
-            <div class="order-card-actions">
-              <a href="../order_detail.php?seller=1&product=Telur%20Ayam%20Grade%20A&qty=2%20Kg&price=Rp%20120.000&subtotal=Rp%20240.000&from=pesanan" class="btn-pill-action">
-                <svg viewBox="0 0 24 24">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                  <line x1="16" y1="13" x2="8" y2="13"/>
-                  <line x1="16" y1="17" x2="8" y2="17"/>
-                  <polyline points="10 9 9 9 8 9"/>
-                </svg>
-                detail pesanan
-              </a>
-
-              <a href="pembayaran.php?subtotal=Rp%20240.000" class="btn-pill-action">
-                <svg viewBox="0 0 24 24">
-                  <rect x="2" y="5" width="20" height="14" rx="2"/>
-                  <line x1="2" y1="10" x2="22" y2="10"/>
-                </svg>
-                bayar sekarang
-              </a>
-
-              <a href="ulasan.php?seller=1&product=Telur%20Ayam%20Grade%20A&subtotal=Rp%201.250.000" class="btn-pill-action">
-                <svg viewBox="0 0 24 24">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                </svg>
-                Buat Ulasan
-              </a>
-            </div>
-          </div>
-
-          <div class="order-dispute-bar">
-            <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="16" x2="12" y2="12"/>
-              <line x1="12" y1="8" x2="12.01" y2="8"/>
-            </svg>
-            <span>Status Dispute : Tidak ada sengketa aktif</span>
-          </div>
-        </article>
-
-        <!-- Card 2: #ORD-2026-098 (Selesai) -->
-        <article class="order-card" data-status="selesai" data-supplier="PT Telur Makmur" data-orderid="#ORD-2026-098">
-          <div class="order-card-top">
-            <img src="../../assets/img/prod_grade_b.png" alt="Telur Ayam Ras Grade B" class="order-prod-thumb">
-            
-            <div class="order-meta-item" style="min-width: 120px;">
-              <span class="order-meta-label">tanggal :</span>
-              <span class="order-meta-value">15 Jan 2026</span>
-            </div>
-
-            <div class="order-meta-item" style="min-width: 160px;">
-              <span class="order-meta-label">nama supplier :</span>
-              <span class="order-meta-value">PT Telur Makmur</span>
-            </div>
-
-            <div class="order-meta-item" style="min-width: 140px;">
-              <span class="order-meta-label">order id :</span>
-              <span class="order-meta-value">#ORD-2026-098</span>
-            </div>
-
-            <div class="order-meta-item" style="min-width: 110px;">
-              <span class="order-meta-label">status pesanan :</span>
-              <span class="order-status-badge selesai">Selesai</span>
-            </div>
-          </div>
-
-          <div class="order-card-middle">
-            <div class="order-items-info">
-              <div class="order-item-col" style="min-width: 170px;">
-                <span class="order-item-label">nama barang</span>
-                <span class="order-item-val">Telur Ayam Ras Grade B</span>
-              </div>
-              <div class="order-item-col" style="min-width: 80px;">
-                <span class="order-item-label">jumlah</span>
-                <span class="order-item-val">5 Kg</span>
-              </div>
-              <div class="order-item-col" style="min-width: 110px;">
-                <span class="order-item-label">total</span>
-                <span class="order-item-val">Rp 550.000</span>
-              </div>
-            </div>
-
-            <div class="order-card-actions">
-              <a href="../order_detail.php?seller=1&product=Telur%20Ayam%20Ras%20Grade%20B&qty=5%20Kg&price=Rp%20110.000&subtotal=Rp%20550.000&from=pesanan" class="btn-pill-action">
-                <svg viewBox="0 0 24 24">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                  <line x1="16" y1="13" x2="8" y2="13"/>
-                  <line x1="16" y1="17" x2="8" y2="17"/>
-                  <polyline points="10 9 9 9 8 9"/>
-                </svg>
-                detail pesanan
-              </a>
-
-              <a href="../invoice.php?subtotal=Rp%20550.000" class="btn-pill-action">
-                <svg viewBox="0 0 24 24">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                </svg>
-                Lihat Invoice
-              </a>
-
-              <a href="ulasan.php?seller=1&product=Telur%20Ayam%20Ras%20Grade%20B&subtotal=Rp%20550.000" class="btn-pill-action">
-                <svg viewBox="0 0 24 24">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                </svg>
-                Buat Ulasan
-              </a>
-            </div>
-          </div>
-
-          <div class="order-dispute-bar">
-            <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="16" x2="12" y2="12"/>
-              <line x1="12" y1="8" x2="12.01" y2="8"/>
-            </svg>
-            <span>Status Dispute : Selesai tanpa kendala</span>
-          </div>
-        </article>
-
+        <p style="padding:1rem;">Memuat pesanan…</p>
       </div>
     </section>
 
@@ -742,7 +580,7 @@
       fetch('../../api/order/list.php')
         .then(function (r) { return r.json(); })
         .then(function (res) {
-          if (!res.ok || !res.data || !res.data.orders) return;
+          if (!res.ok || !res.data || !res.data.orders) { list.innerHTML = '<p style="padding:1rem;">Gagal memuat pesanan. Periksa koneksi atau login kembali.</p>'; return; }
           if (!res.data.orders.length) {
             list.innerHTML = '<p style="padding:1rem;">Belum ada pesanan. Buat pesanan dari halaman produk.</p>';
             return;
@@ -763,7 +601,7 @@
               + '</article>';
           }).join('');
         })
-        .catch(function () { /* biarkan kartu contoh kalau API gagal */ });
+        .catch(function () { list.innerHTML = '<p style="padding:1rem;">Gagal memuat pesanan. Periksa koneksi atau login kembali.</p>'; });
     })();
   </script>
   <script>

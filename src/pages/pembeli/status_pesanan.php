@@ -53,14 +53,6 @@
           <span id="orderValue" class="sp-row-value strong">Memuat…</span>
         </div>
         <div class="sp-row">
-          <span class="sp-row-label">Metode Pembayaran</span>
-          <span class="sp-row-value">Menunggu konfirmasi</span>
-        </div>
-        <div class="sp-row">
-          <span class="sp-row-label">Alamat Pengiriman</span>
-          <span class="sp-row-value">Belum dikonfirmasi</span>
-        </div>
-        <div class="sp-row">
           <span class="sp-row-label">Nomor Pesanan</span>
           <span id="orderNumber" class="sp-row-value">—</span>
         </div>
@@ -73,8 +65,8 @@
           <span id="orderItem" class="sp-row-value">Memuat…</span>
         </div>
         <div class="sp-row">
-          <span class="sp-row-label">Jadwal Kirim</span>
-          <span class="sp-row-value">—</span>
+          <span class="sp-row-label">Tanggal Pesanan</span>
+          <span class="sp-row-value" id="orderTanggal">—</span>
         </div>
       </div>
 
@@ -164,9 +156,9 @@
       document.getElementById('orderItem').innerText = pertama.nama_produk + ' (' + pertama.jumlah_kg + ' kg) – ' + rupiahSp(pertama.total_bayar);
       document.getElementById('orderCompany').innerText = pertama.nama_perusahaan || '-';
       const tgl = pertama.created_at ? new Date(pertama.created_at.replace(' ', 'T')) : null;
-      const tglEl = document.querySelectorAll('.sp-row-value');
-      if (tgl && !isNaN(tgl) && tglEl.length >= 7) {
-        tglEl[6].innerText = tgl.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+      const tglEl = document.getElementById('orderTanggal');
+      if (tgl && !isNaN(tgl) && tglEl) {
+        tglEl.innerText = tgl.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
       }
       // Banner + tombol sesuai status asli (tanpa simulasi ACC).
       const banner = document.getElementById('alertBanner');
@@ -265,8 +257,8 @@
       document.getElementById('orderValue').innerText = '—';
       document.getElementById('orderCompany').innerText = '—';
       document.getElementById('orderItem').innerText = 'Belum ada pesanan';
-      const tglEl = document.querySelectorAll('.sp-row-value');
-      if (tglEl.length >= 7) tglEl[6].innerText = '—';
+      const tglEl = document.getElementById('orderTanggal');
+      if (tglEl) tglEl.innerText = '—';
       if (caption) caption.innerText = 'Belum ada pesanan';
       if (cancelLink) cancelLink.style.display = 'none';
     }
