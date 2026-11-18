@@ -4885,9 +4885,6 @@
               </svg>
               <input type="text" id="pesananSearchInput" placeholder="Cari ID Order / Nama Pembeli..." autocomplete="off" oninput="renderPesananTable()">
             </div>
-            <button class="btn-pesanan-new" type="button" onclick="openBuatPesanan()">
-              <span>+</span> Buat Pesanan Baru
-            </button>
           </div>
 
           <div class="pesanan-tabs">
@@ -4927,7 +4924,7 @@
         <!-- Sub-View 2: Form / Detail Pesanan -->
         <div id="pesananFormView" class="pesanan-form-view" style="display: none;">
           <header class="pesanan-form-head">
-            <h2 class="pesanan-form-title" id="pesananFormTitle">Detail Pesanan Baru</h2>
+            <h2 class="pesanan-form-title" id="pesananFormTitle">Detail Pesanan</h2>
             <button class="btn-pesanan-back" type="button" onclick="tutupFormPesanan()">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -4943,11 +4940,6 @@
               <section class="pesanan-card">
                 <label class="pesanan-label" for="pesananPembeli">Pembeli <span class="req">*</span></label>
                 <select class="pesanan-input" id="pesananPembeli">
-                  <option>Arga Dwi</option>
-                  <option>Rira W.</option>
-                  <option>Rania</option>
-                  <option>PT Boga Jaya</option>
-                  <option>CV Sembako</option>
                 </select>
               </section>
 
@@ -4974,8 +4966,8 @@
                   <div class="pesanan-field">
                     <label class="pesanan-label" for="pesananJadwal">Jadwal kirim <span class="req">*</span></label>
                     <div class="pesanan-date-wrap">
-                      <input class="pesanan-input pesanan-date-display" id="pesananJadwalDisplay" type="text" value="12 Okt 2027" readonly>
-                      <input class="pesanan-date-input" id="pesananJadwal" type="date" value="2027-10-12" onchange="syncTanggalPesanan()" onclick="bukaPickerTanggalPesanan(this)">
+                      <input class="pesanan-input pesanan-date-display" id="pesananJadwalDisplay" type="text" value="—" readonly>
+                      <input class="pesanan-date-input" id="pesananJadwal" type="date" value="" onchange="syncTanggalPesanan()" onclick="bukaPickerTanggalPesanan(this)">
                     </div>
                   </div>
                   <div class="pesanan-field">
@@ -4985,7 +4977,7 @@
                 </div>
                 <div class="pesanan-field">
                   <label class="pesanan-label" for="pesananCatatan">Catatan pesanan</label>
-                  <textarea class="pesanan-textarea" id="pesananCatatan">Kirim produk secepatnya</textarea>
+                  <textarea class="pesanan-textarea" id="pesananCatatan"></textarea>
                 </div>
               </section>
 
@@ -4999,18 +4991,17 @@
               </div>
               <div class="pesanan-summary-row">
                 <span>Jumlah item</span>
-                <strong id="pesananSummaryQty">2 produk</strong>
+                <strong id="pesananSummaryQty">—</strong>
               </div>
               <div class="pesanan-summary-row">
                 <span>Total pesanan</span>
-                <strong id="pesananSummaryTotal">Rp 500.000</strong>
+                <strong id="pesananSummaryTotal">Rp 0</strong>
               </div>
               <div class="pesanan-summary-divider"></div>
               <div class="pesanan-summary-row pembayaran">
                 <span>Pembayaran</span>
-                <strong id="pesananSummaryBayar">Rp 500.000</strong>
+                <strong id="pesananSummaryBayar">Rp 0</strong>
               </div>
-              <button class="btn-pesanan-proses" type="button" id="pesananProsesBtn" onclick="prosesPesananBaru()">Proses pesanan</button>
             </aside>
           </div>
         </div>
@@ -7377,40 +7368,6 @@
       if (prosesBtn) prosesBtn.hidden = readonly;
     }
 
-    function openBuatPesanan(event) {
-      if (event) event.preventDefault();
-
-      pesananMode = 'baru';
-      pesananAktifId = null;
-
-      const title = document.getElementById('pesananFormTitle');
-      const pembeli = document.getElementById('pesananPembeli');
-      const jadwal = document.getElementById('pesananJadwal');
-      const pembayaran = document.getElementById('pesananPembayaran');
-      const catatan = document.getElementById('pesananCatatan');
-      const items = document.getElementById('pesananItems');
-
-      if (title) title.textContent = 'Detail Pesanan Baru';
-      if (pembeli) pembeli.value = 'Arga Dwi';
-      if (jadwal) jadwal.value = '2027-10-12';
-      syncTanggalPesanan();
-      if (pembayaran) pembayaran.value = '';
-      if (catatan) catatan.value = 'Kirim produk secepatnya';
-      if (items) {
-        items.innerHTML = itemPesananRowHTML({ produk: 'Telur ayam', qty: 2, harga: 250000 });
-      }
-
-      setPesananFormReadonly(false);
-      setStatusPesananSummary('menunggu-persetujuan', 'Status awal pesanan');
-
-      const list = document.getElementById('pesananListView');
-      const form = document.getElementById('pesananFormView');
-      if (list) list.style.display = 'none';
-      if (form) form.style.display = 'flex';
-
-      hitungPesanan();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
 
     function openDetailPesanan(id) {
       const order = PESANAN_DATA.find(function (row) { return row.id === id; });
@@ -7506,98 +7463,6 @@
       }
     }
 
-    function prosesPesananBaru() {
-      const pembeliEl = document.getElementById('pesananPembeli');
-      const jadwalEl = document.getElementById('pesananJadwal');
-      const pembayaranEl = document.getElementById('pesananPembayaran');
-      const catatanEl = document.getElementById('pesananCatatan');
-
-      const pembeli = pembeliEl ? pembeliEl.value : '';
-      const jadwal = jadwalEl ? jadwalEl.value : '';
-      const catatan = catatanEl ? catatanEl.value.trim() : '';
-
-      if (!pembeli) {
-        showToast('Pembeli wajib dipilih');
-        if (pembeliEl) pembeliEl.focus();
-        return;
-      }
-
-      if (!jadwal) {
-        showToast('Jadwal kirim wajib diisi');
-        if (jadwalEl) jadwalEl.focus();
-        return;
-      }
-
-      const items = [];
-      const rows = Array.from(document.querySelectorAll('#pesananItems .pesanan-item-row'));
-
-      for (let i = 0; i < rows.length; i += 1) {
-        const row = rows[i];
-        const produkInput = row.querySelector('.pesanan-item-produk');
-        const qtyInput = row.querySelector('.pesanan-item-qty');
-        const hargaInput = row.querySelector('.pesanan-item-harga');
-        const produk = produkInput ? produkInput.value.trim() : '';
-        const qty = parseInt(qtyInput ? qtyInput.value : '', 10) || 0;
-        const harga = parseRupiah(hargaInput ? hargaInput.value : '');
-
-        if (!produk) {
-          showToast('Produk pada item ' + (i + 1) + ' wajib diisi');
-          if (produkInput) produkInput.focus();
-          return;
-        }
-
-        if (qty <= 0) {
-          showToast('Qty pada item ' + (i + 1) + ' harus lebih dari 0');
-          if (qtyInput) qtyInput.focus();
-          return;
-        }
-
-        if (harga <= 0) {
-          showToast('Harga satuan pada item ' + (i + 1) + ' wajib diisi');
-          if (hargaInput) hargaInput.focus();
-          return;
-        }
-
-        items.push({ produk: produk, qty: qty, harga: harga });
-      }
-
-      if (!items.length) {
-        showToast('Tambahkan minimal satu item pesanan');
-        return;
-      }
-
-      const total = items.reduce(function (sum, item) { return sum + item.qty * item.harga; }, 0);
-      const pembayaran = parseRupiah(pembayaranEl ? pembayaranEl.value : '');
-
-      const nomorTerbesar = PESANAN_DATA.reduce(function (max, order) {
-        const nomor = parseInt(String(order.id).split('-').pop(), 10) || 0;
-        return Math.max(max, nomor);
-      }, 0);
-
-      const orderBaru = {
-        id: '#ORD-2027-' + String(nomorTerbesar + 1).padStart(3, '0'),
-        pembeli: pembeli,
-        jadwal: jadwal,
-        jadwalLabel: formatTanggalPesanan(jadwal),
-        status: 'menunggu-persetujuan',
-        catatan: catatan,
-        pembayaran: pembayaran > 0 ? pembayaran : total,
-        items: items
-      };
-
-      PESANAN_DATA.unshift(orderBaru);
-
-      pesananFilter = 'semua';
-      document.querySelectorAll('.pesanan-tab').forEach(function (tab, index) {
-        tab.classList.toggle('active', index === 0);
-      });
-
-      const searchInput = document.getElementById('pesananSearchInput');
-      if (searchInput) searchInput.value = '';
-
-      showPesananList();
-      showToast('Pesanan baru berhasil dibuat');
-    }
 
     /* --------------------------------------------------------------------------
        F4. KEUANGAN / PENCAIRAN DANA LOGIC
