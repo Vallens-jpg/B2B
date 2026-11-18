@@ -20,8 +20,8 @@ try {
         $stmt->execute([(int) $user['id']]);
     } else {
         $stmt = db()->prepare(
-            'SELECT o.id, o.jumlah_kg, o.harga_satuan, o.total, o.fee, o.status, o.created_at, p.nama AS nama_produk ' .
-            'FROM orders o JOIN produk p ON p.id = o.produk_id WHERE o.buyer_id = ? ORDER BY o.id DESC LIMIT 50'
+            'SELECT o.id, o.jumlah_kg, o.harga_satuan, o.total, o.fee, o.status, o.created_at, p.nama AS nama_produk, up.nama AS nama_perusahaan ' .
+            'FROM orders o JOIN produk p ON p.id = o.produk_id LEFT JOIN users up ON up.id = p.perusahaan_id WHERE o.buyer_id = ? ORDER BY o.id DESC LIMIT 50'
         );
         $stmt->execute([(int) $user['id']]);
     }

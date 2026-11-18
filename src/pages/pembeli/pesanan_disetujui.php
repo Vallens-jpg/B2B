@@ -1,13 +1,3 @@
-<?php
-session_start();
-
-$activeApproved = null;
-if (!empty($_SESSION['pesanan_disetujui'])) {
-    $activeApproved = $_SESSION['pesanan_disetujui'];
-} elseif (!empty($_SESSION['active_order']) && ($_SESSION['active_order']['status'] ?? '') === 'approved') {
-    $activeApproved = $_SESSION['active_order'];
-}
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -332,85 +322,15 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
       <div>
         <h1 class="pd-title">
           Pesanan Disetujui
-          <span class="pd-badge">Siap Bayar</span>
+          <span class="pd-badge">Disetujui</span>
         </h1>
-        <p class="pd-subtitle">Pesanan berikut telah disetujui penjual. Silakan pilih dan selesaikan pembayaran.</p>
+        <p class="pd-subtitle">Pesanan berikut telah disetujui penjual dan sedang diproses.</p>
       </div>
     </div>
 
     <!-- Daftar Pesanan Disetujui -->
-    <div id="listDisetujui">
-      <?php if ($activeApproved): ?>
-      <!-- Card Dinamis dari Pesanan Aktif -->
-      <div class="pd-card" style="border: 1.5px solid #10B981; background: #F0FDF4;">
-        <div class="pd-card-left">
-          <div class="pd-icon-circle">
-            <svg viewBox="0 0 24 24">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-          </div>
-          <div class="pd-card-info">
-            <div class="pd-card-seller"><?= htmlspecialchars($activeApproved['seller']) ?></div>
-            <div class="pd-card-product"><?= htmlspecialchars($activeApproved['product']) ?> &bull; <?= htmlspecialchars($activeApproved['qty']) ?></div>
-            <div class="pd-card-meta">Pesanan <?= htmlspecialchars($activeApproved['order_id']) ?> &bull; Disetujui baru saja</div>
-            <div class="pd-card-status">Disetujui Penjual</div>
-          </div>
-        </div>
-        <div class="pd-card-right">
-          <div class="pd-card-total"><?= htmlspecialchars($activeApproved['subtotal']) ?></div>
-          <div class="pd-card-qty"><?= htmlspecialchars($activeApproved['qty']) ?> &times; <?= htmlspecialchars($activeApproved['price']) ?></div>
-          <a href="pembayaran.php" class="pd-btn-bayar">Bayar Sekarang</a>
-        </div>
-      </div>
-      <?php endif; ?>
+    <div id="listDisetujui"></div>
 
-      <!-- Card 1 — PT Telur Makmur -->
-      <div class="pd-card">
-        <div class="pd-card-left">
-          <div class="pd-icon-circle">
-            <svg viewBox="0 0 24 24">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-          </div>
-          <div class="pd-card-info">
-            <div class="pd-card-seller">PT Telur Makmur</div>
-            <div class="pd-card-product">Telur Omega &bull; 2 kg</div>
-            <div class="pd-card-meta">Pesanan #ORD-2026-001 &bull; Disetujui baru saja</div>
-            <div class="pd-card-status">Disetujui Penjual</div>
-          </div>
-        </div>
-        <div class="pd-card-right">
-          <div class="pd-card-total">Rp 80.000</div>
-          <div class="pd-card-qty">2 kg &times; Rp 40.000</div>
-          <a href="status_pesanan.php?state=approved&seller=PT%20Telur%20Makmur&product=Telur%20Omega&qty=2%20kg&price=Rp%2040.000&subtotal=Rp%2080.000"
-             class="pd-btn-bayar">Bayar Sekarang</a>
-        </div>
-      </div>
-
-      <!-- Card 2 — Mitra Unggas Sejahtera -->
-      <div class="pd-card">
-        <div class="pd-card-left">
-          <div class="pd-icon-circle">
-            <svg viewBox="0 0 24 24">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-          </div>
-          <div class="pd-card-info">
-            <div class="pd-card-seller">Mitra Unggas Sejahtera</div>
-            <div class="pd-card-product">Telur Ayam Ras Grade A &bull; 5 kg</div>
-            <div class="pd-card-meta">Pesanan #ORD-2026-002 &bull; Disetujui 1 jam lalu</div>
-            <div class="pd-card-status">Disetujui Penjual</div>
-          </div>
-        </div>
-        <div class="pd-card-right">
-          <div class="pd-card-total">Rp 140.000</div>
-          <div class="pd-card-qty">5 kg &times; Rp 28.000</div>
-          <a href="status_pesanan.php?state=approved&seller=Mitra%20Unggas%20Sejahtera&product=Telur%20Ayam%20Ras%20Grade%20A&qty=5%20kg&price=Rp%2028.000&subtotal=Rp%20140.000"
-             class="pd-btn-bayar">Bayar Sekarang</a>
-        </div>
-      </div>
-
-    </div>
   </main>
 
   <script>
@@ -423,6 +343,57 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
     function markAllAsRead(e) {
       if (e) { e.preventDefault(); e.stopPropagation(); }
     }
+
+
+    // Daftar pesanan disetujui dari API (bukan contoh): hanya order
+    // berstatus "diproses" (sudah dibayar lalu disetujui penjual).
+    // Setelah dibayar + disetujui, pesanan muncul di sini; setelah
+    // dikirim penjual, pesanan pindah dari daftar ini.
+    function pdEscape(s) {
+      return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+    function pdRupiah(n) {
+      return 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+    }
+    function pdMuatDisetujui() {
+      var wadah = document.getElementById('listDisetujui');
+      if (!wadah) return;
+      fetch('../../api/order/list.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.orders) {
+            wadah.innerHTML = '<div class="pd-card"><div class="pd-card-info"><div class="pd-card-seller">Gagal memuat pesanan</div><div class="pd-card-product">' + pdEscape(res.error || 'tidak diketahui') + '</div></div></div>';
+            return;
+          }
+          var disetujui = res.data.orders.filter(function (o) { return o.status === 'diproses'; });
+          if (!disetujui.length) {
+            wadah.innerHTML = '<div class="pd-card"><div class="pd-card-info"><div class="pd-card-seller">Belum ada pesanan yang disetujui</div><div class="pd-card-product">Pesanan yang sudah dibayar dan disetujui penjual akan muncul di sini.</div></div></div>';
+            return;
+          }
+          wadah.innerHTML = disetujui.map(function (o) {
+            var nomor = '#ORD-2026-' + String(o.id).padStart(3, '0');
+            var tgl = '';
+            try { tgl = new Date(String(o.created_at).replace(' ', 'T')).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }); } catch (e) {}
+            return '<div class="pd-card" style="border: 1.5px solid #10B981; background: #F0FDF4;">' +
+              '<div class="pd-card-left"><div class="pd-icon-circle"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+              '<div class="pd-card-info">' +
+              '<div class="pd-card-seller">' + pdEscape(o.nama_perusahaan || 'Perusahaan Demo') + '</div>' +
+              '<div class="pd-card-product">' + pdEscape(o.nama_produk) + ' &bull; ' + pdEscape(o.jumlah_kg) + ' kg</div>' +
+              '<div class="pd-card-meta">Pesanan ' + pdEscape(nomor) + (tgl ? ' &bull; ' + pdEscape(tgl) : '') + '</div>' +
+              '<div class="pd-card-status">Disetujui Penjual</div>' +
+              '</div></div>' +
+              '<div class="pd-card-right">' +
+              '<div class="pd-card-total">' + pdEscape(pdRupiah(o.total_bayar)) + '</div>' +
+              '<div class="pd-card-qty">' + pdEscape(o.jumlah_kg) + ' kg &times; ' + pdEscape(pdRupiah(o.harga_satuan)) + '</div>' +
+              '<a href="../order_detail.php?id=' + o.id + '" class="pd-btn-bayar">Lihat Detail</a>' +
+              '</div></div>';
+          }).join('');
+        })
+        .catch(function () {
+          wadah.innerHTML = '<div class="pd-card"><div class="pd-card-info"><div class="pd-card-seller">Gagal memuat pesanan</div><div class="pd-card-product">Periksa koneksi atau login kembali.</div></div></div>';
+        });
+    }
+    pdMuatDisetujui();
 
     document.addEventListener('click', function(e) {
       const dd = document.getElementById('notifDropdown');
