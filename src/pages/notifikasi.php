@@ -1,16 +1,3 @@
-<?php
-session_start();
-
-$isOrderApproved = false;
-$approvedSeller = 'PT Telur Makmur';
-if (!empty($_SESSION['pesanan_disetujui'])) {
-    $isOrderApproved = true;
-    $approvedSeller = $_SESSION['pesanan_disetujui']['seller'] ?? 'PT Telur Makmur';
-} elseif (!empty($_SESSION['active_order']) && ($_SESSION['active_order']['status'] ?? '') === 'approved') {
-    $isOrderApproved = true;
-    $approvedSeller = $_SESSION['active_order']['seller'] ?? 'PT Telur Makmur';
-}
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -401,7 +388,7 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
           <svg class="bell-icon" viewBox="0 0 24 24">
             <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
           </svg>
-          <span class="notification-badge-red" id="notifBadgeRed">3</span>
+          <span class="notification-badge-red" id="notifBadgeRed" style="display:none">0</span>
         </button>
         <a href="profil.php" class="user-profile-capsule" style="text-decoration: none;">
           <div class="user-avatar-circle">AD</div>
@@ -415,68 +402,8 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
             <button type="button" class="notif-mark-read" onclick="markAllAsRead(event)">Tandai semua dibaca</button>
           </div>
 
-          <div class="notif-list">
-            <a href="pembeli/status_pesanan.php?state=approved" class="notif-item unread" id="ddNotifDisetujui">
-              <div class="notif-icon-circle green">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title">Pesanan Disetujui Penjual</span>
-                  <span class="notif-time">&bull; Baru</span>
-                </div>
-                <p class="notif-item-body" id="ddNotifDisetujuiBody">Pesanan Anda telah disetujui. Lanjutkan pembayaran.</p>
-              </div>
-            </a>
-
-            <a href="pembeli/permintaan_disetujui.php" class="notif-item unread">
-              <div class="notif-icon-circle green">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title">Permintaan Disetujui</span>
-                  <span class="notif-time">· 5m</span>
-                </div>
-                <p class="notif-item-body">Permintaan pengadaan telur dari PT Telur Makmur telah disetujui.</p>
-              </div>
-            </a>
-
-            <a href="dispute_detail.php" class="notif-item unread">
-              <div class="notif-icon-circle green">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title">Pesan Baru di Dispute #DSP-9021</span>
-                  <span class="notif-item-badge-red">1</span>
-                </div>
-                <p class="notif-item-body">Seller: "Kami sudah mengirim bukti foto ulang..."</p>
-              </div>
-            </a>
-
-            <a href="dispute_list.php" class="notif-item">
-              <div class="notif-icon-circle yellow">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <circle cx="12" cy="12" r="10" stroke="#111827"/>
-                  <line x1="12" y1="8" x2="12" y2="12" stroke="#111827"/>
-                  <line x1="12" y1="16" x2="12.01" y2="16" stroke="#111827"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title dark">Dispute Disetujui · 3j</span>
-                </div>
-                <p class="notif-item-body">Dispute #DSP-8812 telah disetujui. Dana pengembalian sedang diproses.</p>
-              </div>
-            </a>
+          <div class="notif-list" id="ddNotifList">
+            <div class="notif-item"><div class="notif-content"><p class="notif-item-body">Memuat notifikasi…</p></div></div>
           </div>
 
           <div class="notif-footer">
@@ -495,7 +422,7 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
       <div class="notif-title-area">
         <div class="notif-heading-row">
           <h1 class="notif-main-title">Semua Notifikasi</h1>
-          <span class="notif-unread-badge" id="unreadCountBadge">2 belum dibaca</span>
+          <span class="notif-unread-badge" id="unreadCountBadge">Memuat…</span>
         </div>
         <p class="notif-main-subtitle">Pantau kabar terbaru tentang permintaan, pesanan, dan transaksi Anda.</p>
       </div>
@@ -515,10 +442,10 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
       <div class="notif-filter-bar">
         <div class="notif-filter-pills">
           <button type="button" class="notif-pill-btn active" id="pillSemua" onclick="setNotifFilter('semua')">
-            Semua <span id="countSemua">9</span>
+            Semua <span id="countSemua">0</span>
           </button>
           <button type="button" class="notif-pill-btn" id="pillUnread" onclick="setNotifFilter('unread')">
-            Belum dibaca <span id="countUnread">2</span>
+            Belum dibaca <span id="countUnread">0</span>
           </button>
         </div>
 
@@ -528,198 +455,9 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
       </div>
 
       <!-- SECTION: Hari ini (3) -->
-      <div class="notif-section-group" id="groupHariIni">
-        <div class="notif-section-label">
-          Hari ini <span class="notif-section-count">(3)</span>
-        </div>
-
-        <!-- Notification 0 — Pesanan Disetujui Penjual (dinamis dari status-pesanan) -->
-        <article class="notif-row-item unread" id="notifDisetujui" data-read="false">
-          <div class="notif-row-left">
-            <div class="notif-circle-icon green">
-              <svg viewBox="0 0 24 24">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
-            </div>
-            <div class="notif-row-text-group">
-              <h2 class="notif-row-title green">Pesanan Disetujui Penjual</h2>
-              <p class="notif-row-desc" id="notifDisetujuiDesc">Pesanan Anda telah disetujui. Silakan lanjutkan pembayaran.</p>
-              <div class="notif-row-meta">Pesanan • Baru saja</div>
-            </div>
-          </div>
-          <div class="notif-row-right">
-            <span class="notif-status-indicator unread">
-              <span class="status-dot-blue"></span> Belum dibaca
-            </span>
-            <a href="pembeli/status_pesanan.php?state=approved" class="notif-action-link" id="notifDisetujuiLink">
-              Lanjut bayar ›
-            </a>
-          </div>
-        </article>
-
-        <!-- Notification 1 -->
-        <article class="notif-row-item unread" data-read="false">
-          <div class="notif-row-left">
-            <div class="notif-circle-icon green">
-              <svg viewBox="0 0 24 24">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <polyline points="9 15 12 18 15 15"/>
-              </svg>
-            </div>
-            <div class="notif-row-text-group">
-              <h2 class="notif-row-title green">Pesanan Berhasil Dibuat</h2>
-              <p class="notif-row-desc">Pesanan telur Anda ke PT Telur Makmur telah berhasil dibuat.</p>
-              <div class="notif-row-meta">Pesanan • 5 menit lalu</div>
-            </div>
-          </div>
-
-          <div class="notif-row-right">
-            <span class="notif-status-indicator unread">
-              <span class="status-dot-blue"></span> Belum dibaca
-            </span>
-            <a href="pembeli/order_list.php" class="notif-action-link">
-              Lihat pesanan ›
-            </a>
-          </div>
-        </article>
-
-        <!-- Notification 2 -->
-        <article class="notif-row-item unread" data-read="false">
-          <div class="notif-row-left">
-            <div class="notif-circle-icon green">
-              <svg viewBox="0 0 24 24">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                <line x1="9" y1="9" x2="15" y2="9"/>
-                <line x1="9" y1="13" x2="13" y2="13"/>
-              </svg>
-            </div>
-            <div class="notif-row-text-group">
-              <h2 class="notif-row-title green">Pesan Baru di Dispute #DSP-9021</h2>
-              <p class="notif-row-desc">Seller: "Kami sudah mengirim bukti foto ulang..."</p>
-              <div class="notif-row-meta">Dispute • Terbaru</div>
-            </div>
-          </div>
-
-          <div class="notif-row-right">
-            <span class="notif-status-indicator unread">
-              <span class="status-dot-blue"></span> Belum dibaca
-            </span>
-            <a href="dispute_detail.php" class="notif-action-link">
-              Buka percakapan ›
-            </a>
-          </div>
-        </article>
-
-        <!-- Notification 3 -->
-        <article class="notif-row-item" data-read="true">
-          <div class="notif-row-left">
-            <div class="notif-circle-icon yellow">
-              <svg viewBox="0 0 24 24" stroke-width="2.5">
-                <circle cx="12" cy="12" r="10" stroke="#111827"/>
-                <line x1="12" y1="8" x2="12" y2="12" stroke="#111827"/>
-                <line x1="12" y1="16" x2="12.01" y2="16" stroke="#111827"/>
-              </svg>
-            </div>
-            <div class="notif-row-text-group">
-              <h2 class="notif-row-title amber">Dispute Disetujui</h2>
-              <p class="notif-row-desc">Dispute #DSP-8812 telah disetujui. Dana pengembalian sedang diproses.</p>
-              <div class="notif-row-meta">Dispute • 3 jam lalu</div>
-            </div>
-          </div>
-
-          <div class="notif-row-right">
-            <span class="notif-status-indicator read">Sudah dibaca</span>
-            <a href="dispute_list.php" class="notif-action-link">
-              Lihat dispute ›
-            </a>
-          </div>
-        </article>
+      <div id="daftarNotifikasi">
+        <p style="padding:1rem;">Memuat notifikasi…</p>
       </div>
-
-      <!-- SECTION: Kemarin (3) -->
-      <div class="notif-section-group" id="groupKemarin">
-        <div class="notif-section-label">
-          Kemarin <span class="notif-section-count">(3)</span>
-        </div>
-
-        <!-- Notification 4 -->
-        <article class="notif-row-item" data-read="true">
-          <div class="notif-row-left">
-            <div class="notif-circle-icon green">
-              <svg viewBox="0 0 24 24">
-                <rect x="2" y="6" width="20" height="12" rx="2"/>
-                <circle cx="12" cy="12" r="3"/>
-                <path d="M6 12h.01M18 12h.01"/>
-              </svg>
-            </div>
-            <div class="notif-row-text-group">
-              <h2 class="notif-row-title">Pembayaran Berhasil</h2>
-              <p class="notif-row-desc">Pembayaran pesanan #PSN-2048 sebesar Rp 1.950.000 telah diterima.</p>
-              <div class="notif-row-meta">Pembayaran • Kemarin, 16.30</div>
-            </div>
-          </div>
-
-          <div class="notif-row-right">
-            <span class="notif-status-indicator read">Sudah dibaca</span>
-            <a href="invoice.php" class="notif-action-link">
-              Lihat pembayaran ›
-            </a>
-          </div>
-        </article>
-
-        <!-- Notification 5 -->
-        <article class="notif-row-item" data-read="true">
-          <div class="notif-row-left">
-            <div class="notif-circle-icon gray">
-              <svg viewBox="0 0 24 24">
-                <rect x="1" y="3" width="15" height="13"/>
-                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-                <circle cx="5.5" cy="18.5" r="2.5"/>
-                <circle cx="18.5" cy="18.5" r="2.5"/>
-              </svg>
-            </div>
-            <div class="notif-row-text-group">
-              <h2 class="notif-row-title">Pesanan Sedang Dikirim</h2>
-              <p class="notif-row-desc">Pesanan #PSN-2041 dari Mitra Unggas Sejahtera sedang dalam perjalanan.</p>
-              <div class="notif-row-meta">Pengiriman • Kemarin, 13.15</div>
-            </div>
-          </div>
-
-          <div class="notif-row-right">
-            <span class="notif-status-indicator read">Sudah dibaca</span>
-            <a href="order_detail.php" class="notif-action-link">
-              Lacak pengiriman ›
-            </a>
-          </div>
-        </article>
-
-        <!-- Notification 6 -->
-        <article class="notif-row-item" data-read="true">
-          <div class="notif-row-left">
-            <div class="notif-circle-icon gray">
-              <svg viewBox="0 0 24 24">
-                <polyline points="21 8 21 21 3 21 3 8"/>
-                <rect x="1" y="3" width="22" height="5"/>
-                <line x1="10" y1="12" x2="14" y2="12"/>
-              </svg>
-            </div>
-            <div class="notif-row-text-group">
-              <h2 class="notif-row-title">Pesanan Telah Diterima</h2>
-              <p class="notif-row-desc">Pesanan #PSN-2035 dari Tunas Farm telah tiba. Terima kasih telah berbelanja!</p>
-              <div class="notif-row-meta">Pesanan • Kemarin, 09.40</div>
-            </div>
-          </div>
-
-          <div class="notif-row-right">
-            <span class="notif-status-indicator read">Sudah dibaca</span>
-            <a href="pembeli/order_list.php" class="notif-action-link">
-              Lihat pesanan ›
-            </a>
-          </div>
-        </article>
-      </div>
-
     </div>
   </main>
 
@@ -743,15 +481,6 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
         }
       });
 
-      // Hide yesterday group if mode is unread (yesterday has only read items)
-      const groupKemarin = document.getElementById('groupKemarin');
-      if (groupKemarin) {
-        if (mode === 'unread') {
-          groupKemarin.style.display = 'none';
-        } else {
-          groupKemarin.style.display = 'block';
-        }
-      }
     }
 
     function markAllNotificationsRead() {
@@ -805,63 +534,55 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
     }
 
 
-    // ---- Cek notif pesanan disetujui dari localStorage ----
-    (function() {
-      const approved = localStorage.getItem("pesananDisetujui");
-      if (approved) {
-        try {
-          const data = JSON.parse(approved);
-          const el = document.getElementById("notifDisetujui");
-          if (el) {
-            el.style.display = "flex";
-            // Update link dengan query params
-            const link = document.getElementById("notifDisetujuiLink");
-            // Update dropdown navbar juga
-            const ddItem = document.getElementById("ddNotifDisetujui");
-            if (ddItem) {
-              ddItem.style.display = "flex";
-              if (data.query) ddItem.href = "pembeli/status_pesanan.php?state=approved" + data.query;
-            }
-            const ddBody = document.getElementById("ddNotifDisetujuiBody");
-            if (ddBody && data.seller) ddBody.textContent = "Pesanan ke " + data.seller + " disetujui. Lanjutkan pembayaran.";
-            // Update badge merah di bell navbar
-            const bellBadge = document.getElementById("notifBadgeRed");
-            if (bellBadge) {
-              const cur = parseInt(bellBadge.innerText) || 3;
-              bellBadge.innerText = cur + 1;
-              bellBadge.style.display = '';
-            }
-            if (link && data.query) link.href = "pembeli/status_pesanan.php?state=approved" + data.query;
-            // Update deskripsi
-            const desc = document.getElementById("notifDisetujuiDesc");
-            if (desc && data.seller) desc.textContent = "Pesanan Anda ke " + data.seller + " telah disetujui. Silakan lanjutkan pembayaran.";
-            // Update badge count
-            const badge = document.getElementById("unreadCountBadge");
-            if (badge) {
-              const cur = parseInt(badge.innerText) || 2;
-              badge.innerText = (cur + 1) + " belum dibaca";
-            }
-            const countUnread = document.getElementById("countUnread");
-            if (countUnread) {
-              const cur = parseInt(countUnread.innerText) || 2;
-              countUnread.innerText = cur + 1;
-            }
-          }
-        } catch(e) {}
-      }
-    })();
-    // ---- Notifikasi asli dari API (riwayat_status): ganti daftar contoh ----
-    // Daftar contoh di atas hanya fallback bila API gagal / belum login.
+    // ---- Notifikasi asli dari API (riwayat_status) ----
     (function () {
+      var wadah = document.getElementById('daftarNotifikasi');
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      function isiDropdown(items) {
+        var ddList = document.getElementById('ddNotifList');
+        var badge = document.getElementById('notifBadgeRed');
+        if (!ddList) return;
+        if (!items || !items.length) {
+          ddList.innerHTML = '<div class="notif-item"><div class="notif-content"><p class="notif-item-body">Belum ada notifikasi.</p></div></div>';
+          if (badge) badge.style.display = 'none';
+          return;
+        }
+        ddList.innerHTML = items.slice(0, 3).map(function (n) {
+          return '<a href="order_detail.php?id=' + n.order_id + '" class="notif-item unread">'
+            + '<div class="notif-icon-circle green"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg></div>'
+            + '<div class="notif-content"><div class="notif-item-top"><span class="notif-item-title">' + escapeHtml(n.judul) + '</span></div>'
+            + '<p class="notif-item-body">' + escapeHtml(n.isi) + '</p></div></a>';
+        }).join('');
+        if (badge) {
+          badge.innerText = items.length;
+          badge.style.display = '';
+        }
+      }
+      function perbaruiHitungan(jumlah) {
+        var badge = document.getElementById('unreadCountBadge');
+        if (badge) badge.innerText = jumlah + ' belum dibaca';
+        var countSemua = document.getElementById('countSemua');
+        if (countSemua) countSemua.innerText = jumlah;
+        var countUnread = document.getElementById('countUnread');
+        if (countUnread) countUnread.innerText = jumlah;
+      }
       fetch('../api/notifikasi.php')
-        .then(function (r) { return r.json(); })
+        .then(function (r) {
+          if (r.status === 401) { window.location.href = '../login.php'; return null; }
+          return r.json();
+        })
         .then(function (res) {
-          if (!res || !res.ok || !res.data || !res.data.notifikasi || !res.data.notifikasi.length) return;
+          if (!res) return;
+          if (!res.ok || !res.data || !res.data.notifikasi || !res.data.notifikasi.length) {
+            if (wadah) wadah.innerHTML = '<div class="notif-section-label">Terbaru</div><p style="padding:1rem;">Belum ada notifikasi. Perubahan status pesanan akan muncul di sini.</p>';
+            isiDropdown([]);
+            perbaruiHitungan(0);
+            return;
+          }
           const items = res.data.notifikasi;
-          const g1 = document.getElementById('groupHariIni');
-          const g2 = document.getElementById('groupKemarin');
-          if (!g1) return;
-          if (g2) g2.remove();
+          if (!wadah) return;
           const group = document.createElement('div');
           group.className = 'notif-section-group';
           group.id = 'groupTerbaru';
@@ -874,23 +595,23 @@ if (!empty($_SESSION['pesanan_disetujui'])) {
             art.innerHTML =
               '<div class="notif-row-left"><div class="notif-circle-icon green">' +
               '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>' +
-              '<div class="notif-row-text-group"><h2 class="notif-row-title green">' + n.judul + '</h2>' +
-              '<p class="notif-row-desc">' + n.isi + '</p>' +
+              '<div class="notif-row-text-group"><h2 class="notif-row-title green">' + escapeHtml(n.judul) + '</h2>' +
+              '<p class="notif-row-desc">' + escapeHtml(n.isi) + '</p>' +
               '<div class="notif-row-meta">Pesanan #' + n.order_id + ' • ' + waktu + '</div></div></div>' +
               '<div class="notif-row-right"><span class="notif-status-indicator unread"><span class="status-dot-blue"></span> Belum dibaca</span>' +
               '<a href="order_detail.php?id=' + n.order_id + '" class="notif-action-link">Lihat pesanan ›</a></div>';
             group.appendChild(art);
           });
-          g1.replaceWith(group);
-          // Perbarui hitungan (semua item dari API dianggap belum dibaca).
-          const badge = document.getElementById('unreadCountBadge');
-          if (badge) badge.innerText = items.length + ' belum dibaca';
-          const countSemua = document.getElementById('countSemua');
-          if (countSemua) countSemua.innerText = items.length;
-          const countUnread = document.getElementById('countUnread');
-          if (countUnread) countUnread.innerText = items.length;
+          wadah.innerHTML = '';
+          wadah.appendChild(group);
+          isiDropdown(items);
+          perbaruiHitungan(items.length);
         })
-        .catch(function () { /* biarkan daftar contoh bila API gagal */ });
+        .catch(function () {
+          if (wadah) wadah.innerHTML = '<div class="notif-section-label">Terbaru</div><p style="padding:1rem;">Gagal memuat notifikasi. Periksa koneksi atau login kembali.</p>';
+          isiDropdown([]);
+          perbaruiHitungan(0);
+        });
     })();
 
     document.addEventListener('click', function (e) {
