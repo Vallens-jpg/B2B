@@ -16,8 +16,8 @@ if ($id <= 0) {
 try {
     $pdo = db();
     $stmt = $pdo->prepare(
-        'SELECT o.*, p.nama AS nama_produk, p.perusahaan_id, u.nama AS nama_buyer, u2.nama AS nama_perusahaan ' .
-        'FROM orders o JOIN produk p ON p.id = o.produk_id JOIN users u ON u.id = o.buyer_id LEFT JOIN users u2 ON u2.id = p.perusahaan_id WHERE o.id = ? LIMIT 1'
+        'SELECT o.*, p.nama AS nama_produk, p.perusahaan_id, u.nama AS nama_buyer, u2.nama AS nama_perusahaan, i.nomor AS nomor_invoice ' .
+        'FROM orders o JOIN produk p ON p.id = o.produk_id JOIN users u ON u.id = o.buyer_id LEFT JOIN users u2 ON u2.id = p.perusahaan_id LEFT JOIN invoice i ON i.order_id = o.id WHERE o.id = ? LIMIT 1'
     );
     $stmt->execute([$id]);
     $order = $stmt->fetch();

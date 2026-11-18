@@ -880,35 +880,35 @@
 
         <div class="info-group">
           <div class="info-label">ID Transaksi</div>
-          <div class="info-value" id="valTrxId">TRX-2026-001</div>
+          <div class="info-value" id="valTrxId">—</div>
         </div>
 
         <hr class="divider">
 
         <div class="info-group">
           <div class="info-label">Pembeli</div>
-          <div class="info-value" id="valBuyer">Rira W. (PT Rira Pangan)</div>
+          <div class="info-value" id="valBuyer">—</div>
         </div>
 
         <div class="info-group">
           <div class="info-label">Metode Pembayaran</div>
-          <div class="info-value" id="valPaymentMethod">Transfer Bank BCA</div>
+          <div class="info-value" id="valPaymentMethod">—</div>
         </div>
 
         <div class="info-group">
           <div class="info-label">Waktu Transaksi</div>
-          <div class="info-value" id="valTrxTime">12 Oktober 2026, 14:30 WIB</div>
+          <div class="info-value" id="valTrxTime">—</div>
         </div>
 
         <!-- Financial Summary Box -->
         <div class="summary-box">
           <div class="summary-row">
             <span class="label">Subtotal</span>
-            <span class="val" id="valSubtotal">Rp 1.200.000</span>
+            <span class="val" id="valSubtotal">Rp 0</span>
           </div>
           <div class="summary-row">
             <span class="label">Biaya Pengiriman</span>
-            <span class="val" id="valShipping">Rp 50.000</span>
+            <span class="val" id="valShipping">Rp 0</span>
           </div>
           <div class="summary-row">
             <span class="label">Diskon</span>
@@ -916,7 +916,7 @@
           </div>
           <div class="summary-row total-row">
             <span class="label">Total</span>
-            <span class="val" id="valTotal">Rp 1.250.000</span>
+            <span class="val" id="valTotal">Rp 0</span>
           </div>
         </div>
 
@@ -943,30 +943,30 @@
       <div class="receipt-body">
         <div class="receipt-card">
           <div class="receipt-top">
-            <span class="receipt-bank-badge" id="proofBankName">BCA</span>
+            <span class="receipt-bank-badge" id="proofBankName">—</span>
             <div class="receipt-amount-title">Total Transfer</div>
-            <div class="receipt-amount" id="proofAmount">Rp 1.250.000</div>
+            <div class="receipt-amount" id="proofAmount">Rp 0</div>
             <div>
               <span class="receipt-status-pill">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
-                <span id="proofStatusText">Transaksi Berhasil</span>
+                <span id="proofStatusText">—</span>
               </span>
             </div>
           </div>
           <div class="receipt-list">
             <div class="receipt-item">
               <span class="item-label">No. Referensi</span>
-              <span class="item-val" id="proofRef">BCA2026101298412</span>
+              <span class="item-val" id="proofRef">—</span>
             </div>
             <div class="receipt-item">
               <span class="item-label">Waktu</span>
-              <span class="item-val" id="proofTime">12 Okt 2026, 14:30:15 WIB</span>
+              <span class="item-val" id="proofTime">—</span>
             </div>
             <div class="receipt-item">
               <span class="item-label">Pengirim</span>
-              <span class="item-val" id="proofSender">Rira W. (PT Rira Pangan)</span>
+              <span class="item-val" id="proofSender">—</span>
             </div>
             <div class="receipt-item">
               <span class="item-label">Rekening Pengirim</span>
@@ -978,7 +978,7 @@
             </div>
             <div class="receipt-item">
               <span class="item-label">Rekening Tujuan</span>
-              <span class="item-val">BCA 8830129482</span>
+              <span class="item-val">—</span>
             </div>
           </div>
         </div>
@@ -1011,15 +1011,15 @@
             <div class="inv-tagline">Solusi Pengadaan Sembako B2B</div>
           </div>
           <div>
-            <div class="inv-num" id="invModalId">INV/2026/TRX-001</div>
-            <div class="inv-date" id="invModalDate">Tanggal: 12 Okt 2026</div>
+            <div class="inv-num" id="invModalId">—</div>
+            <div class="inv-date" id="invModalDate">Tanggal: —</div>
           </div>
         </div>
 
         <div style="margin-bottom: 16px;">
           <div style="font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase;">Ditujukan Kepada:</div>
-          <div style="font-weight: 700; color: #0f2a4a; font-size: 14px;" id="invModalCustomer">Rira W. (PT Rira Pangan)</div>
-          <div style="color: #64748b; font-size: 12px;">Metode Pembayaran: <span id="invModalPayment" style="font-weight: 600; color: #0f2a4a;">Transfer Bank BCA</span></div>
+          <div style="font-weight: 700; color: #0f2a4a; font-size: 14px;" id="invModalCustomer">—</div>
+          <div style="color: #64748b; font-size: 12px;">Metode Pembayaran: <span id="invModalPayment" style="font-weight: 600; color: #0f2a4a;">—</span></div>
         </div>
 
         <table class="inv-table">
@@ -1033,11 +1033,11 @@
           <tbody>
             <tr>
               <td>
-                <div style="font-weight: 600; color: #0f2a4a;" id="invModalProduct">Beras Rojolele Super</div>
+                <div style="font-weight: 600; color: #0f2a4a;" id="invModalProduct">—</div>
                 <div style="font-size: 11px; color: #64748b;">Kualitas Premium Terjamin</div>
               </td>
-              <td style="text-align: right;" id="invModalQty">500 Kg</td>
-              <td style="text-align: right; font-weight: 600;" id="invModalSubtotal">Rp 1.200.000</td>
+              <td style="text-align: right;" id="invModalQty">—</td>
+              <td style="text-align: right; font-weight: 600;" id="invModalSubtotal">Rp 0</td>
             </tr>
           </tbody>
         </table>
@@ -1045,11 +1045,11 @@
         <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 10px; border-top: 1px solid #edf1f6; font-size: 12.5px;">
           <div style="display: flex; justify-content: space-between;">
             <span style="color: #64748b;">Subtotal:</span>
-            <span style="font-weight: 600;" id="invModalSubtotal2">Rp 1.200.000</span>
+            <span style="font-weight: 600;" id="invModalSubtotal2">Rp 0</span>
           </div>
           <div style="display: flex; justify-content: space-between;">
             <span style="color: #64748b;">Biaya Pengiriman:</span>
-            <span style="font-weight: 600;" id="invModalShipping">Rp 50.000</span>
+            <span style="font-weight: 600;" id="invModalShipping">Rp 0</span>
           </div>
           <div style="display: flex; justify-content: space-between;">
             <span style="color: #64748b;">Diskon:</span>
@@ -1057,7 +1057,7 @@
           </div>
           <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 800; color: #0f2a4a; padding-top: 8px; border-top: 1px dashed #cbd5e1;">
             <span>Total Akhir:</span>
-            <span id="invModalTotal">Rp 1.250.000</span>
+            <span id="invModalTotal">Rp 0</span>
           </div>
         </div>
       </div>
@@ -1084,88 +1084,75 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // Data Transaksi
-      const transactionRecords = {
-        'TRX-2026-001': {
-          id: 'TRX-2026-001',
-          buyer: 'Rira W. (PT Rira Pangan)',
-          paymentMethod: 'Transfer Bank BCA',
-          bank: 'BCA',
-          time: '12 Oktober 2026, 14:30 WIB',
-          subtotal: 'Rp 1.200.000',
-          shipping: 'Rp 50.000',
-          discount: 'Rp 0',
-          total: 'Rp 1.250.000',
-          product: 'Beras Rojolele Super',
-          qty: '500 Kg',
-          status: 'Transaksi Berhasil',
-          ref: 'BCA2026101298412'
-        },
-        'TRX-2026-002': {
-          id: 'TRX-2026-002',
-          buyer: 'Andi P. (CV Andi Jaya)',
-          paymentMethod: 'Transfer Bank Mandiri',
-          bank: 'MANDIRI',
-          time: '12 Oktober 2026, 11:15 WIB',
-          subtotal: 'Rp 820.000',
-          shipping: 'Rp 30.000',
-          discount: 'Rp 0',
-          total: 'Rp 850.000',
-          product: 'Minyak Goreng Sawit 2L',
-          qty: '40 Pcs',
-          status: 'Menunggu Verifikasi',
-          ref: 'MDR2026101277123'
-        },
-        'TRX-2026-003': {
-          id: 'TRX-2026-003',
-          buyer: 'Sinta S. (Toko Sinta)',
-          paymentMethod: 'Transfer Bank BNI',
-          bank: 'BNI',
-          time: '11 Oktober 2026, 16:45 WIB',
-          subtotal: 'Rp 4.100.000',
-          shipping: 'Rp 100.000',
-          discount: 'Rp 0',
-          total: 'Rp 4.200.000',
-          product: 'Gula Pasir Kristal Putih',
-          qty: '800 Kg',
-          status: 'Transaksi Berhasil',
-          ref: 'BNI2026101188219'
-        }
-      };
+      const BULAN_ID = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+      function formatRupiah(nilai) {
+        return 'Rp ' + Math.round(Number(nilai || 0)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      }
+      function formatTanggalApi(waktu) {
+        if (!waktu) return '—';
+        const mm = String(waktu).match(/^(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})/);
+        if (!mm) return String(waktu);
+        return parseInt(mm[3], 10) + ' ' + BULAN_ID[parseInt(mm[2], 10) - 1] + ' ' + mm[1] + ', ' + mm[4] + ':' + mm[5] + ' WIB';
+      }
+      function labelStatusOrder(status) {
+        if (status === 'selesai') return 'Transaksi Berhasil';
+        if (status === 'dibatalkan') return 'Dibatalkan';
+        if (status === 'menunggu_bayar') return 'Menunggu Pembayaran';
+        return 'Diproses';
+      }
 
-      // Read URL Parameter (?id=TRX-...)
+      // Muat detail order asli dari API (?id=<angka order>).
       const urlParams = new URLSearchParams(window.location.search);
-      const queryId = urlParams.get('id');
-      const currentData = (queryId && transactionRecords[queryId]) ? transactionRecords[queryId] : transactionRecords['TRX-2026-001'];
+      const orderIdApi = parseInt(urlParams.get('id') || '0', 10) || 0;
+      if (orderIdApi <= 0) {
+        showToast('Transaksi tidak ditemukan — buka dari daftar riwayat.', 'info');
+      } else {
+        fetch('../../api/order/detail.php?id=' + orderIdApi)
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok || !res.data || !res.data.order) {
+              showToast('Transaksi tidak ditemukan.', 'info');
+              return;
+            }
+            const o = res.data.order;
+            const totalBayar = Number(o.total_bayar || 0);
+            const buyer = o.nama_buyer + (o.nama_perusahaan ? ' (' + o.nama_perusahaan + ')' : '');
+            const nomorInvoice = o.nomor_invoice || '—';
+            const waktu = formatTanggalApi(o.created_at);
 
-      // Populate Elements
-      document.getElementById('valTrxId').textContent = currentData.id;
-      document.getElementById('valBuyer').textContent = currentData.buyer;
-      document.getElementById('valPaymentMethod').textContent = currentData.paymentMethod;
-      document.getElementById('valTrxTime').textContent = currentData.time;
-      document.getElementById('valSubtotal').textContent = currentData.subtotal;
-      document.getElementById('valShipping').textContent = currentData.shipping;
-      document.getElementById('valDiscount').textContent = currentData.discount;
-      document.getElementById('valTotal').textContent = currentData.total;
+            // Populate Elements
+            document.getElementById('valTrxId').textContent = '#ORD-2026-' + String(o.id).padStart(3, '0');
+            document.getElementById('valBuyer').textContent = buyer;
+            document.getElementById('valPaymentMethod').textContent = nomorInvoice;
+            document.getElementById('valTrxTime').textContent = waktu;
+            document.getElementById('valSubtotal').textContent = formatRupiah(o.total);
+            document.getElementById('valShipping').textContent = 'Rp 0';
+            document.getElementById('valDiscount').textContent = 'Rp 0';
+            document.getElementById('valTotal').textContent = formatRupiah(totalBayar);
 
-      // Modal Proof Data
-      document.getElementById('proofBankName').textContent = currentData.bank;
-      document.getElementById('proofAmount').textContent = currentData.total;
-      document.getElementById('proofStatusText').textContent = currentData.status;
-      document.getElementById('proofRef').textContent = currentData.ref;
-      document.getElementById('proofTime').textContent = currentData.time;
-      document.getElementById('proofSender').textContent = currentData.buyer;
+            // Modal Proof Data
+            document.getElementById('proofBankName').textContent = '—';
+            document.getElementById('proofAmount').textContent = formatRupiah(totalBayar);
+            document.getElementById('proofStatusText').textContent = labelStatusOrder(o.status);
+            document.getElementById('proofRef').textContent = nomorInvoice;
+            document.getElementById('proofTime').textContent = waktu;
+            document.getElementById('proofSender').textContent = buyer;
 
-      // Modal Invoice Data
-      document.getElementById('invModalId').textContent = 'INV/2026/' + currentData.id;
-      document.getElementById('invModalCustomer').textContent = currentData.buyer;
-      document.getElementById('invModalPayment').textContent = currentData.paymentMethod;
-      document.getElementById('invModalProduct').textContent = currentData.product;
-      document.getElementById('invModalQty').textContent = currentData.qty;
-      document.getElementById('invModalSubtotal').textContent = currentData.subtotal;
-      document.getElementById('invModalSubtotal2').textContent = currentData.subtotal;
-      document.getElementById('invModalShipping').textContent = currentData.shipping;
-      document.getElementById('invModalDiscount').textContent = currentData.discount;
-      document.getElementById('invModalTotal').textContent = currentData.total;
+            // Modal Invoice Data
+            document.getElementById('invModalId').textContent = nomorInvoice;
+            document.getElementById('invModalDate').textContent = 'Tanggal: ' + waktu;
+            document.getElementById('invModalCustomer').textContent = buyer;
+            document.getElementById('invModalPayment').textContent = nomorInvoice;
+            document.getElementById('invModalProduct').textContent = o.nama_produk || '—';
+            document.getElementById('invModalQty').textContent = Number(o.jumlah_kg || 0).toLocaleString('id-ID') + ' Kg';
+            document.getElementById('invModalSubtotal').textContent = formatRupiah(o.total);
+            document.getElementById('invModalSubtotal2').textContent = formatRupiah(o.total);
+            document.getElementById('invModalShipping').textContent = 'Rp 0';
+            document.getElementById('invModalDiscount').textContent = 'Rp 0';
+            document.getElementById('invModalTotal').textContent = formatRupiah(totalBayar);
+          })
+          .catch(function () { showToast('Gagal memuat transaksi.', 'info'); });
+      }
 
       // Toast function
       let toastTimer = null;

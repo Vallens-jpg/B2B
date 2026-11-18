@@ -1170,7 +1170,7 @@
             </span>
             <span class="stat-title">Total Transaksi</span>
           </div>
-          <div class="stat-value">Rp 12.450.000</div>
+          <div class="stat-value" id="statTotalNilai">Rp 0</div>
         </div>
 
         <!-- Stat 2: Transaksi Berhasil -->
@@ -1185,7 +1185,7 @@
             </span>
             <span class="stat-title">Transaksi Berhasil</span>
           </div>
-          <div class="stat-value">1.284</div>
+          <div class="stat-value" id="statBerhasil">0</div>
         </div>
 
         <!-- Stat 3: Menunggu Verifikasi -->
@@ -1200,7 +1200,7 @@
             </span>
             <span class="stat-title">Menunggu Verifikasi</span>
           </div>
-          <div class="stat-value">24</div>
+          <div class="stat-value" id="statPending">0</div>
         </div>
       </div>
 
@@ -1208,7 +1208,7 @@
       <div class="card table-card">
         <div class="table-card-head">
           <h3 class="table-card-title">Daftar Transaksi</h3>
-          <span class="total-badge" id="totalBadge">1.284 Total</span>
+          <span class="total-badge" id="totalBadge">0 Total</span>
         </div>
 
         <div class="table-responsive">
@@ -1242,7 +1242,7 @@
 
         <!-- Pagination Footer -->
         <div class="card-footer">
-          <span class="footer-info" id="footerInfo">Menampilkan 1-3 dari 1.284 transaksi</span>
+          <span class="footer-info" id="footerInfo">Memuat transaksi…</span>
           <div class="pagination">
             <button type="button" class="page-btn" id="btnPrevPage">Sebelumnya</button>
             <button type="button" class="page-btn active" id="btnPage1">1</button>
@@ -1270,7 +1270,7 @@
         <div class="modal-grid-2">
           <div class="modal-info-item">
             <span class="modal-label">ID Transaksi</span>
-            <span class="modal-val" id="modalTrxId">TRX-2026-001</span>
+            <span class="modal-val" id="modalTrxId">—</span>
           </div>
           <div class="modal-info-item">
             <span class="modal-label">Tanggal Transaksi</span>
@@ -1281,11 +1281,11 @@
         <div class="modal-grid-2">
           <div class="modal-info-item">
             <span class="modal-label">Nama Pembeli</span>
-            <span class="modal-val" id="modalBuyerName">Rira W.</span>
+            <span class="modal-val" id="modalBuyerName">—</span>
           </div>
           <div class="modal-info-item">
             <span class="modal-label">Perusahaan</span>
-            <span class="modal-val" id="modalBuyerCompany">PT Rira Pangan</span>
+            <span class="modal-val" id="modalBuyerCompany">—</span>
           </div>
         </div>
 
@@ -1296,13 +1296,13 @@
           </div>
           <div class="modal-info-item">
             <span class="modal-label">Nomor Rekening Tujuan</span>
-            <span class="modal-val">8830129482 (Staplr)</span>
+            <span class="modal-val">—</span>
           </div>
         </div>
 
         <div class="modal-info-item">
           <span class="modal-label">Produk Dibeli</span>
-          <span class="modal-val" id="modalProducts">Beras Rojolele Super (500 Kg)</span>
+          <span class="modal-val" id="modalProducts">—</span>
         </div>
 
         <!-- Summary Box -->
@@ -1349,101 +1349,74 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // Data Transaksi
-      const transactions = [
-        {
-          id: 'TRX-2026-001',
-          avatar: 'RW',
-          name: 'Rira W.',
-          company: 'PT Rira Pangan',
-          method: 'Transfer Bank',
-          methodDetail: 'Transfer Bank BCA (8830129482)',
-          total: 'Rp 1.250.000',
-          subtotal: 'Rp 1.200.000',
-          shipping: 'Rp 50.000',
-          status: 'Berhasil',
-          date: '12 Oktober 2026, 14:30 WIB',
-          products: 'Beras Rojolele Super (500 Kg)',
-          page: 1
-        },
-        {
-          id: 'TRX-2026-002',
-          avatar: 'AP',
-          name: 'Andi P.',
-          company: 'CV Andi Jaya',
-          method: 'Transfer Bank',
-          methodDetail: 'Transfer Bank Mandiri (1370019283)',
-          total: 'Rp 850.000',
-          subtotal: 'Rp 820.000',
-          shipping: 'Rp 30.000',
-          status: 'Pending',
-          date: '12 Oktober 2026, 11:15 WIB',
-          products: 'Minyak Goreng Sawit 2L (40 Pcs)',
-          page: 1
-        },
-        {
-          id: 'TRX-2026-003',
-          avatar: 'SS',
-          name: 'Sinta S.',
-          company: 'Toko Sinta',
-          method: 'Transfer Bank',
-          methodDetail: 'Transfer Bank BNI (0293817263)',
-          total: 'Rp 4.200.000',
-          subtotal: 'Rp 4.100.000',
-          shipping: 'Rp 100.000',
-          status: 'Berhasil',
-          date: '11 Oktober 2026, 16:45 WIB',
-          products: 'Gula Pasir Kristal Putih (800 Kg)',
-          page: 1
-        },
-        {
-          id: 'TRX-2026-004',
-          avatar: 'BK',
-          name: 'Budi K.',
-          company: 'UD Berkah Tani',
-          method: 'Transfer Bank',
-          methodDetail: 'Transfer Bank BRI (0029182736)',
-          total: 'Rp 2.150.000',
-          subtotal: 'Rp 2.080.000',
-          shipping: 'Rp 70.000',
-          status: 'Berhasil',
-          date: '11 Oktober 2026, 09:20 WIB',
-          products: 'Telur Ayam Broiler (120 Tray)',
-          page: 2
-        },
-        {
-          id: 'TRX-2026-005',
-          avatar: 'MD',
-          name: 'Maya D.',
-          company: 'CV Sumber Rejeki',
-          method: 'Transfer Bank',
-          methodDetail: 'Transfer Bank BCA (8830129482)',
-          total: 'Rp 920.000',
-          subtotal: 'Rp 890.000',
-          shipping: 'Rp 30.000',
-          status: 'Pending',
-          date: '10 Oktober 2026, 15:10 WIB',
-          products: 'Tepung Terigu Segitiga Biru (25 Sak)',
-          page: 2
-        },
-        {
-          id: 'TRX-2026-006',
-          avatar: 'HT',
-          name: 'Hendra T.',
-          company: 'PT Surya Pangan',
-          method: 'Transfer Bank',
-          methodDetail: 'Transfer Bank Permata (7719283746)',
-          total: 'Rp 3.100.000',
-          subtotal: 'Rp 3.000.000',
-          shipping: 'Rp 100.000',
-          status: 'Berhasil',
-          date: '10 Oktober 2026, 08:40 WIB',
-          products: 'Bawang Merah Brebes Super (150 Kg)',
-          page: 2
-        }
-      ];
+      let transactions = [];
+      const BULAN_ID = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+      function formatRupiah(nilai) {
+        return 'Rp ' + Math.round(Number(nilai || 0)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      }
+      function formatTanggalApi(waktu) {
+        if (!waktu) return '—';
+        const mm = String(waktu).match(/^(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})/);
+        if (!mm) return String(waktu);
+        return parseInt(mm[3], 10) + ' ' + BULAN_ID[parseInt(mm[2], 10) - 1] + ' ' + mm[1] + ', ' + mm[4] + ':' + mm[5] + ' WIB';
+      }
+      function inisialNama(nama) {
+        const kata = String(nama || '').trim().split(/\s+/).filter(Boolean);
+        if (!kata.length) return '??';
+        return (kata[0][0] + (kata[1] ? kata[1][0] : '')).toUpperCase();
+      }
+      function labelStatusOrder(status) {
+        if (status === 'selesai') return 'Berhasil';
+        if (status === 'dibatalkan') return 'Dibatalkan';
+        return 'Pending';
+      }
+
+      function muatRiwayatAdmin() {
+        return fetch('../../api/admin/order_list.php')
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok || !Array.isArray(res.data)) {
+              renderTable();
+              updateStats();
+              return;
+            }
+            transactions = res.data.map(function (o) {
+              const totalBayar = Number(o.total || 0) + Number(o.fee || 0);
+              return {
+                id: '#ORD-2026-' + String(o.id).padStart(3, '0'),
+                orderId: o.id,
+                avatar: inisialNama(o.nama_buyer),
+                name: o.nama_buyer || 'Pembeli',
+                company: o.nama_perusahaan || '—',
+                method: '—',
+                methodDetail: '—',
+                total: formatRupiah(totalBayar),
+                subtotal: formatRupiah(o.total),
+                shipping: 'Rp 0',
+                status: labelStatusOrder(o.status),
+                date: formatTanggalApi(o.created_at),
+                products: (o.nama_produk || 'Produk') + ' (' + Number(o.jumlah_kg || 0).toLocaleString('id-ID') + ' Kg)'
+              };
+            });
+            renderTable();
+            updateStats();
+          })
+          .catch(function () { renderTable(); updateStats(); });
+      }
+
+      function updateStats() {
+        const totalNilai = transactions.reduce(function (sum, item) {
+          return sum + parseInt(String(item.total).replace(/[^\d]/g, ''), 10);
+        }, 0);
+        const berhasil = transactions.filter(function (item) { return item.status === 'Berhasil'; }).length;
+        const pending = transactions.filter(function (item) { return item.status === 'Pending'; }).length;
+        document.getElementById('statTotalNilai').textContent = formatRupiah(totalNilai);
+        document.getElementById('statBerhasil').textContent = berhasil.toLocaleString('id-ID');
+        document.getElementById('statPending').textContent = pending.toLocaleString('id-ID');
+        document.getElementById('totalBadge').textContent = transactions.length.toLocaleString('id-ID') + ' Total';
+      }
 
       // State
-      let currentPage = 1;
       let activeFilter = 'ALL'; // ALL, Berhasil, Pending
       let searchQuery = '';
 
@@ -1512,24 +1485,11 @@
           return matchSearch && matchFilter;
         });
 
-        // Pagination when no active query
+        // Tampilkan semua yang cocok (tanpa paginasi palsu).
         let displayList = filtered;
-        if (query === '' && activeFilter === 'ALL') {
-          displayList = filtered.filter(item => item.page === currentPage);
-          footerInfo.textContent = currentPage === 1 
-            ? 'Menampilkan 1-3 dari 1.284 transaksi' 
-            : 'Menampilkan 4-6 dari 1.284 transaksi';
-          btnPrevPage.disabled = (currentPage === 1);
-          btnNextPage.disabled = (currentPage === 2);
-          btnPage1.classList.toggle('active', currentPage === 1);
-          btnPage2.classList.toggle('active', currentPage === 2);
-        } else {
-          footerInfo.textContent = `Menampilkan ${filtered.length} dari ${transactions.length} transaksi (difilter)`;
-          btnPrevPage.disabled = true;
-          btnNextPage.disabled = true;
-          btnPage1.classList.remove('active');
-          btnPage2.classList.remove('active');
-        }
+        footerInfo.textContent = 'Menampilkan ' + filtered.length + ' dari ' + transactions.length + ' transaksi';
+        const paginationEl = document.querySelector('.pagination');
+        if (paginationEl) paginationEl.style.display = 'none';
 
         if (displayList.length === 0) {
           tableBody.innerHTML = '';
@@ -1561,7 +1521,7 @@
                 <span class="${badgeClass}">${item.status}</span>
               </td>
               <td>
-                <a href="detail-riwayat.php?id=${item.id}" class="btn-detail" data-id="${item.id}">Detail</a>
+                <a href="detail-riwayat.php?id=${item.orderId}" class="btn-detail" data-id="${item.orderId}">Detail</a>
               </td>
             </tr>
           `;
@@ -1576,9 +1536,11 @@
       }
 
       // Open Modal Detail
+      let currentModalOrderId = 0;
       function openDetailModal(trxId) {
         const item = transactions.find(t => t.id === trxId);
         if (!item) return;
+        currentModalOrderId = item.orderId;
 
         modalTrxId.textContent = item.id;
         modalTrxDate.textContent = item.date;
@@ -1626,46 +1588,8 @@
         cardTotalTrx.classList.remove('active-filter');
         cardTrxSuccess.classList.remove('active-filter');
         cardTrxPending.classList.remove('active-filter');
-        currentPage = 1;
         renderTable();
         showToast('Pencarian dan filter direset');
-      });
-
-      // Pagination Handlers
-      btnPage1.addEventListener('click', () => {
-        currentPage = 1;
-        searchQuery = '';
-        searchInput.value = '';
-        activeFilter = 'ALL';
-        cardTotalTrx.classList.remove('active-filter');
-        cardTrxSuccess.classList.remove('active-filter');
-        cardTrxPending.classList.remove('active-filter');
-        renderTable();
-      });
-
-      btnPage2.addEventListener('click', () => {
-        currentPage = 2;
-        searchQuery = '';
-        searchInput.value = '';
-        activeFilter = 'ALL';
-        cardTotalTrx.classList.remove('active-filter');
-        cardTrxSuccess.classList.remove('active-filter');
-        cardTrxPending.classList.remove('active-filter');
-        renderTable();
-      });
-
-      btnPrevPage.addEventListener('click', () => {
-        if (currentPage > 1) {
-          currentPage--;
-          renderTable();
-        }
-      });
-
-      btnNextPage.addEventListener('click', () => {
-        if (currentPage < 2) {
-          currentPage++;
-          renderTable();
-        }
       });
 
       // Stat Cards Handlers
@@ -1673,7 +1597,6 @@
         activeFilter = 'ALL';
         searchQuery = '';
         searchInput.value = '';
-        currentPage = 1;
         cardTotalTrx.classList.add('active-filter');
         cardTrxSuccess.classList.remove('active-filter');
         cardTrxPending.classList.remove('active-filter');
@@ -1745,11 +1668,13 @@
 
       // Modal Action Handlers
       btnModalInvoice.addEventListener('click', () => {
-        showToast(`Mencetak invoice untuk ${modalTrxId.textContent}...`);
+        if (currentModalOrderId > 0) {
+          window.location.href = 'detail-riwayat.php?id=' + currentModalOrderId;
+        }
       });
 
       btnModalReceipt.addEventListener('click', () => {
-        showToast(`Mengunduh bukti transfer ${modalTrxId.textContent}...`);
+        showToast('Bukti transfer tidak tersedia — pembayaran masih mode demo.');
       });
 
       // Admin Profile Handler
@@ -1757,8 +1682,8 @@
         toggleAdminDropdown(event);
       });
 
-      // Initial Render
-      renderTable();
+      // Initial Render: muat dari API
+      muatRiwayatAdmin();
     });
   </script>
 

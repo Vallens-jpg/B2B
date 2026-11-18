@@ -1190,7 +1190,7 @@
       <form id="addUserForm">
         <div class="modal-body">
           <div class="form-group">
-            <label class="form-label">Nama Perusahaan <span class="required">*</span></label>
+            <label class="form-label">Nama <span class="required">*</span></label>
             <input type="text" class="form-input" id="inputCompany" placeholder="Contoh: PT Berkah Pangan Mandiri" required>
           </div>
 
@@ -1200,25 +1200,17 @@
               <input type="email" class="form-input" id="inputEmail" placeholder="kontak@berkahpangan.com" required>
             </div>
             <div class="form-group">
-              <label class="form-label">No. Handphone <span class="required">*</span></label>
-              <input type="tel" class="form-input" id="inputPhone" placeholder="081234567890" required>
+              <label class="form-label">Peran <span class="required">*</span></label>
+              <select class="form-input" id="inputRole" required>
+                <option value="pembeli">Pembeli</option>
+                <option value="perusahaan">Perusahaan</option>
+              </select>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="form-label">Alamat <span class="required">*</span></label>
-            <input type="text" class="form-input" id="inputAddress" placeholder="Contoh: Jl. Sudirman No. 12, Jakarta" required>
-          </div>
-
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label class="form-label">Nomor Induk Berusaha (NIB)</label>
-              <input type="text" class="form-input" id="inputNib" placeholder="— atau masukkan nomor">
-            </div>
-            <div class="form-group">
-              <label class="form-label">NPWP Badan Usaha</label>
-              <input type="text" class="form-input" id="inputNpwp" placeholder="— atau masukkan nomor">
-            </div>
+            <label class="form-label">Kata Sandi <span class="required">*</span></label>
+            <input type="password" class="form-input" id="inputPassword" placeholder="Minimal 6 karakter" minlength="6" required>
           </div>
         </div>
         <div class="modal-footer">
@@ -1235,91 +1227,11 @@
   <!-- ==================== JAVASCRIPT ==================== -->
   <script>
     (function() {
-      // Storage key for user management
-      const STORAGE_KEY = 'staplr_user_management';
-
-      // Default baseline data matching screenshot exactly
-      const DEFAULT_USERS = [
-        {
-          id: '#USR-0012',
-          name: 'Rira W.',
-          company: 'PT Rira Pangan',
-          email: 'rira@panganboga.com',
-          phone: '081234567890',
-          role: 'buyer',
-          roleLabel: 'Pembeli',
-          nib: '—',
-          npwp: '—',
-          date: '31 Okt 2027',
-          status: 'active'
-        },
-        {
-          id: '#USR-0003',
-          name: 'Ahmad Staff',
-          company: 'PT Sinar Pangan',
-          email: 'ahmad@staplr.id',
-          phone: '081122334455',
-          role: 'company',
-          roleLabel: 'Perusahaan',
-          nib: '—',
-          npwp: '—',
-          date: '01 Mei 2027',
-          status: 'active'
-        },
-        {
-          id: '#USR-0045',
-          name: 'CV Sembako Utama',
-          company: '',
-          email: 'info@sembakoutama.com',
-          phone: '085678901234',
-          role: 'buyer',
-          roleLabel: 'Pembeli',
-          nib: '—',
-          npwp: '—',
-          date: '12 Ags 2027',
-          status: 'inactive'
-        }
-      ];
-
-      // Load data or initialize
-      function loadUsers() {
-        try {
-          const stored = localStorage.getItem(STORAGE_KEY);
-          if (stored) {
-            const parsed = JSON.parse(stored);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-              parsed.forEach(u => {
-                // 'seller' lama = perusahaan; 'admin' dipertahankan apa adanya.
-                if (u.role === 'seller') {
-                  u.role = 'company';
-                  u.roleLabel = 'Perusahaan';
-                }
-              });
-              return parsed;
-            }
-          }
-        } catch (e) {
-          console.error('Error loading users:', e);
-        }
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_USERS));
-        return JSON.parse(JSON.stringify(DEFAULT_USERS));
-      }
-
-      function saveUsers(users) {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
-        } catch (e) {
-          console.error('Error saving users:', e);
-        }
-      }
-
-      let users = loadUsers();
+      // Daftar pengguna asli dari API admin (../../api/admin/pengguna.php).
+      let users = [];
 
       // Daftar pengguna asli dari API admin (../../api/admin/pengguna.php),
-      // memakai desain tabel yang sudah ada di halaman ini. Kalau API gagal
-      // (belum login sebagai admin / migrasi belum jalan), data contoh di
-      // atas (localStorage / DEFAULT_USERS) tetap tampil — pola yang sama
-      // dengan halaman pembeli (detail_penjual.php).
+      // memakai desain tabel yang sudah ada di halaman ini.
       const BULAN_ID = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
       function formatApiDate(createdAt) {
         if (!createdAt) return '—';
@@ -1331,6 +1243,7 @@
         const role = (u.role === 'perusahaan') ? 'company' : ((u.role === 'admin') ? 'admin' : 'buyer');
         return {
           id: '#USR-' + String(u.id).padStart(4, '0'),
+          userId: u.id,
           name: u.nama || ('User #' + u.id),
           company: '',
           email: u.email || '',
@@ -1340,18 +1253,20 @@
           nib: '—',
           npwp: '—',
           date: formatApiDate(u.created_at),
-          status: 'active'
+          status: (u.status === 'nonaktif') ? 'inactive' : 'active'
         };
       }
-      fetch('../../api/admin/pengguna.php')
-        .then(function (r) { return r.json(); })
-        .then(function (res) {
-          if (!res.ok || !Array.isArray(res.data)) return;
-          users = res.data.map(mapApiUser);
-          saveUsers(users); // simpan sebagai cache fallback bila API gagal di kunjungan berikut
-          renderTable();
-        })
-        .catch(function () { /* biarkan data contoh kalau API gagal dimuat */ });
+      function muatPenggunaAdmin() {
+        fetch('../../api/admin/pengguna.php')
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok || !Array.isArray(res.data)) return;
+            users = res.data.map(mapApiUser);
+            renderTable();
+          })
+          .catch(function () { renderTable(); });
+      }
+      muatPenggunaAdmin();
 
       // Current filter & sort state
       let currentRole = 'all';     // 'all' | 'buyer' | 'seller' | 'admin'
@@ -1692,26 +1607,36 @@
         });
       });
 
-      // Table Action Click: Lock / Unlock Toggle
+      // Table Action Click: Lock / Unlock Toggle (status asli lewat API).
       userTableBody.addEventListener('click', function(e) {
         const btn = e.target.closest('[data-action="toggle-status"]');
         if (!btn) return;
 
         const userId = btn.getAttribute('data-id');
         const user = users.find(u => u.id === userId);
-        if (!user) return;
+        if (!user || !user.userId) return;
 
-        if (user.status === 'active') {
-          user.status = 'inactive';
-          saveUsers(users);
-          renderTable();
-          showToast(`User ${user.name} (${user.id}) telah dikunci (Nonaktif).`, 'warning');
-        } else {
-          user.status = 'active';
-          saveUsers(users);
-          renderTable();
-          showToast(`User ${user.name} (${user.id}) berhasil diaktifkan kembali.`, 'success');
-        }
+        const statusBaru = (user.status === 'active') ? 'nonaktif' : 'aktif';
+        btn.disabled = true;
+        fetch('../../api/admin/pengguna.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: user.userId, status: statusBaru })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok) throw new Error(res.error || 'Ubah status gagal');
+            user.status = (statusBaru === 'nonaktif') ? 'inactive' : 'active';
+            renderTable();
+            showToast(statusBaru === 'nonaktif'
+              ? `User ${user.name} (${user.id}) telah dikunci (Nonaktif).`
+              : `User ${user.name} (${user.id}) berhasil diaktifkan kembali.`,
+              statusBaru === 'nonaktif' ? 'warning' : 'success');
+          })
+          .catch(function (err) {
+            btn.disabled = false;
+            showToast(err.message || 'Ubah status gagal. Pastikan sudah login sebagai admin.', 'warning');
+          });
       });
 
       // Modal Open & Close Handlers
@@ -1736,58 +1661,45 @@
         }
       });
 
-      // Form Submit: Add New User
+      // Form Submit: Add New User (asli lewat API admin/pengguna_tambah.php).
       addUserForm.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        const company = document.getElementById('inputCompany').value.trim();
+        const nama = document.getElementById('inputCompany').value.trim();
         const email = document.getElementById('inputEmail').value.trim();
-        const phone = document.getElementById('inputPhone').value.trim();
-        const address = document.getElementById('inputAddress').value.trim();
-        const nib = document.getElementById('inputNib').value.trim() || '—';
-        const npwp = document.getElementById('inputNpwp').value.trim() || '—';
+        const password = document.getElementById('inputPassword').value;
+        const role = document.getElementById('inputRole').value;
 
-        if (!company || !email || !phone || !address) {
+        if (!nama || !email || !password) {
           showToast('Harap lengkapi semua kolom wajib!', 'warning');
           return;
         }
+        if (password.length < 6) {
+          showToast('Password minimal 6 karakter!', 'warning');
+          return;
+        }
 
-        // Generate ID like #USR-0046
-        const randomNum = Math.floor(46 + Math.random() * 50);
-        const newId = `#USR-00${randomNum}`;
-
-        // Format Date
-        const now = new Date();
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
-        const formattedDate = `${now.getDate()} ${months[now.getMonth()]} 2027`;
-
-        const newUser = {
-          id: newId,
-          name: company,
-          company: '',
-          email: email,
-          phone: phone,
-          address: address,
-          role: 'company',
-          roleLabel: 'Perusahaan',
-          nib: nib,
-          npwp: npwp,
-          date: formattedDate,
-          status: 'active'
-        };
-
-        // Add user to top of list
-        users.unshift(newUser);
-        saveUsers(users);
-
-        closeModal();
-        renderTable();
-        showToast(`User baru ${newUser.name} (${newUser.id}) berhasil ditambahkan!`, 'success');
+        fetch('../../api/admin/pengguna_tambah.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nama: nama, email: email, password: password, role: role })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok) throw new Error(res.error || 'Tambah user gagal');
+            closeModal();
+            addUserForm.reset();
+            muatPenggunaAdmin();
+            showToast(`User baru ${nama} berhasil ditambahkan!`, 'success');
+          })
+          .catch(function (err) {
+            showToast(err.message || 'Tambah user gagal. Pastikan sudah login sebagai admin.', 'warning');
+          });
       });
 
       // Pagination button
       btnNextPage.addEventListener('click', function() {
-        showToast('Halaman berikutnya: Semua user telah ditampilkan (Halaman 1 dari 1).', 'info');
+        showToast('Menampilkan ' + users.length + ' user (halaman 1 dari 1).', 'info');
       });
 
       // Admin Profile button

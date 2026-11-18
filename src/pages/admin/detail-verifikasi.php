@@ -822,10 +822,10 @@
       <div class="company-detail-card">
         <!-- Company Top Header -->
         <div class="company-top">
-          <div class="avatar-large" id="companyAvatarLarge">NU</div>
+          <div class="avatar-large" id="companyAvatarLarge">—</div>
           <div class="company-heading">
-            <h3 id="companyHeadingName">PT Nusantara Tech Utama</h3>
-            <div class="email" id="companyHeadingEmail">admin@nusantaratech.id</div>
+            <h3 id="companyHeadingName">—</h3>
+            <div class="email" id="companyHeadingEmail">—</div>
             <span class="badge-perusahaan">Perusahaan</span>
           </div>
         </div>
@@ -841,7 +841,7 @@
               </svg>
               <span>NAMA LENGKAP</span>
             </div>
-            <div class="tile-value" id="tileFullName">PT Nusantara Tech Utama</div>
+            <div class="tile-value" id="tileFullName">—</div>
           </div>
 
           <!-- Tile 2: Email -->
@@ -853,7 +853,7 @@
               </svg>
               <span>EMAIL</span>
             </div>
-            <div class="tile-value" id="tileEmail">admin@nusantaratech.id</div>
+            <div class="tile-value" id="tileEmail">—</div>
           </div>
 
           <!-- Tile 3: No HP -->
@@ -992,104 +992,53 @@
     // ==========================================
     // STAPLR ADMIN - DETAIL VERIFIKASI LOGIC
     // ==========================================
-    const STORAGE_KEY = 'staplr_company_verifications';
+    let CURRENT_COMPANY_ID = 0;
+    let displayCompanyName = '—';
 
-    const initialCompanies = [
-      {
-        id: '1',
-        name: 'Agus Dermawan',
-        company: 'PT Nusantara Tech Utama',
-        email: 'admin@nusantaratech.id',
-        avatar: 'NU',
-        avatarClass: 'ad',
-        date: '24 Okt 2026',
-        phone: '—',
-        address: '—',
-        nib: '—',
-        npwp: '—',
-        status: 'pending',
-        note: ''
-      },
-      {
-        id: '2',
-        name: 'Budi Santoso',
-        company: 'PT Bina Karya Mandiri',
-        email: 'info@binakarya.co.id',
-        avatar: 'BS',
-        avatarClass: 'bs',
-        date: '23 Okt 2026',
-        phone: '—',
-        address: '—',
-        nib: '—',
-        npwp: '—',
-        status: 'approved',
-        note: ''
-      },
-      {
-        id: '3',
-        name: 'Dewi Lestari',
-        company: 'PT Solusi Data Indonesia',
-        email: 'helo@solusidataindonesia.id',
-        avatar: 'DL',
-        avatarClass: 'dl',
-        date: '23 Okt 2026',
-        phone: '—',
-        address: '—',
-        nib: '—',
-        npwp: '—',
-        status: 'pending',
-        note: ''
-      },
-      {
-        id: '4',
-        name: 'Eko Prasetyo',
-        company: 'PT Maju Bersama Sukses',
-        email: 'maju@majubersama.id',
-        avatar: 'EP',
-        avatarClass: 'ep',
-        date: '22 Okt 2026',
-        phone: '—',
-        address: '—',
-        nib: '—',
-        npwp: '—',
-        status: 'rejected',
-        note: ''
-      },
-      {
-        id: '5',
-        name: 'Fajar Nugraha',
-        company: 'PT Agro Makmur Sejahtera',
-        email: 'fajar@agromakmur.id',
-        avatar: 'FN',
-        avatarClass: 'fn',
-        date: '21 Okt 2026',
-        phone: '—',
-        address: '—',
-        nib: '—',
-        npwp: '—',
-        status: 'pending',
-        note: ''
-      }
-    ];
-
-    function getCompanies() {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        try {
-          let parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed;
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(initialCompanies));
-      return initialCompanies;
+    function inisialNama(nama) {
+      const kata = String(nama || '').trim().split(/\s+/).filter(Boolean);
+      if (!kata.length) return '??';
+      return (kata[0][0] + (kata[1] ? kata[1][0] : '')).toUpperCase();
     }
 
-    function saveCompanies(companies) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(companies));
+    function muatDetailPerusahaan() {
+      if (CURRENT_COMPANY_ID <= 0) {
+        document.getElementById('companyHeadingName').textContent = 'Perusahaan tidak ditemukan — buka dari daftar verifikasi.';
+        return;
+      }
+      fetch('../../api/admin/verifikasi.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !Array.isArray(res.data.perusahaan)) return;
+          const u = res.data.perusahaan.find(function (x) { return Number(x.id) === CURRENT_COMPANY_ID; });
+          if (!u) {
+            document.getElementById('companyHeadingName').textContent = 'Perusahaan tidak ditemukan.';
+            return;
+          }
+          displayCompanyName = u.nama || ('Perusahaan #' + u.id);
+          document.getElementById('companyAvatarLarge').textContent = inisialNama(u.nama);
+          document.getElementById('companyHeadingName').textContent = displayCompanyName;
+          document.getElementById('companyHeadingEmail').textContent = u.email || '—';
+          document.getElementById('tileFullName').textContent = displayCompanyName;
+          document.getElementById('tileEmail').textContent = u.email || '—';
+          document.getElementById('tilePhone').textContent = '—';
+          document.getElementById('tileAddress').textContent = '—';
+          document.getElementById('tileNib').textContent = '—';
+          document.getElementById('tileNpwp').textContent = '—';
+          const status = (u.verifikasi_status === 'terverifikasi') ? 'approved'
+            : ((u.verifikasi_status === 'ditolak') ? 'rejected' : 'pending');
+          if (status === 'approved') {
+            document.getElementById('opt-approve').checked = true;
+          } else if (status === 'rejected') {
+            document.getElementById('opt-reject').checked = true;
+          } else {
+            document.getElementById('opt-pending').checked = true;
+          }
+          if (u.verifikasi_catatan) {
+            document.getElementById('adminNoteTextarea').value = u.verifikasi_catatan;
+          }
+        })
+        .catch(function () { showToast('Gagal memuat perusahaan.', 'info'); });
     }
 
     function showToast(message, type = 'success') {
@@ -1102,48 +1051,20 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. Determine company ID from URL parameter or localStorage
+      // 1. ID perusahaan asli dari ?id=<angka> saja.
       const urlParams = new URLSearchParams(window.location.search);
-      const paramId = urlParams.get('id') || localStorage.getItem('staplr_selected_company_id') || '1';
+      CURRENT_COMPANY_ID = parseInt(urlParams.get('id') || '0', 10) || 0;
 
-      const companies = getCompanies();
-      let currentCompany = companies.find(c => c.id === paramId);
+      // 2. Muat detail perusahaan asli dari API.
+      muatDetailPerusahaan();
 
-      // Fallback default if not found
-      if (!currentCompany) {
-        currentCompany = initialCompanies[0];
-      }
-
-      // 2. Populate company overview & tiles
-      const displayCompanyName = currentCompany.company || currentCompany.name;
-      document.getElementById('companyAvatarLarge').textContent = currentCompany.avatar || 'NU';
-      document.getElementById('companyHeadingName').textContent = displayCompanyName;
-      document.getElementById('companyHeadingEmail').textContent = currentCompany.email;
-
-      document.getElementById('tileFullName').textContent = displayCompanyName;
-      document.getElementById('tileEmail').textContent = currentCompany.email;
-      document.getElementById('tilePhone').textContent = currentCompany.phone || '—';
-      document.getElementById('tileAddress').textContent = currentCompany.address || '—';
-      document.getElementById('tileNib').textContent = currentCompany.nib || '—';
-      document.getElementById('tileNpwp').textContent = currentCompany.npwp || '—';
-
-      // 3. Pre-select radio based on current status
-      if (currentCompany.status === 'approved') {
-        document.getElementById('opt-approve').checked = true;
-      } else if (currentCompany.status === 'rejected') {
-        document.getElementById('opt-reject').checked = true;
-      } else {
-        document.getElementById('opt-pending').checked = true;
-      }
-
-      // Load note if exists
       const noteInput = document.getElementById('adminNoteTextarea');
-      if (currentCompany.note) {
-        noteInput.value = currentCompany.note;
-      }
+      const btnApprove = document.getElementById('btnSubmitApprove');
+      const btnReject = document.getElementById('btnSubmitReject');
+
 
       // 4. Decision Action: Setujui Perusahaan Button
-      const btnApprove = document.getElementById('btnSubmitApprove');
+
       btnApprove.addEventListener('click', () => {
         const checkedRadio = document.querySelector('input[name="keputusan"]:checked');
         const decision = checkedRadio ? checkedRadio.value : 'approved';
@@ -1151,7 +1072,7 @@
       });
 
       // 5. Decision Action: Tolak Perusahaan Button
-      const btnReject = document.getElementById('btnSubmitReject');
+
       btnReject.addEventListener('click', () => {
         document.getElementById('opt-reject').checked = true;
         saveDecision('rejected');
@@ -1178,30 +1099,37 @@
         });
       }
 
-      // Core save decision function
+      // Core save decision function: putusan asli lewat API.
       function saveDecision(decisionStatus) {
+        const statusApi = (decisionStatus === 'approved') ? 'terverifikasi'
+          : ((decisionStatus === 'rejected') ? 'ditolak' : 'belum');
+        if (CURRENT_COMPANY_ID <= 0) {
+          showToast('Buka perusahaan dari daftar verifikasi dulu.', 'info');
+          return;
+        }
         const note = noteInput.value.trim();
-        const allCompanies = getCompanies();
-        const index = allCompanies.findIndex(c => c.id === currentCompany.id);
-
-        if (index !== -1) {
-          allCompanies[index].status = decisionStatus;
-          allCompanies[index].note = note;
-          saveCompanies(allCompanies);
-        }
-
-        if (decisionStatus === 'approved') {
-          showToast(`Perusahaan ${displayCompanyName} berhasil disetujui! Mengalihkan...`, 'success');
-        } else if (decisionStatus === 'rejected') {
-          showToast(`Perusahaan ${displayCompanyName} telah ditolak. Mengalihkan...`, 'danger');
-        } else {
-          showToast(`Status penundaan untuk ${displayCompanyName} disimpan. Mengalihkan...`, 'success');
-        }
-
-        // Return to verifikasi.php after brief toast
-        setTimeout(() => {
-          window.location.href = 'verifikasi.php';
-        }, 900);
+        fetch('../../api/admin/verifikasi.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: CURRENT_COMPANY_ID, status: statusApi, catatan: note })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok) throw new Error(res.error || 'Putusan gagal');
+            if (decisionStatus === 'approved') {
+              showToast('Perusahaan ' + displayCompanyName + ' berhasil disetujui! Mengalihkan...', 'success');
+            } else if (decisionStatus === 'rejected') {
+              showToast('Perusahaan ' + displayCompanyName + ' telah ditolak. Mengalihkan...', 'danger');
+            } else {
+              showToast('Status penundaan untuk ' + displayCompanyName + ' disimpan. Mengalihkan...', 'success');
+            }
+            setTimeout(() => {
+              window.location.href = 'verifikasi.php';
+            }, 900);
+          })
+          .catch(function (err) {
+            showToast(err.message || 'Putusan gagal. Pastikan sudah login sebagai admin.', 'danger');
+          });
       }
     });
   </script>

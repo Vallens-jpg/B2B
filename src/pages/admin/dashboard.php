@@ -802,8 +802,8 @@
               </svg>
             </div>
           </div>
-          <!-- Nilai diisi dari ../../api/admin/pengguna.php; 12,840 hanya angka contoh bila API gagal. -->
-          <div class="stat-value" id="statTotalUser">12,840</div>
+          <!-- Nilai diisi dari ../../api/admin/pengguna.php. -->
+          <div class="stat-value" id="statTotalUser">0</div>
         </div>
 
         <!-- 2. Verifikasi Pending -->
@@ -817,7 +817,7 @@
               </svg>
             </div>
           </div>
-          <div class="stat-value">45</div>
+          <div class="stat-value" id="statVerifikasiPending">0</div>
         </div>
 
         <!-- 3. Dispute Terbuka -->
@@ -832,7 +832,7 @@
               </svg>
             </div>
           </div>
-          <div class="stat-value">8</div>
+          <div class="stat-value" id="statDisputeTerbuka">0</div>
         </div>
 
         <!-- 4. Saldo Admin -->
@@ -847,7 +847,7 @@
               </svg>
             </div>
           </div>
-          <div class="stat-value">Rp 1.24B</div>
+          <div class="stat-value" id="statSaldoAdmin">Rp 0</div>
         </div>
       </div>
 
@@ -880,23 +880,23 @@
             </g>
 
             <!-- Y-Axis Labels -->
-            <g font-family="'Plus Jakarta Sans', sans-serif" font-size="11" fill="#94a3b8" text-anchor="start" font-weight="500">
-              <text x="14" y="59">1.5B</text>
-              <text x="14" y="115">1.2B</text>
-              <text x="14" y="171">900M</text>
-              <text x="14" y="227">600M</text>
-              <text x="14" y="283">300M</text>
+            <g id="chartYLabels" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" fill="#94a3b8" text-anchor="start" font-weight="500">
+              <text x="14" y="59">Rp 0</text>
+              <text x="14" y="115">Rp 0</text>
+              <text x="14" y="171">Rp 0</text>
+              <text x="14" y="227">Rp 0</text>
+              <text x="14" y="283">Rp 0</text>
             </g>
 
             <!-- Blue Area Fill -->
-            <polygon
-              points="55,175 119,163 189,133 260,149 329,105 400,93 471,76 539,82 611,71 677,61 677,336 55,336"
+            <polygon id="chartBlueArea"
+              points="55,336 119,336 189,336 260,336 329,336 400,336 471,336 539,336 611,336 677,336 677,336 55,336"
               fill="url(#blueAreaGrad)"
             />
 
             <!-- Blue Solid Line (Statistik Transaksi) -->
-            <polyline
-              points="55,175 119,163 189,133 260,149 329,105 400,93 471,76 539,82 611,71 677,61"
+            <polyline id="chartBlueLine"
+              points="55,336 119,336 189,336 260,336 329,336 400,336 471,336 539,336 611,336 677,336"
               fill="none"
               stroke="#3b82f6"
               stroke-width="2.5"
@@ -905,7 +905,7 @@
             />
 
             <!-- Blue Data Dots -->
-            <g fill="#3b82f6">
+            <g id="chartBlueDots" fill="#3b82f6">
               <circle cx="55"  cy="175" r="3.5"/>
               <circle cx="119" cy="163" r="3.5"/>
               <circle cx="189" cy="133" r="3.5"/>
@@ -919,8 +919,8 @@
             </g>
 
             <!-- Green Dashed Line (Pendapatan Komisi) -->
-            <polyline
-              points="55,320 119,318 189,316 260,316 329,313 400,311 471,309 539,310 611,309 677,308"
+            <polyline id="chartGreenLine"
+              points="55,336 119,336 189,336 260,336 329,336 400,336 471,336 539,336 611,336 677,336"
               fill="none"
               stroke="#22c55e"
               stroke-width="2"
@@ -930,7 +930,7 @@
             />
 
             <!-- Green Data Dots -->
-            <g fill="#22c55e">
+            <g id="chartGreenDots" fill="#22c55e">
               <circle cx="55"  cy="320" r="3"/>
               <circle cx="119" cy="318" r="3"/>
               <circle cx="189" cy="316" r="3"/>
@@ -1023,13 +1023,17 @@
         }, 3200);
       }
 
-      // Total User asli dari API (pengguna.php); null = masih angka contoh statis.
+      // Total User asli dari API (pengguna.php).
       let totalUserReal = null;
+      let periodeLabel = 'tahun ini';
 
       // Stat card clicks
       document.getElementById('cardTotalUser').addEventListener('click', function() {
-        const jumlah = (totalUserReal !== null) ? totalUserReal : '12,840';
-        showToast('Total User terdaftar: ' + jumlah + ' user aktif di platform Staplr.', 'info');
+        if (totalUserReal === null) {
+          showToast('Total user belum dapat dimuat (pastikan sudah login sebagai admin).', 'info');
+          return;
+        }
+        showToast('Total User terdaftar: ' + totalUserReal + ' user aktif di platform Staplr.', 'info');
       });
 
       document.getElementById('cardVerifikasi').addEventListener('click', function() {
@@ -1046,12 +1050,10 @@
 
       // Period button
       document.getElementById('btnPeriod').addEventListener('click', function() {
-        showToast('Menampilkan statistik transaksi tahun ini (Jan \u2013 Okt 2026).', 'info');
+        showToast('Menampilkan statistik transaksi ' + periodeLabel + '.', 'info');
       });
 
       // Data asli dari API admin (butuh login sebagai admin).
-      // Kalau API gagal (belum login / migrasi belum jalan), angka contoh
-      // statis di atas dan pesan di tabel tetap tampil.
       function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
           return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -1067,12 +1069,56 @@
         return '<span class="badge badge-waiting"><span class="badge-dot">●</span> ' + esc(label) + '</span>';
       }
 
+      function formatRupiahSingkat(nilai) {
+        var n = Math.round(Number(nilai || 0));
+        if (n >= 1000000000) return 'Rp ' + (n / 1000000000).toLocaleString('id-ID', { maximumFractionDigits: 2 }) + ' M';
+        if (n >= 1000000) return 'Rp ' + (n / 1000000).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' jt';
+        if (n >= 1000) return 'Rp ' + (n / 1000).toLocaleString('id-ID', { maximumFractionDigits: 0 }) + ' rb';
+        return 'Rp ' + n.toLocaleString('id-ID');
+      }
+
+      // Grafik bulanan dari order asli: 10 bulan terakhir (berakhir bulan ini).
+      function gambarGrafikBulanan(orders) {
+        var BULAN_ID = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        var X = [55, 119, 189, 260, 329, 400, 471, 539, 611, 677];
+        var sekarang = new Date();
+        var bulan = [];
+        for (var i = 9; i >= 0; i--) {
+          var d = new Date(sekarang.getFullYear(), sekarang.getMonth() - i, 1);
+          bulan.push({ y: d.getFullYear(), m: d.getMonth(), label: BULAN_ID[d.getMonth()] });
+        }
+        var totalBulanan = bulan.map(function () { return 0; });
+        orders.forEach(function (o) {
+          var mm = String(o.created_at || '').match(/^(\d{4})-(\d{2})/);
+          if (!mm) return;
+          var idx = -1;
+          for (var j = 0; j < bulan.length; j++) {
+            if (bulan[j].y === Number(mm[1]) && bulan[j].m === Number(mm[2]) - 1) { idx = j; break; }
+          }
+          if (idx >= 0) totalBulanan[idx] += Number(o.total || 0) + Number(o.fee || 0);
+        });
+        var max = Math.max.apply(null, totalBulanan.concat([1]));
+        function yDari(v) { return Math.round(336 - (v / max) * 280); }
+        var pts = totalBulanan.map(function (v, i) { return X[i] + ',' + yDari(v); });
+        var ptsFee = totalBulanan.map(function (v, i) { return X[i] + ',' + yDari(v * 0.025); });
+        document.getElementById('chartBlueLine').setAttribute('points', pts.join(' '));
+        document.getElementById('chartBlueArea').setAttribute('points', pts.join(' ') + ' 677,336 55,336');
+        document.getElementById('chartGreenLine').setAttribute('points', ptsFee.join(' '));
+        document.querySelectorAll('#chartBlueDots circle').forEach(function (c, i) { c.setAttribute('cy', yDari(totalBulanan[i])); });
+        document.querySelectorAll('#chartGreenDots circle').forEach(function (c, i) { c.setAttribute('cy', yDari(totalBulanan[i] * 0.025)); });
+        var langkah = [1, 0.8, 0.6, 0.4, 0.2];
+        document.querySelectorAll('#chartYLabels text').forEach(function (el, i) { el.textContent = formatRupiahSingkat(max * langkah[i]); });
+        document.querySelectorAll('.chart-x-row span').forEach(function (el, i) { el.textContent = bulan[i].label; });
+        periodeLabel = bulan[0].label + ' ' + bulan[0].y + ' \u2013 ' + bulan[9].label + ' ' + bulan[9].y;
+      }
+
       fetch('../../api/admin/order_list.php')
         .then(function (r) { return r.json(); })
         .then(function (res) {
           var tbody = document.getElementById('orderTableBody');
           var footer = document.getElementById('orderFooterInfo');
           if (!res.ok || !Array.isArray(res.data)) throw new Error((res && res.error) || 'API order gagal');
+          gambarGrafikBulanan(res.data);
           var orders = res.data.slice(0, 5);
           if (!orders.length) {
             tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 32px 20px; color: #64748b;">Belum ada order.</td></tr>';
@@ -1104,7 +1150,36 @@
           totalUserReal = res.data.length;
           document.getElementById('statTotalUser').textContent = totalUserReal.toLocaleString('id-ID');
         })
-        .catch(function () { /* biarkan angka contoh 12,840 kalau API gagal */ });
+        .catch(function () { /* biarkan 0 kalau API gagal */ });
+
+      // Verifikasi Pending asli (perusahaan dengan status verifikasi 'belum').
+      fetch('../../api/admin/verifikasi.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !Array.isArray(res.data.perusahaan)) return;
+          var pending = res.data.perusahaan.filter(function (u) { return (u.verifikasi_status || 'belum') === 'belum'; }).length;
+          document.getElementById('statVerifikasiPending').textContent = pending.toLocaleString('id-ID');
+        })
+        .catch(function () {});
+
+      // Dispute Terbuka asli (status dibuka + diproses).
+      fetch('../../api/dispute/list.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !Array.isArray(res.data.dispute)) return;
+          var terbuka = res.data.dispute.filter(function (d) { return d.status === 'dibuka' || d.status === 'diproses'; }).length;
+          document.getElementById('statDisputeTerbuka').textContent = terbuka.toLocaleString('id-ID');
+        })
+        .catch(function () {});
+
+      // Saldo Admin asli (dana escrow yang masih ditahan).
+      fetch('../../api/admin/keuangan.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.ringkasan) return;
+          document.getElementById('statSaldoAdmin').textContent = formatRupiahSingkat(res.data.ringkasan.masih_ditahan);
+        })
+        .catch(function () {});
 
       // Admin profile
       document.getElementById('adminProfileBtn').addEventListener('click', function() {

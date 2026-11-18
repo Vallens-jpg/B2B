@@ -12,8 +12,9 @@ if (!$user || ($user['role'] ?? '') !== 'admin') {
 try {
     $stmt = db()->query(
         'SELECT o.id, o.buyer_id, u.nama AS nama_buyer, o.produk_id, p.nama AS nama_produk, ' .
-        'o.jumlah_kg, o.total, o.fee, o.status, o.created_at FROM orders o ' .
-        'JOIN users u ON u.id = o.buyer_id JOIN produk p ON p.id = o.produk_id ORDER BY o.id DESC'
+        'o.jumlah_kg, o.total, o.fee, o.status, o.created_at, pu.nama AS nama_perusahaan FROM orders o ' .
+        'JOIN users u ON u.id = o.buyer_id JOIN produk p ON p.id = o.produk_id ' .
+        'LEFT JOIN users pu ON pu.id = p.perusahaan_id ORDER BY o.id DESC'
     );
     $orders = $stmt->fetchAll();
     foreach ($orders as &$row) {
