@@ -355,9 +355,9 @@
       <!-- Left Column: Avatar & Business Summary Card -->
       <aside class="profil-avatar-card">
         <div class="profil-gradient-circle"></div>
-        <h2 class="profil-business-name" id="displayBusinessName">Catering Berkah</h2>
-        <p class="profil-business-email" id="displayEmail">buyer@gmail.com</p>
-        <p class="profil-business-email" id="displayRole">Pembeli</p>
+        <h2 class="profil-business-name" id="displayBusinessName">Memuat…</h2>
+        <p class="profil-business-email" id="displayEmail">—</p>
+        <p class="profil-business-email" id="displayRole">—</p>
       </aside>
 
       <!-- Right Column: Form Sections & Actions -->
@@ -370,61 +370,16 @@
           <div class="form-row-two-col">
             <div class="form-group-item">
               <label for="namaUsaha" class="profil-input-label">Nama Usaha</label>
-              <input type="text" id="namaUsaha" class="profil-input-field" value="Catering Berkah">
+              <input type="text" id="namaUsaha" class="profil-input-field" value="">
             </div>
             <div class="form-group-item">
               <label for="emailUsaha" class="profil-input-label">Email</label>
-              <input type="email" id="emailUsaha" class="profil-input-field" value="buyer@gmail.com">
+              <input type="email" id="emailUsaha" class="profil-input-field" value="">
             </div>
           </div>
 
-          <div class="form-row-two-col">
-            <div class="form-group-item">
-              <label for="nomorTelepon" class="profil-input-label">Nomor Telepon</label>
-              <input type="text" id="nomorTelepon" class="profil-input-field" value="+00000000">
-            </div>
-            <div class="form-group-item">
-              <label for="kotaUsaha" class="profil-input-label">Kota</label>
-              <input type="text" id="kotaUsaha" class="profil-input-field" value="Jakarta Timur">
-            </div>
           </div>
 
-          <div class="form-group-item full-width">
-            <label for="alamatLengkap" class="profil-input-label">Alamat Lengkap</label>
-            <input type="text" id="alamatLengkap" class="profil-input-field" value="Jl. Raya Industri No. 123">
-          </div>
-        </div>
-
-        <!-- 2. Pengaturan Rekening Bank Card -->
-        <div class="profil-card">
-          <h2 class="profil-section-heading">Pengaturan Rekening Bank</h2>
-
-          <div class="form-row-two-col">
-            <div class="form-group-item">
-              <label for="namaBank" class="profil-input-label">Nama Bank</label>
-              <div class="profil-select-wrap">
-                <select id="namaBank" class="profil-select-field">
-                  <option value="Bank BCA" selected>Bank BCA</option>
-                  <option value="Bank Mandiri">Bank Mandiri</option>
-                  <option value="Bank BNI">Bank BNI</option>
-                  <option value="Bank BRI">Bank BRI</option>
-                </select>
-                <svg class="profil-select-arrow" viewBox="0 0 24 24">
-                  <polyline points="6 9 12 15 18 9"/>
-                </svg>
-              </div>
-            </div>
-
-            <div class="form-group-item">
-              <label for="nomorRekening" class="profil-input-label">Nomor Rekening</label>
-              <input type="text" id="nomorRekening" class="profil-input-field" value="00-000-00">
-            </div>
-          </div>
-
-          <div class="form-group-item full-width">
-            <label for="atasNamaRekening" class="profil-input-label">Atas Nama Rekening</label>
-            <input type="text" id="atasNamaRekening" class="profil-input-field" value="Catering Berkah">
-          </div>
         </div>
 
         <!-- Bottom Action Buttons -->
@@ -443,11 +398,14 @@
   <!-- Floating Navigation for Prototype Walkthrough -->
 
   <script>
-    // ---- Profil asli dari API me.php (fallback: nilai contoh di HTML) ----
+    // ---- Profil asli dari API me.php ----
     (function () {
       const labelRole = { pembeli: 'Pembeli', perusahaan: 'Perusahaan', admin: 'Admin' };
       fetch('../api/auth/me.php')
-        .then(function (r) { return r.json(); })
+        .then(function (r) {
+          if (r.status === 401) { window.location.href = '../login.php'; return null; }
+          return r.json();
+        })
         .then(function (res) {
           if (!res || !res.ok || !res.data) return;
           const u = res.data;
@@ -472,21 +430,34 @@
             if (roleEl) roleEl.innerText = labelRole[u.role] || u.role;
           }
         })
-        .catch(function () { /* biarkan nilai contoh bila API gagal / belum login */ });
+        .catch(function () { /* biarkan nilai netral bila API gagal */ });
     })();
 
+    // Simpan profil ke database lewat API (bukan hanya ubah tampilan).
     function simpanProfil() {
       const nama = document.getElementById('namaUsaha').value.trim();
       const email = document.getElementById('emailUsaha').value.trim();
-
-      if (nama) {
-        document.getElementById('displayBusinessName').innerText = nama;
+      if (!nama || !email) {
+        alert('Nama dan email wajib diisi.');
+        return;
       }
-      if (email) {
-        document.getElementById('displayEmail').innerText = email;
-      }
-
-      alert('Perubahan profil berhasil disimpan!');
+      fetch('../api/auth/update.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nama: nama, email: email })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) {
+            alert(res.error || 'Gagal menyimpan profil.');
+            return;
+          }
+          document.getElementById('displayBusinessName').innerText = res.data.nama;
+          document.getElementById('displayEmail').innerText = res.data.email;
+          document.querySelectorAll('.user-name-text').forEach(function (el) { el.innerText = res.data.nama; });
+          alert('Perubahan profil berhasil disimpan!');
+        })
+        .catch(function () { alert('Gagal menghubungi server.'); });
     }
 
     // Dropdown notification helpers
