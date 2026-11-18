@@ -1132,7 +1132,9 @@
     document.getElementById('btnLogout').addEventListener('click', function() {
       if (confirm('Keluar dari akun admin?')) {
         closeAdminDropdown();
-        showToast('Anda telah keluar dari akun admin.', 'info');
+        fetch('../../api/auth/logout.php').then(function() {
+          window.location.href = '../login.php';
+        });
       }
     });
   </script>
