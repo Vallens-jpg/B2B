@@ -392,82 +392,15 @@
 
     <!-- Filter Pills -->
     <div class="dispute-filter-row">
-      <button type="button" class="dispute-filter-pill active" onclick="setFilter('dibuka', this)">Dibuka</button>
-      <button type="button" class="dispute-filter-pill" onclick="setFilter('menunggu_tanggapan', this)">Menunggu Tanggapan</button>
-      <button type="button" class="dispute-filter-pill" onclick="setFilter('ditinjau_admin', this)">Ditinjau Admin</button>
+      <button type="button" class="dispute-filter-pill active" onclick="setFilter('semua', this)">Semua</button>
+      <button type="button" class="dispute-filter-pill" onclick="setFilter('dibuka', this)">Dibuka</button>
+      <button type="button" class="dispute-filter-pill" onclick="setFilter('diproses', this)">Diproses</button>
       <button type="button" class="dispute-filter-pill" onclick="setFilter('diputuskan', this)">Diputuskan</button>
-      <button type="button" class="dispute-filter-pill" onclick="setFilter('ditutup', this)">Ditutup</button>
     </div>
 
     <!-- Dispute Cards List -->
     <div class="dispute-cards-list" id="disputeCardsContainer">
-
-      <!-- Card 1: #ORD-8921 -->
-      <article class="dispute-card" data-order="#ORD-8921" data-seller="PT Telur Makmur" data-status="menunggu_tanggapan">
-        <div class="dispute-card-left">
-          <div class="dispute-order-header">
-            <span class="dispute-order-id">#ORD-8921</span>
-            <span class="dispute-badge dispute-badge-amber">MENUNGGU TANGGAPAN</span>
-          </div>
-          <div class="dispute-card-seller">Penjual: PT Telur Makmur</div>
-          <div class="dispute-card-date">Dibuat: 12 Oktober 2023 • 14:30 WIB</div>
-        </div>
-
-        <div class="dispute-card-right">
-          <div class="dispute-amount-group">
-            <span class="dispute-amount-val">Rp 1.250.000</span>
-            <span class="dispute-amount-label">Total Dispute</span>
-          </div>
-          <a href="dispute_detail.php?order=ORD-8921&amount=Rp%201.250.000&seller=PT%20Telur%20Makmur" class="btn-dispute-diskusi">
-            Diskusi
-          </a>
-        </div>
-      </article>
-
-      <!-- Card 2: #ORD-8910 -->
-      <article class="dispute-card" data-order="#ORD-8910" data-seller="Mitra Unggas Sejahtera" data-status="dibuka">
-        <div class="dispute-card-left">
-          <div class="dispute-order-header">
-            <span class="dispute-order-id">#ORD-8910</span>
-            <span class="dispute-badge dispute-badge-blue">DALAM PROSES</span>
-          </div>
-          <div class="dispute-card-seller">Penjual: Mitra Unggas Sejahtera</div>
-          <div class="dispute-card-date">Dibuat: 10 Oktober 2023 • 09:15 WIB</div>
-        </div>
-
-        <div class="dispute-card-right">
-          <div class="dispute-amount-group">
-            <span class="dispute-amount-val">Rp 850.000</span>
-            <span class="dispute-amount-label">Total Dispute</span>
-          </div>
-          <a href="dispute_detail.php?order=ORD-8910&amount=Rp%20850.000&seller=Mitra%20Unggas%20Sejahtera" class="btn-dispute-diskusi">
-            Diskusi
-          </a>
-        </div>
-      </article>
-
-      <!-- Card 3: #ORD-8895 -->
-      <article class="dispute-card" data-order="#ORD-8895" data-seller="Tunas Farm" data-status="ditutup">
-        <div class="dispute-card-left">
-          <div class="dispute-order-header">
-            <span class="dispute-order-id">#ORD-8895</span>
-            <span class="dispute-badge dispute-badge-green">SELESAI</span>
-          </div>
-          <div class="dispute-card-seller">Penjual: Tunas Farm</div>
-          <div class="dispute-card-date">Dibuat: 05 Oktober 2023 • 11:40 WIB</div>
-        </div>
-
-        <div class="dispute-card-right">
-          <div class="dispute-amount-group">
-            <span class="dispute-amount-val">Rp 450.000</span>
-            <span class="dispute-amount-label">Total Dispute</span>
-          </div>
-          <a href="dispute_detail.php?order=ORD-8895&amount=Rp%20450.000&seller=Tunas%20Farm" class="btn-dispute-diskusi">
-            Diskusi
-          </a>
-        </div>
-      </article>
-
+      <p style="text-align:center;padding:1rem;color:#6B7280;">Memuat dispute…</p>
     </div>
 
   </main>
@@ -475,7 +408,7 @@
   <!-- Floating Navigation for Prototype Walkthrough -->
 
   <script>
-    let activeFilter = 'dibuka';
+    let activeFilter = 'semua';
 
     function setFilter(filter, btnEl) {
       activeFilter = filter;
@@ -483,6 +416,58 @@
       btnEl.classList.add('active');
       filterDisputes();
     }
+
+    // ---- Daftar dispute asli dari API ----
+    (function () {
+      var container = document.getElementById('disputeCardsContainer');
+      function rupiah(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); }
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      function tanggalId(waktu) {
+        var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        var p = String(waktu || '').split(' ');
+        var d = (p[0] || '').split('-');
+        if (d.length < 3) return waktu || '';
+        return parseInt(d[2], 10) + ' ' + bulan[parseInt(d[1], 10) - 1] + ' ' + d[0] + ' • ' + String(p[1] || '').slice(0, 5) + ' WIB';
+      }
+      function badge(status) {
+        if (status === 'dibuka') return '<span class="dispute-badge dispute-badge-blue">DIBUKA</span>';
+        if (status === 'diproses') return '<span class="dispute-badge dispute-badge-amber">DIPROSES</span>';
+        return '<span class="dispute-badge dispute-badge-green">DIPUTUSKAN</span>';
+      }
+      fetch('../api/dispute/list.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!container) return;
+          if (!res || !res.ok || !res.data || !res.data.dispute) {
+            container.innerHTML = '<p style="text-align:center;padding:1rem;color:#6B7280;">Gagal memuat dispute. Periksa koneksi atau login kembali.</p>';
+            return;
+          }
+          var items = res.data.dispute;
+          if (!items.length) {
+            container.innerHTML = '<p style="text-align:center;padding:1rem;color:#6B7280;">Belum ada dispute.</p>';
+            return;
+          }
+          container.innerHTML = items.map(function (d) {
+            var nomor = '#ORD-2026-' + String(d.order_id).padStart(3, '0');
+            return '<article class="dispute-card" data-order="' + nomor + '" data-seller="' + escapeHtml(d.nama_perusahaan || '') + '" data-status="' + d.status + '">'
+              + '<div class="dispute-card-left">'
+              + '<div class="dispute-order-header"><span class="dispute-order-id">' + nomor + '</span>' + badge(d.status) + '</div>'
+              + '<div class="dispute-card-seller">Penjual: ' + escapeHtml(d.nama_perusahaan || '-') + '</div>'
+              + '<div class="dispute-card-date">Dibuat: ' + tanggalId(d.created_at) + '</div>'
+              + '</div>'
+              + '<div class="dispute-card-right">'
+              + '<div class="dispute-amount-group"><span class="dispute-amount-val">' + rupiah(d.total_bayar) + '</span><span class="dispute-amount-label">Total Dispute</span></div>'
+              + '<a href="dispute_detail.php?id=' + d.id + '" class="btn-dispute-diskusi">Diskusi</a>'
+              + '</div></article>';
+          }).join('');
+          filterDisputes();
+        })
+        .catch(function () {
+          if (container) container.innerHTML = '<p style="text-align:center;padding:1rem;color:#6B7280;">Gagal memuat dispute. Periksa koneksi atau login kembali.</p>';
+        });
+    })();
 
     function filterDisputes() {
       const q = document.getElementById('disputeSearchInput').value.toLowerCase().trim();
@@ -496,7 +481,7 @@
         let matchesSearch = !q || orderId.includes(q) || seller.includes(q);
         // By default show matching search
         let matchesFilter = true;
-        if (activeFilter !== 'dibuka') {
+        if (activeFilter !== 'semua') {
           matchesFilter = (status === activeFilter);
         }
 
