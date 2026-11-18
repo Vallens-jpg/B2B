@@ -16,7 +16,7 @@ if ($id <= 0) {
 try {
     $pdo = db();
     $stmt = $pdo->prepare(
-        'SELECT d.*, o.produk_id, p.perusahaan_id FROM dispute d JOIN orders o ON o.id = d.order_id JOIN produk p ON p.id = o.produk_id WHERE d.id = ? LIMIT 1'
+        'SELECT d.*, o.produk_id, o.total_bayar, o.jumlah_kg, p.perusahaan_id, p.nama AS nama_produk, u.nama AS nama_perusahaan, ub.nama AS nama_buyer FROM dispute d JOIN orders o ON o.id = d.order_id JOIN produk p ON p.id = o.produk_id LEFT JOIN users u ON u.id = p.perusahaan_id LEFT JOIN users ub ON ub.id = d.buyer_id WHERE d.id = ? LIMIT 1'
     );
     $stmt->execute([$id]);
     $dispute = $stmt->fetch();
@@ -35,4 +35,5 @@ try {
 }
 
 $dispute['id'] = (int) $dispute['id'];
+$dispute['total_bayar'] = (float) ($dispute['total_bayar'] ?? 0);
 json_ok($dispute);

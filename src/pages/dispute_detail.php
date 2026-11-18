@@ -659,12 +659,12 @@
     </a>
     <h1 class="pd-nav-title">PENGAJUAN DISPUTE</h1>
     <div class="pd-nav-actions">
-      <button type="button" class="pd-bell-btn" aria-label="Notifikasi">
+      <a href="notifikasi.php" class="pd-bell-btn" aria-label="Notifikasi">
         <svg viewBox="0 0 24 24">
           <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
         </svg>
-        <span class="pd-bell-badge">3</span>
-      </button>
+        <span class="pd-bell-badge" id="pdBellBadge" style="display:none">0</span>
+      </a>
       <div class="pd-user-pill">
         <div class="pd-user-avatar">AD</div>
         <span class="pd-user-name">Buyer</span>
@@ -678,16 +678,16 @@
     <!-- Header Block -->
     <div class="pd-header-block">
       <div class="pd-title-row">
-        <span class="pd-dispute-id">Dispute #DSP-0012</span>
+        <span class="pd-dispute-id" id="disputeIdText">Dispute #DSP-…</span>
         <div class="pd-status-pill-admin">
           <span class="pd-pill-dot"></span>
-          <span>Ditinjau Admin</span>
+          <span id="statusPillText">Memuat…</span>
         </div>
       </div>
       <div class="pd-breadcrumb">
         <span>Pesanan</span>
         <span class="pd-breadcrumb-sep">›</span>
-        <span>#ORD-2041</span>
+        <span id="breadcrumbOrder">#ORD-…</span>
         <span class="pd-breadcrumb-sep">›</span>
         <span>Dispute</span>
       </div>
@@ -697,15 +697,15 @@
     <div class="pd-summary-card">
       <div class="pd-summary-col">
         <span class="pd-summary-label">Buyer</span>
-        <span class="pd-summary-value">CV Maju Jaya</span>
+        <span class="pd-summary-value" id="summaryBuyer">—</span>
       </div>
       <div class="pd-summary-col">
         <span class="pd-summary-label">Perusahaan</span>
-        <span class="pd-summary-value">PT Telur Nusantara</span>
+        <span class="pd-summary-value" id="summaryPerusahaan">—</span>
       </div>
       <div class="pd-summary-col">
         <span class="pd-summary-label">Nilai Pesanan</span>
-        <span class="pd-summary-value">Rp 48.000.000</span>
+        <span class="pd-summary-value" id="summaryNilai">—</span>
       </div>
     </div>
 
@@ -717,69 +717,7 @@
         <div class="pd-card-title">Diskusi &amp; Bukti</div>
 
         <div id="timelineContainer">
-
-          <!-- Message 1: Buyer -->
-          <div class="pd-timeline-item">
-            <div class="pd-avatar pd-avatar-buyer">B</div>
-            <div class="pd-msg-content">
-              <div class="pd-msg-header">
-                <span class="pd-msg-author">CV Maju Jaya</span>
-                <span class="pd-role-badge pd-role-buyer">
-                  <span class="pd-badge-dot"></span>
-                  <span>Buyer</span>
-                </span>
-                <span class="pd-msg-time">8 Okt 2026, 14:20</span>
-              </div>
-              <p class="pd-msg-body">Sekitar 12% telur pecah saat diterima dari total pengiriman. Mohon ditindaklanjuti.</p>
-              <div class="pd-attachment-row">
-                <span class="pd-attachment-label">Lampiran:</span>
-                <span class="pd-attachment-chip">foto_1.jpg</span>
-                <span class="pd-attachment-chip">foto_2.jpg</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="pd-divider"></div>
-
-          <!-- Message 2: Perusahaan -->
-          <div class="pd-timeline-item">
-            <div class="pd-avatar pd-avatar-seller">P</div>
-            <div class="pd-msg-content">
-              <div class="pd-msg-header">
-                <span class="pd-msg-author">PT Telur Nusantara</span>
-                <span class="pd-role-badge pd-role-seller">
-                  <span class="pd-badge-dot"></span>
-                  <span>Perusahaan</span>
-                </span>
-                <span class="pd-msg-time">9 Okt 2026, 09:05</span>
-              </div>
-              <p class="pd-msg-body">Pengiriman sudah sesuai standar packing.</p>
-              <div class="pd-attachment-row">
-                <span class="pd-attachment-label">Lampiran:</span>
-                <span class="pd-attachment-chip">foto_packing.jpg</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="pd-divider"></div>
-
-          <!-- Message 3: Admin -->
-          <div class="pd-timeline-item">
-            <div class="pd-avatar pd-avatar-admin">A</div>
-            <div class="pd-msg-content">
-              <div class="pd-msg-header">
-                <span class="pd-msg-author">Admin Sistem</span>
-                <span class="pd-role-badge pd-role-admin">
-                  <span class="pd-badge-dot"></span>
-                  <span>Admin</span>
-                </span>
-                <span class="pd-msg-time">12 Okt 2026, 10:30</span>
-              </div>
-              <p class="pd-msg-body">Buyer mohon unggah foto per rak dan nota penerimaan.</p>
-            </div>
-          </div>
-
-        </div>
+          <p style="text-align:center;padding:1rem;color:#6B7280;">Memuat diskusi…</p>
 
         <!-- Tulis Komentar Section -->
         <div class="pd-comment-section">
@@ -790,20 +728,7 @@
             placeholder="Tulis komentar Anda..."
           ></textarea>
 
-          <!-- Hidden file input for Lampiran -->
-          <input type="file" id="fileAttachInput" multiple style="display: none;" onchange="handleFileSelected(event)">
-
-          <!-- Container for selected attachment pills -->
-          <div id="pendingFilesContainer" class="pd-pending-attachments" style="display: none;"></div>
-
           <div class="pd-comment-actions">
-            <button
-              type="button"
-              class="pd-btn-lampiran"
-              onclick="document.getElementById('fileAttachInput').click()"
-            >
-              Lampiran Foto / Dokumen
-            </button>
             <button
               type="button"
               class="pd-btn-kirim"
@@ -823,30 +748,7 @@
         <div class="pd-card pd-status-card">
           <div class="pd-card-title">Status Dispute</div>
           <div class="pd-stepper-list">
-
-            <div class="pd-stepper-item">
-              <span class="pd-bullet-solid-green"></span>
-              <span class="pd-stepper-text">Dibuka</span>
-            </div>
-
-            <div class="pd-stepper-item">
-              <span class="pd-bullet-solid-green"></span>
-              <span class="pd-stepper-text">Menunggu Tanggapan</span>
-            </div>
-
-            <div class="pd-stepper-item">
-              <span class="pd-bullet-active-admin"></span>
-              <span class="pd-stepper-text active">Ditinjau Admin</span>
-            </div>
-
-            <div class="pd-stepper-item">
-              <span class="pd-bullet-hollow-gray"></span>
-              <span class="pd-stepper-text muted">Diputuskan</span>
-            </div>
-
-            <div class="pd-stepper-item">
-              <span class="pd-bullet-hollow-gray"></span>
-              <span class="pd-stepper-text muted">Ditutup</span>
+            <span style="color:#6B7280;">Memuat status…</span>
             </div>
 
           </div>
@@ -858,18 +760,14 @@
 
           <div class="pd-detail-row">
             <span class="pd-detail-label">Jenis</span>
-            <span class="pd-detail-value">Barang tidak sesuai</span>
+            <span class="pd-detail-value" id="detailJenis">—</span>
           </div>
 
           <div class="pd-detail-row">
             <span class="pd-detail-label">Diajukan</span>
-            <span class="pd-detail-value">8 Okt 2026, 14:20</span>
+            <span class="pd-detail-value" id="detailDiajukan">—</span>
           </div>
 
-          <div class="pd-detail-row">
-            <span class="pd-detail-label">Batas tanggapan Perusahaan</span>
-            <span class="pd-detail-value">10 Okt 2026</span>
-          </div>
 
         </div>
 
@@ -898,109 +796,140 @@
       }
     });
 
-    let pendingFiles = [];
+    var disputeId = parseInt(urlParams.get('id') || '0', 10);
+    var disputeData = null;
 
-    function handleFileSelected(event) {
-      const files = Array.from(event.target.files);
-      if (files.length === 0) return;
-
-      pendingFiles = pendingFiles.concat(files);
-      renderPendingFiles();
+    function rupiah(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); }
+    function escapeHtml(s) {
+      return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
-
-    function renderPendingFiles() {
-      const container = document.getElementById('pendingFilesContainer');
-      if (pendingFiles.length === 0) {
-        container.style.display = 'none';
-        container.innerHTML = '';
+    function waktuId(waktu) {
+      var bulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      var p = String(waktu || '').split(' ');
+      var d = (p[0] || '').split('-');
+      if (d.length < 3) return waktu || '';
+      return parseInt(d[2], 10) + ' ' + bulan[parseInt(d[1], 10) - 1] + ' ' + d[0] + ', ' + String(p[1] || '').slice(0, 5);
+    }
+    function peranLabel(role) {
+      if (role === 'perusahaan') return 'Perusahaan';
+      if (role === 'admin') return 'Admin';
+      return 'Buyer';
+    }
+    function itemTimeline(nama, role, waktu, isi, lampiran) {
+      var avatarClass = role === 'perusahaan' ? 'pd-avatar-seller' : (role === 'admin' ? 'pd-avatar-admin' : 'pd-avatar-buyer');
+      var roleClass = role === 'perusahaan' ? 'pd-role-seller' : (role === 'admin' ? 'pd-role-admin' : 'pd-role-buyer');
+      var huruf = String(nama || '?').trim().charAt(0).toUpperCase() || '?';
+      var lampiranHtml = lampiran ? '<div class="pd-attachment-row"><span class="pd-attachment-label">Lampiran:</span><span class="pd-attachment-chip">' + escapeHtml(lampiran) + '</span></div>' : '';
+      return '<div class="pd-timeline-item">'
+        + '<div class="pd-avatar ' + avatarClass + '">' + escapeHtml(huruf) + '</div>'
+        + '<div class="pd-msg-content"><div class="pd-msg-header">'
+        + '<span class="pd-msg-author">' + escapeHtml(nama) + '</span>'
+        + '<span class="pd-role-badge ' + roleClass + '"><span class="pd-badge-dot"></span><span>' + peranLabel(role) + '</span></span>'
+        + '<span class="pd-msg-time">' + escapeHtml(waktuId(waktu)) + '</span>'
+        + '</div><p class="pd-msg-body">' + escapeHtml(isi).replace(/\n/g, '<br>') + '</p>'
+        + lampiranHtml
+        + '</div></div>';
+    }
+    function muatDiskusi() {
+      var timeline = document.getElementById('timelineContainer');
+      fetch('../api/dispute/pesan.php?dispute_id=' + disputeId)
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!timeline || !disputeData) return;
+          var items = [];
+          items.push(itemTimeline(disputeData.nama_buyer || '-', 'pembeli', disputeData.created_at, disputeData.deskripsi || '', disputeData.bukti_foto));
+          if (res && res.ok && res.data && res.data.pesan) {
+            res.data.pesan.forEach(function (m) {
+              items.push(itemTimeline(m.nama, m.role, m.created_at, m.pesan, null));
+            });
+          }
+          timeline.innerHTML = items.join('<div class="pd-divider"></div>');
+        })
+        .catch(function () {
+          if (timeline) timeline.innerHTML = '<p style="text-align:center;padding:1rem;color:#6B7280;">Gagal memuat diskusi.</p>';
+        });
+    }
+    function muatDispute() {
+      var timeline = document.getElementById('timelineContainer');
+      if (!disputeId) {
+        if (timeline) timeline.innerHTML = '<p style="text-align:center;padding:1rem;color:#6B7280;">Dispute tidak ditemukan. Buka halaman ini dari Daftar Dispute.</p>';
         return;
       }
-
-      container.style.display = 'flex';
-      container.innerHTML = '';
-
-      pendingFiles.forEach((file, index) => {
-        const chip = document.createElement('div');
-        chip.className = 'pd-pending-chip';
-        chip.innerHTML = `
-          <span>📎 ${file.name}</span>
-          <span class="pd-chip-remove" onclick="removePendingFile(${index})">&times;</span>
-        `;
-        container.appendChild(chip);
-      });
+      fetch('../api/dispute/detail.php?id=' + disputeId)
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res || !res.ok || !res.data) {
+            if (timeline) timeline.innerHTML = '<p style="text-align:center;padding:1rem;color:#6B7280;">' + escapeHtml((res && res.message) || 'Dispute tidak ditemukan.') + '</p>';
+            return;
+          }
+          var d = res.data;
+          disputeData = d;
+          var setText = function (id, v) { var el = document.getElementById(id); if (el) el.innerText = v; };
+          setText('disputeIdText', 'Dispute #DSP-' + String(d.id).padStart(4, '0'));
+          setText('breadcrumbOrder', '#ORD-2026-' + String(d.order_id).padStart(3, '0'));
+          setText('summaryBuyer', d.nama_buyer || '-');
+          setText('summaryPerusahaan', d.nama_perusahaan || '-');
+          setText('summaryNilai', rupiah(d.total_bayar));
+          setText('detailJenis', d.judul || '-');
+          setText('detailDiajukan', waktuId(d.created_at));
+          var labelStatus = d.status === 'dibuka' ? 'Dibuka' : (d.status === 'diproses' ? 'Diproses' : 'Diputuskan');
+          setText('statusPillText', labelStatus);
+          var langkah = ['Dibuka', 'Diproses', 'Diputuskan'];
+          var idx = d.status === 'dibuka' ? 0 : (d.status === 'diproses' ? 1 : 2);
+          var stepper = document.querySelector('.pd-stepper-list');
+          if (stepper) {
+            stepper.innerHTML = langkah.map(function (nama, i) {
+              if (i < idx) return '<div class="pd-stepper-item"><span class="pd-bullet-solid-green"></span><span class="pd-stepper-text">' + nama + '</span></div>';
+              if (i === idx) return '<div class="pd-stepper-item"><span class="pd-bullet-active-admin"></span><span class="pd-stepper-text active">' + nama + '</span></div>';
+              return '<div class="pd-stepper-item"><span class="pd-bullet-hollow-gray"></span><span class="pd-stepper-text muted">' + nama + '</span></div>';
+            }).join('');
+          }
+          muatDiskusi();
+        })
+        .catch(function () {
+          if (timeline) timeline.innerHTML = '<p style="text-align:center;padding:1rem;color:#6B7280;">Gagal memuat dispute. Periksa koneksi atau login kembali.</p>';
+        });
     }
-
-    function removePendingFile(index) {
-      pendingFiles.splice(index, 1);
-      renderPendingFiles();
-    }
-
     function submitComment() {
       const textarea = document.getElementById('commentText');
       const text = textarea.value.trim();
-
-      if (!text && pendingFiles.length === 0) {
+      if (!text) {
         textarea.focus();
         textarea.style.borderColor = '#EF4444';
-        setTimeout(() => {
-          textarea.style.borderColor = '#E2E8F0';
-        }, 2000);
+        setTimeout(() => { textarea.style.borderColor = '#E2E8F0'; }, 2000);
         return;
       }
-
-      const timeline = document.getElementById('timelineContainer');
-
-      // Add divider
-      const divider = document.createElement('div');
-      divider.className = 'pd-divider';
-      timeline.appendChild(divider);
-
-      // Now date formatted
-      const now = new Date();
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-      const timeStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}, ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-      // Build attachment html if any
-      let attachHtml = '';
-      if (pendingFiles.length > 0) {
-        const chipsHtml = pendingFiles.map(f => `<span class="pd-attachment-chip">${f.name}</span>`).join('');
-        attachHtml = `
-          <div class="pd-attachment-row">
-            <span class="pd-attachment-label">Lampiran:</span>
-            ${chipsHtml}
-          </div>
-        `;
-      }
-
-      const newItem = document.createElement('div');
-      newItem.className = 'pd-timeline-item';
-      newItem.innerHTML = `
-        <div class="pd-avatar pd-avatar-buyer">AD</div>
-        <div class="pd-msg-content">
-          <div class="pd-msg-header">
-            <span class="pd-msg-author">CV Maju Jaya (Anda)</span>
-            <span class="pd-role-badge pd-role-buyer">
-              <span class="pd-badge-dot"></span>
-              <span>Buyer</span>
-            </span>
-            <span class="pd-msg-time">${timeStr}</span>
-          </div>
-          ${text ? `<p class="pd-msg-body">${text.replace(/\n/g, '<br>')}</p>` : ''}
-          ${attachHtml}
-        </div>
-      `;
-
-      timeline.appendChild(newItem);
-
-      // Reset form
-      textarea.value = '';
-      pendingFiles = [];
-      document.getElementById('fileAttachInput').value = '';
-      renderPendingFiles();
-
-      // Smooth scroll to latest comment
-      newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      if (!disputeId) return;
+      fetch('../api/dispute/pesan.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dispute_id: disputeId, pesan: text })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res || !res.ok) {
+            alert((res && res.message) || 'Gagal mengirim komentar.');
+            return;
+          }
+          textarea.value = '';
+          muatDiskusi();
+        })
+        .catch(function () { alert('Gagal mengirim komentar. Periksa koneksi.'); });
     }
+    // Badge lonceng: jumlah notifikasi belum dibaca.
+    (function () {
+      var badge = document.getElementById('pdBellBadge');
+      fetch('../api/notifikasi.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!badge || !res || !res.ok || !res.data || !res.data.notifikasi) return;
+          var belum = 0;
+          res.data.notifikasi.forEach(function (n) { if (!n.dibaca) belum++; });
+          if (belum > 0) { badge.innerText = belum; badge.style.display = ''; }
+        })
+        .catch(function () {});
+    })();
+    muatDispute();
   </script>
 </body>
 </html>
