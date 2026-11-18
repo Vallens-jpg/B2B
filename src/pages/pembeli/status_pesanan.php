@@ -84,35 +84,8 @@
   <!-- Floating Navigation -->
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const sellerId = urlParams.get('seller') || '1';
-    const productName = urlParams.get('product') || 'Telur Ayam Ras Grade A';
-    const productPrice = urlParams.get('price') || 'Rp 28.000';
-    const qty = urlParams.get('qty') || '2 kg';
-    const subtotal = urlParams.get('subtotal') || 'Rp 56.000';
-    const notes = urlParams.get('notes') || '';
-
-    const sellersMap = {
-      '1': 'PT Telur Makmur',
-      '2': 'Mitra Unggas Sejahtera',
-      '3': 'Tunas Farm',
-      '4': 'Berkah Telur Utama',
-      '5': 'Ternak Mandiri',
-      '6': 'Sinar Jaya Poultry'
-    };
-
-    const hasParams = urlParams.get('seller') || urlParams.get('product');
-    const company = sellersMap[sellerId] || 'PT Telur Makmur';
-
-
-    // Tombol kembali ke halaman Ajukan Pesanan
-    const backToAjukan = 'checkout.php' +
-      '?seller=' + encodeURIComponent(sellerId) +
-      '&product=' + encodeURIComponent(productName) +
-      '&price=' + encodeURIComponent(productPrice) +
-      '&qty=' + encodeURIComponent(qty) +
-      '&subtotal=' + encodeURIComponent(subtotal) +
-      '&notes=' + encodeURIComponent(notes);
+    // Tombol kembali: ke Daftar Pesanan (halaman induk status ini).
+    const backToAjukan = 'order_list.php';
 
     const spBackBtn = document.getElementById('backLink');
     if (spBackBtn) {

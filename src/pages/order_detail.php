@@ -816,39 +816,7 @@
   <script>
     const urlParams   = new URLSearchParams(window.location.search);
     const orderIdParam = urlParams.get('id');
-    const sellerParam = urlParams.get('seller')   || '1';
-    const product     = urlParams.get('product')  || 'Telur Ayam Ras Grade A';
-    const qty         = urlParams.get('qty')       || '200 kg';
-    const price       = urlParams.get('price')     || 'Rp 25.000';
-    const subtotal    = urlParams.get('subtotal')  || 'Rp 5.000.000';
-
-    const sellersMap = {
-      '1': 'PT Telur Makmur',
-      '2': 'Mitra Unggas Sejahtera',
-      '3': 'Tunas Farm',
-      '4': 'Berkah Telur Utama',
-      '5': 'Ternak Mandiri',
-      '6': 'Sinar Jaya Poultry'
-    };
-
-    const company = sellersMap[sellerParam] || 'PT Telur Makmur';
-    const hasParams = urlParams.get('seller') || urlParams.get('product');
-
-    // Fill dynamic values
-    document.getElementById('supplierName').innerText = hasParams ? company : '—';
-    document.getElementById('productName').innerText  = hasParams ? product : '—';
-
-    // Jumlah: "200 kg @ Rp 25.000 / kg"
-    const qtyClean = qty.replace(/\s*kg/i, '').trim() || '—';
-    document.getElementById('jumlahInfo').innerText  = hasParams
-      ? qtyClean + ' kg @ ' + price + ' / kg'
-      : '—';
-    document.getElementById('totalHarga').innerText  = hasParams ? subtotal : '—';
-    const orderParam = urlParams.get('order');
-    if (orderParam) {
-      const badge = document.getElementById('orderIdBadge');
-      if (badge) badge.innerText = orderParam;
-    }
+    // Nilai diisi dari API (?id=); tanpa id, biarkan '—'.
     // Kalau dibuka dengan ?id=, ambil order asli dari database.
     if (orderIdParam) {
       fetch('../api/order/detail.php?id=' + encodeURIComponent(orderIdParam))
@@ -858,6 +826,7 @@
           var o = res.data.order;
           var badge = document.getElementById('orderIdBadge');
           if (badge) badge.innerText = '#' + o.id;
+          document.getElementById('supplierName').innerText = o.nama_perusahaan || '—';
           document.getElementById('productName').innerText = o.nama_produk;
           document.getElementById('jumlahInfo').innerText = o.jumlah_kg + ' kg @ Rp ' + Number(o.harga_satuan).toLocaleString('id-ID') + ' / kg';
           document.getElementById('totalHarga').innerText = 'Rp ' + Number(o.total_bayar).toLocaleString('id-ID');
