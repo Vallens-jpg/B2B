@@ -414,13 +414,13 @@
     <div class="pd-metrics-row">
       <div class="pd-metric-card">
         <span class="pd-metric-label">Total permintaan</span>
-        <div class="pd-metric-val">12</div>
-        <span class="pd-metric-sub">3 permintaan baru hari ini</span>
+        <div class="pd-metric-val" id="metricTotal">0</div>
+        <span class="pd-metric-sub" id="metricBaruHariIni">—</span>
       </div>
 
       <div class="pd-metric-card">
         <span class="pd-metric-label">Disetujui</span>
-        <div class="pd-metric-val">8</div>
+        <div class="pd-metric-val" id="metricDisetujui">0</div>
         <span class="pd-metric-sub">Siap diproses pembayaran</span>
       </div>
     </div>
@@ -443,117 +443,7 @@
             </tr>
           </thead>
           <tbody id="permintaanTableBody">
-
-            <!-- Row 1 -->
-            <tr class="permintaan-row" data-id="PRJ-2401" data-peternak="PT Telur Makmur" data-produk="Telur Ayam Grade A">
-              <td class="col-no">PRJ-2401</td>
-              <td class="col-peternak">
-                <div class="peternak-cell">
-                  <div class="peternak-avatar">TM</div>
-                  <span class="peternak-name">PT Telur Makmur</span>
-                </div>
-              </td>
-              <td class="col-produk">Telur Ayam Grade A</td>
-              <td class="col-jumlah">500 kg</td>
-              <td class="col-total">Rp 9.000.000</td>
-              <td class="col-status">
-                <span class="badge-disetujui">Disetujui</span>
-              </td>
-              <td class="col-aksi">
-                <a href="checkout.php?seller=1&product=Telur%20Ayam%20Grade%20A&qty=500%20kg&subtotal=Rp%209.000.000" class="btn-ajukan-pesanan">
-                  Ajukan Pesanan
-                </a>
-              </td>
-            </tr>
-
-            <!-- Row 2 -->
-            <tr class="permintaan-row" data-id="PRJ-2402" data-peternak="Mitra Unggas Sejahtera" data-produk="Telur Ayam Grade B">
-              <td class="col-no">PRJ-2402</td>
-              <td class="col-peternak">
-                <div class="peternak-cell">
-                  <div class="peternak-avatar">MU</div>
-                  <span class="peternak-name">Mitra Unggas Sejahtera</span>
-                </div>
-              </td>
-              <td class="col-produk">Telur Ayam Grade B</td>
-              <td class="col-jumlah">300 kg</td>
-              <td class="col-total">Rp 4.800.000</td>
-              <td class="col-status">
-                <span class="badge-disetujui">Disetujui</span>
-              </td>
-              <td class="col-aksi">
-                <a href="checkout.php?seller=2&product=Telur%20Ayam%20Grade%20B&qty=300%20kg&subtotal=Rp%204.800.000" class="btn-ajukan-pesanan">
-                  Ajukan Pesanan
-                </a>
-              </td>
-            </tr>
-
-            <!-- Row 3 -->
-            <tr class="permintaan-row" data-id="PRJ-2403" data-peternak="Tunas Farm" data-produk="Telur Ayam Grade C">
-              <td class="col-no">PRJ-2403</td>
-              <td class="col-peternak">
-                <div class="peternak-cell">
-                  <div class="peternak-avatar">TF</div>
-                  <span class="peternak-name">Tunas Farm</span>
-                </div>
-              </td>
-              <td class="col-produk">Telur Ayam Grade C</td>
-              <td class="col-jumlah">200 kg</td>
-              <td class="col-total">Rp 2.800.000</td>
-              <td class="col-status">
-                <span class="badge-disetujui">Disetujui</span>
-              </td>
-              <td class="col-aksi">
-                <a href="checkout.php?seller=3&product=Telur%20Ayam%20Grade%20C&qty=200%20kg&subtotal=Rp%202.800.000" class="btn-ajukan-pesanan">
-                  Ajukan Pesanan
-                </a>
-              </td>
-            </tr>
-
-            <!-- Row 4 -->
-            <tr class="permintaan-row" data-id="PRJ-2404" data-peternak="Berkah Telur Utama" data-produk="Telur Ayam Kampung">
-              <td class="col-no">PRJ-2404</td>
-              <td class="col-peternak">
-                <div class="peternak-cell">
-                  <div class="peternak-avatar">BT</div>
-                  <span class="peternak-name">Berkah Telur Utama</span>
-                </div>
-              </td>
-              <td class="col-produk">Telur Ayam Kampung</td>
-              <td class="col-jumlah">150 kg</td>
-              <td class="col-total">Rp 3.750.000</td>
-              <td class="col-status">
-                <span class="badge-disetujui">Disetujui</span>
-              </td>
-              <td class="col-aksi">
-                <a href="checkout.php?seller=4&product=Telur%20Ayam%20Kampung&qty=150%20kg&subtotal=Rp%203.750.000" class="btn-ajukan-pesanan">
-                  Ajukan Pesanan
-                </a>
-              </td>
-            </tr>
-
-            <!-- Row 5 -->
-            <tr class="permintaan-row" data-id="PRJ-2405" data-peternak="Ternak Mandiri" data-produk="Telur Omega">
-              <td class="col-no">PRJ-2405</td>
-              <td class="col-peternak">
-                <div class="peternak-cell">
-                  <div class="peternak-avatar">TK</div>
-                  <span class="peternak-name">Ternak Mandiri</span>
-                </div>
-              </td>
-              <td class="col-produk">Telur Omega</td>
-              <td class="col-jumlah">100 kg</td>
-              <td class="col-total">Rp 3.200.000</td>
-              <td class="col-status">
-                <span class="badge-disetujui">Disetujui</span>
-              </td>
-              <td class="col-aksi">
-                <a href="checkout.php?seller=5&product=Telur%20Omega&qty=100%20kg&subtotal=Rp%203.200.000" class="btn-ajukan-pesanan">
-                  Ajukan Pesanan
-                </a>
-              </td>
-            </tr>
-
+            <tr><td colspan="7" style="text-align:center;padding:1rem;">Memuat permintaan…</td></tr>
           </tbody>
         </table>
       </div>
@@ -580,6 +470,61 @@
         }
       });
     }
+
+    // ---- Permintaan disetujui asli dari API (pesanan berstatus diproses) ----
+    (function () {
+      var tbody = document.getElementById('permintaanTableBody');
+      function rupiah(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); }
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      function inisial(nama) {
+        return String(nama || '?').trim().split(/\s+/).slice(0, 2).map(function (w) { return w.charAt(0).toUpperCase(); }).join('') || '?';
+      }
+      fetch('../../api/order/list.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!tbody) return;
+          if (!res || !res.ok || !res.data || !res.data.orders) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:1rem;">Gagal memuat permintaan. Periksa koneksi atau login kembali.</td></tr>';
+            return;
+          }
+          var semua = res.data.orders;
+          var disetujui = semua.filter(function (o) { return o.status === 'diproses'; });
+          var totalEl = document.getElementById('metricTotal');
+          if (totalEl) totalEl.innerText = semua.length;
+          var setujuEl = document.getElementById('metricDisetujui');
+          if (setujuEl) setujuEl.innerText = disetujui.length;
+          var now = new Date();
+          var hariIni = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+          var baru = 0;
+          semua.forEach(function (o) {
+            if (o.created_at && String(o.created_at).slice(0, 10) === hariIni) baru++;
+          });
+          var baruEl = document.getElementById('metricBaruHariIni');
+          if (baruEl) baruEl.innerText = baru + ' permintaan baru hari ini';
+          if (!disetujui.length) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:1rem;">Belum ada permintaan yang disetujui.</td></tr>';
+            return;
+          }
+          tbody.innerHTML = disetujui.map(function (o) {
+            var nomor = '#ORD-2026-' + String(o.id).padStart(3, '0');
+            var perusahaan = o.nama_perusahaan || '-';
+            return '<tr class="permintaan-row" data-id="' + nomor + '" data-peternak="' + escapeHtml(perusahaan) + '" data-produk="' + escapeHtml(o.nama_produk) + '">'
+              + '<td class="col-no">' + nomor + '</td>'
+              + '<td class="col-peternak"><div class="peternak-cell"><div class="peternak-avatar">' + escapeHtml(inisial(perusahaan)) + '</div><span class="peternak-name">' + escapeHtml(perusahaan) + '</span></div></td>'
+              + '<td class="col-produk">' + escapeHtml(o.nama_produk) + '</td>'
+              + '<td class="col-jumlah">' + o.jumlah_kg + ' kg</td>'
+              + '<td class="col-total">' + rupiah(o.total_bayar) + '</td>'
+              + '<td class="col-status"><span class="badge-disetujui">Disetujui</span></td>'
+              + '<td class="col-aksi"><a href="../order_detail.php?id=' + o.id + '" class="btn-ajukan-pesanan">Lihat Detail</a></td>'
+              + '</tr>';
+          }).join('');
+        })
+        .catch(function () {
+          if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:1rem;">Gagal memuat permintaan. Periksa koneksi atau login kembali.</td></tr>';
+        });
+    })();
 
     function toggleNotificationDropdown(e) {
       if (e) e.stopPropagation();

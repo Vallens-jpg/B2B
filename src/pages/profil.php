@@ -277,7 +277,7 @@
           <svg class="bell-icon" viewBox="0 0 24 24">
             <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
           </svg>
-          <span class="notification-badge-red" id="notifBadgeRed">3</span>
+          <span class="notification-badge-red" id="notifBadgeRed" style="display:none">0</span>
         </button>
         <a href="profil.php" class="user-profile-capsule" style="text-decoration: none;">
           <div class="user-avatar-circle">AD</div>
@@ -291,53 +291,8 @@
             <button type="button" class="notif-mark-read" onclick="markAllAsRead(event)">Tandai semua dibaca</button>
           </div>
 
-          <div class="notif-list">
-            <a href="pembeli/permintaan_disetujui.php" class="notif-item unread">
-              <div class="notif-icon-circle green">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title">Permintaan Disetujui</span>
-                  <span class="notif-time">· 5m</span>
-                </div>
-                <p class="notif-item-body">Permintaan pengadaan telur dari PT Telur Makmur telah disetujui.</p>
-              </div>
-            </a>
-
-            <a href="dispute_detail.php" class="notif-item unread">
-              <div class="notif-icon-circle green">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title">Pesan Baru di Dispute #DSP-9021</span>
-                  <span class="notif-item-badge-red">1</span>
-                </div>
-                <p class="notif-item-body">Seller: "Kami sudah mengirim bukti foto ulang..."</p>
-              </div>
-            </a>
-
-            <a href="dispute_list.php" class="notif-item">
-              <div class="notif-icon-circle yellow">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <circle cx="12" cy="12" r="10" stroke="#111827"/>
-                  <line x1="12" y1="8" x2="12" y2="12" stroke="#111827"/>
-                  <line x1="12" y1="16" x2="12.01" y2="16" stroke="#111827"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title dark">Dispute Disetujui · 3j</span>
-                </div>
-                <p class="notif-item-body">Dispute #DSP-8812 telah disetujui. Dana pengembalian sedang diproses.</p>
-              </div>
-            </a>
+          <div class="notif-list" id="ddNotifList">
+            <div class="notif-item"><div class="notif-content"><p class="notif-item-body">Memuat notifikasi…</p></div></div>
           </div>
 
           <div class="notif-footer">
@@ -474,13 +429,55 @@
         e.preventDefault();
         e.stopPropagation();
       }
+      // Simpan ke database supaya tidak kembali setelah muat ulang.
+      fetch('../api/notifikasi/tandai-dibaca.php', { method: 'POST' }).catch(function () {});
       const badgeRed = document.getElementById('notifBadgeRed');
       if (badgeRed) badgeRed.style.display = 'none';
+
+      const badgeItem = document.getElementById('notifBadgeItem');
+      if (badgeItem) badgeItem.style.display = 'none';
 
       document.querySelectorAll('.notif-item.unread').forEach(item => {
         item.classList.remove('unread');
       });
     }
+
+    // ---- Dropdown lonceng dari API notifikasi (riwayat_status) ----
+    (function () {
+      var ddList = document.getElementById('ddNotifList');
+      var badge = document.getElementById('notifBadgeRed');
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      fetch('../api/notifikasi.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!ddList) return;
+          if (!res || !res.ok || !res.data || !res.data.notifikasi || !res.data.notifikasi.length) {
+            ddList.innerHTML = '<div class="notif-item"><div class="notif-content"><p class="notif-item-body">Belum ada notifikasi.</p></div></div>';
+            if (badge) badge.style.display = 'none';
+            return;
+          }
+          var items = res.data.notifikasi;
+          ddList.innerHTML = items.slice(0, 3).map(function (n) {
+            return '<a href="order_detail.php?id=' + n.order_id + '" class="notif-item' + (n.dibaca ? '' : ' unread') + '">'
+              + '<div class="notif-icon-circle green"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg></div>'
+              + '<div class="notif-content"><div class="notif-item-top"><span class="notif-item-title">' + escapeHtml(n.judul) + '</span></div>'
+              + '<p class="notif-item-body">' + escapeHtml(n.isi) + '</p></div></a>';
+          }).join('');
+          var belum = 0;
+          items.forEach(function (n) { if (!n.dibaca) belum++; });
+          if (badge) {
+            if (belum > 0) {
+              badge.innerText = belum;
+              badge.style.display = '';
+            } else {
+              badge.style.display = 'none';
+            }
+          }
+        })
+        .catch(function () { /* biarkan placeholder bila API gagal */ });
+    })();
 
     document.addEventListener('click', function (e) {
       const dd = document.getElementById('notifDropdown');
