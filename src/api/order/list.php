@@ -13,9 +13,13 @@ if (!$user || !in_array($user['role'] ?? '', ['pembeli', 'perusahaan'], true)) {
 try {
     if (($user['role'] ?? '') === 'perusahaan') {
         // Perusahaan: order atas produk miliknya (sinkron dengan pembeli).
+        // Kolom escrow ikut disertakan (LEFT JOIN) untuk saldo pencairan di
+        // dashboard perusahaan: siap cair = dp_cair + sisa_cair,
+        // tertahan = jumlah_ditahan - dp_cair - sisa_cair.
         $stmt = db()->prepare(
-            'SELECT o.id, o.jumlah_kg, o.harga_satuan, o.total, o.fee, o.status, o.created_at, p.nama AS nama_produk, u.nama AS nama_buyer ' .
-            'FROM orders o JOIN produk p ON p.id = o.produk_id JOIN users u ON u.id = o.buyer_id WHERE p.perusahaan_id = ? ORDER BY o.id DESC LIMIT 50'
+            'SELECT o.id, o.jumlah_kg, o.harga_satuan, o.total, o.fee, o.status, o.created_at, p.nama AS nama_produk, u.nama AS nama_buyer, ' .
+            'e.jumlah_ditahan, e.dp_cair, e.sisa_cair, e.status AS escrow_status ' .
+            'FROM orders o JOIN produk p ON p.id = o.produk_id JOIN users u ON u.id = o.buyer_id LEFT JOIN escrow e ON e.order_id = o.id WHERE p.perusahaan_id = ? ORDER BY o.id DESC LIMIT 50'
         );
         $stmt->execute([(int) $user['id']]);
     } else {
@@ -37,5 +41,10 @@ foreach ($orders as &$o) {
     $o['total'] = (float) $o['total'];
     $o['fee'] = (float) $o['fee'];
     $o['total_bayar'] = $o['total'] + $o['fee'];
+    // Kolom escrow hanya ada di cabang perusahaan; cabang pembeli
+    // mengembalikan null (isset aman untuk key yang tidak ada).
+    $o['jumlah_ditahan'] = isset($o['jumlah_ditahan']) ? (float) $o['jumlah_ditahan'] : null;
+    $o['dp_cair'] = isset($o['dp_cair']) ? (float) $o['dp_cair'] : null;
+    $o['sisa_cair'] = isset($o['sisa_cair']) ? (float) $o['sisa_cair'] : null;
 }
 json_ok(['orders' => $orders]);

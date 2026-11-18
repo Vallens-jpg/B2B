@@ -5290,7 +5290,7 @@
             </div>
             <div>
               <span class="balance-label">Saldo Siap Cair</span>
-              <div class="balance-value" id="saldoSiapCair">Rp 45.000.000</div>
+              <div class="balance-value" id="saldoSiapCair">Rp 0</div>
             </div>
           </div>
 
@@ -5303,7 +5303,7 @@
             </div>
             <div>
               <span class="balance-label">Saldo Tertahan</span>
-              <div class="balance-value" id="saldoTertahan">Rp 12.500.000</div>
+              <div class="balance-value" id="saldoTertahan">Rp 0</div>
             </div>
           </div>
         </section>
@@ -5318,8 +5318,8 @@
               <label class="pencairan-label">Rekening Tujuan</label>
               <div class="bank-account-box">
                 <div>
-                  <div class="bank-name">BCA••••1234</div>
-                  <div class="bank-owner">A/N Staplr Indonesia</div>
+                  <div class="bank-name">—</div>
+                  <div class="bank-owner">—</div>
                 </div>
                 <span class="badge-utama">
                   <span class="status-dot"></span>
@@ -5330,12 +5330,12 @@
               <div class="pencairan-field-grid">
                 <div class="pencairan-field">
                   <label class="pencairan-label" for="nominalPencairan">Nominal Pencairan</label>
-                  <input class="pencairan-input" id="nominalPencairan" type="text" value="Rp 10.000.000" oninput="updateRingkasanPencairan()" onblur="formatNominalPencairan()">
-                  <span class="field-hint" id="maksPencairanHint">Maks. Rp 45.000.000</span>
+                  <input class="pencairan-input" id="nominalPencairan" type="text" value="" oninput="updateRingkasanPencairan()" onblur="formatNominalPencairan()">
+                  <span class="field-hint" id="maksPencairanHint">Maks. Rp 0</span>
                 </div>
                 <div class="pencairan-field">
                   <label class="pencairan-label" for="catatanPencairan">Catatan</label>
-                  <input class="pencairan-input" id="catatanPencairan" type="text" value="Pencairan rutin mingguan">
+                  <input class="pencairan-input" id="catatanPencairan" type="text" value="">
                 </div>
               </div>
 
@@ -5351,11 +5351,11 @@
             <h2 class="ringkasan-pencairan-title">Ringkasan Pencairan</h2>
             <div class="ringkasan-row">
               <span class="label">Saldo siap cair</span>
-              <span class="value">Rp 45.000.000</span>
+              <span class="value" id="ringkasanSaldo">Rp 0</span>
             </div>
             <div class="ringkasan-row">
               <span class="label">Nominal pencairan</span>
-              <span class="value" id="ringkasanNominal">Rp 10.000.000</span>
+              <span class="value" id="ringkasanNominal">Rp 0</span>
             </div>
             <div class="ringkasan-row">
               <span class="label">Biaya admin</span>
@@ -5363,12 +5363,12 @@
             </div>
             <div class="ringkasan-row">
               <span class="label">Sisa saldo siap cair</span>
-              <span class="value" id="ringkasanSisa">Rp 35.000.000</span>
+              <span class="value" id="ringkasanSisa">Rp 0</span>
             </div>
             <div class="ringkasan-divider"></div>
             <div class="ringkasan-total">
               <span>Total pencairan</span>
-              <strong id="ringkasanTotal">Rp 10.000.000</strong>
+              <strong id="ringkasanTotal">Rp 0</strong>
             </div>
           </aside>
         </div>
@@ -5377,7 +5377,7 @@
         <section class="riwayat-pencairan-card" id="riwayatPencairanCard">
           <header class="riwayat-pencairan-header">
             <h2 class="riwayat-pencairan-title">Riwayat Pencairan</h2>
-            <button class="btn-unduh-laporan" type="button" onclick="showToast('Laporan pencairan berhasil diunduh')">Unduh Laporan</button>
+            <button class="btn-unduh-laporan" type="button" onclick="showToast('Belum ada riwayat pencairan untuk diunduh')">Unduh Laporan</button>
           </header>
 
           <div class="table-wrap">
@@ -5394,28 +5394,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td class="order-code">PD-2027-014</td>
-                  <td>BCA •••• 1234</td>
-                  <td>Manual</td>
-                  <td class="order-amount">Rp 10.000.000</td>
-                  <td><span class="status-badge diproses">• Diproses</span></td>
-                  <td class="order-date">12 Okt 2027, 10:00</td>
-                </tr>
-                <tr>
-                  <td class="order-code">PD-2027-013</td>
-                  <td>BNI •••• 8891</td>
-                  <td>Manual</td>
-                  <td class="order-amount">Rp 5.000.000</td>
-                  <td><span class="status-badge selesai">• Berhasil</span></td>
-                  <td class="order-date">11 Okt 2027, 14:30</td>
-                </tr>
-                <tr>
-                  <td class="order-code">PD-2027-011</td>
-                  <td>Mandiri •••• 4421</td>
-                  <td>Manual</td>
-                  <td class="order-amount">Rp 3.000.000</td>
-                  <td><span class="status-badge gagal">• Gagal</span></td>
-                  <td class="order-date">09 Okt 2027, 16:45</td>
+                  <td colspan="6" style="text-align: center; color: var(--muted, #888);">Belum ada riwayat pencairan — pencairan belum dicatat di sistem.</td>
                 </tr>
               </tbody>
             </table>
@@ -5591,15 +5570,15 @@
       <div class="pencairan-review-rows">
         <div class="pencairan-review-row">
           <span class="label">Rekening Tujuan</span>
-          <span class="value">BCA •••• 1234<small>A/N Staplr Indonesia</small></span>
+          <span class="value">—</span>
         </div>
         <div class="pencairan-review-row">
           <span class="label">Nominal Pencairan</span>
-          <span class="value amount" id="pencairanReviewNominal">Rp 10.000.000</span>
+          <span class="value amount" id="pencairanReviewNominal">Rp 0</span>
         </div>
         <div class="pencairan-review-row">
           <span class="label">Catatan</span>
-          <span class="value" id="pencairanReviewCatatan">Pencairan rutin mingguan</span>
+          <span class="value" id="pencairanReviewCatatan">—</span>
         </div>
         <div class="pencairan-review-row">
           <span class="label">Biaya Admin</span>
@@ -5607,7 +5586,7 @@
         </div>
       </div>
 
-      <p class="pencairan-review-note">Pastikan rekening tujuan sudah benar. Pencairan yang sudah dikonfirmasi tidak dapat dibatalkan.</p>
+      <p class="pencairan-review-note">Pencairan belum dapat dicatat — belum ada API pencairan di sistem.</p>
 
       <div class="pencairan-review-actions">
         <button class="btn-pencairan-secondary" type="button" onclick="tutupTinjauPencairan()">Batal</button>
@@ -5629,9 +5608,9 @@
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
       </div>
-      <h2 class="pencairan-modal-title" id="pencairanModalTitle">Pencairan Dana Berhasil!</h2>
-      <div class="pencairan-modal-amount" id="pencairanModalNominal">Rp 10.000.000</div>
-      <p class="pencairan-modal-note">Dana akan diteruskan ke rekening <span id="pencairanModalRekening">BCA •••• 1234</span> dalam maksimal 1×24 jam kerja.</p>
+      <h2 class="pencairan-modal-title" id="pencairanModalTitle">Pencairan Belum Dapat Dicatat</h2>
+      <div class="pencairan-modal-amount" id="pencairanModalNominal">Rp 0</div>
+      <p class="pencairan-modal-note">Pencairan belum dapat dicatat — belum ada API pencairan di sistem.</p>
       <button class="btn-pencairan-modal-close" type="button" onclick="tutupModalPencairan()">Tutup</button>
     </div>
   </div>
@@ -7035,12 +7014,21 @@
               statusDb: o.status,
               catatan: 'Total bayar Rp ' + Number(o.total_bayar).toLocaleString('id-ID'),
               pembayaran: o.total_bayar,
+              // Data escrow dari api/order/list.php (LEFT JOIN escrow).
+              // Dipakai hitungSaldoEscrow() untuk saldo pencairan.
+              escrow: (o.jumlah_ditahan != null) ? {
+                jumlah_ditahan: Number(o.jumlah_ditahan) || 0,
+                dp_cair: Number(o.dp_cair) || 0,
+                sisa_cair: Number(o.sisa_cair) || 0,
+                status: o.escrow_status || null
+              } : null,
               items: [{ produk: o.nama_produk, qty: o.jumlah_kg, harga: o.harga_satuan }]
             };
           });
           renderPesananTable();
           bangunDashboard();
           bangunRiwayatDariPesanan();
+          hitungSaldoEscrow();
         })
         .catch(function () { /* biarkan tabel kosong kalau API gagal dimuat */ });
     }
@@ -7407,8 +7395,45 @@
     /* --------------------------------------------------------------------------
        F4. KEUANGAN / PENCAIRAN DANA LOGIC
        -------------------------------------------------------------------------- */
-    const SALDO_SIAP_CAIR = 45000000;
+    // Saldo pencairan dari tabel escrow (api/order/list.php, dipakai ulang
+    // dari PESANAN_DATA). Aturannya sama dengan api/order/kirim.php dan
+    // terima.php: DP 50% cair saat dikirim, sisanya cair saat selesai.
+    // Siap cair = jumlah yang sudah dicairkan escrow (dp_cair + sisa_cair).
+    // Tertahan = jumlah yang masih ditahan escrow
+    // (jumlah_ditahan - dp_cair - sisa_cair) untuk order yang sudah dibayar
+    // dan dananya belum dikembalikan. Order 'menunggu_bayar' belum dibayar
+    // jadi tidak dihitung; escrow 'kembali' (dibatalkan / putusan uang
+    // kembali) dananya sudah kembali ke pembeli. Penarikan dana sendiri
+    // belum tercatat di sistem (belum ada tabel/API pencairan), jadi saldo
+    // siap cair di sini adalah total yang sudah dicairkan escrow.
+    let saldoSiapCair = 0;
     let nominalPencairanAktif = 0;
+
+    function hitungSaldoEscrow() {
+      var siap = 0;
+      var tertahan = 0;
+      PESANAN_DATA.forEach(function (o) {
+        if (!o.escrow || o.statusDb === 'menunggu_bayar') return;
+        var ditahan = Number(o.escrow.jumlah_ditahan) || 0;
+        var dp = Number(o.escrow.dp_cair) || 0;
+        var sisa = Number(o.escrow.sisa_cair) || 0;
+        siap += dp + sisa;
+        if (o.escrow.status === 'ditahan' || o.escrow.status === 'cair_dp') {
+          tertahan += Math.max(0, ditahan - dp - sisa);
+        }
+      });
+      saldoSiapCair = Math.round(siap);
+      tertahan = Math.round(tertahan);
+      var elSiap = document.getElementById('saldoSiapCair');
+      if (elSiap) elSiap.textContent = formatRupiah(saldoSiapCair);
+      var elTertahan = document.getElementById('saldoTertahan');
+      if (elTertahan) elTertahan.textContent = formatRupiah(tertahan);
+      var elRingkasan = document.getElementById('ringkasanSaldo');
+      if (elRingkasan) elRingkasan.textContent = formatRupiah(saldoSiapCair);
+      var elMaks = document.getElementById('maksPencairanHint');
+      if (elMaks) elMaks.textContent = 'Maks. ' + formatRupiah(saldoSiapCair);
+      updateRingkasanPencairan();
+    }
 
     function formatRupiah(nilai) {
       return 'Rp ' + Number(nilai || 0).toLocaleString('id-ID');
@@ -7424,7 +7449,7 @@
       if (!input) return;
 
       const nominal = parseRupiah(input.value);
-      const sisa = Math.max(SALDO_SIAP_CAIR - nominal, 0);
+      const sisa = Math.max(saldoSiapCair - nominal, 0);
 
       const elNominal = document.getElementById('ringkasanNominal');
       const elSisa = document.getElementById('ringkasanSisa');
@@ -7454,7 +7479,7 @@
         return;
       }
 
-      if (nominal > SALDO_SIAP_CAIR) {
+      if (nominal > saldoSiapCair) {
         showToast('Nominal melebihi saldo siap cair');
         if (input) input.focus();
         return;
@@ -7505,22 +7530,14 @@
     }
 
     function konfirmasiPencairan() {
-      const nominal = nominalPencairanAktif;
-
-      if (nominal <= 0) {
-        showToast('Nominal pencairan tidak valid');
-        return;
-      }
-
+      // Pencairan belum bisa dicatat: belum ada tabel/API pencairan di
+      // sistem, jadi jangan tampilkan modal sukses palsu. Form tinjau tetap
+      // bisa dibuka untuk memeriksa nominal terhadap saldo asli.
       const reviewOverlay = document.getElementById('pencairanReviewOverlay');
       if (reviewOverlay) reviewOverlay.classList.remove('show');
-
-      const modalNominal = document.getElementById('pencairanModalNominal');
-      if (modalNominal) modalNominal.textContent = formatRupiah(nominal);
-
-      const modal = document.getElementById('pencairanModalOverlay');
-      if (modal) modal.classList.add('show');
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = '';
+      nominalPencairanAktif = 0;
+      showToast('Pencairan belum dapat dicatat — belum ada API pencairan di sistem');
     }
 
     function tutupModalPencairan() {
@@ -7530,7 +7547,7 @@
 
       nominalPencairanAktif = 0;
       kembaliKeDetailPencairan();
-      showToast('Pencairan dana berhasil diajukan');
+      showToast('Pencairan belum dicatat — belum ada API pencairan di sistem');
     }
 
     document.addEventListener('keydown', event => {
