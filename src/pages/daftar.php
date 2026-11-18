@@ -442,7 +442,7 @@
             <label class="tab-btn" for="tab-perusahaan"><span class="tab-dot">•</span> Perusahaan</label>
           </div>
 
-          <form class="form-grid" id="registerForm" action="verifikasi_otp.php" method="get">
+          <form class="form-grid" id="registerForm">
             <div class="field">
               <label class="field-label" for="full-name">Nama Lengkap</label>
               <input class="field-input" id="full-name" name="nama" placeholder="Masukkan nama lengkap" required>
@@ -450,23 +450,6 @@
             <div class="field">
               <label class="field-label" for="email">Email</label>
               <input class="field-input" id="email" name="email" type="email" placeholder="nama@email.com" required>
-            </div>
-            <div class="field">
-              <label class="field-label" for="phone">No Hp</label>
-              <input class="field-input" id="phone" name="phone" placeholder="08xx xxxx xxxx" required>
-            </div>
-            <div class="field">
-              <label class="field-label" for="address">Alamat</label>
-              <input class="field-input" id="address" name="address" placeholder="Masukkan alamat lengkap" required>
-            </div>
-            <!-- Field khusus Perusahaan - dikontrol CSS -->
-            <div class="field company-field" id="field-nib">
-              <label class="field-label" for="nib">Nomor Induk Berusaha (NIB)</label>
-              <input class="field-input" id="nib" name="nib" placeholder="Masukkan NIB">
-            </div>
-            <div class="field company-field" id="field-npwp">
-              <label class="field-label" for="npwp">NPWP Badan Usaha</label>
-              <input class="field-input" id="npwp" name="npwp" placeholder="Masukkan NPWP">
             </div>
             <div class="field">
               <label class="field-label" for="password">Kata Sandi</label>
@@ -482,6 +465,38 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // Pendaftaran asli lewat api/auth/register.php (role dari tab yang aktif).
+    document.getElementById('registerForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const nama = document.getElementById('full-name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const role = document.getElementById('tab-perusahaan').checked ? 'perusahaan' : 'pembeli';
+      if (!nama || !email || !password) {
+        alert('Nama, email, dan password wajib diisi.');
+        return;
+      }
+      try {
+        const res = await fetch('../api/auth/register.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nama: nama, email: email, password: password, role: role })
+        });
+        const data = await res.json();
+        if (!data.ok) {
+          alert(data.error || 'Pendaftaran gagal.');
+          return;
+        }
+        window.location.href = role === 'perusahaan'
+          ? 'perusahaan/dashboard_perusahaan.php'
+          : 'pembeli/dashboard_buyer.php';
+      } catch (err) {
+        alert('Gagal menghubungi server.');
+      }
+    });
+  </script>
 </body>
 
 </html>
