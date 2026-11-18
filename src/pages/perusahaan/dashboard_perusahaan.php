@@ -4752,7 +4752,7 @@
         <div class="profile-dropdown" id="profileDropdown">
           <div class="dropdown-header">
             <div class="dropdown-user-name">-</div>
-            <div class="dropdown-user-role">Mitra Peternak Terverifikasi</div>
+            <div class="dropdown-user-role">Mitra Peternak</div>
           </div>
           <a href="#profil" class="dropdown-item" id="dropdownProfil" onclick="switchMainView('profil', event)">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -5019,7 +5019,7 @@
             <div class="profile-summary-email">-</div>
             <span class="profile-verified-badge">
               <span class="profile-verified-dot"></span>
-              Supplier Terverifikasi
+              Mitra Peternak
             </span>
           </aside>
 
@@ -5059,7 +5059,7 @@
                       <line x1="10" y1="9" x2="8" y2="9"></line>
                     </svg>
                     <span id="profileNibName">File NIB</span>
-                    <input type="file" id="profileNibInput" hidden accept=".pdf,image/*" onchange="if(this.files[0]) document.getElementById('profileNibName').textContent = this.files[0].name">
+                    <input type="file" id="profileNibInput" hidden accept=".pdf,image/*" onchange="if(this.files[0]) { this.value=''; showToast('Upload NIB belum tersedia — dokumen belum tersimpan'); }">
                   </label>
                 </div>
                 <div class="profile-field">
@@ -5073,7 +5073,7 @@
                       <line x1="10" y1="9" x2="8" y2="9"></line>
                     </svg>
                     <span id="profileNpwpName">File NPWP</span>
-                    <input type="file" id="profileNpwpInput" hidden accept=".pdf,image/*" onchange="if(this.files[0]) document.getElementById('profileNpwpName').textContent = this.files[0].name">
+                    <input type="file" id="profileNpwpInput" hidden accept=".pdf,image/*" onchange="if(this.files[0]) { this.value=''; showToast('Upload NPWP belum tersedia — dokumen belum tersimpan'); }">
                   </label>
                 </div>
               </div>
@@ -5725,7 +5725,7 @@
               <img src="../../assets/img/logo-staplr-transparent.png" alt="Staplr">
               <div>
                 <div class="inv-brand-name">-</div>
-                <div class="inv-brand-tag">Mitra Peternak Terverifikasi</div>
+                <div class="inv-brand-tag">Mitra Peternak</div>
               </div>
             </div>
             <div class="inv-doc">
