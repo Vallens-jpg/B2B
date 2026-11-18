@@ -5433,9 +5433,9 @@
             <div class="riwayat-filter-group">
               <span class="riwayat-filter-label">Rentang Tanggal:</span>
               <div class="riwayat-date-range">
-                <input class="riwayat-date-input" id="riwayatTanggalMulai" type="date" value="2026-09-01" max="2027-12-31" aria-label="Tanggal mulai" onchange="renderRiwayatTable()">
+                <input class="riwayat-date-input" id="riwayatTanggalMulai" type="date" max="2027-12-31" aria-label="Tanggal mulai" onchange="renderRiwayatTable()">
                 <span class="riwayat-date-sep">–</span>
-                <input class="riwayat-date-input" id="riwayatTanggalAkhir" type="date" value="2026-10-12" max="2027-12-31" aria-label="Tanggal akhir" onchange="renderRiwayatTable()">
+                <input class="riwayat-date-input" id="riwayatTanggalAkhir" type="date" max="2027-12-31" aria-label="Tanggal akhir" onchange="renderRiwayatTable()">
               </div>
             </div>
 
@@ -5451,8 +5451,8 @@
 
           <div class="riwayat-tabs">
             <button class="riwayat-tab active" type="button" onclick="filterRiwayat('semua', this)">Semua Status</button>
-            <button class="riwayat-tab" type="button" onclick="filterRiwayat('selesai', this)">Selesai (177)</button>
-            <button class="riwayat-tab" type="button" onclick="filterRiwayat('dibatalkan', this)">Dibatalkan (7)</button>
+            <button class="riwayat-tab" type="button" onclick="filterRiwayat('selesai', this)">Selesai (0)</button>
+            <button class="riwayat-tab" type="button" onclick="filterRiwayat('dibatalkan', this)">Dibatalkan (0)</button>
           </div>
 
           <section class="riwayat-card">
@@ -5483,7 +5483,7 @@
                 <h2 class="riwayat-detail-title" id="riwayatDetailTitle">Rincian Transaksi Selesai</h2>
                 <span class="riwayat-status-pill" id="riwayatDetailStatus">• Selesai · 11 Okt 2026</span>
               </div>
-              <div class="riwayat-detail-id" id="riwayatDetailId">#TRX-2026-088</div>
+              <div class="riwayat-detail-id" id="riwayatDetailId">-</div>
             </div>
 
             <div class="riwayat-detail-actions">
@@ -5505,15 +5505,15 @@
                 <div class="riwayat-info-grid">
                   <div>
                     <div class="riwayat-info-label">Pembeli</div>
-                    <div class="riwayat-info-value" id="riwayatDetailPembeli">PT Boga Jaya</div>
+                    <div class="riwayat-info-value" id="riwayatDetailPembeli">-</div>
                   </div>
                   <div>
                     <div class="riwayat-info-label">Alamat Kirim</div>
-                    <div class="riwayat-info-value" id="riwayatDetailAlamat">Jl. Raya Semarang</div>
+                    <div class="riwayat-info-value" id="riwayatDetailAlamat">-</div>
                   </div>
                   <div>
                     <div class="riwayat-info-label">Tanggal Pesan</div>
-                    <div class="riwayat-info-value" id="riwayatDetailTanggalPesan">05 Okt 2026</div>
+                    <div class="riwayat-info-value" id="riwayatDetailTanggalPesan">-</div>
                   </div>
                 </div>
               </section>
@@ -5539,23 +5539,27 @@
                 <h3 class="riwayat-dcard-title">Ringkasan Pembayaran</h3>
                 <div class="riwayat-sum-row">
                   <span>Subtotal</span>
-                  <span class="value" id="riwayatDetailSubtotal">Rp 11.500.000</span>
+                  <span class="value" id="riwayatDetailSubtotal">Rp 0</span>
                 </div>
                 <div class="riwayat-sum-row">
                   <span>Ongkos Kirim</span>
-                  <span class="value" id="riwayatDetailOngkir">Rp 300.000</span>
+                  <span class="value" id="riwayatDetailOngkir">Rp 0</span>
+                </div>
+                <div class="riwayat-sum-row">
+                  <span>Biaya Layanan (2,5%)</span>
+                  <span class="value" id="riwayatDetailFee">Rp 0</span>
                 </div>
                 <div class="riwayat-sum-divider"></div>
                 <div class="riwayat-sum-total">
                   <span>Total Pembayaran</span>
-                  <strong id="riwayatDetailTotal">Rp 11.800.000</strong>
+                  <strong id="riwayatDetailTotal">Rp 0</strong>
                 </div>
               </section>
 
               <section class="riwayat-dcard">
                 <h3 class="riwayat-dcard-title">Catatan / Bukti Terima</h3>
                 <span class="riwayat-terima-badge" id="riwayatDetailTerimaBadge">• Terkirim &amp; diterima</span>
-                <p class="riwayat-terima-note" id="riwayatDetailTerima">Diterima oleh: Abi Supir pada 11/10/2026</p>
+                <p class="riwayat-terima-note" id="riwayatDetailTerima">-</p>
               </section>
             </aside>
           </div>
@@ -5746,18 +5750,18 @@
             </div>
             <div class="inv-doc">
               <div class="inv-doc-title">INVOICE</div>
-              <div class="inv-doc-no" id="invNomor">INV/2026/088</div>
+              <div class="inv-doc-no" id="invNomor">-</div>
             </div>
           </div>
 
           <div class="inv-meta">
             <div>
               <div class="inv-label">Tanggal Invoice</div>
-              <div class="inv-value" id="invTanggal">11 Okt 2026</div>
+              <div class="inv-value" id="invTanggal">-</div>
             </div>
             <div>
               <div class="inv-label">Metode Pembayaran</div>
-              <div class="inv-value" id="invMetode">Transfer Bank</div>
+              <div class="inv-value" id="invMetode">-</div>
             </div>
             <div>
               <div class="inv-label">Status Pembayaran</div>
@@ -5768,8 +5772,8 @@
           <div class="inv-parties">
             <div class="inv-party-box">
               <div class="inv-label">Ditagihkan Kepada</div>
-              <div class="inv-party-name" id="invPembeli">PT Boga Jaya</div>
-              <div class="inv-party-line" id="invAlamat">Jl. Raya Semarang</div>
+              <div class="inv-party-name" id="invPembeli">-</div>
+              <div class="inv-party-line" id="invAlamat">-</div>
             </div>
             <div class="inv-party-box">
               <div class="inv-label">Penjual</div>
@@ -5794,21 +5798,25 @@
             <div class="inv-summary-box">
               <div class="inv-summary-row">
                 <span>Subtotal</span>
-                <span id="invSubtotal">Rp 11.500.000</span>
+                <span id="invSubtotal">Rp 0</span>
               </div>
               <div class="inv-summary-row">
                 <span>Ongkos Kirim</span>
-                <span id="invOngkir">Rp 300.000</span>
+                <span id="invOngkir">Rp 0</span>
+              </div>
+              <div class="inv-summary-row">
+                <span>Biaya Layanan (2,5%)</span>
+                <span id="invFee">Rp 0</span>
               </div>
               <div class="inv-summary-divider"></div>
               <div class="inv-summary-total">
                 <span>Total Pembayaran</span>
-                <strong id="invTotal">Rp 11.800.000</strong>
+                <strong id="invTotal">Rp 0</strong>
               </div>
             </div>
           </div>
 
-          <div class="inv-note" id="invCatatan">Diterima oleh: Abi Supir pada 11/10/2026</div>
+          <div class="inv-note" id="invCatatan">-</div>
 
           <div class="inv-sign">
             <div class="inv-sign-note">
@@ -6960,6 +6968,7 @@
           });
           renderPesananTable();
           bangunDashboard();
+          bangunRiwayatDariPesanan();
         })
         .catch(function () { /* biarkan tabel kosong kalau API gagal dimuat */ });
     }
@@ -7463,92 +7472,81 @@
     /* --------------------------------------------------------------------------
        F5. RIWAYAT PENJUALAN LOGIC
        -------------------------------------------------------------------------- */
-    let RIWAYAT_DATA = [
-      {
-        id: '#TRX-2026-088', iso: '2026-10-11', tglSelesai: '11 Okt 2026', pembeli: 'PT Boga Jaya', alamat: 'Jl. Raya Semarang',
-        tglPesan: '05 Okt 2026', metode: 'Transfer Bank', status: 'selesai',
-        items: [{ produk: 'Telur Ayam', qty: 500, harga: 23000 }],
-        ongkir: 300000, totalAkhir: 'Rp 11.500.000',
-        terima: 'Diterima oleh: Abi Supir pada 11/10/2026'
-      },
-      {
-        id: '#TRX-2026-085', iso: '2026-10-10', tglSelesai: '10 Okt 2026', pembeli: 'Rira W.', alamat: 'Jl. Kebon Jeruk No. 4, Jakarta Barat',
-        tglPesan: '04 Okt 2026', metode: 'Transfer Bank', status: 'selesai',
-        items: [{ produk: 'Telur Ayam', qty: 500, harga: 24000 }],
-        ongkir: 300000, totalAkhir: 'Rp 12.000.000',
-        terima: 'Diterima oleh: Rina pada 10/10/2026'
-      },
-      {
-        id: '#TRX-2026-079', iso: '2026-10-05', tglSelesai: '05 Okt 2026', pembeli: 'CV Sembako', alamat: 'Jl. Pasar Minggu No. 8, Jakarta Selatan',
-        tglPesan: '29 Sep 2026', metode: 'Transfer Bank', status: 'selesai',
-        items: [{ produk: 'Telur Ayam A', qty: 700, harga: 25000 }],
-        ongkir: 300000, totalAkhir: 'Rp 17.500.000',
-        terima: 'Diterima oleh: Pak Hasan pada 05/10/2026'
-      },
-      {
-        id: '#TRX-2026-070', iso: '2026-10-01', tglSelesai: '01 Okt 2026', pembeli: 'Rania', alamat: 'Jl. Cibubur No. 21, Depok',
-        tglPesan: '26 Sep 2026', metode: 'Transfer Bank', status: 'selesai',
-        items: [{ produk: 'Telur Ayam', qty: 280, harga: 25000 }],
-        ongkir: 300000, totalAkhir: 'Rp 7.000.000',
-        terima: 'Diterima oleh: Abi Supir pada 01/10/2026'
-      },
-      {
-        id: '#TRX-2026-064', iso: '2026-09-24', tglSelesai: '24 Sep 2026', pembeli: 'UD Lancar Jaya', alamat: 'Jl. Raya Bekasi Km. 18, Jakarta Timur',
-        tglPesan: '20 Sep 2026', metode: 'Virtual Account', status: 'dibatalkan',
-        items: [{ produk: 'Telur Omega', qty: 80, harga: 32000 }],
-        ongkir: 0, totalAkhir: 'Rp 2.560.000',
-        terima: 'Dibatalkan oleh pembeli pada 22/09/2026'
-      },
-      {
-        id: '#TRX-2026-058', iso: '2026-09-18', tglSelesai: '18 Sep 2026', pembeli: 'Toko Makmur', alamat: 'Jl. Merdeka No. 10, Bogor',
-        tglPesan: '14 Sep 2026', metode: 'Transfer Bank', status: 'dibatalkan',
-        items: [{ produk: 'Telur Ayam Kampung', qty: 40, harga: 45000 }],
-        ongkir: 0, totalAkhir: 'Rp 1.800.000',
-        terima: 'Dibatalkan karena stok tidak tersedia'
-      },
-      {
-        id: '#TRX-2026-052', iso: '2026-09-15', tglSelesai: '15 Sep 2026', pembeli: 'PT Sinar Boga', alamat: 'Jl. Industri Raya No. 5, Bekasi',
-        tglPesan: '11 Sep 2026', metode: 'Transfer Bank', status: 'selesai',
-        items: [{ produk: 'Telur Omega', qty: 120, harga: 32000 }],
-        ongkir: 300000, totalAkhir: 'Rp 3.840.000',
-        terima: 'Diterima oleh: Budi pada 15/09/2026'
-      },
-      {
-        id: '#TRX-2026-049', iso: '2026-09-12', tglSelesai: '12 Sep 2026', pembeli: 'Warung Bu Sri', alamat: 'Jl. Anggrek No. 3, Depok',
-        tglPesan: '09 Sep 2026', metode: 'Virtual Account', status: 'selesai',
-        items: [{ produk: 'Telur Ayam', qty: 60, harga: 24000 }],
-        ongkir: 300000, totalAkhir: 'Rp 1.440.000',
-        terima: 'Diterima oleh: Bu Sri pada 12/09/2026'
-      },
-      {
-        id: '#TRX-2026-045', iso: '2026-09-09', tglSelesai: '09 Sep 2026', pembeli: 'CV Mitra Pangan', alamat: 'Jl. Soekarno Hatta No. 88, Bandung',
-        tglPesan: '05 Sep 2026', metode: 'Transfer Bank', status: 'selesai',
-        items: [{ produk: 'Telur Ayam B', qty: 200, harga: 26000 }],
-        ongkir: 300000, totalAkhir: 'Rp 5.200.000',
-        terima: 'Diterima oleh: Pak Anton pada 09/09/2026'
-      },
-      {
-        id: '#TRX-2026-041', iso: '2026-09-07', tglSelesai: '07 Sep 2026', pembeli: 'Resto Rasa Ibu', alamat: 'Jl. Ahmad Yani No. 17, Surabaya',
-        tglPesan: '03 Sep 2026', metode: 'Virtual Account', status: 'dibatalkan',
-        items: [{ produk: 'Telur Ayam Kampung', qty: 30, harga: 45000 }],
-        ongkir: 0, totalAkhir: 'Rp 1.350.000',
-        terima: 'Dibatalkan oleh pembeli pada 06/09/2026'
-      },
-      {
-        id: '#TRX-2026-036', iso: '2026-09-03', tglSelesai: '03 Sep 2026', pembeli: 'Toko Sumber Rejeki', alamat: 'Jl. Diponegoro No. 42, Semarang',
-        tglPesan: '30 Agu 2026', metode: 'Transfer Bank', status: 'selesai',
-        items: [{ produk: 'Telur Ayam', qty: 150, harga: 23000 }],
-        ongkir: 300000, totalAkhir: 'Rp 3.450.000',
-        terima: 'Diterima oleh: Pak Joko pada 03/09/2026'
-      },
-      {
-        id: '#TRX-2026-031', iso: '2026-09-01', tglSelesai: '01 Sep 2026', pembeli: 'PT Boga Jaya', alamat: 'Jl. Raya Semarang',
-        tglPesan: '28 Agu 2026', metode: 'Virtual Account', status: 'selesai',
-        items: [{ produk: 'Telur Omega', qty: 90, harga: 32000 }],
-        ongkir: 300000, totalAkhir: 'Rp 2.880.000',
-        terima: 'Diterima oleh: Abi Supir pada 01/09/2026'
-      }
-    ];
+    // Riwayat penjualan dari database: order milik perusahaan ini yang sudah
+    // selesai atau dibatalkan (api/order/list.php, dipakai ulang dari
+    // PESANAN_DATA). Order yang masih berjalan tetap di tampilan Pesanan.
+    // Beberapa kolom tidak tersimpan di database: alamat pembeli (tabel users
+    // tidak punya kolom alamat), metode bayar, dan ongkir — ditampilkan '-'
+    // atau 0, bukan dikarang.
+    let RIWAYAT_DATA = [];
+
+    function nomorInvoiceOrder(orderId, isoTanggal) {
+      // Format yang sama dengan api/order/create.php: INV-YYYYMMDD-000001.
+      var ymd = String(isoTanggal || '').slice(0, 10).replace(/-/g, '');
+      return 'INV-' + ymd + '-' + String(orderId).padStart(6, '0');
+    }
+
+    function petakanRiwayat(o) {
+      var tglPesan = String(o.jadwal || '').slice(0, 10);
+      var item = (o.items && o.items[0]) || { produk: '-', qty: 0, harga: 0 };
+      var totalBarang = (Number(item.qty) || 0) * (Number(item.harga) || 0);
+      var totalBayar = Number(o.pembayaran) || totalBarang;
+      var fee = totalBayar - totalBarang;
+      var selesai = o.statusDb === 'selesai';
+      return {
+        orderId: o.orderId,
+        id: '#TRX-' + o.orderId,
+        invoiceNomor: nomorInvoiceOrder(o.orderId, tglPesan),
+        iso: tglPesan,
+        tglSelesai: tglPesan ? formatTanggalPesanan(tglPesan) : '-',
+        pembeli: o.pembeli || 'Pembeli',
+        alamat: '-',
+        tglPesan: tglPesan ? formatTanggalPesanan(tglPesan) : '-',
+        metode: '-',
+        status: selesai ? 'selesai' : 'dibatalkan',
+        items: [{ produk: item.produk || '-', qty: Number(item.qty) || 0, harga: Number(item.harga) || 0 }],
+        ongkir: 0,
+        fee: fee,
+        totalBarang: totalBarang,
+        totalBayar: totalBayar,
+        totalAkhir: formatRupiah(totalBayar),
+        terima: selesai ? 'Selesai pada ' + (tglPesan ? formatTanggalPesanan(tglPesan) : '-') : 'Dibatalkan'
+      };
+    }
+
+    // Lengkapi tanggal selesai/batal yang sebenarnya dari riwayat status
+    // order (api/order/detail.php) beserta alasan pembatalan.
+    function perkayaRiwayat(trx) {
+      return fetch('../../api/order/detail.php?id=' + trx.orderId)
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.order) return;
+          var order = res.data.order;
+          var riwayat = res.data.riwayat || [];
+          var cari = trx.status === 'selesai' ? 'selesai' : 'dibatalkan';
+          var entri = null;
+          for (var i = riwayat.length - 1; i >= 0; i--) {
+            if (riwayat[i].status_baru === cari) { entri = riwayat[i]; break; }
+          }
+          var tgl = entri ? String(entri.created_at || '').slice(0, 10)
+            : (order.updated_at ? String(order.updated_at).slice(0, 10) : trx.iso);
+          trx.iso = tgl;
+          trx.tglSelesai = formatTanggalPesanan(tgl);
+          if (trx.status === 'selesai') {
+            trx.terima = 'Selesai pada ' + trx.tglSelesai;
+          } else if (order.alasan_batal) {
+            trx.terima = order.alasan_batal;
+          }
+        })
+        .catch(function () { /* biarkan tanggal order kalau detail gagal dimuat */ });
+    }
+
+    function bangunRiwayatDariPesanan() {
+      var selesai = PESANAN_DATA.filter(function (o) { return o.statusDb === 'selesai' || o.statusDb === 'dibatalkan'; });
+      RIWAYAT_DATA = selesai.map(petakanRiwayat);
+      renderRiwayatTable();
+      Promise.all(RIWAYAT_DATA.map(perkayaRiwayat)).then(function () { renderRiwayatTable(); });
+    }
 
     let riwayatFilter = 'semua';
     let riwayatAktifId = null;
@@ -7596,6 +7594,12 @@
       if (!tbody) return;
 
       const data = riwayatSesuaiFilter();
+
+      // Jumlah tab mengikuti data asli.
+      const tabSelesai = document.querySelector('.riwayat-tab[onclick*="\'selesai\'"]');
+      if (tabSelesai) tabSelesai.textContent = 'Selesai (' + RIWAYAT_DATA.filter(function (t) { return t.status === 'selesai'; }).length + ')';
+      const tabBatal = document.querySelector('.riwayat-tab[onclick*="\'dibatalkan\'"]');
+      if (tabBatal) tabBatal.textContent = 'Dibatalkan (' + RIWAYAT_DATA.filter(function (t) { return t.status === 'dibatalkan'; }).length + ')';
 
       if (!data.length) {
         tbody.innerHTML = `
@@ -7695,10 +7699,12 @@
 
       const subtotal = hitungSubtotalRiwayat(trx);
       const ongkir = trx.ongkir || 0;
+      const fee = trx.fee || 0;
 
       setText('riwayatDetailSubtotal', formatRupiah(subtotal));
       setText('riwayatDetailOngkir', formatRupiah(ongkir));
-      setText('riwayatDetailTotal', formatRupiah(subtotal + ongkir));
+      setText('riwayatDetailFee', formatRupiah(fee));
+      setText('riwayatDetailTotal', formatRupiah(subtotal + fee + ongkir));
 
       const badgeEl = document.getElementById('riwayatDetailTerimaBadge');
       if (badgeEl) {
@@ -7716,10 +7722,6 @@
     /* --------------------------------------------------------------------------
        F6. CETAK INVOICE
        -------------------------------------------------------------------------- */
-    function nomorInvoiceRiwayat(id) {
-      return String(id).replace('#TRX-', 'INV/').replace('-', '/');
-    }
-
     function bukaInvoice(id) {
       const trx = RIWAYAT_DATA.find(item => item.id === (id || riwayatAktifId));
       if (!trx) {
@@ -7732,6 +7734,7 @@
 
       const subtotal = hitungSubtotalRiwayat(trx);
       const ongkir = trx.ongkir || 0;
+      const fee = trx.fee || 0;
       const isSelesai = trx.status === 'selesai';
 
       const setText = (elId, value) => {
@@ -7739,14 +7742,15 @@
         if (el) el.textContent = value;
       };
 
-      setText('invNomor', nomorInvoiceRiwayat(trx.id));
+      setText('invNomor', trx.invoiceNomor || '-');
       setText('invTanggal', trx.tglSelesai);
       setText('invMetode', trx.metode);
       setText('invPembeli', trx.pembeli);
       setText('invAlamat', trx.alamat);
       setText('invSubtotal', formatRupiah(subtotal));
       setText('invOngkir', formatRupiah(ongkir));
-      setText('invTotal', formatRupiah(subtotal + ongkir));
+      setText('invFee', formatRupiah(fee));
+      setText('invTotal', formatRupiah(trx.totalBayar != null ? trx.totalBayar : subtotal + fee + ongkir));
       setText('invCatatan', trx.terima);
 
       const statusEl = document.getElementById('invStatus');
