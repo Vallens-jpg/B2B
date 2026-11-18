@@ -6455,7 +6455,7 @@
 
       // Simpan ke database lewat API (nama disusun dari jenis + grade).
       var namaProduk = productPayload.jenis === 'Telur Ayam Ras'
-        ? 'Telur Ayam Ras Grade ' + gradeSelected
+        ? 'Telur Ayam Grade ' + gradeSelected
         : productPayload.jenis;
       var produkId = (index >= 0 && index < PRODUCTS_DATA.length && PRODUCTS_DATA[index].id) ? PRODUCTS_DATA[index].id : 0;
       // Edit: pertahankan deskripsi lama dari database (modal tidak punya

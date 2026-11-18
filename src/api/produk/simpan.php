@@ -55,7 +55,14 @@ try {
         $produkId = (int) $pdo->lastInsertId();
     }
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dan 03 dulu.', 500);
+    // Nama produk unik di database: bila nama sudah dipakai produk lain,
+    // beri tahu dengan jelas (409), jangan tutupi dengan pesan "database
+    // belum siap" — database sudah siap, yang gagal adalah simpanannya.
+    $kode = ($e instanceof PDOException) ? (string) $e->getCode() : '';
+    if ($kode === '23000') {
+        json_error('Nama produk sudah dipakai. Produk dengan nama ini sudah ada — edit produk itu, jangan tambah baru.', 409);
+    }
+    json_error('Gagal menyimpan produk: ' . $e->getMessage(), 500);
 }
 
 json_ok(['produk_id' => $produkId, 'nama' => $nama]);
