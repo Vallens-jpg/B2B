@@ -591,19 +591,19 @@
 
   <!-- Top Navigation Header -->
   <header class="detail-navbar">
-    <a id="backLink" href="invoice.php" class="back-btn-circle" aria-label="Kembali">
+    <a id="backLink" href="pembeli/order_list.php" class="back-btn-circle" aria-label="Kembali">
       <svg class="back-arrow-icon" viewBox="0 0 24 24" fill="none">
         <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </a>
     <h1 class="detail-page-heading">Detail Pesanan</h1>
     <div class="navbar-actions">
-      <button type="button" class="notification-bell-btn" aria-label="Notifikasi">
+      <a href="notifikasi.php" class="notification-bell-btn" aria-label="Notifikasi" style="text-decoration:none">
         <svg class="bell-icon" viewBox="0 0 24 24">
           <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
         </svg>
-        <span class="notification-badge-red">3</span>
-      </button>
+        <span class="notification-badge-red" id="notifBadgeRed" style="display:none"></span>
+      </a>
       <div class="user-profile-capsule">
         <div class="user-avatar-circle">AD</div>
         <span class="user-name-text">Buyer</span>
@@ -622,7 +622,7 @@
         </svg>
         <span>Ke Halaman Daftar Pesanan</span>
       </a>
-      <span class="dp-order-id-badge" id="orderIdBadge">#ORD-2026-103</span>
+      <span class="dp-order-id-badge" id="orderIdBadge">—</span>
     </div>
 
     <!-- Progres Pesanan -->
@@ -695,30 +695,30 @@
 
         <div class="dp-info-row">
           <div class="dp-info-label">Supplier</div>
-          <div class="dp-info-value" id="supplierName">PT Telur Makmur</div>
+          <div class="dp-info-value" id="supplierName">—</div>
         </div>
 
         <div class="dp-info-row">
           <div class="dp-info-label">Produk</div>
-          <div class="dp-info-value" id="productName">Telur Ayam Ras Grade A</div>
+          <div class="dp-info-value" id="productName">—</div>
         </div>
 
         <div class="dp-info-row">
           <div class="dp-info-label">Jumlah</div>
-          <div class="dp-info-value" id="jumlahInfo">200 kg @ Rp 25.000 / kg</div>
+          <div class="dp-info-value" id="jumlahInfo">—</div>
         </div>
 
         <div class="dp-info-row">
           <div class="dp-info-label">Total Harga</div>
-          <div class="dp-info-value" id="totalHarga">Rp 5.000.000</div>
+          <div class="dp-info-value" id="totalHarga">—</div>
         </div>
       </div>
 
       <!-- Status Saat Ini -->
       <div class="dp-status-card">
         <div class="dp-status-title">Status Saat Ini</div>
-        <div class="dp-status-state">Barang dalam pengiriman</div>
-        <div class="dp-status-desc">Pesanan sedang dalam proses pengiriman. Periksa bukti kirim untuk memastikan pengiriman sudah benar.</div>
+        <div class="dp-status-state">Memuat…</div>
+        <div class="dp-status-desc">Memuat status pesanan…</div>
       </div>
 
       <!-- Bukti Pengiriman dari Penjual -->
@@ -758,10 +758,16 @@
     <div style="display: grid; grid-template-columns: 1fr 320px; gap: 1.25rem;">
       <div class="dp-ringkasan-card">
         <div class="dp-ringkasan-title">Ringkasan Pembayaran</div>
-        <div class="dp-ringkasan-value" id="ringkasanValue">Rp 5.000.000 [LUNAS via BCA]</div>
+        <div class="dp-ringkasan-value" id="ringkasanValue">—</div>
       </div>
       <!-- Spacer to align with right column above -->
       <div></div>
+    </div>
+
+    <!-- Riwayat Status Pesanan (diisi dari API order/detail.php; tampil hanya bila dibuka dengan ?id=) -->
+    <div class="dp-ringkasan-card" id="riwayatCard" style="display:none">
+      <div class="dp-ringkasan-title">Riwayat Status</div>
+      <div id="riwayatList"></div>
     </div>
 
   </div>
@@ -786,12 +792,21 @@
         </svg>
         Ajukan Dispute
       </button>
-      <button class="btn-konfirmasi-diterima" onclick="konfirmasiDiterima()">
+      <button class="btn-konfirmasi-diterima" id="btnTerima" style="display:none" onclick="konfirmasiDiterima()">
         <svg viewBox="0 0 24 24">
           <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
           <path d="M8 12l3 3 5-5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Konfirmasi Diterima
+      </button>
+      <button class="btn-konfirmasi-diterima" id="btnBayar" style="display:none" onclick="bayarPesanan()">
+        Bayar Sekarang
+      </button>
+      <button class="btn-dispute" id="btnBatalkan" style="display:none" onclick="batalkanPesanan()">
+        Batalkan Pesanan
+      </button>
+      <button class="btn-konfirmasi-diterima" id="btnUlasan" style="display:none" onclick="beriUlasan()">
+        Beri Ulasan
       </button>
     </div>
   </div>
@@ -800,40 +815,55 @@
 
   <script>
     const urlParams   = new URLSearchParams(window.location.search);
-    const sellerParam = urlParams.get('seller')   || '1';
-    const product     = urlParams.get('product')  || 'Telur Ayam Ras Grade A';
-    const qty         = urlParams.get('qty')       || '200 kg';
-    const price       = urlParams.get('price')     || 'Rp 25.000';
-    const subtotal    = urlParams.get('subtotal')  || 'Rp 5.000.000';
-
-    const sellersMap = {
-      '1': 'PT Telur Makmur',
-      '2': 'Mitra Unggas Sejahtera',
-      '3': 'Tunas Farm',
-      '4': 'Berkah Telur Utama',
-      '5': 'Ternak Mandiri',
-      '6': 'Sinar Jaya Poultry'
-    };
-
-    const company = sellersMap[sellerParam] || 'PT Telur Makmur';
-    const hasParams = urlParams.get('seller') || urlParams.get('product');
-
-    // Fill dynamic values
-    document.getElementById('supplierName').innerText = hasParams ? company : 'PT Telur Makmur';
-    document.getElementById('productName').innerText  = hasParams ? product : 'Telur Ayam Ras Grade A';
-
-    // Jumlah: "200 kg @ Rp 25.000 / kg"
-    const qtyClean = qty.replace(/\s*kg/i, '').trim() || '200';
-    document.getElementById('jumlahInfo').innerText  = hasParams
-      ? qtyClean + ' kg @ ' + price + ' / kg'
-      : '200 kg @ Rp 25.000 / kg';
-    document.getElementById('totalHarga').innerText  = hasParams ? subtotal : 'Rp 5.000.000';
-    const orderParam = urlParams.get('order');
-    if (orderParam) {
-      const badge = document.getElementById('orderIdBadge');
-      if (badge) badge.innerText = orderParam;
+    const orderIdParam = urlParams.get('id');
+    // Nilai diisi dari API (?id=); tanpa id, biarkan '—'.
+    // Kalau dibuka dengan ?id=, ambil order asli dari database.
+    if (orderIdParam) {
+      fetch('../api/order/detail.php?id=' + encodeURIComponent(orderIdParam))
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) return;
+          var o = res.data.order;
+          var badge = document.getElementById('orderIdBadge');
+          if (badge) badge.innerText = '#' + o.id;
+          document.getElementById('supplierName').innerText = o.nama_perusahaan || '—';
+          document.getElementById('productName').innerText = o.nama_produk;
+          document.getElementById('jumlahInfo').innerText = o.jumlah_kg + ' kg @ Rp ' + Number(o.harga_satuan).toLocaleString('id-ID') + ' / kg';
+          document.getElementById('totalHarga').innerText = 'Rp ' + Number(o.total_bayar).toLocaleString('id-ID');
+          document.getElementById('ringkasanValue').innerText = 'Rp ' + Number(o.total_bayar).toLocaleString('id-ID') + ' [' + o.status + ']';
+          var stateEl = document.querySelector('.dp-status-state');
+          if (stateEl) stateEl.innerText = 'Status: ' + o.status;
+          var descEl = document.querySelector('.dp-status-desc');
+          if (descEl) descEl.innerText = 'Pesanan #' + o.id + ' — ' + o.nama_produk + ' (' + o.jumlah_kg + ' kg). Invoice: total Rp ' + Number(o.total).toLocaleString('id-ID') + ' + fee Rp ' + Number(o.fee).toLocaleString('id-ID') + '.';
+          var btnBayar = document.getElementById('btnBayar');
+          var btnBatal = document.getElementById('btnBatalkan');
+          var btnTerima = document.getElementById('btnTerima');
+          if (btnBayar && o.status === 'menunggu_bayar') btnBayar.style.display = '';
+          if (btnBatal && (o.status === 'menunggu_bayar' || o.status === 'dibayar')) btnBatal.style.display = '';
+          if (btnTerima && (o.status === 'dikirim' || o.status === 'diterima')) btnTerima.style.display = '';
+          var btnUlasan = document.getElementById('btnUlasan');
+          if (btnUlasan && o.status === 'selesai') btnUlasan.style.display = '';
+          // Riwayat status dari API (field: status_lama, status_baru, created_at).
+          var riwayat = res.data.riwayat || [];
+          var riwayatCard = document.getElementById('riwayatCard');
+          var riwayatList = document.getElementById('riwayatList');
+          if (riwayatCard && riwayatList) {
+            var labelStatus = { menunggu_bayar: 'Menunggu Pembayaran', dibayar: 'Dibayar', diproses: 'Diproses', dikirim: 'Dikirim', diterima: 'Diterima', selesai: 'Selesai', dibatalkan: 'Dibatalkan' };
+            if (riwayat.length === 0) {
+              riwayatList.innerHTML = '<div class="dp-info-row"><div class="dp-info-value">Belum ada riwayat perubahan status.</div></div>';
+            } else {
+              riwayatList.innerHTML = riwayat.map(function (r) {
+                var lama = r.status_lama ? (labelStatus[r.status_lama] || r.status_lama) : 'Baru dibuat';
+                var baru = labelStatus[r.status_baru] || r.status_baru;
+                var waktu = r.created_at ? new Date(r.created_at.replace(' ', 'T')).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+                return '<div class="dp-info-row"><div class="dp-info-label">' + waktu + '</div><div class="dp-info-value">' + lama + ' &rarr; ' + baru + '</div></div>';
+              }).join('');
+            }
+            riwayatCard.style.display = 'block';
+          }
+        })
+        .catch(function () { /* biarkan tampilan statis kalau API gagal */ });
     }
-    document.getElementById('ringkasanValue').innerText = (hasParams ? subtotal : 'Rp 5.000.000') + ' [LUNAS via BCA]';
 
     // Back link — dinamis sesuai asal halaman
     const fromPage = urlParams.get('from');
@@ -841,14 +871,7 @@
     if (fromPage === 'pesanan') {
       document.getElementById('backLink').href = 'pembeli/order_list.php';
     } else {
-      const backQ =
-        '?seller='   + encodeURIComponent(sellerParam) +
-        '&product='  + encodeURIComponent(product) +
-        '&qty='      + encodeURIComponent(qty) +
-        '&price='    + encodeURIComponent(price) +
-        '&subtotal=' + encodeURIComponent(subtotal);
-      fallbackDpes = 'invoice.php' + backQ;
-      document.getElementById('backLink').href = fallbackDpes;
+      document.getElementById('backLink').href = 'pembeli/order_list.php';
     }
 
     const dpesBackBtn = document.getElementById('backLink');
@@ -866,17 +889,65 @@
     }
 
     // Actions
+    function beriUlasan() {
+      window.location.href = 'pembeli/ulasan.php?order_id=' + encodeURIComponent(orderIdParam);
+    }
+
     function ajukanDispute() {
-      window.location.href = 'pengajuan_dispute.php' +
-        '?seller='   + encodeURIComponent(sellerParam) +
-        '&product='  + encodeURIComponent(product) +
-        '&qty='      + encodeURIComponent(qty) +
-        '&price='    + encodeURIComponent(price) +
-        '&subtotal=' + encodeURIComponent(subtotal);
+      if (!orderIdParam) {
+        alert('Buka halaman ini dari Daftar Pesanan.');
+        return;
+      }
+      window.location.href = 'pengajuan_dispute.php?order_id=' + encodeURIComponent(orderIdParam);
+    }
+
+    function bayarPesanan() {
+      if (!orderIdParam) return;
+      var btn = document.getElementById('btnBayar');
+      if (btn) btn.disabled = true;
+      fetch('../api/order/bayar.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: Number(orderIdParam) })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) { alert(res.error || 'Pembayaran gagal.'); if (btn) btn.disabled = false; return; }
+          if (res.data && res.data.invoice_url) { window.location.href = res.data.invoice_url; return; }
+          window.location.reload();
+        })
+        .catch(function () { alert('Gagal menghubungi server.'); if (btn) btn.disabled = false; });
+    }
+
+    function batalkanPesanan() {
+      if (!orderIdParam) return;
+      if (!confirm('Batalkan pesanan ini?')) return;
+      fetch('../api/order/batal.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: Number(orderIdParam), alasan: 'Dibatalkan pembeli' })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) { alert(res.error || 'Pembatalan gagal.'); return; }
+          window.location.reload();
+        })
+        .catch(function () { alert('Gagal menghubungi server.'); });
     }
 
     function konfirmasiDiterima() {
-      window.location.href = 'pembeli/dashboard_buyer.php';
+      if (!orderIdParam) return;
+      fetch('../api/order/terima.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: Number(orderIdParam) })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) { alert(res.error || 'Konfirmasi gagal.'); return; }
+          window.location.reload();
+        })
+        .catch(function () { alert('Gagal menghubungi server.'); });
     }
   
     // ---- Lightbox Bukti Pengiriman ----
@@ -908,5 +979,30 @@
     <img id="dpLightboxImg" src="" alt="Bukti Pengiriman">
     <div class="dp-lightbox-caption" id="dpLightboxCaption"></div>
   </div>
+  <script>
+    // Badge lonceng asli: jumlah notifikasi belum dibaca dari API.
+    (function () {
+      var badge = document.getElementById('notifBadgeRed');
+      if (!badge) return;
+      fetch('../api/notifikasi.php').then(function (r) { return r.json(); }).then(function (res) {
+        if (!res || !res.ok || !res.data || !res.data.notifikasi) return;
+        var belum = 0;
+        res.data.notifikasi.forEach(function (n) { if (!n.dibaca) belum++; });
+        if (belum > 0) { badge.textContent = belum; badge.style.display = ''; }
+      }).catch(function () {});
+    })();
+  </script>
+  <script>
+    // Avatar & nama dari user yang sedang login (bukan "AD" hardcode).
+    (function () {
+      fetch('../api/auth/me.php').then(function (r) { return r.json(); }).then(function (res) {
+        if (!res || !res.ok || !res.data || !res.data.nama) return;
+        var nama = res.data.nama;
+        var inisial = nama.trim().split(/\s+/).map(function (w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
+        document.querySelectorAll('.user-avatar-circle, .ulasan-user-avatar, .pd-user-avatar').forEach(function (el) { el.textContent = inisial; });
+        document.querySelectorAll('.user-name-text').forEach(function (el) { el.textContent = nama; });
+      }).catch(function () {});
+    })();
+  </script>
 </body>
 </html>

@@ -939,7 +939,7 @@
                 <path d="M10 22v-4h4v4"/>
               </svg>
             </div>
-            <div class="stat-value navy" id="countTotal">5</div>
+            <div class="stat-value navy" id="countTotal">0</div>
           </div>
         </div>
 
@@ -953,7 +953,7 @@
                 <polyline points="12 6 12 12 16 14"/>
               </svg>
             </div>
-            <div class="stat-value amber" id="countPending">3</div>
+            <div class="stat-value amber" id="countPending">0</div>
           </div>
         </div>
 
@@ -967,7 +967,7 @@
                 <polyline points="9 12 11 14 15 10"/>
               </svg>
             </div>
-            <div class="stat-value emerald" id="countApproved">1</div>
+            <div class="stat-value emerald" id="countApproved">0</div>
           </div>
         </div>
 
@@ -982,7 +982,7 @@
                 <line x1="9" y1="9" x2="15" y2="15"/>
               </svg>
             </div>
-            <div class="stat-value red" id="countRejected">1</div>
+            <div class="stat-value red" id="countRejected">0</div>
           </div>
         </div>
       </div>
@@ -1018,7 +1018,7 @@
       <div class="table-card">
         <div class="table-header">
           <h3>Daftar Perusahaan</h3>
-          <span class="count-info" id="tableCountInfo">Menampilkan 4 dari 5 perusahaan</span>
+          <span class="count-info" id="tableCountInfo">Memuat perusahaan…</span>
         </div>
 
         <div class="table-responsive">
@@ -1053,117 +1053,53 @@
     // ==========================================
     // STAPLR ADMIN - COMPANY VERIFICATION LOGIC
     // ==========================================
-    const STORAGE_KEY = 'staplr_company_verifications';
+    let COMPANY_LIST = [];
+    const AVATAR_CLASSES = ['ad', 'bs', 'dl'];
 
-    // Default initial data
-    const initialCompanies = [
-      {
-        id: '1',
-        name: 'Agus Dermawan',
-        company: 'PT Nusantara Tech Utama',
-        email: 'admin@nusantaratech.id',
-        avatar: 'AD',
-        avatarClass: 'ad',
-        date: '24 Okt 2026',
-        phone: '—',
-        address: '—',
-        nib: '—',
-        npwp: '—',
-        status: 'pending',
-        note: ''
-      },
-      {
-        id: '2',
-        name: 'Budi Santoso',
-        company: 'PT Bina Karya Mandiri',
-        email: 'info@binakarya.co.id',
-        avatar: 'BS',
-        avatarClass: 'bs',
-        date: '23 Okt 2026',
-        phone: '—',
-        address: '—',
-        nib: '—',
-        npwp: '—',
-        status: 'approved',
-        note: ''
-      },
-      {
-        id: '3',
-        name: 'Dewi Lestari',
-        company: 'PT Solusi Data Indonesia',
-        email: 'helo@solusidataindonesia.id',
-        avatar: 'DL',
-        avatarClass: 'dl',
-        date: '23 Okt 2026',
-        phone: '—',
-        address: '—',
-        nib: '—',
-        npwp: '—',
-        status: 'pending',
-        note: ''
-      },
-      {
-        id: '4',
-        name: 'Eko Prasetyo',
-        company: 'PT Maju Bersama Sukses',
-        email: 'maju@majubersama.id',
-        avatar: 'EP',
-        avatarClass: 'ep',
-        date: '22 Okt 2026',
-        phone: '—',
-        address: '—',
-        nib: '—',
-        npwp: '—',
-        status: 'rejected',
-        note: ''
-      },
-      {
-        id: '5',
-        name: 'Fajar Nugraha',
-        company: 'PT Agro Makmur Sejahtera',
-        email: 'fajar@agromakmur.id',
-        avatar: 'FN',
-        avatarClass: 'fn',
-        date: '21 Okt 2026',
-        phone: '—',
-        address: '—',
-        nib: '—',
-        npwp: '—',
-        status: 'pending',
-        note: ''
-      }
-    ];
-
-    // Load data from localStorage or fallback
-    function getCompanies() {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        try {
-          let parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            initialCompanies.forEach(init => {
-              const existing = parsed.find(p => p.id === init.id);
-              if (!existing) {
-                parsed.push({ ...init });
-              } else {
-                if (!existing.nib) existing.nib = '—';
-                if (!existing.npwp) existing.npwp = '—';
-                if (!existing.company) existing.company = init.company;
-              }
-            });
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
-            return parsed;
-          }
-        } catch (e) {
-          console.error('Failed to parse localStorage data', e);
-        }
-      }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(initialCompanies));
-      return initialCompanies;
+    function inisialNama(nama) {
+      const kata = String(nama || '').trim().split(/\s+/).filter(Boolean);
+      if (!kata.length) return '??';
+      return (kata[0][0] + (kata[1] ? kata[1][0] : '')).toUpperCase();
     }
 
-    function saveCompanies(companies) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(companies));
+    function formatTanggalApi(waktu) {
+      if (!waktu) return '—';
+      const m = String(waktu).match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (!m) return String(waktu);
+      const BULAN_ID = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+      return parseInt(m[3], 10) + ' ' + BULAN_ID[parseInt(m[2], 10) - 1] + ' ' + m[1];
+    }
+
+    function muatPerusahaanAdmin() {
+      return fetch('../../api/admin/verifikasi.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !Array.isArray(res.data.perusahaan)) {
+            render();
+            return;
+          }
+          COMPANY_LIST = res.data.perusahaan.map(function (u) {
+            const status = (u.verifikasi_status === 'terverifikasi') ? 'approved'
+              : ((u.verifikasi_status === 'ditolak') ? 'rejected' : 'pending');
+            return {
+              id: String(u.id),
+              name: u.nama || ('Perusahaan #' + u.id),
+              company: u.nama || ('Perusahaan #' + u.id),
+              email: u.email || '',
+              avatar: inisialNama(u.nama),
+              avatarClass: AVATAR_CLASSES[Number(u.id) % AVATAR_CLASSES.length],
+              date: formatTanggalApi(u.created_at),
+              phone: '—',
+              address: '—',
+              nib: '—',
+              npwp: '—',
+              status: status,
+              note: u.verifikasi_catatan || ''
+            };
+          });
+          render();
+        })
+        .catch(function () { render(); });
     }
 
     // Toast helper
@@ -1182,7 +1118,7 @@
 
     // Render table and stats
     function render() {
-      const companies = getCompanies();
+      const companies = COMPANY_LIST;
 
       // Update stat counters
       let total = companies.length;
@@ -1199,20 +1135,15 @@
       const filtered = companies.filter(c => {
         const matchesStatus = (currentFilter === 'all') || (c.status === currentFilter);
         const q = searchQuery.toLowerCase().trim();
-        const matchesSearch = !q || 
-          c.name.toLowerCase().includes(q) || 
-          c.email.toLowerCase().includes(q) || 
-          (c.company && c.company.toLowerCase().includes(q)) ||
-          (c.nib && c.nib.toLowerCase().includes(q)) ||
-          (c.npwp && c.npwp.toLowerCase().includes(q));
+        const matchesSearch = !q ||
+          c.name.toLowerCase().includes(q) ||
+          c.email.toLowerCase().includes(q) ||
+          (c.company && c.company.toLowerCase().includes(q));
         return matchesStatus && matchesSearch;
       });
 
-      // Rows to display: if on "all" and no search query, show top 4 to match mockup
+      // Tampilkan semua perusahaan yang cocok dengan filter/pencarian.
       let displayed = filtered;
-      if (currentFilter === 'all' && !searchQuery) {
-        displayed = filtered.slice(0, 4);
-      }
 
       // Update table header count
       document.getElementById('tableCountInfo').textContent = 
@@ -1280,7 +1211,7 @@
                   <line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
               </button>
-              <a href="detail-verifikasi.php?id=${c.id}" class="btn-action view" title="Lihat Detail" onclick="selectCompany('${c.id}')">
+              <a href="detail-verifikasi.php?id=${c.id}" class="btn-action view" title="Lihat Detail">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                   <circle cx="12" cy="12" r="3"/>
@@ -1291,7 +1222,7 @@
         } else {
           actionsHtml = `
             <div class="action-group">
-              <a href="detail-verifikasi.php?id=${c.id}" class="btn-action view" title="Lihat Detail" onclick="selectCompany('${c.id}')">
+              <a href="detail-verifikasi.php?id=${c.id}" class="btn-action view" title="Lihat Detail">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                   <circle cx="12" cy="12" r="3"/>
@@ -1323,25 +1254,26 @@
       });
     }
 
-    // Quick approve/reject action handler
+    // Quick approve/reject action handler: putusan asli lewat API.
     window.handleQuickDecision = function(id, newStatus) {
-      const companies = getCompanies();
-      const comp = companies.find(c => c.id === id);
-      if (comp) {
-        comp.status = newStatus;
-        saveCompanies(companies);
-        render();
-        if (newStatus === 'approved') {
-          showToast(`Perusahaan ${comp.name} berhasil disetujui!`, 'success');
-        } else {
-          showToast(`Perusahaan ${comp.name} telah ditolak.`, 'danger');
-        }
-      }
-    };
-
-    // Store selected company id
-    window.selectCompany = function(id) {
-      localStorage.setItem('staplr_selected_company_id', id);
+      const statusApi = (newStatus === 'approved') ? 'terverifikasi' : 'ditolak';
+      fetch('../../api/admin/verifikasi.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: parseInt(id, 10), status: statusApi })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) throw new Error(res.error || 'Putusan gagal');
+          const comp = COMPANY_LIST.find(function (c) { return c.id === id; });
+          showToast(newStatus === 'approved'
+            ? 'Perusahaan ' + (comp ? comp.name : '') + ' berhasil disetujui!'
+            : 'Perusahaan ' + (comp ? comp.name : '') + ' telah ditolak.', newStatus === 'approved' ? 'success' : 'danger');
+          muatPerusahaanAdmin();
+        })
+        .catch(function (err) {
+          showToast(err.message || 'Putusan gagal. Pastikan sudah login sebagai admin.', 'danger');
+        });
     };
 
     // Setup interactive events
@@ -1427,8 +1359,8 @@
         });
       }
 
-      // Initial render
-      render();
+      // Initial render: muat dari API
+      muatPerusahaanAdmin();
     });
   </script>
 

@@ -359,7 +359,7 @@
           <svg class="bell-icon" viewBox="0 0 24 24">
             <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
           </svg>
-          <span class="notification-badge-red" id="notifBadgeRed">3</span>
+          <span class="notification-badge-red" id="notifBadgeRed" style="display:none">0</span>
         </button>
         <a href="../profil.php" class="user-profile-capsule">
           <div class="user-avatar-circle">AD</div>
@@ -373,59 +373,8 @@
             <button type="button" class="notif-mark-read" onclick="markAllAsRead(event)">Tandai semua dibaca</button>
           </div>
 
-          <div class="notif-list">
-            <!-- Item 1: Permintaan Disetujui -->
-            <a href="permintaan_disetujui.php" class="notif-item unread">
-              <div class="notif-icon-circle green">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                  <polyline points="9 15 12 18 15 15"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title">Permintaan Disetujui</span>
-                  <span class="notif-time">· 5m</span>
-                </div>
-                <p class="notif-item-body">Permintaan pengadaan telur dari PT Telur Makmur telah disetujui.</p>
-              </div>
-            </a>
-
-            <!-- Item 2: Pesan Baru di Dispute #DSP-9021 -->
-            <a href="../dispute_detail.php" class="notif-item unread">
-              <div class="notif-icon-circle green">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                  <line x1="9" y1="9" x2="15" y2="9"/>
-                  <line x1="9" y1="13" x2="13" y2="13"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title">Pesan Baru di Dispute #DSP-9021</span>
-                  <span class="notif-item-badge-red" id="notifBadgeItem">1</span>
-                </div>
-                <p class="notif-item-body">Seller: "Kami sudah mengirim bukti foto ulang..."</p>
-              </div>
-            </a>
-
-            <!-- Item 3: Dispute Disetujui -->
-            <a href="../dispute_list.php" class="notif-item">
-              <div class="notif-icon-circle yellow">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                  <circle cx="12" cy="12" r="10" stroke="#111827"/>
-                  <line x1="12" y1="8" x2="12" y2="12" stroke="#111827"/>
-                  <line x1="12" y1="16" x2="12.01" y2="16" stroke="#111827"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title dark">Dispute Disetujui · 3j</span>
-                </div>
-                <p class="notif-item-body">Dispute #DSP-8812 telah disetujui. Dana pengembalian sedang diproses.</p>
-              </div>
-            </a>
+          <div class="notif-list" id="ddNotifList">
+            <div class="notif-item"><div class="notif-content"><p class="notif-item-body">Memuat notifikasi…</p></div></div>
           </div>
 
           <div class="notif-footer">
@@ -465,13 +414,13 @@
     <div class="pd-metrics-row">
       <div class="pd-metric-card">
         <span class="pd-metric-label">Total permintaan</span>
-        <div class="pd-metric-val">12</div>
-        <span class="pd-metric-sub">3 permintaan baru hari ini</span>
+        <div class="pd-metric-val" id="metricTotal">0</div>
+        <span class="pd-metric-sub" id="metricBaruHariIni">—</span>
       </div>
 
       <div class="pd-metric-card">
         <span class="pd-metric-label">Disetujui</span>
-        <div class="pd-metric-val">8</div>
+        <div class="pd-metric-val" id="metricDisetujui">0</div>
         <span class="pd-metric-sub">Siap diproses pembayaran</span>
       </div>
     </div>
@@ -494,117 +443,7 @@
             </tr>
           </thead>
           <tbody id="permintaanTableBody">
-
-            <!-- Row 1 -->
-            <tr class="permintaan-row" data-id="PRJ-2401" data-peternak="PT Telur Makmur" data-produk="Telur Ayam Grade A">
-              <td class="col-no">PRJ-2401</td>
-              <td class="col-peternak">
-                <div class="peternak-cell">
-                  <div class="peternak-avatar">TM</div>
-                  <span class="peternak-name">PT Telur Makmur</span>
-                </div>
-              </td>
-              <td class="col-produk">Telur Ayam Grade A</td>
-              <td class="col-jumlah">500 kg</td>
-              <td class="col-total">Rp 9.000.000</td>
-              <td class="col-status">
-                <span class="badge-disetujui">Disetujui</span>
-              </td>
-              <td class="col-aksi">
-                <a href="checkout.php?seller=1&product=Telur%20Ayam%20Grade%20A&qty=500%20kg&subtotal=Rp%209.000.000" class="btn-ajukan-pesanan">
-                  Ajukan Pesanan
-                </a>
-              </td>
-            </tr>
-
-            <!-- Row 2 -->
-            <tr class="permintaan-row" data-id="PRJ-2402" data-peternak="Mitra Unggas Sejahtera" data-produk="Telur Ayam Grade B">
-              <td class="col-no">PRJ-2402</td>
-              <td class="col-peternak">
-                <div class="peternak-cell">
-                  <div class="peternak-avatar">MU</div>
-                  <span class="peternak-name">Mitra Unggas Sejahtera</span>
-                </div>
-              </td>
-              <td class="col-produk">Telur Ayam Grade B</td>
-              <td class="col-jumlah">300 kg</td>
-              <td class="col-total">Rp 4.800.000</td>
-              <td class="col-status">
-                <span class="badge-disetujui">Disetujui</span>
-              </td>
-              <td class="col-aksi">
-                <a href="checkout.php?seller=2&product=Telur%20Ayam%20Grade%20B&qty=300%20kg&subtotal=Rp%204.800.000" class="btn-ajukan-pesanan">
-                  Ajukan Pesanan
-                </a>
-              </td>
-            </tr>
-
-            <!-- Row 3 -->
-            <tr class="permintaan-row" data-id="PRJ-2403" data-peternak="Tunas Farm" data-produk="Telur Ayam Grade C">
-              <td class="col-no">PRJ-2403</td>
-              <td class="col-peternak">
-                <div class="peternak-cell">
-                  <div class="peternak-avatar">TF</div>
-                  <span class="peternak-name">Tunas Farm</span>
-                </div>
-              </td>
-              <td class="col-produk">Telur Ayam Grade C</td>
-              <td class="col-jumlah">200 kg</td>
-              <td class="col-total">Rp 2.800.000</td>
-              <td class="col-status">
-                <span class="badge-disetujui">Disetujui</span>
-              </td>
-              <td class="col-aksi">
-                <a href="checkout.php?seller=3&product=Telur%20Ayam%20Grade%20C&qty=200%20kg&subtotal=Rp%202.800.000" class="btn-ajukan-pesanan">
-                  Ajukan Pesanan
-                </a>
-              </td>
-            </tr>
-
-            <!-- Row 4 -->
-            <tr class="permintaan-row" data-id="PRJ-2404" data-peternak="Berkah Telur Utama" data-produk="Telur Ayam Kampung">
-              <td class="col-no">PRJ-2404</td>
-              <td class="col-peternak">
-                <div class="peternak-cell">
-                  <div class="peternak-avatar">BT</div>
-                  <span class="peternak-name">Berkah Telur Utama</span>
-                </div>
-              </td>
-              <td class="col-produk">Telur Ayam Kampung</td>
-              <td class="col-jumlah">150 kg</td>
-              <td class="col-total">Rp 3.750.000</td>
-              <td class="col-status">
-                <span class="badge-disetujui">Disetujui</span>
-              </td>
-              <td class="col-aksi">
-                <a href="checkout.php?seller=4&product=Telur%20Ayam%20Kampung&qty=150%20kg&subtotal=Rp%203.750.000" class="btn-ajukan-pesanan">
-                  Ajukan Pesanan
-                </a>
-              </td>
-            </tr>
-
-            <!-- Row 5 -->
-            <tr class="permintaan-row" data-id="PRJ-2405" data-peternak="Ternak Mandiri" data-produk="Telur Omega">
-              <td class="col-no">PRJ-2405</td>
-              <td class="col-peternak">
-                <div class="peternak-cell">
-                  <div class="peternak-avatar">TK</div>
-                  <span class="peternak-name">Ternak Mandiri</span>
-                </div>
-              </td>
-              <td class="col-produk">Telur Omega</td>
-              <td class="col-jumlah">100 kg</td>
-              <td class="col-total">Rp 3.200.000</td>
-              <td class="col-status">
-                <span class="badge-disetujui">Disetujui</span>
-              </td>
-              <td class="col-aksi">
-                <a href="checkout.php?seller=5&product=Telur%20Omega&qty=100%20kg&subtotal=Rp%203.200.000" class="btn-ajukan-pesanan">
-                  Ajukan Pesanan
-                </a>
-              </td>
-            </tr>
-
+            <tr><td colspan="7" style="text-align:center;padding:1rem;">Memuat permintaan…</td></tr>
           </tbody>
         </table>
       </div>
@@ -632,6 +471,61 @@
       });
     }
 
+    // ---- Permintaan disetujui asli dari API (pesanan berstatus diproses) ----
+    (function () {
+      var tbody = document.getElementById('permintaanTableBody');
+      function rupiah(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); }
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      function inisial(nama) {
+        return String(nama || '?').trim().split(/\s+/).slice(0, 2).map(function (w) { return w.charAt(0).toUpperCase(); }).join('') || '?';
+      }
+      fetch('../../api/order/list.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!tbody) return;
+          if (!res || !res.ok || !res.data || !res.data.orders) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:1rem;">Gagal memuat permintaan. Periksa koneksi atau login kembali.</td></tr>';
+            return;
+          }
+          var semua = res.data.orders;
+          var disetujui = semua.filter(function (o) { return o.status === 'diproses'; });
+          var totalEl = document.getElementById('metricTotal');
+          if (totalEl) totalEl.innerText = semua.length;
+          var setujuEl = document.getElementById('metricDisetujui');
+          if (setujuEl) setujuEl.innerText = disetujui.length;
+          var now = new Date();
+          var hariIni = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+          var baru = 0;
+          semua.forEach(function (o) {
+            if (o.created_at && String(o.created_at).slice(0, 10) === hariIni) baru++;
+          });
+          var baruEl = document.getElementById('metricBaruHariIni');
+          if (baruEl) baruEl.innerText = baru + ' permintaan baru hari ini';
+          if (!disetujui.length) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:1rem;">Belum ada permintaan yang disetujui.</td></tr>';
+            return;
+          }
+          tbody.innerHTML = disetujui.map(function (o) {
+            var nomor = '#ORD-2026-' + String(o.id).padStart(3, '0');
+            var perusahaan = o.nama_perusahaan || '-';
+            return '<tr class="permintaan-row" data-id="' + nomor + '" data-peternak="' + escapeHtml(perusahaan) + '" data-produk="' + escapeHtml(o.nama_produk) + '">'
+              + '<td class="col-no">' + nomor + '</td>'
+              + '<td class="col-peternak"><div class="peternak-cell"><div class="peternak-avatar">' + escapeHtml(inisial(perusahaan)) + '</div><span class="peternak-name">' + escapeHtml(perusahaan) + '</span></div></td>'
+              + '<td class="col-produk">' + escapeHtml(o.nama_produk) + '</td>'
+              + '<td class="col-jumlah">' + o.jumlah_kg + ' kg</td>'
+              + '<td class="col-total">' + rupiah(o.total_bayar) + '</td>'
+              + '<td class="col-status"><span class="badge-disetujui">Disetujui</span></td>'
+              + '<td class="col-aksi"><a href="../order_detail.php?id=' + o.id + '" class="btn-ajukan-pesanan">Lihat Detail</a></td>'
+              + '</tr>';
+          }).join('');
+        })
+        .catch(function () {
+          if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:1rem;">Gagal memuat permintaan. Periksa koneksi atau login kembali.</td></tr>';
+        });
+    })();
+
     function toggleNotificationDropdown(e) {
       if (e) e.stopPropagation();
       const dd = document.getElementById('notifDropdown');
@@ -645,6 +539,8 @@
         e.preventDefault();
         e.stopPropagation();
       }
+      // Simpan ke database supaya tidak kembali setelah muat ulang.
+      fetch('../../api/notifikasi/tandai-dibaca.php', { method: 'POST' }).catch(function () {});
       const badgeRed = document.getElementById('notifBadgeRed');
       if (badgeRed) badgeRed.style.display = 'none';
 
@@ -656,6 +552,43 @@
       });
     }
 
+    // ---- Dropdown lonceng dari API notifikasi (riwayat_status) ----
+    (function () {
+      var ddList = document.getElementById('ddNotifList');
+      var badge = document.getElementById('notifBadgeRed');
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      fetch('../../api/notifikasi.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!ddList) return;
+          if (!res || !res.ok || !res.data || !res.data.notifikasi || !res.data.notifikasi.length) {
+            ddList.innerHTML = '<div class="notif-item"><div class="notif-content"><p class="notif-item-body">Belum ada notifikasi.</p></div></div>';
+            if (badge) badge.style.display = 'none';
+            return;
+          }
+          var items = res.data.notifikasi;
+          ddList.innerHTML = items.slice(0, 3).map(function (n) {
+            return '<a href="../order_detail.php?id=' + n.order_id + '" class="notif-item' + (n.dibaca ? '' : ' unread') + '">'
+              + '<div class="notif-icon-circle green"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg></div>'
+              + '<div class="notif-content"><div class="notif-item-top"><span class="notif-item-title">' + escapeHtml(n.judul) + '</span></div>'
+              + '<p class="notif-item-body">' + escapeHtml(n.isi) + '</p></div></a>';
+          }).join('');
+          var belum = 0;
+          items.forEach(function (n) { if (!n.dibaca) belum++; });
+          if (badge) {
+            if (belum > 0) {
+              badge.innerText = belum;
+              badge.style.display = '';
+            } else {
+              badge.style.display = 'none';
+            }
+          }
+        })
+        .catch(function () { /* biarkan placeholder bila API gagal */ });
+    })();
+
     document.addEventListener('click', function (e) {
       const dd = document.getElementById('notifDropdown');
       const btn = document.getElementById('notifBellBtn');
@@ -665,6 +598,18 @@
         }
       }
     });
+  </script>
+  <script>
+    // Avatar & nama dari user yang sedang login (bukan "AD" hardcode).
+    (function () {
+      fetch('../../api/auth/me.php').then(function (r) { return r.json(); }).then(function (res) {
+        if (!res || !res.ok || !res.data || !res.data.nama) return;
+        var nama = res.data.nama;
+        var inisial = nama.trim().split(/\s+/).map(function (w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
+        document.querySelectorAll('.user-avatar-circle, .ulasan-user-avatar, .pd-user-avatar').forEach(function (el) { el.textContent = inisial; });
+        document.querySelectorAll('.user-name-text').forEach(function (el) { el.textContent = nama; });
+      }).catch(function () {});
+    })();
   </script>
 </body>
 </html>

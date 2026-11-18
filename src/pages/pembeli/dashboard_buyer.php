@@ -121,12 +121,19 @@
           <svg class="bell-icon" viewBox="0 0 24 24">
             <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
           </svg>
-          <span class="notification-badge-red" id="notifBadgeRed">3</span>
+          <span class="notification-badge-red" id="notifBadgeRed" style="display:none">0</span>
         </button>
         <a href="../profil.php" class="user-profile-capsule">
           <div class="user-avatar-circle">AD</div>
           <span class="user-name-text">Buyer</span>
         </a>
+        <button type="button" class="notification-bell-btn" onclick="fetch('../../api/auth/logout.php').then(function(){ window.location.href='../login.php'; });" aria-label="Keluar" title="Keluar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+        </button>
 
         <!-- Notification Popover Card -->
         <div class="notif-dropdown" id="notifDropdown">
@@ -135,59 +142,8 @@
             <button type="button" class="notif-mark-read" onclick="markAllAsRead(event)">Tandai semua dibaca</button>
           </div>
 
-          <div class="notif-list">
-            <!-- Item 1: Permintaan Disetujui -->
-            <a href="permintaan_disetujui.php" class="notif-item unread">
-              <div class="notif-icon-circle green">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                  <polyline points="9 15 12 18 15 15"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title">Permintaan Disetujui</span>
-                  <span class="notif-time">· 5m</span>
-                </div>
-                <p class="notif-item-body">Permintaan pengadaan telur dari PT Telur Makmur telah disetujui.</p>
-              </div>
-            </a>
-
-            <!-- Item 2: Pesan Baru di Dispute #DSP-9021 -->
-            <a href="../dispute_detail.php" class="notif-item unread">
-              <div class="notif-icon-circle green">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                  <line x1="9" y1="9" x2="15" y2="9"/>
-                  <line x1="9" y1="13" x2="13" y2="13"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title">Pesan Baru di Dispute #DSP-9021</span>
-                  <span class="notif-item-badge-red" id="notifBadgeItem">1</span>
-                </div>
-                <p class="notif-item-body">Seller: "Kami sudah mengirim bukti foto ulang..."</p>
-              </div>
-            </a>
-
-            <!-- Item 3: Dispute Disetujui -->
-            <a href="../dispute_list.php" class="notif-item">
-              <div class="notif-icon-circle yellow">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                  <circle cx="12" cy="12" r="10" stroke="#111827"/>
-                  <line x1="12" y1="8" x2="12" y2="12" stroke="#111827"/>
-                  <line x1="12" y1="16" x2="12.01" y2="16" stroke="#111827"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title dark">Dispute Disetujui · 3j</span>
-                </div>
-                <p class="notif-item-body">Dispute #DSP-8812 telah disetujui. Dana pengembalian sedang diproses.</p>
-              </div>
-            </a>
+          <div class="notif-list" id="ddNotifList">
+            <div class="notif-item"><div class="notif-content"><p class="notif-item-body">Memuat notifikasi…</p></div></div>
           </div>
 
           <div class="notif-footer">
@@ -198,168 +154,11 @@
     </div>
   </header>
 
-  <!-- Filter Lokasi -->
-  <div class="filter-lokasi-bar">
-    <span class="filter-lokasi-label">
-      <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-      Filter Lokasi:
-    </span>
-    <button class="filter-pill active" data-filter="semua" onclick="filterLokasi(this)">
-      Semua <span class="pill-count">6</span>
-    </button>
-    <button class="filter-pill" data-filter="jawa-tengah" onclick="filterLokasi(this)">
-      Jawa Tengah <span class="pill-count">1</span>
-    </button>
-    <button class="filter-pill" data-filter="jawa-timur" onclick="filterLokasi(this)">
-      Jawa Timur <span class="pill-count">2</span>
-    </button>
-    <button class="filter-pill" data-filter="jawa-barat" onclick="filterLokasi(this)">
-      Jawa Barat <span class="pill-count">3</span>
-    </button>
-  </div>
   <!-- Main Content Grid -->
   <main class="dashboard-main-content">
-    <div class="cards-grid-layout">
+    <div class="cards-grid-layout" id="sellerCardsContainer">
+      <p id="sellerCardsEmpty" style="text-align:center;padding:2rem;color:#6B7280;">Memuat penjual…</p>
 
-      <!-- Card 1: PT Telur Makmur -->
-      <article class="seller-card" data-location="jawa-tengah">
-        <div class="card-image-wrapper">
-          <img src="../../assets/img/card1.png" alt="PT Telur Makmur" class="card-cover-img">
-        </div>
-        <div class="card-body-content">
-          <h2 class="card-title-name">PT Telur Makmur</h2>
-          <div class="card-location-text">
-            <svg class="location-pin-icon" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-            Solo, Jawa Tengah
-          </div>
-          <p class="card-jenis-text">
-            <strong>Jenis:</strong> Telur Ayam Ras (Grade A, B, C), Telur Omega, Telur Ayam Kampung
-          </p>
-          <div class="card-price-text">
-            Mulai dari <strong>Rp 19.000 / kg</strong>
-          </div>
-          <a href="detail_penjual.php?id=1" class="btn-detail-penjual">Lihat Detail Penjual</a>
-        </div>
-      </article>
-
-      <!-- Card 2: Mitra Unggas Sejahtera -->
-      <article class="seller-card" data-location="jawa-timur">
-        <div class="card-image-wrapper">
-          <img src="../../assets/img/card2.png" alt="Mitra Unggas Sejahtera" class="card-cover-img">
-        </div>
-        <div class="card-body-content">
-          <h2 class="card-title-name">Mitra Unggas Sejahtera</h2>
-          <div class="card-location-text">
-            <svg class="location-pin-icon" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-            Blitar, Jawa Timur
-          </div>
-          <p class="card-jenis-text">
-            <strong>Jenis:</strong> Telur Ayam Ras (Grade A, B, C), Telur Omega, Telur Ayam Kampung
-          </p>
-          <div class="card-price-text">
-            Mulai dari <strong>Rp 19.500 / kg</strong>
-          </div>
-          <a href="detail_penjual.php?id=2" class="btn-detail-penjual">Lihat Detail Penjual</a>
-        </div>
-      </article>
-
-      <!-- Card 3: Tunas Farm -->
-      <article class="seller-card" data-location="jawa-barat">
-        <div class="card-image-wrapper">
-          <img src="../../assets/img/card3.png" alt="Tunas Farm" class="card-cover-img">
-        </div>
-        <div class="card-body-content">
-          <h2 class="card-title-name">Tunas Farm</h2>
-          <div class="card-location-text">
-            <svg class="location-pin-icon" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-            Bogor, Jawa Barat
-          </div>
-          <p class="card-jenis-text">
-            <strong>Jenis:</strong> Telur Ayam Ras (Grade A, B, C), Telur Omega, Telur Ayam Kampung
-          </p>
-          <div class="card-price-text">
-            Mulai dari <strong>Rp 21.000 / kg</strong>
-          </div>
-          <a href="detail_penjual.php?id=3" class="btn-detail-penjual">Lihat Detail Penjual</a>
-        </div>
-      </article>
-
-      <!-- Card 4: Berkah Telur Utama -->
-      <article class="seller-card" data-location="jawa-timur">
-        <div class="card-image-wrapper">
-          <img src="../../assets/img/card4.png" alt="Berkah Telur Utama" class="card-cover-img">
-        </div>
-        <div class="card-body-content">
-          <h2 class="card-title-name">Berkah Telur Utama</h2>
-          <div class="card-location-text">
-            <svg class="location-pin-icon" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-            Blitar, Jawa Timur
-          </div>
-          <p class="card-jenis-text">
-            <strong>Jenis:</strong> Telur Ayam Ras (Grade A, B, C), Telur Omega, Telur Ayam Kampung
-          </p>
-          <div class="card-price-text">
-            Mulai dari <strong>Rp 21.500 / kg</strong>
-          </div>
-          <a href="detail_penjual.php?id=4" class="btn-detail-penjual">Lihat Detail Penjual</a>
-        </div>
-      </article>
-
-      <!-- Card 5: Ternak Mandiri -->
-      <article class="seller-card" data-location="jawa-barat">
-        <div class="card-image-wrapper">
-          <img src="../../assets/img/card5.png" alt="Ternak Mandiri" class="card-cover-img">
-        </div>
-        <div class="card-body-content">
-          <h2 class="card-title-name">Ternak Mandiri</h2>
-          <div class="card-location-text">
-            <svg class="location-pin-icon" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-            Bogor, Jawa Barat
-          </div>
-          <p class="card-jenis-text">
-            <strong>Jenis:</strong> Telur Ayam Ras (Grade A, B, C), Telur Omega, Telur Ayam Kampung
-          </p>
-          <div class="card-price-text">
-            Mulai dari <strong>Rp 20.500 / kg</strong>
-          </div>
-          <a href="detail_penjual.php?id=5" class="btn-detail-penjual">Lihat Detail Penjual</a>
-        </div>
-      </article>
-
-      <!-- Card 6: Sinar Jaya Poultry -->
-      <article class="seller-card" data-location="jawa-barat">
-        <div class="card-image-wrapper">
-          <img src="../../assets/img/card6.png" alt="Sinar Jaya Poultry" class="card-cover-img">
-        </div>
-        <div class="card-body-content">
-          <h2 class="card-title-name">Sinar Jaya Poultry</h2>
-          <div class="card-location-text">
-            <svg class="location-pin-icon" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-            Bandung, Jawa Barat
-          </div>
-          <p class="card-jenis-text">
-            <strong>Jenis:</strong> Telur Ayam Ras (Grade A, B, C), Telur Omega, Telur Ayam Kampung
-          </p>
-          <div class="card-price-text">
-            Mulai dari <strong>Rp 18.500 / kg</strong>
-          </div>
-          <a href="detail_penjual.php?id=6" class="btn-detail-penjual">Lihat Detail Penjual</a>
-        </div>
-      </article>
-
-    </div>
   </main>
 
 
@@ -377,6 +176,8 @@
         e.preventDefault();
         e.stopPropagation();
       }
+      // Simpan ke database supaya tidak kembali setelah muat ulang.
+      fetch('../../api/notifikasi/tandai-dibaca.php', { method: 'POST' }).catch(function () {});
       const badgeRed = document.getElementById('notifBadgeRed');
       if (badgeRed) badgeRed.style.display = 'none';
 
@@ -388,6 +189,43 @@
       });
     }
 
+    // ---- Dropdown lonceng dari API notifikasi (riwayat_status) ----
+    (function () {
+      var ddList = document.getElementById('ddNotifList');
+      var badge = document.getElementById('notifBadgeRed');
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      fetch('../../api/notifikasi.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!ddList) return;
+          if (!res || !res.ok || !res.data || !res.data.notifikasi || !res.data.notifikasi.length) {
+            ddList.innerHTML = '<div class="notif-item"><div class="notif-content"><p class="notif-item-body">Belum ada notifikasi.</p></div></div>';
+            if (badge) badge.style.display = 'none';
+            return;
+          }
+          var items = res.data.notifikasi;
+          ddList.innerHTML = items.slice(0, 3).map(function (n) {
+            return '<a href="../order_detail.php?id=' + n.order_id + '" class="notif-item' + (n.dibaca ? '' : ' unread') + '">'
+              + '<div class="notif-icon-circle green"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg></div>'
+              + '<div class="notif-content"><div class="notif-item-top"><span class="notif-item-title">' + escapeHtml(n.judul) + '</span></div>'
+              + '<p class="notif-item-body">' + escapeHtml(n.isi) + '</p></div></a>';
+          }).join('');
+          var belum = 0;
+          items.forEach(function (n) { if (!n.dibaca) belum++; });
+          if (badge) {
+            if (belum > 0) {
+              badge.innerText = belum;
+              badge.style.display = '';
+            } else {
+              badge.style.display = 'none';
+            }
+          }
+        })
+        .catch(function () { /* biarkan placeholder bila API gagal */ });
+    })();
+
     document.addEventListener('click', function (e) {
       const dd = document.getElementById('notifDropdown');
       const btn = document.getElementById('notifBellBtn');
@@ -398,20 +236,54 @@
       }
     });
 
-    function filterLokasi(btn) {
-      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-
-      const filter = btn.getAttribute('data-filter');
-      const cards = document.querySelectorAll('.seller-card');
-
-      cards.forEach(card => {
-        if (filter === 'semua' || card.getAttribute('data-location') === filter) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }  </script>
+    // ---- Daftar penjual asli dari API ----
+    (function () {
+      var grid = document.getElementById('sellerCardsContainer');
+      function rupiah(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); }
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      fetch('../../api/penjual.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!grid) return;
+          if (!res || !res.ok || !res.data || !res.data.penjual) {
+            grid.innerHTML = '<p style="text-align:center;padding:2rem;color:#6B7280;">Gagal memuat penjual. Periksa koneksi atau login kembali.</p>';
+            return;
+          }
+          var items = res.data.penjual;
+          if (!items.length) {
+            grid.innerHTML = '<p style="text-align:center;padding:2rem;color:#6B7280;">Belum ada penjual.</p>';
+            return;
+          }
+          grid.innerHTML = items.map(function (s) {
+            var jenis = s.produk_nama ? s.produk_nama : '—';
+            var harga = s.harga_termurah !== null ? ('Mulai dari <strong>' + rupiah(s.harga_termurah) + ' / kg</strong>') : '';
+            return '<article class="seller-card">'
+              + '<div class="card-image-wrapper"><img src="../../assets/img/card1.png" alt="' + escapeHtml(s.nama) + '" class="card-cover-img"></div>'
+              + '<div class="card-body-content">'
+              + '<h2 class="card-title-name">' + escapeHtml(s.nama) + '</h2>'
+              + '<p class="card-jenis-text"><strong>Jenis:</strong> ' + escapeHtml(jenis) + '</p>'
+              + '<div class="card-price-text">' + harga + '</div>'
+              + '<a href="detail_penjual.php?id=' + s.id + '" class="btn-detail-penjual">Lihat Detail Penjual</a>'
+              + '</div></article>';
+          }).join('');
+        })
+        .catch(function () {
+          if (grid) grid.innerHTML = '<p style="text-align:center;padding:2rem;color:#6B7280;">Gagal memuat penjual. Periksa koneksi atau login kembali.</p>';
+        });
+    })();  </script>
+  <script>
+    // Avatar & nama dari user yang sedang login (bukan "AD" hardcode).
+    (function () {
+      fetch('../../api/auth/me.php').then(function (r) { return r.json(); }).then(function (res) {
+        if (!res || !res.ok || !res.data || !res.data.nama) return;
+        var nama = res.data.nama;
+        var inisial = nama.trim().split(/\s+/).map(function (w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
+        document.querySelectorAll('.user-avatar-circle, .ulasan-user-avatar, .pd-user-avatar').forEach(function (el) { el.textContent = inisial; });
+        document.querySelectorAll('.user-name-text').forEach(function (el) { el.textContent = nama; });
+      }).catch(function () {});
+    })();
+  </script>
 </body>
 </html>

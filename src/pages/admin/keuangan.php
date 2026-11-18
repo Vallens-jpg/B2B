@@ -842,19 +842,20 @@
       <!-- ============ 1. SALDO CARD ============ -->
       <div class="card saldo-card">
         <span class="saldo-label">SALDO YANG TERSEDIA</span>
-        <div class="saldo-amount" id="saldoDisplay">Rp 25.000.000</div>
+        <div class="saldo-amount" id="saldoDisplay">Rp 0</div>
       </div>
 
       <!-- ============ 2. FORM PENCAIRAN ============ -->
       <div class="card form-card">
         <h2 class="card-title">Form Pencairan</h2>
+          <p style="font-size: 13px; color: #64748b; margin: 4px 0 0;">Pencairan dana belum tersedia — belum ada backend payout. Saldo di bawah adalah dana escrow yang masih ditahan.</p>
 
         <!-- Field: Nominal Pencairan -->
         <div class="form-group">
           <label class="form-label" for="nominalPencairan">Nominal Pencairan</label>
           <div class="input-nominal-wrap">
             <span class="input-prefix">Rp</span>
-            <input type="text" id="nominalPencairan" class="input-nominal" value="10.000.000">
+            <input type="text" id="nominalPencairan" class="input-nominal" value="" placeholder="Belum tersedia" disabled>
           </div>
         </div>
 
@@ -873,8 +874,8 @@
                   </svg>
                 </div>
                 <div class="account-info">
-                  <span class="account-name" id="selectedAccountName">BCA - Tabungan</span>
-                  <span class="account-sub" id="selectedAccountSub">8830129482 &bull; Admin Keuangan</span>
+                  <span class="account-name" id="selectedAccountName">—</span>
+                  <span class="account-sub" id="selectedAccountSub">Belum ada rekening tujuan</span>
                 </div>
               </div>
               <div class="select-chevron" id="selectChevron">
@@ -886,7 +887,7 @@
 
             <!-- Dropdown Menu -->
             <div class="account-dropdown-menu" id="accountDropdownMenu">
-              <div class="account-option selected" data-name="BCA - Tabungan" data-sub="8830129482 • Admin Keuangan">
+              <div class="account-option selected" data-name="BCA - Tabungan" data-sub="—">
                 <div class="bank-logo-box">
                   <svg viewBox="0 0 32 32" width="24" height="24">
                     <rect width="32" height="32" rx="6" fill="#005EAA"/>
@@ -896,11 +897,11 @@
                 </div>
                 <div class="account-info">
                   <span class="account-name">BCA - Tabungan</span>
-                  <span class="account-sub">8830129482 • Admin Keuangan</span>
+                  <span class="account-sub">—</span>
                 </div>
               </div>
 
-              <div class="account-option" data-name="Mandiri - Tabungan Bisnis" data-sub="1370009823412 • Admin Keuangan">
+              <div class="account-option" data-name="Mandiri - Tabungan Bisnis" data-sub="—">
                 <div class="bank-logo-box">
                   <svg viewBox="0 0 32 32" width="24" height="24">
                     <rect width="32" height="32" rx="6" fill="#003D79"/>
@@ -909,11 +910,11 @@
                 </div>
                 <div class="account-info">
                   <span class="account-name">Mandiri - Tabungan Bisnis</span>
-                  <span class="account-sub">1370009823412 • Admin Keuangan</span>
+                  <span class="account-sub">—</span>
                 </div>
               </div>
 
-              <div class="account-option" data-name="BRI - BritAma Bisnis" data-sub="020601002345501 • Admin Keuangan">
+              <div class="account-option" data-name="BRI - BritAma Bisnis" data-sub="—">
                 <div class="bank-logo-box">
                   <svg viewBox="0 0 32 32" width="24" height="24">
                     <rect width="32" height="32" rx="6" fill="#00529C"/>
@@ -922,7 +923,7 @@
                 </div>
                 <div class="account-info">
                   <span class="account-name">BRI - BritAma Bisnis</span>
-                  <span class="account-sub">020601002345501 • Admin Keuangan</span>
+                  <span class="account-sub">—</span>
                 </div>
               </div>
             </div>
@@ -930,7 +931,7 @@
         </div>
 
         <!-- Submit Button -->
-        <button type="button" class="btn-submit" id="btnSubmitPencairan">
+        <button type="button" class="btn-submit" id="btnSubmitPencairan" disabled title="Pencairan belum tersedia">
           <span>Cairkan Dana</span>
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -968,79 +969,52 @@
   <!-- ==================== JAVASCRIPT ==================== -->
   <script>
     (function() {
-      const STORAGE_KEY = 'staplr_keuangan_pencairan';
-      const SALDO_KEY = 'staplr_keuangan_saldo';
-
-      // Default baseline matching image exactly
-      const DEFAULT_SALDO = 25000000;
-      const DEFAULT_HISTORY = [
-        {
-          date: '14 Mar 2024',
-          time: '14:20 WIB',
-          nominal: 'Rp 5.000.000',
-          target: 'BCA - 8830129482',
-          targetSub: 'Admin Keuangan',
-          status: 'Success'
-        },
-        {
-          date: '14 Mar 2024',
-          time: '14:20 WIB',
-          nominal: 'Rp 5.000.000',
-          target: 'BCA - 8830129482',
-          targetSub: 'Admin Keuangan',
-          status: 'Success'
-        },
-        {
-          date: '14 Mar 2024',
-          time: '14:20 WIB',
-          nominal: 'Rp 5.000.000',
-          target: 'BCA - 8830129482',
-          targetSub: 'Admin Keuangan',
-          status: 'Success'
-        }
-      ];
-
-      function formatRupiah(num) {
-        return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      let ESCROW_LIST = [];
+      let SALDO_DITAHAN = 0;
+      const BULAN_ID = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+      function formatTanggalApi(waktu) {
+        if (!waktu) return '—';
+        const m = String(waktu).match(/^(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})/);
+        if (!m) return String(waktu);
+        return {
+          date: parseInt(m[3], 10) + ' ' + BULAN_ID[parseInt(m[2], 10) - 1] + ' ' + m[1],
+          time: m[4] + ':' + m[5] + ' WIB'
+        };
+      }
+      function labelStatusEscrow(status) {
+        if (status === 'cair_dp') return 'DP Cair';
+        if (status === 'cair_sisa') return 'Sisa Cair';
+        if (status === 'kembali') return 'Kembali';
+        return 'Ditahan';
       }
 
-      function parseRupiah(str) {
-        return parseInt(str.replace(/[^\d]/g, ''), 10) || 0;
+      function muatKeuanganAdmin() {
+        return fetch('../../api/admin/keuangan.php')
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok || !res.data) {
+              renderSaldo();
+              renderTable();
+              return;
+            }
+            const ringkasan = res.data.ringkasan || {};
+            SALDO_DITAHAN = Number(ringkasan.masih_ditahan || 0);
+            ESCROW_LIST = (res.data.escrow || []).map(function (e) {
+              const w = formatTanggalApi(e.created_at);
+              return {
+                date: (typeof w === 'object') ? w.date : '—',
+                time: (typeof w === 'object') ? w.time : '',
+                nominal: formatRupiah(Math.round(Number(e.jumlah_ditahan || 0))),
+                target: (e.nama_perusahaan || '—') + ' — Order #' + e.order_id,
+                targetSub: (e.nama_produk || '') + (e.nama_buyer ? ' • ' + e.nama_buyer : ''),
+                status: labelStatusEscrow(e.status)
+              };
+            });
+            renderSaldo();
+            renderTable();
+          })
+          .catch(function () { renderSaldo(); renderTable(); });
       }
-
-      function loadSaldo() {
-        try {
-          const stored = localStorage.getItem(SALDO_KEY);
-          if (stored !== null) return parseInt(stored, 10);
-        } catch (e) {}
-        return DEFAULT_SALDO;
-      }
-
-      function saveSaldo(val) {
-        try {
-          localStorage.setItem(SALDO_KEY, val.toString());
-        } catch (e) {}
-      }
-
-      function loadHistory() {
-        try {
-          const stored = localStorage.getItem(STORAGE_KEY);
-          if (stored) {
-            const parsed = JSON.parse(stored);
-            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-          }
-        } catch (e) {}
-        return JSON.parse(JSON.stringify(DEFAULT_HISTORY));
-      }
-
-      function saveHistory(data) {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        } catch (e) {}
-      }
-
-      let currentSaldo = loadSaldo();
-      let historyList = loadHistory();
 
       const saldoDisplay = document.getElementById('saldoDisplay');
       const riwayatTableBody = document.getElementById('riwayatTableBody');
@@ -1078,12 +1052,16 @@
       }
 
       function renderSaldo() {
-        saldoDisplay.textContent = formatRupiah(currentSaldo);
+        saldoDisplay.textContent = formatRupiah(Math.round(SALDO_DITAHAN));
       }
 
       function renderTable() {
         riwayatTableBody.innerHTML = '';
-        historyList.forEach(item => {
+        if (!ESCROW_LIST.length) {
+          riwayatTableBody.innerHTML = '<tr class="empty-row"><td colspan="4">Belum ada dana escrow.</td></tr>';
+          return;
+        }
+        ESCROW_LIST.forEach(item => {
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td>
@@ -1107,102 +1085,11 @@
         });
       }
 
-      // Format input on keyup
-      nominalInput.addEventListener('input', function() {
-        let val = parseRupiah(this.value);
-        if (val > 0) {
-          this.value = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        }
-      });
+      // Form pencairan dinonaktifkan: belum ada backend payout.
+      // Saldo dan riwayat di atas berasal dari escrow asli (API admin/keuangan.php).
 
-      // Toggle account dropdown
-      accountSelectBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const isOpen = accountDropdownMenu.classList.contains('show');
-        if (isOpen) {
-          accountDropdownMenu.classList.remove('show');
-          selectChevron.classList.remove('open');
-        } else {
-          accountDropdownMenu.classList.add('show');
-          selectChevron.classList.add('open');
-        }
-      });
-
-      document.addEventListener('click', function() {
-        accountDropdownMenu.classList.remove('show');
-        selectChevron.classList.remove('open');
-      });
-
-      // Choose account option
-      accountDropdownMenu.querySelectorAll('.account-option').forEach(opt => {
-        opt.addEventListener('click', function(e) {
-          e.stopPropagation();
-          accountDropdownMenu.querySelectorAll('.account-option').forEach(o => o.classList.remove('selected'));
-          this.classList.add('selected');
-
-          const name = this.getAttribute('data-name');
-          const sub = this.getAttribute('data-sub');
-          selectedAccountName.textContent = name;
-          selectedAccountSub.textContent = sub;
-
-          accountDropdownMenu.classList.remove('show');
-          selectChevron.classList.remove('open');
-          showToast(`Rekening tujuan diubah: ${name}`, 'info');
-        });
-      });
-
-      // Submit Pencairan
-      btnSubmitPencairan.addEventListener('click', function() {
-        const nominal = parseRupiah(nominalInput.value);
-        if (nominal <= 0) {
-          showToast('Masukkan nominal pencairan yang valid!', 'warning');
-          return;
-        }
-
-        if (nominal > currentSaldo) {
-          showToast(`Saldo tidak mencukupi! Saldo tersedia: ${formatRupiah(currentSaldo)}`, 'warning');
-          return;
-        }
-
-        // Deduct saldo
-        currentSaldo -= nominal;
-        saveSaldo(currentSaldo);
-        renderSaldo();
-
-        // Get current date time formatted
-        const now = new Date();
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
-        const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const timeStr = `${hours}:${minutes} WIB`;
-
-        const targetAccount = selectedAccountName.textContent.split(' - ')[0] + ' - 8830129482';
-
-        const newTx = {
-          date: dateStr,
-          time: timeStr,
-          nominal: formatRupiah(nominal),
-          target: targetAccount,
-          targetSub: 'Admin Keuangan',
-          status: 'Success'
-        };
-
-        historyList.unshift(newTx);
-        saveHistory(historyList);
-        renderTable();
-
-        showToast(`Pencairan ${formatRupiah(nominal)} berhasil diproses!`, 'success');
-      });
-
-      // Admin profile button
-      adminProfileBtn.addEventListener('click', function() {
-        toggleAdminDropdown(event);
-      });
-
-      // Initial Render
-      renderSaldo();
-      renderTable();
+      // Initial Render: muat dari API
+      muatKeuanganAdmin();
     })();
   </script>
 

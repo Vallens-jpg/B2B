@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detail Dispute #RET-2026-001 - Staplr Admin</title>
+  <title>Detail Dispute - Staplr Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -465,6 +465,24 @@
       background: #fff4cc;
       color: #8a6400;
       border: 1px solid #fde68a;
+    }
+
+    .badge-approved {
+      background: #e3f6ec;
+      color: #14803f;
+      border: 1px solid #a7f3d0;
+    }
+
+    .badge-rejected {
+      background: #fde8e8;
+      color: #b42318;
+      border: 1px solid #fecaca;
+    }
+
+    .badge-waiting {
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
     }
 
     /* ============ RIGHT CARD: DETAIL DISPUTE ============ */
@@ -961,11 +979,11 @@
           <div class="case-group">
             <div class="case-item">
               <span class="case-label">ID Retur</span>
-              <span class="case-value" id="caseIdRetur">#RET-2026-001</span>
+              <span class="case-value" id="caseIdRetur">—</span>
             </div>
             <div class="case-item">
               <span class="case-label">ID Pesanan</span>
-              <span class="case-value" id="caseIdPesanan">#ORD-2026-089</span>
+              <span class="case-value" id="caseIdPesanan">—</span>
             </div>
           </div>
 
@@ -974,11 +992,11 @@
           <div class="case-group">
             <div class="case-item">
               <span class="case-label">Pembeli</span>
-              <span class="case-value" id="casePembeli">Rira W. (PT Rira Pangan)</span>
+              <span class="case-value" id="casePembeli">—</span>
             </div>
             <div class="case-item">
               <span class="case-label">Produk</span>
-              <span class="case-value" id="caseProduk">Telur Ayam (500 Kg)</span>
+              <span class="case-value" id="caseProduk">—</span>
             </div>
           </div>
 
@@ -987,11 +1005,11 @@
           <div class="case-group">
             <div class="case-item">
               <span class="case-label">Tgl Pembelian</span>
-              <span class="case-value" id="caseTglBeli">05 Oktober 2026</span>
+              <span class="case-value" id="caseTglBeli">—</span>
             </div>
             <div class="case-item">
               <span class="case-label">Tgl Komplain</span>
-              <span class="case-value" id="caseTglKomplain">11 Okt 2026</span>
+              <span class="case-value" id="caseTglKomplain">—</span>
             </div>
           </div>
 
@@ -1000,11 +1018,11 @@
           <div class="case-group">
             <div class="case-item">
               <span class="case-label">Alasan Utama</span>
-              <span class="case-value" id="caseAlasan">Barang Rusak / Cacat / Pecah</span>
+              <span class="case-value" id="caseAlasan">—</span>
             </div>
             <div class="case-item">
               <span class="case-label">Bukti</span>
-              <span class="case-value" id="caseBukti">2 Foto dan 1 Video</span>
+              <span class="case-value" id="caseBukti">—</span>
             </div>
           </div>
 
@@ -1026,7 +1044,7 @@
         <div class="card right-card">
           <!-- Header with Title & Badge -->
           <div class="right-card-header">
-            <h3 id="rightCardTitle">Detail Dispute #RET-2026-001</h3>
+            <h3 id="rightCardTitle">Detail Dispute —</h3>
             <span id="rightCardBadge">
               <span class="badge badge-pending">
                 <span class="badge-dot">●</span> Pending
@@ -1037,9 +1055,7 @@
           <!-- Section 1: Komplain -->
           <div class="field-section">
             <label class="field-label">Komplain</label>
-            <div class="field-box" id="fieldKomplain">
-              saya pesan 15 kg kok 14 kg rusak semua???
-            </div>
+            <div class="field-box" id="fieldKomplain">—</div>
           </div>
 
           <!-- Section 2: Bukti -->
@@ -1053,9 +1069,7 @@
           <!-- Section 3: Usulan Penyelesaian -->
           <div class="field-section">
             <label class="field-label">Usulan Penyelesaian</label>
-            <div class="field-box" id="fieldUsulan">
-              Refund Rp 350.000
-            </div>
+            <div class="field-box" id="fieldUsulan">—</div>
           </div>
 
           <!-- Section 4: Action Buttons -->
@@ -1103,90 +1117,23 @@
     // ==========================================
     // STAPLR ADMIN - DETAIL DISPUTE LOGIC
     // ==========================================
-    const STORAGE_KEY = 'staplr_dispute_list';
 
-    const defaultDisputes = [
-      {
-        id: '#RET-2026-001',
-        orderId: '#ORD-2026-089',
-        date: '11 Okt 2026',
-        buyDate: '05 Oktober 2026',
-        buyer: 'Rira W. (PT Rira Pangan)',
-        product: 'Telur Ayam (500 Kg)',
-        category: 'Barang Rusak/Pecah',
-        categoryFull: 'Barang Rusak / Cacat / Pecah',
-        media: '2 Foto dan 1 Video',
-        complaint: 'saya pesan 15 kg kok 14 kg rusak semua???',
-        solution: 'Refund Rp 350.000',
-        attachments: [
-          { type: 'JPG', title: 'Foto 1 - Kerusakan Tray Telur', desc: '' },
-          { type: 'PNG', title: 'Foto 2 - Detail Pecahan Telur', desc: '' },
-          { type: 'MP4', title: 'Video 1 - Pemeriksaan Kerusakan', desc: '' }
-        ],
-        status: 'pending',
-        statusLabel: 'Pending'
-      },
-      {
-        id: '#RET-2026-002',
-        orderId: '#ORD-2026-074',
-        date: '09 Okt 2026',
-        buyDate: '03 Oktober 2026',
-        buyer: 'PT Boga Jaya',
-        product: 'Minyak Goreng (200 L)',
-        category: 'Kuantitas Kurang',
-        categoryFull: 'Kuantitas Kurang / Tidak Lengkap',
-        media: '1 Foto',
-        complaint: 'Pesanan kurang 1 jerigen saat pengiriman.',
-        solution: 'Pengiriman Susulan / Refund Sebagian',
-        attachments: [
-          { type: 'JPG', title: 'Foto 1 - Kekurangan Jerigen Minyak', desc: 'Lampiran foto dari pembeli' }
-        ],
-        status: 'approved',
-        statusLabel: 'Disetujui'
-      },
-      {
-        id: '#RET-2026-003',
-        orderId: '#ORD-2026-061',
-        date: '05 Okt 2026',
-        buyDate: '01 Oktober 2026',
-        buyer: 'CV Sembako',
-        product: 'Beras Premium (100 Karung)',
-        category: 'Tidak Sesuai Specs',
-        categoryFull: 'Barang Tidak Sesuai Spesifikasi',
-        media: '3 Foto',
-        complaint: 'Kualitas beras tidak sesuai dengan deskripsi pesanan.',
-        solution: 'Tolak klaim karena sudah lewat batas waktu verifikasi.',
-        attachments: [
-          { type: 'JPG', title: 'Foto 1 - Timbangan Beras', desc: 'Lampiran foto timbangan' },
-          { type: 'JPG', title: 'Foto 2 - Kualitas Butir Beras', desc: 'Lampiran foto butiran beras' },
-          { type: 'JPG', title: 'Foto 3 - Label Karung Beras', desc: 'Lampiran foto kemasan karung' }
-        ],
-        status: 'rejected',
-        statusLabel: 'Ditolak'
-      }
-    ];
+    // ID dispute asli (angka) dari ?id= — dipakai untuk memanggil API.
 
-    function getDisputes() {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        try {
-          let parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed.map(d => {
-              const match = defaultDisputes.find(init => init.id === d.id);
-              return match ? { ...match, ...d } : d;
-            });
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultDisputes));
-      return defaultDisputes;
+    const BULAN_ID = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+    function formatTanggalApi(waktu) {
+      if (!waktu) return '—';
+      const m = String(waktu).match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (!m) return String(waktu);
+      return parseInt(m[3], 10) + ' ' + BULAN_ID[parseInt(m[2], 10) - 1] + ' ' + m[1];
     }
 
-    function saveDisputes(data) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    // Badge untuk status asli dari API (dibuka/diproses/diputuskan).
+    function badgeForApi(d) {
+      if (d.status === 'diproses') return '<span class="badge badge-waiting"><span class="badge-dot">●</span> Diproses</span>';
+      if (d.status === 'diputuskan' && d.putusan === 'uang_kembali') return '<span class="badge badge-approved"><span class="badge-dot">●</span> Diputuskan: Uang Kembali</span>';
+      if (d.status === 'diputuskan' && d.putusan === 'lanjut_perusahaan') return '<span class="badge badge-rejected"><span class="badge-dot">●</span> Diputuskan: Lanjut Perusahaan</span>';
+      return '<span class="badge badge-pending"><span class="badge-dot">●</span> Pending</span>';
     }
 
     function showToast(message, type = 'info') {
@@ -1199,61 +1146,70 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. Get dispute ID from URL search param or localStorage
+      // 1. ID dispute asli dari ?id=<angka> saja.
       const urlParams = new URLSearchParams(window.location.search);
-      const selectedId = urlParams.get('id') || localStorage.getItem('staplr_selected_dispute_id') || '#RET-2026-001';
+      const disputeIdApi = parseInt(urlParams.get('id') || '0', 10) || 0;
+      const verifikasiUrlApi = 'verifikasi-dispute.php?id=' + disputeIdApi;
+      const stepperLink = document.getElementById('stepperVerifikasiLink');
+      const btnForward = document.getElementById('btnForwardDispute');
+      if (stepperLink) stepperLink.href = verifikasiUrlApi;
+      if (btnForward) btnForward.href = verifikasiUrlApi;
 
-      const disputes = getDisputes();
-      let dispute = disputes.find(d => d.id === selectedId) || disputes[0];
-
-      // Save as active selected
-      localStorage.setItem('staplr_selected_dispute_id', dispute.id);
-
-      // 2. Populate case summary left card
-      document.getElementById('caseIdRetur').textContent = dispute.id;
-      document.getElementById('caseIdPesanan').textContent = dispute.orderId;
-      document.getElementById('casePembeli').textContent = dispute.buyer;
-      document.getElementById('caseProduk').textContent = dispute.product;
-      document.getElementById('caseTglBeli').textContent = dispute.buyDate;
-      document.getElementById('caseTglKomplain').textContent = dispute.date;
-      document.getElementById('caseAlasan').textContent = dispute.categoryFull || dispute.category;
-      document.getElementById('caseBukti').textContent = dispute.media;
-
-      // Status badge styling helper
-      function getBadgeHtml(status) {
-        if (status === 'approved') {
-          return '<span class="badge badge-approved"><span class="badge-dot">●</span> Disetujui</span>';
-        } else if (status === 'rejected') {
-          return '<span class="badge badge-rejected"><span class="badge-dot">●</span> Ditolak</span>';
-        } else if (status === 'waiting') {
-          return '<span class="badge badge-waiting"><span class="badge-dot">●</span> Menunggu Barang</span>';
-        }
-        return '<span class="badge badge-pending"><span class="badge-dot">●</span> Pending</span>';
+      // 2. Muat detail asli dari API (nama pembeli/produk dari detail order).
+      if (disputeIdApi <= 0) {
+        document.getElementById('rightCardTitle').textContent = 'Dispute tidak ditemukan — buka dari daftar dispute.';
+        renderAttachments([]);
+      } else {
+        fetch('../../api/dispute/detail.php?id=' + disputeIdApi)
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok || !res.data) {
+              showToast('Dispute tidak ditemukan.', 'info');
+              return;
+            }
+            const d = res.data;
+            document.getElementById('caseIdRetur').textContent = 'Dispute #' + d.id;
+            document.getElementById('caseIdPesanan').textContent = 'Order #' + d.order_id;
+            document.getElementById('casePembeli').textContent = 'Pembeli #' + d.buyer_id;
+            document.getElementById('caseProduk').textContent = 'Produk #' + d.produk_id;
+            document.getElementById('caseTglBeli').textContent = '—';
+            document.getElementById('caseTglKomplain').textContent = formatTanggalApi(d.created_at);
+            document.getElementById('caseAlasan').textContent = d.judul || '—';
+            document.getElementById('caseBukti').textContent = d.bukti_foto ? '1 Foto' : 'Tidak ada bukti foto';
+            document.getElementById('caseStatusBadge').innerHTML = badgeForApi(d);
+            document.getElementById('rightCardTitle').textContent = 'Detail Dispute #' + d.id;
+            document.getElementById('rightCardBadge').innerHTML = badgeForApi(d);
+            document.getElementById('fieldKomplain').textContent = d.deskripsi || '—';
+            document.getElementById('fieldUsulan').textContent = '—';
+            const att = d.bukti_foto
+              ? [{ type: String(d.bukti_foto).split('.').pop().toUpperCase(), title: d.bukti_foto, desc: 'Lampiran foto bukti dari pembeli' }]
+              : [];
+            renderAttachments(att);
+            return fetch('../../api/order/detail.php?id=' + d.order_id)
+              .then(function (r) { return r.json(); })
+              .then(function (resOrder) {
+                if (!resOrder.ok || !resOrder.data || !resOrder.data.order) return;
+                const o = resOrder.data.order;
+                document.getElementById('casePembeli').textContent = o.nama_buyer || ('Pembeli #' + d.buyer_id);
+                document.getElementById('caseProduk').textContent = (o.nama_produk || ('Produk #' + d.produk_id)) + ' (' + Number(o.jumlah_kg).toLocaleString('id-ID') + ' Kg)';
+                document.getElementById('caseTglBeli').textContent = formatTanggalApi(o.created_at);
+              })
+              .catch(function () { /* biarkan 'Pembeli #id' / 'Produk #id' */ });
+          })
+          .catch(function () { showToast('Gagal memuat dispute.', 'info'); });
       }
 
-      document.getElementById('caseStatusBadge').innerHTML = getBadgeHtml(dispute.status);
+      // 4. Render Attachment items (dipakai juga saat data asli dari API tiba)
+      function renderAttachments(attachments) {
+        const attachmentList = document.getElementById('attachmentList');
+        attachmentList.innerHTML = '';
 
-      // 3. Populate right card
-      document.getElementById('rightCardTitle').textContent = `Detail Dispute ${dispute.id}`;
-      document.getElementById('rightCardBadge').innerHTML = getBadgeHtml(dispute.status);
-      document.getElementById('fieldKomplain').textContent = dispute.complaint;
-      document.getElementById('fieldUsulan').textContent = dispute.solution;
+        if (!attachments || !attachments.length) {
+          attachmentList.innerHTML = '<div style="padding: 13px 16px; font-size: 14px; color: #64748b;">Tidak ada bukti yang dilampirkan.</div>';
+          return;
+        }
 
-      // Update stepper link and forward button to point to verifikasi with this ID
-      const verifikasiUrl = `verifikasi-dispute.php?id=${encodeURIComponent(dispute.id)}`;
-      document.getElementById('stepperVerifikasiLink').href = verifikasiUrl;
-      const btnForward = document.getElementById('btnForwardDispute');
-      btnForward.href = verifikasiUrl;
-
-      // 4. Render Attachment items
-      const attachmentList = document.getElementById('attachmentList');
-      attachmentList.innerHTML = '';
-
-      const attachments = dispute.attachments || [
-        { type: 'JPG', title: 'Foto 1 - Bukti Masalah', desc: 'Lampiran foto bukti dari pembeli' }
-      ];
-
-      attachments.forEach((att, idx) => {
+        attachments.forEach((att, idx) => {
         const item = document.createElement('div');
         item.className = 'attachment-item';
         item.setAttribute('data-index', idx);
@@ -1287,7 +1243,10 @@
         });
 
         attachmentList.appendChild(item);
-      });
+        });
+      }
+
+      if (disputeIdApi <= 0) renderAttachments([]);
 
       // 5. Modal Attachment Preview Controls
       const modal = document.getElementById('attachmentModal');
@@ -1330,18 +1289,33 @@
       // 6. Tolak Dispute Button Event
       const btnReject = document.getElementById('btnRejectDispute');
       btnReject.addEventListener('click', () => {
-        const allDisputes = getDisputes();
-        const target = allDisputes.find(item => item.id === dispute.id);
-        if (target) {
-          target.status = 'rejected';
-          target.statusLabel = 'Ditolak';
-          saveDisputes(allDisputes);
+        // Tolak = klaim refund ditolak, order lanjut ke perusahaan.
+        // Putusan asli lewat API (admin only): POST ../../api/dispute/putuskan.php
+        // dengan { dispute_id, putusan: 'lanjut_perusahaan' }.
+        if (disputeIdApi > 0) {
+          btnReject.disabled = true;
+          fetch('../../api/dispute/putuskan.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dispute_id: disputeIdApi, putusan: 'lanjut_perusahaan' })
+          })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+              if (!res.ok) throw new Error(res.error || 'Putusan gagal');
+              showToast(`Dispute #${disputeIdApi} berhasil ditolak (lanjut ke perusahaan)! Mengalihkan ke daftar...`, 'danger');
+              setTimeout(() => {
+                window.location.href = 'dispute.php';
+              }, 900);
+            })
+            .catch(function (err) {
+              btnReject.disabled = false;
+              showToast(err.message || 'Putusan gagal. Pastikan sudah login sebagai admin.', 'danger');
+            });
+          return;
         }
 
-        showToast(`Dispute ${dispute.id} berhasil ditolak! Mengalihkan ke daftar...`, 'danger');
-        setTimeout(() => {
-          window.location.href = 'dispute.php';
-        }, 900);
+        // Tanpa ID dispute asli, tidak ada yang bisa diputuskan.
+        showToast('Buka dispute dari daftar dulu (butuh ID dispute asli).', 'info');
       });
 
       // 7. Topbar Admin Profile Button Event

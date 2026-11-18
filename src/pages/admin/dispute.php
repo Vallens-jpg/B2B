@@ -725,7 +725,7 @@
       <div class="filter-row" id="filterPillsRow">
         <button type="button" class="filter-pill active" data-filter="all">Semua</button>
         <button type="button" class="filter-pill" data-filter="pending">
-          Perlu Ditinjau (<span id="countPendingBadge">1</span>)
+          Perlu Ditinjau (<span id="countPendingBadge">0</span>)
         </button>
         <button type="button" class="filter-pill" data-filter="waiting">Menunggu Barang</button>
         <button type="button" class="filter-pill" data-filter="approved">Disetujui</button>
@@ -755,7 +755,7 @@
 
         <!-- Footer Pagination Info -->
         <div class="card-footer">
-          <span class="footer-info" id="footerInfoText">Menampilkan 1–3 dari 3 dispute</span>
+          <span class="footer-info" id="footerInfoText">Memuat dispute…</span>
           <button class="btn-pagination" id="btnNextPage" type="button">Selanjutnya</button>
         </div>
       </div>
@@ -770,91 +770,38 @@
     // ==========================================
     // STAPLR ADMIN - DISPUTE & COMPLAINTS LOGIC
     // ==========================================
-    const STORAGE_KEY = 'staplr_dispute_list';
+    let DISPUTE_LIST = [];
 
-    // Default dispute records matching pixel-perfect design
-    const initialDisputes = [
-      {
-        id: '#RET-2026-001',
-        orderId: '#ORD-2026-089',
-        date: '11 Okt 2026',
-        buyDate: '05 Oktober 2026',
-        buyer: 'Rira W. (PT Rira Pangan)',
-        product: 'Telur Ayam (500 Kg)',
-        category: 'Barang Rusak/Pecah',
-        categoryFull: 'Barang Rusak / Cacat / Pecah',
-        media: '2 Foto dan 1 Video',
-        complaint: 'saya pesan 15 kg kok 14 kg rusak semua???',
-        solution: 'Refund Rp 350.000',
-        attachments: [
-          { type: 'JPG', title: 'Foto 1 - Kerusakan Tray Telur', desc: 'Lampiran foto 1 dari pembeli' },
-          { type: 'JPG', title: 'Foto 2 - Detail Pecahan Telur', desc: 'Lampiran foto 2 dari pembeli' },
-          { type: 'MP4', title: 'Video 1 - Pemeriksaan Kerusakan', desc: 'Lampiran video 1 dari pembeli' }
-        ],
-        status: 'pending', // pending, waiting, approved, rejected
-        statusLabel: 'Pending'
-      },
-      {
-        id: '#RET-2026-002',
-        orderId: '#ORD-2026-074',
-        date: '09 Okt 2026',
-        buyDate: '03 Oktober 2026',
-        buyer: 'PT Boga Jaya',
-        product: 'Minyak Goreng (200 L)',
-        category: 'Kuantitas Kurang',
-        categoryFull: 'Kuantitas Kurang / Tidak Lengkap',
-        media: '1 Foto',
-        complaint: 'Pesanan kurang 1 jerigen saat pengiriman.',
-        solution: 'Pengiriman Susulan / Refund Sebagian',
-        attachments: [
-          { type: 'JPG', title: 'Foto 1 - Kekurangan Jerigen Minyak', desc: 'Lampiran foto dari pembeli' }
-        ],
-        status: 'approved',
-        statusLabel: 'Disetujui'
-      },
-      {
-        id: '#RET-2026-003',
-        orderId: '#ORD-2026-061',
-        date: '05 Okt 2026',
-        buyDate: '01 Oktober 2026',
-        buyer: 'CV Sembako',
-        product: 'Beras Premium (100 Karung)',
-        category: 'Tidak Sesuai Specs',
-        categoryFull: 'Barang Tidak Sesuai Spesifikasi',
-        media: '3 Foto',
-        complaint: 'Kualitas beras tidak sesuai dengan deskripsi pesanan.',
-        solution: 'Tolak klaim karena sudah lewat batas waktu verifikasi.',
-        attachments: [
-          { type: 'JPG', title: 'Foto 1 - Timbangan Beras', desc: 'Lampiran foto timbangan' },
-          { type: 'JPG', title: 'Foto 2 - Kualitas Butir Beras', desc: 'Lampiran foto butiran beras' },
-          { type: 'JPG', title: 'Foto 3 - Label Karung Beras', desc: 'Lampiran foto kemasan karung' }
-        ],
-        status: 'rejected',
-        statusLabel: 'Ditolak'
-      }
-    ];
-
-    function getDisputes() {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        try {
-          let parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed.map(d => {
-              const match = initialDisputes.find(init => init.id === d.id);
-              return match ? { ...match, ...d } : d;
-            });
+    function muatDisputeAdmin() {
+      return fetch('../../api/dispute/list.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.dispute) {
+            renderDisputes();
+            return;
           }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(initialDisputes));
-      return initialDisputes;
-    }
-
-    function saveDisputes(data) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+          DISPUTE_LIST = res.data.dispute.map(function (d) {
+            let status = 'pending';
+            let label = 'Pending';
+            if (d.status === 'diproses') { status = 'waiting'; label = 'Menunggu Barang'; }
+            else if (d.status === 'diputuskan' && d.putusan === 'uang_kembali') { status = 'approved'; label = 'Disetujui'; }
+            else if (d.status === 'diputuskan') { status = 'rejected'; label = 'Ditolak'; }
+            const tgl = (d.created_at || '').slice(0, 10);
+            return {
+              id: '#DSP-' + String(d.id).padStart(4, '0'),
+              disputeId: d.id,
+              orderId: '#ORD-2026-' + String(d.order_id).padStart(3, '0'),
+              date: tgl ? new Date(tgl + 'T00:00:00').toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-',
+              buyer: d.nama_buyer || 'Pembeli',
+              category: d.judul || '-',
+              media: d.bukti_foto ? '1 Foto' : '—',
+              status: status,
+              statusLabel: label
+            };
+          });
+          renderDisputes();
+        })
+        .catch(function () { renderDisputes(); });
     }
 
     function showToast(message) {
@@ -869,7 +816,7 @@
     let activeFilter = 'all';
 
     function renderDisputes() {
-      const disputes = getDisputes();
+      const disputes = DISPUTE_LIST;
 
       // Update badge count for Perlu Ditinjau (pending items)
       const pendingCount = disputes.filter(d => d.status === 'pending').length;
@@ -944,18 +891,13 @@
           <td class="td-media">${d.media}</td>
           <td>${badgeHtml}</td>
           <td>
-            <a href="detail-dispute.php?id=${encodeURIComponent(d.id)}" class="btn-detail" onclick="handleDetailClick('${d.id}')">Detail</a>
+            <a href="detail-dispute.php?id=${encodeURIComponent(d.disputeId)}" class="btn-detail">Detail</a>
           </td>
         `;
 
         tbody.appendChild(tr);
       });
     }
-
-    // Save selected dispute before navigation
-    window.handleDetailClick = function(id) {
-      localStorage.setItem('staplr_selected_dispute_id', id);
-    };
 
     document.addEventListener('DOMContentLoaded', () => {
       // 1. Filter pill click events
@@ -973,7 +915,7 @@
       // 2. Next Page button event
       const btnNext = document.getElementById('btnNextPage');
       btnNext.addEventListener('click', () => {
-        showToast('Anda berada pada halaman 1 dari 1 (Semua dispute ditampilkan)');
+        showToast('Menampilkan ' + DISPUTE_LIST.length + ' dispute (halaman 1 dari 1)');
       });
 
       // 3. Topbar Profile button event
@@ -984,8 +926,8 @@
         });
       }
 
-      // Initial render
-      renderDisputes();
+      // Initial render: muat dari API
+      muatDisputeAdmin();
     });
   </script>
 
