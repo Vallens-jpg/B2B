@@ -482,9 +482,35 @@
         </svg>
         <span class="ulasan-bell-badge">3</span>
       </button>
-      <div class="ulasan-user-pill">
-        <div class="ulasan-user-avatar">AD</div>
-        <span class="ulasan-user-name">Buyer</span>
+      <div class="buyer-profile-wrapper">
+        <div class="user-profile-capsule" onclick="toggleBuyerProfileDropdown(event)" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" title="Menu Pengguna">
+          <div class="user-avatar-circle">AD</div>
+          <span class="user-name-text">Buyer</span>
+          <svg class="profile-dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+        <div class="buyer-profile-dropdown" id="buyerProfileDropdown">
+          <div class="buyer-dropdown-header">
+            <div class="buyer-dropdown-name">Catering Berkah</div>
+            <div class="buyer-dropdown-role">Pembeli (Buyer)</div>
+          </div>
+          <a href="../profil.php" class="buyer-dropdown-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>Lihat Profil</span>
+          </a>
+          <a href="../logout.php" class="buyer-dropdown-item logout" onclick="return confirm('Apakah Anda yakin ingin keluar?');">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            <span>Logout</span>
+          </a>
+        </div>
       </div>
     </div>
   </header>
@@ -683,5 +709,6 @@
       window.location.href = 'order_list.php';
     }
   </script>
+  <script src="../../assets/js/buyer-profile.js"></script>
 </body>
 </html>
