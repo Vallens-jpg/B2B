@@ -438,7 +438,7 @@
     // Preserve back / cancel button destination
     const cancelBtn = document.getElementById('cancelBtn');
     const backLink = document.getElementById('backLink');
-    const fallbackPd = orderId ? ('order_detail.php?id=' + orderId) : 'order_list.php';
+    const fallbackPd = orderId ? ('order_detail.php?id=' + orderId) : 'pembeli/order_list.php';
     cancelBtn.href = fallbackPd;
     backLink.href = fallbackPd;
 

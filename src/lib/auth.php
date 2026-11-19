@@ -6,7 +6,26 @@ function auth_user(): ?array
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-    return $_SESSION['user'] ?? null;
+    $user = $_SESSION['user'] ?? null;
+    if (!$user || empty($user['id'])) {
+        return null;
+    }
+    // Cek ulang status ke database: akun yang dikunci admin (status nonaktif,
+    // migrasi 09) tidak boleh lagi memakai session lama. Bila database belum
+    // siap atau kolom status belum ada, pakai session apa adanya (perilaku lama).
+    try {
+        require_once __DIR__ . '/db.php';
+        $stmt = db()->prepare('SELECT status FROM users WHERE id = ? LIMIT 1');
+        $stmt->execute([(int) $user['id']]);
+        $row = $stmt->fetch();
+        if (!$row || ($row['status'] ?? '') === 'nonaktif') {
+            unset($_SESSION['user']);
+            return null;
+        }
+    } catch (Throwable $e) {
+        // Abaikan: session tetap dipakai.
+    }
+    return $user;
 }
 
 function require_login(): array

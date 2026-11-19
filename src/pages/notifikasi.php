@@ -593,7 +593,7 @@
       }
       fetch('../api/notifikasi.php')
         .then(function (r) {
-          if (r.status === 401) { window.location.href = '../login.php'; return null; }
+          if (r.status === 401) { window.location.href = 'login.php'; return null; }
           return r.json();
         })
         .then(function (res) {

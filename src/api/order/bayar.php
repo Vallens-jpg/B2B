@@ -3,7 +3,10 @@
 // Bila XENDIT_SECRET_KEY ada di .env: buat invoice Xendit sungguhan (POST /v2/invoices),
 // jawab dengan invoice_url, dan order TETAP menunggu_bayar sampai webhook Xendit
 // (src/api/webhook/xendit.php) menandainya dibayar.
-// Bila kunci TIDAK ada: MODE DEMO — pembayaran dicatat langsung sebagai dibayar.
+// Bila kunci TIDAK ada: pembayaran DITOLAK, kecuali DEMO_MODE=true di .env secara
+// eksplisit (hanya untuk latihan lokal — jangan pernah aktif di server bersama).
+// Mode demo diam-diam dilarang: tanpa kunci dan tanpa flag, order tidak boleh
+// berubah jadi dibayar.
 require_once __DIR__ . '/../../lib/db.php';
 require_once __DIR__ . '/../../lib/response.php';
 require_once __DIR__ . '/../../lib/auth.php';
@@ -54,7 +57,15 @@ try {
     // jadi kunci Xendit dibaca dari sana dengan cara yang sama.
     $secretKey = trim((string) (getenv('XENDIT_SECRET_KEY') ?: ''));
     if ($secretKey === '') {
-        // MODE DEMO (tanpa kunci Xendit): langsung tandai dibayar, seperti semula.
+        // Tanpa kunci Xendit, mode demo HANYA boleh jalan bila DEMO_MODE=true
+        // ditulis eksplisit di .env. Kalau tidak, tolak supaya order tidak
+        // bisa dibayar gratis diam-diam.
+        $demoMode = strtolower(trim((string) (getenv('DEMO_MODE') ?: ''))) === 'true';
+        if (!$demoMode) {
+            $pdo->rollBack();
+            json_error('Pembayaran belum dikonfigurasi: isi XENDIT_SECRET_KEY di .env, atau aktifkan DEMO_MODE=true hanya untuk latihan lokal.', 503);
+        }
+        // MODE DEMO eksplisit (DEMO_MODE=true): langsung tandai dibayar.
         $stmt = $pdo->prepare("UPDATE orders SET status = 'dibayar' WHERE id = ?");
         $stmt->execute([$orderId]);
         $stmt = $pdo->prepare("UPDATE invoice SET status = 'dibayar' WHERE order_id = ?");

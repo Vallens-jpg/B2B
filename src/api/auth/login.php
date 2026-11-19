@@ -18,7 +18,7 @@ if ($email === '' || $password === '') {
 }
 
 try {
-    $stmt = db()->prepare('SELECT id, nama, email, password_hash, role FROM users WHERE email = ? LIMIT 1');
+    $stmt = db()->prepare('SELECT id, nama, email, password_hash, role, status FROM users WHERE email = ? LIMIT 1');
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 } catch (Throwable $e) {
@@ -27,6 +27,12 @@ try {
 
 if (!$user || !password_verify($password, $user['password_hash'])) {
     json_error('Email/password salah', 401);
+}
+
+// Akun yang dikunci admin (status nonaktif, migrasi 09) tidak boleh login,
+// walau passwordnya benar.
+if (($user['status'] ?? 'aktif') === 'nonaktif') {
+    json_error('Akun ini dikunci oleh admin. Hubungi admin untuk mengaktifkan kembali.', 403);
 }
 
 $_SESSION['user'] = [

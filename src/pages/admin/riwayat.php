@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+  <script src="../../assets/js/admin-guard.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Riwayat Transaksi - Staplr Admin</title>
@@ -1706,7 +1707,9 @@
     document.getElementById('btnLogout').addEventListener('click', function() {
       if (confirm('Keluar dari akun admin?')) {
         closeAdminDropdown();
-        showToast('Anda telah keluar dari akun admin.', 'info');
+        fetch('../../api/auth/logout.php').then(function() {
+          window.location.href = '../login.php';
+        });
       }
     });
   </script>

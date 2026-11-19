@@ -1,6 +1,6 @@
 -- Migrasi 01: buat tabel users (Sprint 1).
 -- Tabel lain (produk, orders, escrow, invoice, dispute, ulasan, riwayat_status)
--- masih TODO BE-1, spek revisi dari Len.
+-- dibuat di migrasi 03, bukan di sini.
 -- Aturan: foreign key + RESTRICT supaya data tidak bisa dihapus sembarangan.
 
 CREATE TABLE IF NOT EXISTS users (
