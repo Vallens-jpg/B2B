@@ -336,6 +336,20 @@
       text-decoration: underline;
     }
 
+    /* Langkah verifikasi OTP (6 kotak, mengikuti pola verifikasi_otp.php). */
+    .otp-step { display: none; gap: 14px; }
+    .otp-step.tampil { display: grid; }
+    .otp-email { font-weight: 700; text-align: center; }
+    .otp-inputs { display: flex; gap: 8px; justify-content: center; }
+    .otp-box { width: 46px; height: 54px; border-radius: 10px; border: 1.5px solid transparent; background: var(--input-bg); color: var(--text-dark); text-align: center; font-size: 22px; font-weight: 700; font-family: inherit; }
+    .otp-box:focus { outline: 2px solid rgba(245, 158, 11, 0.6); }
+    .otp-error { display: none; color: #FCA5A5; font-size: 0.9rem; text-align: center; }
+    .otp-error.tampil { display: block; }
+    .kirim-ulang { font-size: 0.9rem; color: var(--text-muted-light); text-align: center; }
+    .kirim-ulang button { background: none; border: none; padding: 0; font-size: 0.9rem; font-weight: 700; color: #FBBF24; cursor: pointer; font-family: inherit; }
+    .kirim-ulang button:disabled { color: #94A3B8; cursor: default; }
+    .otp-kembali { display: block; text-align: center; font-size: 0.9rem; color: var(--text-muted-light); cursor: pointer; background: none; border: none; width: 100%; font-family: inherit; }
+
     @media (max-width: 1080px) {
       html,
       body {
@@ -458,6 +472,26 @@
             <button class="cta-btn" type="submit">Daftar Sekarang</button>
           </form>
 
+          <!-- Langkah 2 pendaftaran: verifikasi OTP yang dikirim ke email. -->
+          <div class="otp-step" id="otpStep">
+            <div class="form-header">
+              <h2 class="form-title">Verifikasi OTP</h2>
+              <p class="otp-email" id="otpEmailTersamar"></p>
+            </div>
+            <p class="otp-error" id="otpError"></p>
+            <div class="otp-inputs" id="otpInputs">
+              <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code">
+              <input class="otp-box" type="text" inputmode="numeric" maxlength="1">
+              <input class="otp-box" type="text" inputmode="numeric" maxlength="1">
+              <input class="otp-box" type="text" inputmode="numeric" maxlength="1">
+              <input class="otp-box" type="text" inputmode="numeric" maxlength="1">
+              <input class="otp-box" type="text" inputmode="numeric" maxlength="1">
+            </div>
+            <button class="cta-btn" type="button" id="otpVerifyBtn">Verifikasi</button>
+            <p class="kirim-ulang">Belum menerima kode? <button type="button" id="otpResendBtn">Kirim Ulang</button></p>
+            <button type="button" class="otp-kembali" id="otpBackBtn">Kembali ke form pendaftaran</button>
+          </div>
+
           <div class="form-footer">
             Sudah punya akun? <a href="login.php">Masuk</a>
           </div>
@@ -468,6 +502,16 @@
 
   <script>
     // Pendaftaran asli lewat api/auth/register.php (role dari tab yang aktif).
+    // Langkah 2: bila API menjawab butuh_otp, tampilkan langkah verifikasi OTP.
+    // Data pendaftaran tersimpan untuk kirim ulang (panggil register.php lagi).
+    let daftarData = null;
+
+    function redirectDashboard(role) {
+      window.location.href = role === 'perusahaan'
+        ? 'perusahaan/dashboard_perusahaan.php'
+        : 'pembeli/dashboard_buyer.php';
+    }
+
     document.getElementById('registerForm').addEventListener('submit', async function (e) {
       e.preventDefault();
       const nama = document.getElementById('full-name').value.trim();
@@ -478,24 +522,162 @@
         alert('Nama, email, dan password wajib diisi.');
         return;
       }
+      daftarData = { nama: nama, email: email, password: password, role: role };
       try {
         const res = await fetch('../api/auth/register.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nama: nama, email: email, password: password, role: role })
+          body: JSON.stringify(daftarData)
         });
         const data = await res.json();
         if (!data.ok) {
           alert(data.error || 'Pendaftaran gagal.');
           return;
         }
-        window.location.href = role === 'perusahaan'
-          ? 'perusahaan/dashboard_perusahaan.php'
-          : 'pembeli/dashboard_buyer.php';
+        // Akun baru dibuat setelah OTP terverifikasi.
+        if (data.data && data.data.butuh_otp) {
+          tampilkanOtpStep(data.data.email_tersamar || email);
+          return;
+        }
+        redirectDashboard(role);
       } catch (err) {
         alert('Gagal menghubungi server.');
       }
     });
+
+    // ---- Langkah OTP (6 kotak, mengikuti pola verifikasi_otp.php) ----
+    const otpStep = document.getElementById('otpStep');
+    const otpError = document.getElementById('otpError');
+    const otpBoxes = Array.prototype.slice.call(document.querySelectorAll('#otpInputs .otp-box'));
+    const otpVerifyBtn = document.getElementById('otpVerifyBtn');
+    const otpResendBtn = document.getElementById('otpResendBtn');
+    let timerUlang = null;
+
+    function tampilOtpError(msg) {
+      otpError.textContent = msg;
+      otpError.classList.add('tampil');
+    }
+
+    function sembunyiOtpError() {
+      otpError.classList.remove('tampil');
+    }
+
+    function tampilkanOtpStep(emailTersamar) {
+      document.getElementById('otpEmailTersamar').textContent =
+        'Masukkan 6 digit kode yang dikirim ke ' + emailTersamar;
+      document.getElementById('registerForm').style.display = 'none';
+      otpStep.classList.add('tampil');
+      sembunyiOtpError();
+      bersihkanKotakOtp();
+      mulaiJedaUlang();
+    }
+
+    function sembunyikanOtpStep() {
+      otpStep.classList.remove('tampil');
+      document.getElementById('registerForm').style.display = '';
+    }
+
+    function bersihkanKotakOtp() {
+      otpBoxes.forEach(function (b) { b.value = ''; });
+      if (otpBoxes[0]) otpBoxes[0].focus();
+    }
+
+    function ambilKodeOtp() {
+      return otpBoxes.map(function (b) { return b.value; }).join('');
+    }
+
+    // Jeda kirim ulang 60 detik (sama dengan jeda di server).
+    function mulaiJedaUlang() {
+      let sisa = 60;
+      otpResendBtn.disabled = true;
+      otpResendBtn.textContent = 'Kirim Ulang (' + sisa + ' dtk)';
+      clearInterval(timerUlang);
+      timerUlang = setInterval(function () {
+        sisa -= 1;
+        if (sisa <= 0) {
+          clearInterval(timerUlang);
+          otpResendBtn.disabled = false;
+          otpResendBtn.textContent = 'Kirim Ulang';
+        } else {
+          otpResendBtn.textContent = 'Kirim Ulang (' + sisa + ' dtk)';
+        }
+      }, 1000);
+    }
+
+    otpBoxes.forEach(function (box, i) {
+      box.addEventListener('input', function () {
+        box.value = box.value.replace(/[^0-9]/g, '').slice(0, 1);
+        if (box.value && i < otpBoxes.length - 1) otpBoxes[i + 1].focus();
+      });
+      box.addEventListener('keydown', function (e) {
+        if (e.key === 'Backspace' && !box.value && i > 0) otpBoxes[i - 1].focus();
+        if (e.key === 'Enter') otpVerifyBtn.click();
+      });
+      box.addEventListener('paste', function (e) {
+        e.preventDefault();
+        const teks = (e.clipboardData.getData('text') || '').replace(/[^0-9]/g, '').slice(0, 6);
+        teks.split('').forEach(function (ch, j) {
+          if (otpBoxes[j]) otpBoxes[j].value = ch;
+        });
+        if (teks.length) otpBoxes[Math.min(teks.length, 5)].focus();
+      });
+    });
+
+    otpVerifyBtn.addEventListener('click', async function () {
+      sembunyiOtpError();
+      const kode = ambilKodeOtp();
+      if (kode.length !== 6) {
+        tampilOtpError('Masukkan 6 digit kode OTP.');
+        return;
+      }
+      otpVerifyBtn.disabled = true;
+      try {
+        const res = await fetch('../api/auth/otp_verifikasi.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: daftarData.email, kode: kode, tujuan: 'registrasi' })
+        });
+        const hasil = await res.json();
+        if (!hasil.ok) {
+          tampilOtpError(hasil.error || 'Verifikasi gagal.');
+          bersihkanKotakOtp();
+          return;
+        }
+        redirectDashboard(hasil.data && hasil.data.role ? hasil.data.role : daftarData.role);
+      } catch (err) {
+        tampilOtpError('Gagal menghubungi server.');
+      } finally {
+        otpVerifyBtn.disabled = false;
+      }
+    });
+
+    // Kirim ulang = panggil register.php lagi dengan data yang sama.
+    otpResendBtn.addEventListener('click', async function () {
+      sembunyiOtpError();
+      otpResendBtn.disabled = true;
+      try {
+        const res = await fetch('../api/auth/register.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(daftarData)
+        });
+        const hasil = await res.json();
+        if (!hasil.ok) {
+          tampilOtpError(hasil.error || 'Gagal meminta kode baru.');
+          otpResendBtn.disabled = false;
+          otpResendBtn.textContent = 'Kirim Ulang';
+          return;
+        }
+        bersihkanKotakOtp();
+        mulaiJedaUlang();
+      } catch (err) {
+        tampilOtpError('Gagal menghubungi server.');
+        otpResendBtn.disabled = false;
+        otpResendBtn.textContent = 'Kirim Ulang';
+      }
+    });
+
+    document.getElementById('otpBackBtn').addEventListener('click', sembunyikanOtpStep);
   </script>
 </body>
 
