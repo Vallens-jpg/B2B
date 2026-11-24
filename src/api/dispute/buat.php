@@ -14,11 +14,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $input = json_input();
 $orderId = (int) ($input['order_id'] ?? 0);
-$judul = trim($input['judul'] ?? '');
 $deskripsi = trim($input['deskripsi'] ?? '');
 $buktiFoto = trim($input['bukti_foto'] ?? '');
-if ($orderId <= 0 || $judul === '' || $deskripsi === '') {
-    json_error('Order, judul, dan deskripsi dispute wajib diisi', 400);
+if ($orderId <= 0 || $deskripsi === '') {
+    json_error('Order dan deskripsi dispute wajib diisi', 400);
 }
 
 try {
@@ -42,7 +41,7 @@ try {
     if ($stmt->fetch()) {
         json_error('Order ini sudah punya dispute yang masih dibuka', 409);
     }
-    // Input 'judul' tetap diterima tapi TIDAK disimpan: tidak ada kolomnya di skema v2.
+    // Judul dispute otomatis dari nama produk (nama_barang); tidak ada kolom judul di skema v2.
     $stmt = $pdo->prepare("INSERT INTO dispute (id_pesanan, nama_barang, kondisi_barang, keterangan, foto_bukti, status) VALUES (?, ?, NULL, ?, ?, 'diajukan')");
     $stmt->execute([$orderId, $order['nama_produk'], $deskripsi, $buktiFoto !== '' ? $buktiFoto : null]);
     $disputeId = (int) $pdo->lastInsertId();

@@ -380,14 +380,6 @@
       <!-- 2. ALASAN DISPUTE -->
       <div class="pd-section-spacing">
         <h2 class="pd-section-heading">ALASAN DISPUTE</h2>
-        <div class="pd-sub-label">Judul Dispute</div>
-        <input
-          type="text"
-          id="disputeJudul"
-          class="pd-textarea-field"
-          placeholder="Contoh: Telur pecah saat diterima"
-          style="margin-bottom:1rem;"
-        >
         <div class="pd-sub-label">Deskripsi Detail</div>
         <textarea
           id="disputeReason"
@@ -462,20 +454,19 @@
 
     // Submit pengajuan dispute (buat asli ke API)
     function submitPengajuanDispute() {
-      const judul = document.getElementById('disputeJudul').value.trim();
       const reason = document.getElementById('disputeReason').value.trim();
       if (!orderId) {
         alert('Pesanan tidak ditemukan.');
         return;
       }
-      if (!judul || !reason) {
-        alert('Judul dan deskripsi dispute wajib diisi.');
+      if (!reason) {
+        alert('Deskripsi dispute wajib diisi.');
         return;
       }
       fetch('../api/dispute/buat.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order_id: orderId, judul: judul, deskripsi: reason })
+        body: JSON.stringify({ order_id: orderId, deskripsi: reason })
       })
         .then(function (r) { return r.json(); })
         .then(function (res) {
