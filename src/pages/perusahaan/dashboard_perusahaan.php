@@ -5682,6 +5682,31 @@
   </div>
 
   <!-- ==========================================================================
+       MODAL KIRIM DENGAN FOTO BUKTI PENGIRIMAN
+       ========================================================================== -->
+  <div class="modal-overlay" id="kirimModalOverlay" onclick="if (event.target === this) tutupModalKirim()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title" id="kirimModalTitle">Kirim Pesanan</h2>
+        <p class="modal-subtitle" id="kirimModalSubtitle">Lampirkan foto bukti pengiriman, lalu kirim pesanan.</p>
+      </div>
+
+      <form class="modal-form" id="kirimForm" onsubmit="handleKirimFormSubmit(event)">
+        <div class="form-group">
+          <label class="form-label" for="inputFotoKirim">Foto bukti pengiriman (wajib)</label>
+          <input type="file" class="form-input" id="inputFotoKirim" accept="image/jpeg,image/png,image/webp" required>
+          <p class="modal-subtitle" style="margin-top:6px;">JPG, PNG, atau WebP, maksimal 5 MB.</p>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-modal-cancel" onclick="tutupModalKirim()">Batal</button>
+          <button type="submit" class="btn-modal-submit" id="btnKirimSubmit">Kirim Pesanan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
        MODAL CETAK INVOICE
        ========================================================================== -->
   <div class="invoice-overlay" id="invoiceOverlay" onclick="if (event.target === this) tutupInvoice()">
@@ -7350,7 +7375,7 @@
 
     function aksiPesanan(id, aksi) {
       const order = PESANAN_DATA.find(function (row) { return row.id === id; });
-      if (!order) return;
+      if (!order) { showToast('Pesanan tidak ditemukan. Muat ulang halaman.'); return; }
 
       if (aksi === 'detail') {
         openDetailPesanan(id);
@@ -7385,37 +7410,50 @@
       }
 
       if (aksi === 'kirim') {
-        // Bukti pengiriman berupa foto (wajib): pilih foto dulu, lalu kirim.
-        // Batal memilih foto = batal kirim.
-        var inputFoto = document.getElementById('inputFotoKirim');
-        if (!inputFoto) {
-          inputFoto = document.createElement('input');
-          inputFoto.type = 'file';
-          inputFoto.id = 'inputFotoKirim';
-          inputFoto.accept = 'image/jpeg,image/png,image/webp';
-          inputFoto.style.display = 'none';
-          document.body.appendChild(inputFoto);
-        }
-        inputFoto.onchange = function () {
-          var file = inputFoto.files && inputFoto.files[0];
-          inputFoto.value = '';
-          if (!file) return;
-          if (file.size > 5 * 1024 * 1024) { showToast('Ukuran foto maksimal 5 MB'); return; }
-          var data = new FormData();
-          data.append('order_id', orderIdNum);
-          data.append('foto', file);
-          fetch('../../api/order/kirim.php', { method: 'POST', body: data })
-            .then(function (r) { return r.json(); })
-            .then(function (res) {
-              if (!res.ok) { showToast('Gagal: ' + (res.error || 'tidak diketahui')); return; }
-              showToast('Pesanan ' + id + ' dikirim (DP 50% cair)');
-              muatPesananPerusahaan();
-            })
-            .catch(function () { showToast('Gagal menghubungi server. Pastikan sudah login sebagai perusahaan.'); });
-        };
-        inputFoto.click();
+        // Bukti pengiriman berupa foto (wajib): buka modal kirim dengan
+        // input file yang terlihat, supaya pemilih foto selalu bisa dibuka.
+        bukaModalKirim(id, orderIdNum);
         return;
       }
+    }
+
+    // Modal kirim: input file terlihat di dalam modal (bukan input
+    // tersembunyi yang dipicu lewat .click(), yang tidak membuka pemilih
+    // foto di beberapa browser).
+    var kirimOrderId = null;
+    var kirimOrderIdNum = 0;
+    function bukaModalKirim(id, orderIdNum) {
+      kirimOrderId = id;
+      kirimOrderIdNum = orderIdNum;
+      var input = document.getElementById('inputFotoKirim');
+      if (input) input.value = '';
+      var overlay = document.getElementById('kirimModalOverlay');
+      if (overlay) overlay.classList.add('show');
+    }
+    function tutupModalKirim() {
+      var overlay = document.getElementById('kirimModalOverlay');
+      if (overlay) overlay.classList.remove('show');
+      kirimOrderId = null;
+    }
+    function handleKirimFormSubmit(event) {
+      event.preventDefault();
+      var input = document.getElementById('inputFotoKirim');
+      var file = input && input.files && input.files[0];
+      if (!file) { showToast('Pilih foto bukti pengiriman dulu'); return; }
+      if (file.size > 5 * 1024 * 1024) { showToast('Ukuran foto maksimal 5 MB'); return; }
+      var data = new FormData();
+      data.append('order_id', kirimOrderIdNum);
+      data.append('foto', file);
+      fetch('../../api/order/kirim.php', { method: 'POST', body: data })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) { showToast('Gagal: ' + (res.error || 'tidak diketahui')); return; }
+          var doneId = kirimOrderId;
+          tutupModalKirim();
+          showToast('Pesanan ' + doneId + ' dikirim (DP 50% cair)');
+          muatPesananPerusahaan();
+        })
+        .catch(function () { showToast('Gagal menghubungi server. Pastikan sudah login sebagai perusahaan.'); });
     }
 
 
