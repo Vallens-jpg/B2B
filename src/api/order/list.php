@@ -51,7 +51,9 @@ foreach ($orders as &$o) {
     $o['harga_satuan'] = (float) $o['harga_satuan'];
     $o['total'] = (float) $o['total'];
     $o['fee'] = (float) $o['fee'];
-    $o['total_bayar'] = $o['total'] + $o['fee'];
+    // Pembeli hanya membayar total_harga; fee platform dipotong dari dana
+    // perusahaan, jadi fee TIDAK ditambahkan ke total bayar pembeli.
+    $o['total_bayar'] = $o['total'];
     // Kolom escrow hanya ada di cabang perusahaan; cabang pembeli
     // mengembalikan null (isset aman untuk key yang tidak ada).
     $o['jumlah_ditahan'] = isset($o['jumlah_ditahan']) ? (float) $o['jumlah_ditahan'] : null;

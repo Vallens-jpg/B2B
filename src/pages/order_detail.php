@@ -637,45 +637,41 @@
             <circle cx="12" cy="12" r="9"/>
             <path d="M12 7v5l3 3" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          Saat ini: Dikirim
+          <span id="saatIniText">Saat ini: Menunggu Pembayaran</span>
         </div>
       </div>
 
       <div class="dp-steps-row">
 
-        <!-- Step 1: Selesai -->
-        <div class="dp-step-card done">
+        <!-- Step 1 -->
+        <div class="dp-step-card active" id="step1">
           <div class="dp-step-top">
-            <div class="dp-step-check">
-              <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <span class="dp-step-status selesai">Selesai</span>
-          </div>
-          <div class="dp-step-label selesai-label">Menunggu Pembayaran</div>
-        </div>
-
-        <!-- Step 2: Selesai -->
-        <div class="dp-step-card done">
-          <div class="dp-step-top">
-            <div class="dp-step-check">
-              <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <span class="dp-step-status selesai">Selesai</span>
-          </div>
-          <div class="dp-step-label selesai-label">Diproses</div>
-        </div>
-
-        <!-- Step 3: Aktif -->
-        <div class="dp-step-card active">
-          <div class="dp-step-top">
-            <div class="dp-step-num active-num">3</div>
+            <div class="dp-step-num active-num">1</div>
             <span class="dp-step-status aktif">Aktif</span>
           </div>
-          <div class="dp-step-label aktif-label">Dikirim</div>
+          <div class="dp-step-label aktif-label">Menunggu Pembayaran</div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="dp-step-card pending" id="step2">
+          <div class="dp-step-top">
+            <div class="dp-step-num pending-num">2</div>
+            <span class="dp-step-status menunggu">Menunggu</span>
+          </div>
+          <div class="dp-step-label pending-label">Diproses</div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="dp-step-card pending" id="step3">
+          <div class="dp-step-top">
+            <div class="dp-step-num pending-num">3</div>
+            <span class="dp-step-status menunggu">Menunggu</span>
+          </div>
+          <div class="dp-step-label pending-label">Dikirim</div>
         </div>
 
         <!-- Step 4: Menunggu -->
-        <div class="dp-step-card pending">
+        <div class="dp-step-card pending" id="step4">
           <div class="dp-step-top">
             <div class="dp-step-num pending-num">4</div>
             <span class="dp-step-status menunggu">Menunggu</span>
@@ -721,8 +717,8 @@
         <div class="dp-status-desc">Memuat status pesanan…</div>
       </div>
 
-      <!-- Bukti Pengiriman dari Penjual -->
-      <div class="dp-bukti-card">
+      <!-- Bukti Pengiriman dari Penjual: hanya tampil kalau ada data pengiriman asli. -->
+      <div class="dp-bukti-card" id="buktiCard" style="display:none;">
         <div class="dp-bukti-header">
           <div class="dp-bukti-title">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -731,24 +727,8 @@
               <polyline points="21 15 16 10 5 21"/>
             </svg>
             Bukti Pengiriman dari Penjual
-            <span class="dp-bukti-badge">Diterima</span>
           </div>
-          <div class="dp-bukti-meta">Dikirim: 03 Nov 2026, 09.30</div>
-        </div>
-        <div class="dp-bukti-grid" style="grid-template-columns: 220px;">
-          <!-- Foto barang -->
-          <div>
-            <div class="dp-bukti-thumb" onclick="bukaLightbox('img/bukti-kirim-telur.jpg', 'Foto barang — Telur siap kirim')">
-              <img src="../assets/img/bukti-kirim-telur.jpg" alt="Bukti pengiriman telur">
-              <div class="dp-bukti-overlay">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                  <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
-                </svg>
-              </div>
-            </div>
-            <div class="dp-bukti-caption">Foto barang siap kirim</div>
-          </div>
+          <div class="dp-bukti-meta" id="buktiMeta">—</div>
         </div>
       </div>
 
@@ -817,6 +797,36 @@
     const urlParams   = new URLSearchParams(window.location.search);
     const orderIdParam = urlParams.get('id');
     // Nilai diisi dari API (?id=); tanpa id, biarkan '—'.
+    // Progres pesanan mengikuti status asli dari database.
+    // Tahapan: 0 Menunggu Pembayaran, 1 Diproses, 2 Dikirim, 3 Diterima.
+    function updateProgress(status) {
+      var labelStatus = { menunggu_bayar: 'Menunggu Pembayaran', dibayar: 'Dibayar', diproses: 'Diproses', dikirim: 'Dikirim', diterima: 'Diterima', selesai: 'Selesai', dibatalkan: 'Dibatalkan' };
+      var tahap = { menunggu_bayar: 0, dibayar: 1, diproses: 1, dikirim: 2, diterima: 3, selesai: 4, dibatalkan: -1 };
+      var cur = (tahap[status] !== undefined) ? tahap[status] : 0;
+      var saatIni = document.getElementById('saatIniText');
+      if (saatIni) saatIni.innerText = 'Saat ini: ' + (labelStatus[status] || status);
+      var checkSvg = '<div class="dp-step-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+      for (var i = 1; i <= 4; i++) {
+        var card = document.getElementById('step' + i);
+        if (!card) continue;
+        var top = card.querySelector('.dp-step-top');
+        var label = card.querySelector('.dp-step-label');
+        if (cur === -1 || i > cur + 1) {
+          card.className = 'dp-step-card pending';
+          if (top) top.innerHTML = '<div class="dp-step-num pending-num">' + i + '</div><span class="dp-step-status menunggu">Menunggu</span>';
+          if (label) label.className = 'dp-step-label pending-label';
+        } else if (i === cur + 1 && cur < 4) {
+          card.className = 'dp-step-card active';
+          if (top) top.innerHTML = '<div class="dp-step-num active-num">' + i + '</div><span class="dp-step-status aktif">Aktif</span>';
+          if (label) label.className = 'dp-step-label aktif-label';
+        } else {
+          card.className = 'dp-step-card done';
+          if (top) top.innerHTML = checkSvg + '<span class="dp-step-status selesai">Selesai</span>';
+          if (label) label.className = 'dp-step-label selesai-label';
+        }
+      }
+    }
+
     // Kalau dibuka dengan ?id=, ambil order asli dari database.
     if (orderIdParam) {
       fetch('../api/order/detail.php?id=' + encodeURIComponent(orderIdParam))
@@ -824,6 +834,7 @@
         .then(function (res) {
           if (!res.ok) return;
           var o = res.data.order;
+          updateProgress(o.status);
           var badge = document.getElementById('orderIdBadge');
           if (badge) badge.innerText = '#' + o.id;
           document.getElementById('supplierName').innerText = o.nama_perusahaan || '—';
@@ -834,7 +845,7 @@
           var stateEl = document.querySelector('.dp-status-state');
           if (stateEl) stateEl.innerText = 'Status: ' + o.status;
           var descEl = document.querySelector('.dp-status-desc');
-          if (descEl) descEl.innerText = 'Pesanan #' + o.id + ' — ' + o.nama_produk + ' (' + o.jumlah_kg + ' kg). Invoice: total Rp ' + Number(o.total).toLocaleString('id-ID') + ' + fee Rp ' + Number(o.fee).toLocaleString('id-ID') + '.';
+          if (descEl) descEl.innerText = 'Pesanan #' + o.id + ' — ' + o.nama_produk + ' (' + o.jumlah_kg + ' kg). Total bayar Rp ' + Number(o.total_bayar).toLocaleString('id-ID') + '. Fee platform Rp ' + Number(o.fee).toLocaleString('id-ID') + ' dipotong dari dana perusahaan.';
           var btnBayar = document.getElementById('btnBayar');
           var btnBatal = document.getElementById('btnBatalkan');
           var btnTerima = document.getElementById('btnTerima');
@@ -843,6 +854,21 @@
           if (btnTerima && (o.status === 'dikirim' || o.status === 'diterima')) btnTerima.style.display = '';
           var btnUlasan = document.getElementById('btnUlasan');
           if (btnUlasan && o.status === 'selesai') btnUlasan.style.display = '';
+          // Bukti pengiriman hanya tampil kalau ada data pengiriman asli.
+          var buktiCard = document.getElementById('buktiCard');
+          var buktiMeta = document.getElementById('buktiMeta');
+          if (buktiCard) {
+            if (o.resi) {
+              var meta = [];
+              if (o.jasa_kirim) meta.push(o.jasa_kirim);
+              meta.push('No. Resi: ' + o.resi);
+              if (o.tanggal_kirim) meta.push('Dikirim: ' + new Date(o.tanggal_kirim + 'T00:00:00').toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }));
+              if (buktiMeta) buktiMeta.innerText = meta.join(' · ');
+              buktiCard.style.display = '';
+            } else {
+              buktiCard.style.display = 'none';
+            }
+          }
           // Riwayat status dari API (field: status_lama, status_baru, created_at).
           var riwayat = res.data.riwayat || [];
           var riwayatCard = document.getElementById('riwayatCard');

@@ -452,19 +452,19 @@
     <div class="status-cards-grid">
       <div class="status-summary-card active-filter" onclick="filterByStatus('semua', this)">
         <span class="status-card-label">Semua</span>
-        <span class="status-card-count">2</span>
+        <span class="status-card-count" id="countSemua">—</span>
       </div>
       <div class="status-summary-card" onclick="filterByStatus('belum_bayar', this)">
         <span class="status-card-label">Belum Bayar</span>
-        <span class="status-card-count">0</span>
+        <span class="status-card-count" id="countBelumBayar">—</span>
       </div>
       <div class="status-summary-card" onclick="filterByStatus('dikirim', this)">
         <span class="status-card-label">Dikirim</span>
-        <span class="status-card-count">1</span>
+        <span class="status-card-count" id="countDikirim">—</span>
       </div>
       <div class="status-summary-card" onclick="filterByStatus('selesai', this)">
         <span class="status-card-label">Selesai</span>
-        <span class="status-card-count">1</span>
+        <span class="status-card-count" id="countSelesai">—</span>
       </div>
     </div>
 
@@ -526,16 +526,36 @@
     (function () {
       var list = document.getElementById('ordersList');
       function rp(n) { return 'Rp ' + Number(n).toLocaleString('id-ID'); }
+      // Penghitung status dihitung dari pesanan asli, bukan angka contoh.
+      function updateCounts(orders) {
+        var c = { semua: orders.length, belum_bayar: 0, dikirim: 0, selesai: 0 };
+        orders.forEach(function (o) {
+          if (o.status === 'menunggu_bayar') c.belum_bayar++;
+          if (o.status === 'dikirim') c.dikirim++;
+          if (o.status === 'selesai') c.selesai++;
+        });
+        var ids = { semua: 'countSemua', belum_bayar: 'countBelumBayar', dikirim: 'countDikirim', selesai: 'countSelesai' };
+        Object.keys(ids).forEach(function (k) { var el = document.getElementById(ids[k]); if (el) el.innerText = c[k]; });
+      }
+      // Kunci filter per status (dipakai atribut data-status di kartu).
+      function filterKey(status) {
+        if (status === 'menunggu_bayar') return 'belum_bayar';
+        if (status === 'dikirim') return 'dikirim';
+        if (status === 'selesai') return 'selesai';
+        return status;
+      }
       fetch('../../api/order/list.php')
         .then(function (r) { return r.json(); })
         .then(function (res) {
           if (!res.ok || !res.data || !res.data.orders) { list.innerHTML = '<p style="padding:1rem;">Gagal memuat pesanan. Periksa koneksi atau login kembali.</p>'; return; }
           if (!res.data.orders.length) {
+            updateCounts([]);
             list.innerHTML = '<p style="padding:1rem;">Belum ada pesanan. Buat pesanan dari halaman produk.</p>';
             return;
           }
+          updateCounts(res.data.orders);
           list.innerHTML = res.data.orders.map(function (o) {
-            return '<article class="order-card">'
+            return '<article class="order-card" data-status="' + filterKey(o.status) + '">'
               + '<div class="order-card-top">'
               + '<div class="order-meta-item" style="min-width:120px;"><span class="order-meta-label">tanggal :</span><span class="order-meta-value">' + (o.created_at || '-') + '</span></div>'
               + '<div class="order-meta-item" style="min-width:140px;"><span class="order-meta-label">order id :</span><span class="order-meta-value">#' + o.id + '</span></div>'
