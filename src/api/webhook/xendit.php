@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 try {
     $pdo = db();
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dan 03 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
 $token = getenv('XENDIT_WEBHOOK_TOKEN') ?: '';
@@ -47,11 +47,11 @@ if ($externalId === '' && $orderIdLama <= 0) {
 try {
     $pdo->beginTransaction();
     if ($externalId !== '') {
-        // Cari order lewat nomor invoice (invoice.nomor = external_id Xendit).
-        $stmt = $pdo->prepare('SELECT o.id, o.status FROM orders o JOIN invoice i ON i.order_id = o.id WHERE i.nomor = ? LIMIT 1 FOR UPDATE');
+        // Cari pesanan lewat nomor invoice (pembayaran.xendit_id = external_id Xendit).
+        $stmt = $pdo->prepare('SELECT p.id_pesanan AS id, p.status FROM pesanan p JOIN pembayaran b ON b.id_pesanan = p.id_pesanan WHERE b.xendit_id = ? LIMIT 1 FOR UPDATE');
         $stmt->execute([$externalId]);
     } else {
-        $stmt = $pdo->prepare('SELECT id, status FROM orders WHERE id = ? LIMIT 1 FOR UPDATE');
+        $stmt = $pdo->prepare('SELECT id_pesanan AS id, status FROM pesanan WHERE id_pesanan = ? LIMIT 1 FOR UPDATE');
         $stmt->execute([$orderIdLama]);
     }
     $order = $stmt->fetch();
@@ -69,18 +69,18 @@ try {
         $pdo->rollBack();
         json_error('Order ini sudah tidak bisa dibayar lagi', 409);
     }
-    $stmt = $pdo->prepare("UPDATE orders SET status = 'dibayar' WHERE id = ?");
+    $stmt = $pdo->prepare("UPDATE pesanan SET status = 'dibayar' WHERE id_pesanan = ?");
     $stmt->execute([$orderId]);
-    $stmt = $pdo->prepare("UPDATE invoice SET status = 'dibayar' WHERE order_id = ?");
+    $stmt = $pdo->prepare("UPDATE pembayaran SET status = 'paid', paid_at = NOW() WHERE id_pesanan = ?");
     $stmt->execute([$orderId]);
-    $stmt = $pdo->prepare('INSERT INTO riwayat_status (order_id, status_lama, status_baru, dicatat_oleh) VALUES (?, ?, ?, ?)');
+    $stmt = $pdo->prepare('INSERT INTO riwayat_status (id_pesanan, status_lama, status_baru, id_pengguna) VALUES (?, ?, ?, ?)');
     $stmt->execute([$orderId, 'menunggu_bayar', 'dibayar', null]);
     $pdo->commit();
 } catch (Throwable $e) {
     if (isset($pdo) && $pdo->inTransaction()) {
         $pdo->rollBack();
     }
-    json_error('Database belum siap. Jalankan migrasi 01 dan 03 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
 json_ok(['order_id' => $orderId, 'status' => 'dibayar']);

@@ -18,18 +18,18 @@ if ($email === '' || $password === '') {
 }
 
 try {
-    $stmt = db()->prepare('SELECT id, nama, email, password_hash, role, status FROM users WHERE email = ? LIMIT 1');
+    $stmt = db()->prepare('SELECT id_pengguna AS id, nama_pengguna AS nama, email, password AS password_hash, role, status FROM pengguna WHERE email = ? LIMIT 1');
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dan 02 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
 if (!$user || !password_verify($password, $user['password_hash'])) {
     json_error('Email/password salah', 401);
 }
 
-// Akun yang dikunci admin (status nonaktif, migrasi 09) tidak boleh login,
+// Akun yang dikunci admin (status nonaktif, tabel pengguna skema v2) tidak boleh login,
 // walau passwordnya benar.
 if (($user['status'] ?? 'aktif') === 'nonaktif') {
     json_error('Akun ini dikunci oleh admin. Hubungi admin untuk mengaktifkan kembali.', 403);

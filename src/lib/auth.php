@@ -11,11 +11,11 @@ function auth_user(): ?array
         return null;
     }
     // Cek ulang status ke database: akun yang dikunci admin (status nonaktif,
-    // migrasi 09) tidak boleh lagi memakai session lama. Bila database belum
+    // tabel pengguna skema v2) tidak boleh lagi memakai session lama. Bila database belum
     // siap atau kolom status belum ada, pakai session apa adanya (perilaku lama).
     try {
         require_once __DIR__ . '/db.php';
-        $stmt = db()->prepare('SELECT status FROM users WHERE id = ? LIMIT 1');
+        $stmt = db()->prepare('SELECT status FROM pengguna WHERE id_pengguna = ? LIMIT 1');
         $stmt->execute([(int) $user['id']]);
         $row = $stmt->fetch();
         if (!$row || ($row['status'] ?? '') === 'nonaktif') {

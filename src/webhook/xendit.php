@@ -1,7 +1,7 @@
 <?php
 // 1. Tolak request yang bukan dari Xendit
 $token    = $_SERVER['HTTP_X_CALLBACK_TOKEN'] ?? '';
-$expected = (string) getenv('XENDIT_CALLBACK_TOKEN');
+$expected = (string) getenv('XENDIT_WEBHOOK_TOKEN');
 
 if ($expected === '' || !hash_equals($expected, $token)) {
     http_response_code(403);
@@ -21,10 +21,12 @@ if (($data['status'] ?? '') === 'PAID') {
     $orderId = $data['external_id'] ?? '';
     error_log("Order $orderId PAID");
 
-    // pembaruan status (belum diaktifkan, menunggu skema database):
+    // Pembaruan status dilakukan oleh src/api/webhook/xendit.php (webhook utama).
+    // Contoh untuk skema v2 bila file ini dipakai sendiri:
     // $stmt = $pdo->prepare(
-    //     "UPDATE orders SET status = 'DANA_DITAHAN'
-    //      WHERE order_code = ? AND status = 'MENUNGGU_BAYAR'"
+    //     "UPDATE pesanan p JOIN pembayaran b ON b.id_pesanan = p.id_pesanan
+    //      SET p.status = 'dibayar', b.status = 'paid', b.paid_at = NOW()
+    //      WHERE b.xendit_id = ? AND p.status = 'menunggu_bayar'"
     // );
     // $stmt->execute([$orderId]);
 }
