@@ -20,6 +20,34 @@ if ($orderId <= 0) {
     json_error('Order tidak ditemukan', 404);
 }
 
+// Bukti pengiriman berupa foto (wajib): pengiriman biasanya langsung oleh
+// perusahaan tanpa pihak ke-3, jadi tidak ada resi. Foto diunggah sebagai
+// multipart/form-data (json_input() sudah mengembalikan $_POST untuk itu).
+if (empty($_FILES['foto']) || ($_FILES['foto']['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+    json_error('Foto bukti pengiriman wajib diunggah', 400);
+}
+if (($_FILES['foto']['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+    json_error('Gagal mengunggah foto bukti pengiriman', 400);
+}
+$infoGambar = @getimagesize($_FILES['foto']['tmp_name']);
+$tipeDiizinkan = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+if ($infoGambar === false || !isset($tipeDiizinkan[$infoGambar['mime']])) {
+    json_error('Foto harus berformat JPG, PNG, atau WebP', 400);
+}
+if ((int) $_FILES['foto']['size'] > 5 * 1024 * 1024) {
+    json_error('Ukuran foto maksimal 5 MB', 400);
+}
+$dirBukti = dirname(__DIR__, 2) . '/assets/img/bukti-kirim';
+if (!is_dir($dirBukti) && !@mkdir($dirBukti, 0777, true)) {
+    json_error('Folder bukti kirim tidak bisa dibuat di server', 500);
+}
+$namaFoto = 'bukti-' . $orderId . '-' . time() . '.' . $tipeDiizinkan[$infoGambar['mime']];
+$pathFoto = $dirBukti . '/' . $namaFoto;
+if (!@move_uploaded_file($_FILES['foto']['tmp_name'], $pathFoto)) {
+    json_error('Foto tidak bisa disimpan di server (periksa izin tulis folder bukti-kirim)', 500);
+}
+$fotoRelatif = 'assets/img/bukti-kirim/' . $namaFoto;
+
 try {
     $pdo = db();
     // Session menyimpan pengguna.id_pengguna, bukan id_perusahaan: resolve dulu.
@@ -50,8 +78,8 @@ try {
         json_error('Order harus berstatus diproses dulu', 409);
     }
     $dp = round((float) $order['total_harga'] * (float) $order['persen_dp'] / 100, 2);
-    $stmt = $pdo->prepare('INSERT INTO pengiriman (id_pesanan, tanggal_pengiriman, no_resi, status) VALUES (?, CURDATE(), ?, \'dikirim\')');
-    $stmt->execute([$orderId, $resi !== '' ? $resi : null]);
+    $stmt = $pdo->prepare('INSERT INTO pengiriman (id_pesanan, tanggal_pengiriman, no_resi, foto_bukti, status) VALUES (?, CURDATE(), ?, ?, \'dikirim\')');
+    $stmt->execute([$orderId, $resi !== '' ? $resi : null, $fotoRelatif]);
     $stmt = $pdo->prepare("UPDATE pesanan SET status = 'dikirim' WHERE id_pesanan = ?");
     $stmt->execute([$orderId]);
     // Pencairan tahap 1 (DP) bila ada baris pembayaran yang sudah paid dan tahap 1 belum ada.
@@ -82,7 +110,12 @@ try {
     if (isset($pdo) && $pdo->inTransaction()) {
         $pdo->rollBack();
     }
+    // Foto sudah terlanjur tersimpan tapi pengiriman gagal dicatat: hapus
+    // supaya tidak ada file yatim di server.
+    if (isset($pathFoto) && file_exists($pathFoto)) {
+        @unlink($pathFoto);
+    }
     json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
-json_ok(['order_id' => $orderId, 'status' => 'dikirim', 'dp_cair' => $dp, 'resi' => $resi !== '' ? $resi : null]);
+json_ok(['order_id' => $orderId, 'status' => 'dikirim', 'dp_cair' => $dp, 'resi' => $resi !== '' ? $resi : null, 'foto' => $fotoRelatif]);

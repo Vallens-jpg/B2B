@@ -258,6 +258,7 @@ CREATE TABLE pengiriman (
   tanggal_pengiriman  DATE,
   jasa_pengiriman     VARCHAR(100),
   no_resi             VARCHAR(50),
+  foto_bukti          VARCHAR(255),
   alamat_pengiriman   TEXT,
   status              VARCHAR(30)
 ) ENGINE=InnoDB;

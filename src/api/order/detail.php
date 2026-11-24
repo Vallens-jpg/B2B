@@ -24,7 +24,7 @@ try {
     $idPerusahaan = $profil['id_perusahaan'] !== null ? (int) $profil['id_perusahaan'] : null;
 
     $stmt = $pdo->prepare(
-        'SELECT ps.id_pesanan AS id, ps.id_pembeli AS buyer_id, ps.id_perusahaan AS perusahaan_id, pn.id_produk AS produk_id, ps.jumlah AS jumlah_kg, ps.harga_satuan, ps.total_harga AS total, ps.fee_nominal AS fee, ps.status, ps.tanggal_pesanan AS created_at, ps.alasan_batal, pg.tanggal_pengiriman AS tanggal_kirim, pg.jasa_pengiriman AS jasa_kirim, pg.no_resi AS resi, pr.nama_produk AS nama_produk, pb.nama_pembeli AS nama_buyer, per.nama_perusahaan AS nama_perusahaan, byr.xendit_id AS nomor_invoice ' .
+        'SELECT ps.id_pesanan AS id, ps.id_pembeli AS buyer_id, ps.id_perusahaan AS perusahaan_id, pn.id_produk AS produk_id, ps.jumlah AS jumlah_kg, ps.harga_satuan, ps.total_harga AS total, ps.fee_nominal AS fee, ps.status, ps.tanggal_pesanan AS created_at, ps.alasan_batal, pg.tanggal_pengiriman AS tanggal_kirim, pg.jasa_pengiriman AS jasa_kirim, pg.no_resi AS resi, pg.foto_bukti AS foto_bukti, pr.nama_produk AS nama_produk, pb.nama_pembeli AS nama_buyer, per.nama_perusahaan AS nama_perusahaan, byr.xendit_id AS nomor_invoice ' .
         'FROM pesanan ps JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran JOIN produk pr ON pr.id_produk = pn.id_produk JOIN pembeli pb ON pb.id_pembeli = ps.id_pembeli LEFT JOIN perusahaan per ON per.id_perusahaan = ps.id_perusahaan LEFT JOIN pembayaran byr ON byr.id_pesanan = ps.id_pesanan LEFT JOIN pengiriman pg ON pg.id_pesanan = ps.id_pesanan WHERE ps.id_pesanan = ? LIMIT 1'
     );
     $stmt->execute([$id]);

@@ -7385,7 +7385,35 @@
       }
 
       if (aksi === 'kirim') {
-        panggilOrderApi('kirim', 'Pesanan ' + id + ' dikirim (DP 50% cair)');
+        // Bukti pengiriman berupa foto (wajib): pilih foto dulu, lalu kirim.
+        // Batal memilih foto = batal kirim.
+        var inputFoto = document.getElementById('inputFotoKirim');
+        if (!inputFoto) {
+          inputFoto = document.createElement('input');
+          inputFoto.type = 'file';
+          inputFoto.id = 'inputFotoKirim';
+          inputFoto.accept = 'image/jpeg,image/png,image/webp';
+          inputFoto.style.display = 'none';
+          document.body.appendChild(inputFoto);
+        }
+        inputFoto.onchange = function () {
+          var file = inputFoto.files && inputFoto.files[0];
+          inputFoto.value = '';
+          if (!file) return;
+          if (file.size > 5 * 1024 * 1024) { showToast('Ukuran foto maksimal 5 MB'); return; }
+          var data = new FormData();
+          data.append('order_id', orderIdNum);
+          data.append('foto', file);
+          fetch('../../api/order/kirim.php', { method: 'POST', body: data })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+              if (!res.ok) { showToast('Gagal: ' + (res.error || 'tidak diketahui')); return; }
+              showToast('Pesanan ' + id + ' dikirim (DP 50% cair)');
+              muatPesananPerusahaan();
+            })
+            .catch(function () { showToast('Gagal menghubungi server. Pastikan sudah login sebagai perusahaan.'); });
+        };
+        inputFoto.click();
         return;
       }
     }

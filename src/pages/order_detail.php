@@ -730,6 +730,20 @@
           </div>
           <div class="dp-bukti-meta" id="buktiMeta">—</div>
         </div>
+        <div class="dp-bukti-grid" style="grid-template-columns: 220px;">
+          <div>
+            <div class="dp-bukti-thumb" id="buktiFotoThumb">
+              <img src="" alt="Bukti pengiriman" id="buktiFotoImg">
+              <div class="dp-bukti-overlay">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+                </svg>
+              </div>
+            </div>
+            <div class="dp-bukti-caption">Foto bukti pengiriman</div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -854,14 +868,19 @@
           if (btnTerima && (o.status === 'dikirim' || o.status === 'diterima')) btnTerima.style.display = '';
           var btnUlasan = document.getElementById('btnUlasan');
           if (btnUlasan && o.status === 'selesai') btnUlasan.style.display = '';
-          // Bukti pengiriman hanya tampil kalau ada data pengiriman asli.
+          // Bukti pengiriman berupa foto (wajib saat kirim): kartu hanya
+          // tampil kalau ada foto bukti asli.
           var buktiCard = document.getElementById('buktiCard');
           var buktiMeta = document.getElementById('buktiMeta');
           if (buktiCard) {
-            if (o.resi) {
-              var meta = [];
-              if (o.jasa_kirim) meta.push(o.jasa_kirim);
-              meta.push('No. Resi: ' + o.resi);
+            if (o.foto_bukti) {
+              var srcFoto = '../' + o.foto_bukti;
+              var imgFoto = document.getElementById('buktiFotoImg');
+              if (imgFoto) imgFoto.src = srcFoto;
+              var thumbFoto = document.getElementById('buktiFotoThumb');
+              if (thumbFoto) thumbFoto.onclick = function () { bukaLightbox(srcFoto, 'Foto bukti pengiriman'); };
+              var meta = [o.jasa_kirim ? o.jasa_kirim : 'Dikirim langsung oleh perusahaan'];
+              if (o.resi) meta.push('No. Resi: ' + o.resi);
               if (o.tanggal_kirim) meta.push('Dikirim: ' + new Date(o.tanggal_kirim + 'T00:00:00').toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }));
               if (buktiMeta) buktiMeta.innerText = meta.join(' · ');
               buktiCard.style.display = '';
