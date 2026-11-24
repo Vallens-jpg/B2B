@@ -1,6 +1,6 @@
 <?php
 // Buat pesanan (produk_id, jumlah kg). Status awal menunggu_bayar, total dihitung server.
-// Skema v2: fee platform 0 (fee dipotong dari dana perusahaan nanti, bukan dari pembeli);
+// Skema v2: fee platform 10% dari total (dipotong dari dana perusahaan, bukan dari pembeli); DP 50%.
 // pesanan dibuat lewat rantai permintaan -> penawaran -> pesanan, ketiganya dibuat
 // otomatis berstatus disetujui dalam satu transaksi (tidak ada endpoint persetujuan
 // permintaan di repo ini).
@@ -52,7 +52,11 @@ try {
     }
     $hargaSatuan = (float) $produk['harga_standar'];
     $total = round($hargaSatuan * $jumlahKg, 2);
-    $fee = 0;
+    // Keputusan Len 2026-11-24: fee 10% dari total (dipotong dari dana perusahaan
+    // saat pelunasan tahap 2, bukan ditambah ke tagihan pembeli); DP 50%.
+    $feePersen = 10;
+    $persenDp = 50;
+    $fee = round($total * $feePersen / 100, 2);
     $totalBayar = $total;
 
     if ($stok) {
@@ -68,8 +72,8 @@ try {
     $stmt->execute([$permintaanId, (int) $produk['id_perusahaan'], $produkId, $jumlahKg, $hargaSatuan, $total]);
     $penawaranId = (int) $pdo->lastInsertId();
 
-    $stmt = $pdo->prepare("INSERT INTO pesanan (id_penawaran, id_pembeli, id_perusahaan, jumlah, harga_satuan, total_harga, fee_persen, fee_nominal, persen_dp, status) VALUES (?, ?, ?, ?, ?, ?, 0, 0, 0, 'menunggu_bayar')");
-    $stmt->execute([$penawaranId, $idPembeli, (int) $produk['id_perusahaan'], $jumlahKg, $hargaSatuan, $total]);
+    $stmt = $pdo->prepare("INSERT INTO pesanan (id_penawaran, id_pembeli, id_perusahaan, jumlah, harga_satuan, total_harga, fee_persen, fee_nominal, persen_dp, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'menunggu_bayar')");
+    $stmt->execute([$penawaranId, $idPembeli, (int) $produk['id_perusahaan'], $jumlahKg, $hargaSatuan, $total, $feePersen, $fee, $persenDp]);
     $orderId = (int) $pdo->lastInsertId();
 
     $nomorInvoice = 'INV-' . date('Ymd') . '-' . str_pad((string) $orderId, 6, '0', STR_PAD_LEFT);

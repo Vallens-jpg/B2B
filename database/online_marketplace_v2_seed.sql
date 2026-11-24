@@ -29,10 +29,10 @@ VALUES
 
 -- Pembeli (profil, sudah terverifikasi)
 INSERT INTO pembeli
-  (id_pembeli, nama_pembeli, jenis_pembeli, alamat, kota, provinsi, telepon, status_verifikasi)
+  (id_pembeli, nama_pembeli, jenis_pembeli, alamat, kota, provinsi, telepon, status_verifikasi, nama_bank, no_rekening, atas_nama)
 VALUES
   (1, 'Toko Sembako Berkah', 'Toko', 'Jl. Pasar No. 5', 'Surakarta', 'Jawa Tengah',
-   '081200000002', 'terverifikasi');
+   '081200000002', 'terverifikasi', 'BCA', '1234567890', 'Toko Sembako Berkah');
 
 -- Pengguna (akun login; satu profil per akun sesuai role)
 INSERT INTO pengguna

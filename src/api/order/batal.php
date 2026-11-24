@@ -80,8 +80,11 @@ try {
             $penggunaBuyer = $stmt->fetch();
             if ($penggunaBuyer) {
                 $total = round((float) $order['total_harga'], 2);
-                $stmt = $pdo->prepare("INSERT INTO pencairan (id_pembayaran, id_pesanan, id_pengguna, penerima, external_id, tahap, nominal_kotor, potongan_fee, nominal, status) VALUES (?, ?, ?, 'pembeli', ?, 3, ?, 0, ?, 'pending')");
-                $stmt->execute([(int) $pembayaran['id_pembayaran'], $orderId, (int) $penggunaBuyer['id_pengguna'], 'RFND-' . $orderId, $total, $total]);
+                $stmt = $pdo->prepare('SELECT nama_bank, no_rekening, atas_nama FROM pembeli WHERE id_pembeli = ? LIMIT 1');
+                $stmt->execute([(int) $order['id_pembeli']]);
+                $bankBuyer = $stmt->fetch();
+                $stmt = $pdo->prepare("INSERT INTO pencairan (id_pembayaran, id_pesanan, id_pengguna, penerima, external_id, tahap, nominal_kotor, potongan_fee, nominal, nama_bank, no_rekening, atas_nama, status) VALUES (?, ?, ?, 'pembeli', ?, 3, ?, 0, ?, ?, ?, ?, 'pending')");
+                $stmt->execute([(int) $pembayaran['id_pembayaran'], $orderId, (int) $penggunaBuyer['id_pengguna'], 'RFND-' . $orderId, $total, $total, $bankBuyer['nama_bank'] ?? null, $bankBuyer['no_rekening'] ?? null, $bankBuyer['atas_nama'] ?? null]);
             }
         }
     }

@@ -89,6 +89,9 @@ CREATE TABLE pembeli (
   kota                VARCHAR(100),
   provinsi            VARCHAR(100),
   telepon             VARCHAR(20),
+  nama_bank           VARCHAR(50) NULL,
+  no_rekening         VARCHAR(30) NULL,
+  atas_nama           VARCHAR(100) NULL,
   status_verifikasi   ENUM('menunggu','terverifikasi','ditolak') NOT NULL DEFAULT 'menunggu',
   catatan_verifikasi  TEXT NULL,
   status_akun         ENUM('aktif','nonaktif','blokir') NOT NULL DEFAULT 'aktif'
