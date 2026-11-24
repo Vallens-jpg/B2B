@@ -1382,12 +1382,12 @@
       if (!e.target.closest('.topbar-actions')) closeAdminDropdown();
     });
     document.getElementById('btnLogout').addEventListener('click', function() {
-      if (confirm('Keluar dari akun admin?')) {
-        closeAdminDropdown();
-        fetch('../../api/auth/logout.php').then(function() {
-          window.location.href = '../login.php';
-        });
-      }
+      // Langsung keluar tanpa confirm(): dialog bawaan browser membuat
+      // halaman menggantung dan menghalangi logout.
+      closeAdminDropdown();
+      fetch('../../api/auth/logout.php').then(function() {
+        window.location.href = '../login.php';
+      });
     });
   </script>
 </body>
