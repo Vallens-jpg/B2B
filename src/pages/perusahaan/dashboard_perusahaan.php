@@ -2,6 +2,7 @@
 <html lang="id">
 
 <head>
+  <script src="../../assets/js/perusahaan-guard.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Perusahaan - Staplr B2B</title>
