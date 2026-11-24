@@ -116,15 +116,15 @@ if (!empty($_SESSION['user'])) {
         <input type="hidden" name="role" id="selectedRole" value="pembeli">
         </form>
 
-        <!-- Akun demo guest: pembeli dan perusahaan, password sama -->
+        <!-- Akun demo: password berbeda per akun (isi database/online_marketplace_v2_seed.sql) -->
         <div style="margin-top:1rem; padding:0.9rem; border:1px dashed #CBD5E1; border-radius:0.75rem; background:#F8FAFC;">
           <strong>Akun demo</strong><br>
           Pembeli: <code>guest@staplr.com</code> / <code>guest123</code><br>
-          Perusahaan: <code>perusahaan@staplr.com</code> / <code>guest123</code><br>
-          Admin: <code>admin@staplr.com</code> / <code>guest123</code> (ketik manual di form di atas, migrasi <code>06_seed_demo_admin.sql</code>)<br>
+          Perusahaan: <code>perusahaan@staplr.com</code> / <code>perusahaan123</code><br>
+          Admin: <code>admin@staplr.com</code> / <code>admin123</code> (ketik manual di form di atas)<br>
           <button type="button" class="btn-submit-primary" id="guestLoginPembeliBtn" style="margin-top:0.6rem; width:100%;">Masuk sebagai Guest Demo Pembeli</button>
           <button type="button" class="btn-submit-primary" id="guestLoginPerusahaanBtn" style="margin-top:0.6rem; width:100%;">Masuk sebagai Guest Demo Perusahaan</button>
-          <p style="font-size:0.8rem; color:#64748B; margin:0.5rem 0 0;">Pilih tombol sesuai peran yang mau dicoba, tidak perlu pindah tab role di atas. Hanya untuk demo di laptop sendiri. Akun pembeli dari <code>database/migrations/02_seed_demo_users.sql</code>, akun perusahaan dari <code>05_seed_demo_perusahaan.sql</code>.</p>
+          <p style="font-size:0.8rem; color:#64748B; margin:0.5rem 0 0;">Pilih tombol sesuai peran yang mau dicoba, tidak perlu pindah tab role di atas. Hanya untuk demo di laptop sendiri. Akun demo dari <code>database/online_marketplace_v2_seed.sql</code>.</p>
         </div>
 
         <div class="auth-footer">
@@ -204,11 +204,17 @@ if (!empty($_SESSION['user'])) {
 
     // Tombol Guest Demo: dua tombol terpisah, masing-masing langsung masuk
     // dengan akun demonya sendiri (tidak tergantung tab role di atas).
+    // Password demo berbeda per akun (isi database/online_marketplace_v2_seed.sql).
+    const DEMO_PASSWORD = {
+      'guest@staplr.com': 'guest123',
+      'perusahaan@staplr.com': 'perusahaan123'
+    };
     async function guestLogin(email) {
+      const password = DEMO_PASSWORD[email] || 'guest123';
       document.getElementById('email').value = email;
-      document.getElementById('password').value = 'guest123';
+      document.getElementById('password').value = password;
       try {
-        await doLogin(email, 'guest123');
+        await doLogin(email, password);
       } catch (err) {
         showLoginError('Tidak bisa terhubung ke server. Pastikan Docker jalan dan online_marketplace_v2.sql sudah dijalankan.');
       }
