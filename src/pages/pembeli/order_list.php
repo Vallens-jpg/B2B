@@ -38,7 +38,7 @@
     /* 1. Status Pesanan (Yellow Cards Grid) */
     .status-cards-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 1.25rem;
       margin-bottom: 2.25rem;
     }
@@ -458,6 +458,10 @@
         <span class="status-card-label">Belum Bayar</span>
         <span class="status-card-count" id="countBelumBayar">—</span>
       </div>
+      <div class="status-summary-card" onclick="filterByStatus('dibayar', this)">
+        <span class="status-card-label">Dibayar</span>
+        <span class="status-card-count" id="countDibayar">—</span>
+      </div>
       <div class="status-summary-card" onclick="filterByStatus('dikirim', this)">
         <span class="status-card-label">Dikirim</span>
         <span class="status-card-count" id="countDikirim">—</span>
@@ -528,13 +532,14 @@
       function rp(n) { return 'Rp ' + Number(n).toLocaleString('id-ID'); }
       // Penghitung status dihitung dari pesanan asli, bukan angka contoh.
       function updateCounts(orders) {
-        var c = { semua: orders.length, belum_bayar: 0, dikirim: 0, selesai: 0 };
+        var c = { semua: orders.length, belum_bayar: 0, dibayar: 0, dikirim: 0, selesai: 0 };
         orders.forEach(function (o) {
           if (o.status === 'menunggu_bayar') c.belum_bayar++;
+          if (o.status === 'dibayar') c.dibayar++;
           if (o.status === 'dikirim') c.dikirim++;
           if (o.status === 'selesai') c.selesai++;
         });
-        var ids = { semua: 'countSemua', belum_bayar: 'countBelumBayar', dikirim: 'countDikirim', selesai: 'countSelesai' };
+        var ids = { semua: 'countSemua', belum_bayar: 'countBelumBayar', dibayar: 'countDibayar', dikirim: 'countDikirim', selesai: 'countSelesai' };
         Object.keys(ids).forEach(function (k) { var el = document.getElementById(ids[k]); if (el) el.innerText = c[k]; });
       }
       // Kunci filter per status (dipakai atribut data-status di kartu).
