@@ -949,10 +949,10 @@
             </label>
           </div>
 
-          <!-- Section: Nominal refund ke Buyer -->
+          <!-- Section: Nominal refund ke Buyer (otomatis, hanya tampilan) -->
           <div class="field-section">
-            <label class="field-label" for="nominalRefund">Nominal refund ke Buyer</label>
-            <input type="text" id="nominalRefund" class="input-box" value="">
+            <label class="field-label" for="nominalRefund">Nominal refund ke Buyer (otomatis: total pesanan dikurangi DP yang sudah cair)</label>
+            <input type="text" id="nominalRefund" class="input-box" value="" readonly>
           </div>
 
           <!-- Section: Catatan putusan -->
@@ -1035,6 +1035,12 @@
             document.getElementById('caseAlasan').textContent = d.judul || '—';
             document.getElementById('caseBukti').textContent = d.bukti_foto || '—';
             document.getElementById('caseUsulan').textContent = d.deskripsi || '—';
+            // Nominal refund diisi otomatis dari API (total − DP yang sudah
+            // cair); angka inilah yang dipakai server saat putusan ditetapkan.
+            const nominalEl = document.getElementById('nominalRefund');
+            if (nominalEl && d.escrow && d.escrow.refund_saran !== undefined) {
+              nominalEl.value = Number(d.escrow.refund_saran || 0).toLocaleString('id-ID');
+            }
             let badgeHtml = '<span class="badge badge-pending"><span class="badge-dot">●</span> Menunggu Verifikasi Admin</span>';
             if (d.status === 'diproses') badgeHtml = '<span class="badge badge-waiting"><span class="badge-dot">●</span> Diproses</span>';
             if (d.status === 'selesai' && d.putusan === 'uang_kembali') badgeHtml = '<span class="badge badge-approved"><span class="badge-dot">●</span> Selesai: Uang Kembali</span>';
@@ -1082,7 +1088,8 @@
       btnSubmit.addEventListener('click', () => {
         // Putusan asli lewat API (admin only): POST ../../api/dispute/putuskan.php
         // dengan { dispute_id, putusan }. Nominal refund & catatan di form ini
-        // tidak dikirim karena API putuskan.php tidak punya field untuk itu.
+        // tidak dikirim: nominal dihitung server (total − DP yang sudah cair)
+        // dan hanya ditampilkan di kolom Nominal refund di atas.
         const putusan = PUTUSAN_BY_DECISION[selectedDecision];
         if (disputeIdApi > 0 && putusan) {
           btnSubmit.disabled = true;

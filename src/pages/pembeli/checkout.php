@@ -557,12 +557,19 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ produk_id: produkId, jumlah_kg: qtyKg })
         })
-          .then(function (r) { return r.json(); })
-          .then(function (res) {
+          .then(function (r) {
+            // Baca jawaban sebagai teks dulu: bila server menjawab bukan
+            // JSON (misalnya halaman error), jangan tuduh sesi login.
+            return r.text().then(function (t) { return { status: r.status, body: t }; });
+          })
+          .then(function (x) {
+            var res = null;
+            try { res = JSON.parse(x.body); } catch (e) { res = null; }
+            if (!res) { alert('Gagal membuat pesanan: server tidak menjawab dengan benar (HTTP ' + x.status + '). Coba lagi.'); btn.disabled = false; btn.innerText = 'Ajukan Pesanan'; return; }
             if (!res.ok) { alert('Gagal membuat pesanan: ' + (res.error || 'tidak diketahui')); btn.disabled = false; btn.innerText = 'Ajukan Pesanan'; return; }
             window.location.href = '../order_detail.php?id=' + res.data.order_id;
           })
-          .catch(function () { alert('Gagal membuat pesanan. Pastikan sudah login sebagai pembeli.'); btn.disabled = false; btn.innerText = 'Ajukan Pesanan'; });
+          .catch(function () { alert('Gagal membuat pesanan: tidak bisa menghubungi server. Periksa koneksi lalu coba lagi.'); btn.disabled = false; btn.innerText = 'Ajukan Pesanan'; });
       }
       var opt = select.options[select.selectedIndex];
       if (opt && opt.dataset && opt.dataset.id) { kirim(parseInt(opt.dataset.id, 10)); return; }

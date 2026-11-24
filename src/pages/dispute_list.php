@@ -393,9 +393,9 @@
     <!-- Filter Pills -->
     <div class="dispute-filter-row">
       <button type="button" class="dispute-filter-pill active" onclick="setFilter('semua', this)">Semua</button>
-      <button type="button" class="dispute-filter-pill" onclick="setFilter('dibuka', this)">Dibuka</button>
+      <button type="button" class="dispute-filter-pill" onclick="setFilter('diajukan', this)">Diajukan</button>
       <button type="button" class="dispute-filter-pill" onclick="setFilter('diproses', this)">Diproses</button>
-      <button type="button" class="dispute-filter-pill" onclick="setFilter('diputuskan', this)">Diputuskan</button>
+      <button type="button" class="dispute-filter-pill" onclick="setFilter('selesai', this)">Selesai</button>
     </div>
 
     <!-- Dispute Cards List -->
@@ -432,9 +432,9 @@
         return parseInt(d[2], 10) + ' ' + bulan[parseInt(d[1], 10) - 1] + ' ' + d[0] + ' • ' + String(p[1] || '').slice(0, 5) + ' WIB';
       }
       function badge(status) {
-        if (status === 'dibuka') return '<span class="dispute-badge dispute-badge-blue">DIBUKA</span>';
+        if (status === 'diajukan') return '<span class="dispute-badge dispute-badge-blue">DIAJUKAN</span>';
         if (status === 'diproses') return '<span class="dispute-badge dispute-badge-amber">DIPROSES</span>';
-        return '<span class="dispute-badge dispute-badge-green">DIPUTUSKAN</span>';
+        return '<span class="dispute-badge dispute-badge-green">SELESAI</span>';
       }
       fetch('../api/dispute/list.php')
         .then(function (r) { return r.json(); })

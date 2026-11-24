@@ -278,14 +278,21 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ produk_id: parseInt(produkId, 10), jumlah_kg: qty })
           })
-            .then(function (r) { return r.json(); })
-            .then(function (res) {
+            .then(function (r) {
+              // Baca jawaban sebagai teks dulu: bila server menjawab bukan
+              // JSON (misalnya halaman error), jangan tuduh sesi login.
+              return r.text().then(function (t) { return { status: r.status, body: t }; });
+            })
+            .then(function (x) {
+              var res = null;
+              try { res = JSON.parse(x.body); } catch (e) { res = null; }
+              if (!res) { msg.innerText = 'Gagal membuat pesanan: server tidak menjawab dengan benar (HTTP ' + x.status + '). Coba lagi.'; return; }
               if (!res.ok) { msg.innerText = 'Gagal: ' + (res.error || 'tidak diketahui'); return; }
               msg.innerHTML = 'Pesanan #' + res.data.order_id + ' dibuat! Total bayar Rp ' + Number(res.data.total_bayar).toLocaleString('id-ID')
                 + ' (fee Rp ' + Number(res.data.fee).toLocaleString('id-ID') + '). Status: menunggu_bayar. '
                 + '<a href="../order_detail.php?id=' + res.data.order_id + '">Lihat detail pesanan &rarr;</a>';
             })
-            .catch(function () { msg.innerText = 'Gagal membuat pesanan. Pastikan sudah login sebagai pembeli.'; });
+            .catch(function () { msg.innerText = 'Gagal membuat pesanan: tidak bisa menghubungi server. Periksa koneksi lalu coba lagi.'; });
         });
       }
     } else {

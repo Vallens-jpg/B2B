@@ -22,7 +22,7 @@ try {
     $idPembeli = $profil && $profil['id_pembeli'] !== null ? (int) $profil['id_pembeli'] : null;
     $idPerusahaan = $profil && $profil['id_perusahaan'] !== null ? (int) $profil['id_perusahaan'] : null;
     $stmt = $pdo->prepare(
-        'SELECT d.id_dispute AS id, d.id_pesanan AS order_id, ps.id_pembeli AS buyer_id, ps.id_perusahaan AS perusahaan_id, pn.id_produk AS produk_id, ps.total_harga + ps.fee_nominal AS total_bayar, ps.jumlah AS jumlah_kg, pr.nama_produk AS nama_produk, per.nama_perusahaan AS nama_perusahaan, pb.nama_pembeli AS nama_buyer, d.tanggal_mulai, d.tanggal_mulai AS created_at, d.nama_barang, d.nama_barang AS judul, d.keterangan AS deskripsi, d.foto_bukti, d.status, d.keputusan AS putusan, d.catatan_admin, d.tanggal_selesai, d.id_admin, d.kondisi_barang, d.tanggal_upload FROM dispute d JOIN pesanan ps ON ps.id_pesanan = d.id_pesanan JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran JOIN produk pr ON pr.id_produk = pn.id_produk LEFT JOIN pembeli pb ON pb.id_pembeli = ps.id_pembeli LEFT JOIN perusahaan per ON per.id_perusahaan = ps.id_perusahaan WHERE d.id_dispute = ? LIMIT 1'
+        'SELECT d.id_dispute AS id, d.id_pesanan AS order_id, ps.id_pembeli AS buyer_id, ps.id_perusahaan AS perusahaan_id, pn.id_produk AS produk_id, ps.total_harga AS total_bayar, ps.jumlah AS jumlah_kg, pr.nama_produk AS nama_produk, per.nama_perusahaan AS nama_perusahaan, pb.nama_pembeli AS nama_buyer, d.tanggal_mulai, d.tanggal_mulai AS created_at, d.nama_barang, d.nama_barang AS judul, d.keterangan AS deskripsi, d.foto_bukti, d.status, d.keputusan AS putusan, d.catatan_admin, d.tanggal_selesai, d.id_admin, d.kondisi_barang, d.tanggal_upload FROM dispute d JOIN pesanan ps ON ps.id_pesanan = d.id_pesanan JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran JOIN produk pr ON pr.id_produk = pn.id_produk LEFT JOIN pembeli pb ON pb.id_pembeli = ps.id_pembeli LEFT JOIN perusahaan per ON per.id_perusahaan = ps.id_perusahaan WHERE d.id_dispute = ? LIMIT 1'
     );
     $stmt->execute([$id]);
     $dispute = $stmt->fetch();
@@ -38,7 +38,7 @@ try {
     }
     // Escrow v2: diturunkan dari pesanan + pencairan (tahap 1 = DP, tahap 2 = pelunasan).
     $esc = $pdo->prepare(
-        "SELECT ps.total_harga AS jumlah_ditahan, COALESCE(c1.nominal, 0) AS dp_cair, COALESCE(c2.nominal, 0) AS sisa_cair, CASE WHEN ps.status = 'dibatalkan' THEN 'kembali' WHEN c2.id_pencairan IS NOT NULL THEN 'cair_sisa' WHEN c1.id_pencairan IS NOT NULL THEN 'cair_dp' ELSE 'ditahan' END AS status FROM pesanan ps LEFT JOIN pencairan c1 ON c1.id_pesanan = ps.id_pesanan AND c1.tahap = 1 LEFT JOIN pencairan c2 ON c2.id_pesanan = ps.id_pesanan AND c2.tahap = 2 WHERE ps.id_pesanan = ? LIMIT 1"
+        "SELECT ps.total_harga AS jumlah_ditahan, COALESCE(c1.nominal, 0) AS dp_cair, COALESCE(c2.nominal, 0) AS sisa_cair, COALESCE(c3.nominal, 0) AS refund, ps.total_harga - COALESCE(c1.nominal, 0) AS refund_saran, CASE WHEN ps.status = 'dibatalkan' THEN 'kembali' WHEN c2.id_pencairan IS NOT NULL THEN 'cair_sisa' WHEN c1.id_pencairan IS NOT NULL THEN 'cair_dp' ELSE 'ditahan' END AS status FROM pesanan ps LEFT JOIN pencairan c1 ON c1.id_pesanan = ps.id_pesanan AND c1.tahap = 1 LEFT JOIN pencairan c2 ON c2.id_pesanan = ps.id_pesanan AND c2.tahap = 2 LEFT JOIN pencairan c3 ON c3.id_pesanan = ps.id_pesanan AND c3.tahap = 3 WHERE ps.id_pesanan = ? LIMIT 1"
     );
     $esc->execute([(int) $dispute['order_id']]);
     $dispute['escrow'] = $esc->fetch() ?: null;
@@ -52,5 +52,7 @@ if (!empty($dispute['escrow'])) {
     $dispute['escrow']['jumlah_ditahan'] = (float) $dispute['escrow']['jumlah_ditahan'];
     $dispute['escrow']['dp_cair'] = (float) $dispute['escrow']['dp_cair'];
     $dispute['escrow']['sisa_cair'] = (float) $dispute['escrow']['sisa_cair'];
+    $dispute['escrow']['refund'] = (float) $dispute['escrow']['refund'];
+    $dispute['escrow']['refund_saran'] = (float) $dispute['escrow']['refund_saran'];
 }
 json_ok($dispute);

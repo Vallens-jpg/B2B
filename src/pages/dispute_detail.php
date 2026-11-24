@@ -872,10 +872,10 @@
           setText('summaryNilai', rupiah(d.total_bayar));
           setText('detailJenis', d.judul || '-');
           setText('detailDiajukan', waktuId(d.created_at));
-          var labelStatus = d.status === 'dibuka' ? 'Dibuka' : (d.status === 'diproses' ? 'Diproses' : 'Diputuskan');
+          var labelStatus = d.status === 'diajukan' ? 'Diajukan' : (d.status === 'diproses' ? 'Diproses' : 'Selesai');
           setText('statusPillText', labelStatus);
-          var langkah = ['Dibuka', 'Diproses', 'Diputuskan'];
-          var idx = d.status === 'dibuka' ? 0 : (d.status === 'diproses' ? 1 : 2);
+          var langkah = ['Diajukan', 'Diproses', 'Selesai'];
+          var idx = d.status === 'diajukan' ? 0 : (d.status === 'diproses' ? 1 : 2);
           var stepper = document.querySelector('.pd-stepper-list');
           if (stepper) {
             stepper.innerHTML = langkah.map(function (nama, i) {

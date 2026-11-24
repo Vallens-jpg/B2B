@@ -160,6 +160,7 @@
     .dp-step-status.selesai  { color: #059669; }
     .dp-step-status.aktif   { color: #d97706; }
     .dp-step-status.menunggu { color: #94a3b8; }
+    .dp-step-status.batal   { color: #dc2626; }
 
     .dp-step-status.aktif::before {
       content: "● ";
@@ -825,7 +826,12 @@
         if (!card) continue;
         var top = card.querySelector('.dp-step-top');
         var label = card.querySelector('.dp-step-label');
-        if (cur === -1 || i > cur + 1) {
+        if (cur === -1) {
+          // Pesanan dibatalkan: semua tahap berhenti dan ditandai Dibatalkan.
+          card.className = 'dp-step-card pending';
+          if (top) top.innerHTML = '<div class="dp-step-num pending-num">' + i + '</div><span class="dp-step-status batal">Dibatalkan</span>';
+          if (label) label.className = 'dp-step-label pending-label';
+        } else if (i > cur + 1) {
           card.className = 'dp-step-card pending';
           if (top) top.innerHTML = '<div class="dp-step-num pending-num">' + i + '</div><span class="dp-step-status menunggu">Menunggu</span>';
           if (label) label.className = 'dp-step-label pending-label';

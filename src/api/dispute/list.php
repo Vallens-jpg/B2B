@@ -18,7 +18,7 @@ try {
     $idPembeli = (int) ($profil['id_pembeli'] ?? 0);
     $idPerusahaan = (int) ($profil['id_perusahaan'] ?? 0);
     $sql = 'SELECT d.id_dispute AS id, d.id_pesanan AS order_id, d.nama_barang AS judul, d.status, d.keputusan AS putusan, d.tanggal_mulai AS created_at,'
-        . ' ps.total_harga + ps.fee_nominal AS total_bayar, ps.jumlah AS jumlah_kg, pr.nama_produk AS nama_produk,'
+        . ' ps.total_harga AS total_bayar, ps.jumlah AS jumlah_kg, pr.nama_produk AS nama_produk,'
         . ' per.nama_perusahaan AS nama_perusahaan, pb.nama_pembeli AS nama_buyer'
         . ' FROM dispute d'
         . ' JOIN pesanan ps ON ps.id_pesanan = d.id_pesanan'

@@ -1038,6 +1038,10 @@
                 </span>
               </span>
             </div>
+            <div class="case-item">
+              <span class="case-label">Refund ke Buyer</span>
+              <span class="case-value" id="caseRefund">—</span>
+            </div>
           </div>
         </div>
 
@@ -1182,6 +1186,14 @@
             document.getElementById('rightCardBadge').innerHTML = badgeForApi(d);
             document.getElementById('fieldKomplain').textContent = d.deskripsi || '—';
             document.getElementById('fieldUsulan').textContent = '—';
+            // Refund tahap 3 yang sudah dicatat (bila putusan uang kembali);
+            // tombol aksi disembunyikan bila dispute sudah diputuskan.
+            document.getElementById('caseRefund').textContent = (d.escrow && Number(d.escrow.refund || 0) > 0)
+              ? 'Rp ' + Number(d.escrow.refund).toLocaleString('id-ID') : '—';
+            if (d.status === 'selesai') {
+              const actionRow = document.querySelector('.action-row');
+              if (actionRow) actionRow.style.display = 'none';
+            }
             const att = d.bukti_foto
               ? [{ type: String(d.bukti_foto).split('.').pop().toUpperCase(), title: d.bukti_foto, desc: 'Lampiran foto bukti dari pembeli' }]
               : [];
