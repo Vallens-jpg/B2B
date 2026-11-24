@@ -23,25 +23,31 @@ if ($orderId <= 0 || $judul === '' || $deskripsi === '') {
 
 try {
     $pdo = db();
-    $stmt = $pdo->prepare('SELECT id, buyer_id FROM orders WHERE id = ? LIMIT 1');
+    // Resolve id profil pembeli dari session (id_pengguna != id_pembeli).
+    $stmt = $pdo->prepare('SELECT id_pembeli FROM pengguna WHERE id_pengguna = ? LIMIT 1');
+    $stmt->execute([(int) $user['id']]);
+    $profil = $stmt->fetch();
+    $idPembeli = $profil ? (int) $profil['id_pembeli'] : 0;
+    $stmt = $pdo->prepare('SELECT ps.id_pesanan, ps.id_pembeli, pr.nama_produk FROM pesanan ps JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran JOIN produk pr ON pr.id_produk = pn.id_produk WHERE ps.id_pesanan = ? LIMIT 1');
     $stmt->execute([$orderId]);
     $order = $stmt->fetch();
     if (!$order) {
         json_error('Order tidak ditemukan', 404);
     }
-    if ((int) $order['buyer_id'] !== (int) $user['id']) {
+    if ((int) $order['id_pembeli'] !== $idPembeli) {
         json_error('Order ini bukan milik Anda', 403);
     }
-    $stmt = $pdo->prepare("SELECT id FROM dispute WHERE order_id = ? AND status IN ('dibuka', 'diproses') LIMIT 1");
+    $stmt = $pdo->prepare("SELECT id_dispute FROM dispute WHERE id_pesanan = ? AND status IN ('diajukan', 'diproses') LIMIT 1");
     $stmt->execute([$orderId]);
     if ($stmt->fetch()) {
         json_error('Order ini sudah punya dispute yang masih dibuka', 409);
     }
-    $stmt = $pdo->prepare('INSERT INTO dispute (order_id, buyer_id, judul, deskripsi, bukti_foto, status) VALUES (?, ?, ?, ?, ?, ?)');
-    $stmt->execute([$orderId, (int) $user['id'], $judul, $deskripsi, $buktiFoto !== '' ? $buktiFoto : null, 'dibuka']);
+    // Input 'judul' tetap diterima tapi TIDAK disimpan: tidak ada kolomnya di skema v2.
+    $stmt = $pdo->prepare("INSERT INTO dispute (id_pesanan, nama_barang, kondisi_barang, keterangan, foto_bukti, status) VALUES (?, ?, NULL, ?, ?, 'diajukan')");
+    $stmt->execute([$orderId, $order['nama_produk'], $deskripsi, $buktiFoto !== '' ? $buktiFoto : null]);
     $disputeId = (int) $pdo->lastInsertId();
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dan 03 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
-json_ok(['dispute_id' => $disputeId, 'status' => 'dibuka']);
+json_ok(['dispute_id' => $disputeId, 'status' => 'diajukan']);

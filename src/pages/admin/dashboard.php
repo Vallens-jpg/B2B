@@ -1140,7 +1140,7 @@
           footer.textContent = 'Menampilkan ' + orders.length + ' order terbaru dari ' + res.data.length + ' order';
         })
         .catch(function () {
-          document.getElementById('orderTableBody').innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 32px 20px; color: #64748b;">Gagal memuat daftar order. Pastikan sudah login sebagai admin dan migrasi 01 &amp; 03 sudah dijalankan.</td></tr>';
+          document.getElementById('orderTableBody').innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 32px 20px; color: #64748b;">Gagal memuat daftar order. Pastikan sudah login sebagai admin dan online_marketplace_v2.sql sudah dijalankan.</td></tr>';
           document.getElementById('orderFooterInfo').textContent = 'Daftar order tidak dapat dimuat';
         });
 

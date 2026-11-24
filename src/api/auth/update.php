@@ -25,7 +25,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 try {
     $pdo = db();
-    $stmt = $pdo->prepare('UPDATE users SET nama = ?, email = ? WHERE id = ?');
+    $stmt = $pdo->prepare('UPDATE pengguna SET nama_pengguna = ?, email = ? WHERE id_pengguna = ?');
     $stmt->execute([$nama, $email, (int) $user['id']]);
     // Perbarui session supaya nama baru langsung tampil di semua halaman.
     $_SESSION['user']['nama'] = $nama;
@@ -34,7 +34,7 @@ try {
     if ((string) ($e->getCode() ?? '') === '23000') {
         json_error('Email sudah dipakai akun lain', 409);
     }
-    json_error('Database belum siap. Jalankan migrasi 01 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
 json_ok([

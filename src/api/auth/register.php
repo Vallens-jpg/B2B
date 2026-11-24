@@ -30,17 +30,36 @@ if (!in_array($role, ['pembeli', 'perusahaan'], true)) {
 
 try {
     $pdo = db();
-    $stmt = $pdo->prepare('SELECT id FROM users WHERE email = ? LIMIT 1');
+    $stmt = $pdo->prepare('SELECT id_pengguna FROM pengguna WHERE email = ? LIMIT 1');
     $stmt->execute([$email]);
     if ($stmt->fetch()) {
         json_error('Email sudah terdaftar', 409);
     }
 
-    $stmt = $pdo->prepare('INSERT INTO users (nama, email, password_hash, role) VALUES (?, ?, ?, ?)');
-    $stmt->execute([$nama, $email, password_hash($password, PASSWORD_DEFAULT), $role]);
+    // Skema v2: akun login (pengguna) harus punya profil (pembeli/perusahaan)
+    // dulu, karena pengguna.id_pembeli/id_perusahaan adalah FK ke profil.
+    // Tanpa profil, akun baru tidak bisa dipakai di alur v2.
+    $pdo->beginTransaction();
+    if ($role === 'perusahaan') {
+        $stmt = $pdo->prepare('INSERT INTO perusahaan (nama_perusahaan) VALUES (?)');
+        $stmt->execute([$nama]);
+        $idProfil = (int) $pdo->lastInsertId();
+        $stmt = $pdo->prepare('INSERT INTO pengguna (nama_pengguna, email, password, role, id_perusahaan) VALUES (?, ?, ?, ?, ?)');
+        $stmt->execute([$nama, $email, password_hash($password, PASSWORD_DEFAULT), $role, $idProfil]);
+    } else {
+        $stmt = $pdo->prepare('INSERT INTO pembeli (nama_pembeli) VALUES (?)');
+        $stmt->execute([$nama]);
+        $idProfil = (int) $pdo->lastInsertId();
+        $stmt = $pdo->prepare('INSERT INTO pengguna (nama_pengguna, email, password, role, id_pembeli) VALUES (?, ?, ?, ?, ?)');
+        $stmt->execute([$nama, $email, password_hash($password, PASSWORD_DEFAULT), $role, $idProfil]);
+    }
     $userId = (int) $pdo->lastInsertId();
+    $pdo->commit();
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dulu.', 500);
+    if (isset($pdo) && $pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
 $_SESSION['user'] = [

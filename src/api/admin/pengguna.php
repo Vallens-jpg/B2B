@@ -25,7 +25,7 @@ try {
         if ($userId === (int) $user['id']) {
             json_error('Admin tidak boleh mengunci akun sendiri', 400);
         }
-        $stmt = $pdo->prepare('UPDATE users SET status = ? WHERE id = ?');
+        $stmt = $pdo->prepare('UPDATE pengguna SET status = ? WHERE id_pengguna = ?');
         $stmt->execute([$status, $userId]);
         if ($stmt->rowCount() === 0) {
             json_error('User tidak ditemukan', 404);
@@ -33,13 +33,13 @@ try {
         json_ok(['user_id' => $userId, 'status' => $status]);
     }
 
-    $stmt = $pdo->query('SELECT id, nama, email, role, status, created_at FROM users ORDER BY id');
+    $stmt = $pdo->query('SELECT id_pengguna AS id, nama_pengguna AS nama, email, role, status, dibuat_pada AS created_at FROM pengguna ORDER BY id_pengguna');
     $pengguna = $stmt->fetchAll();
     foreach ($pengguna as &$row) {
         $row['id'] = (int) $row['id'];
     }
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dan 09 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
 json_ok($pengguna);

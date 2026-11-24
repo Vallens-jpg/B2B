@@ -11,23 +11,30 @@ if (!$user) {
 $role = $user['role'] ?? '';
 try {
     $pdo = db();
-    $sql = 'SELECT d.id, d.order_id, d.judul, d.status, d.putusan, d.created_at,'
-        . ' o.total + o.fee AS total_bayar, o.jumlah_kg, p.nama AS nama_produk,'
-        . ' u.nama AS nama_perusahaan, ub.nama AS nama_buyer'
+    // Resolve id profil dari session (rule global 2): $user['id'] = id_pengguna.
+    $stmtProfil = $pdo->prepare('SELECT id_pembeli, id_perusahaan, id_admin FROM pengguna WHERE id_pengguna = ? LIMIT 1');
+    $stmtProfil->execute([(int) $user['id']]);
+    $profil = $stmtProfil->fetch();
+    $idPembeli = (int) ($profil['id_pembeli'] ?? 0);
+    $idPerusahaan = (int) ($profil['id_perusahaan'] ?? 0);
+    $sql = 'SELECT d.id_dispute AS id, d.id_pesanan AS order_id, d.nama_barang AS judul, d.status, d.keputusan AS putusan, d.tanggal_mulai AS created_at,'
+        . ' ps.total_harga + ps.fee_nominal AS total_bayar, ps.jumlah AS jumlah_kg, pr.nama_produk AS nama_produk,'
+        . ' per.nama_perusahaan AS nama_perusahaan, pb.nama_pembeli AS nama_buyer'
         . ' FROM dispute d'
-        . ' JOIN orders o ON o.id = d.order_id'
-        . ' JOIN produk p ON p.id = o.produk_id'
-        . ' LEFT JOIN users u ON u.id = p.perusahaan_id'
-        . ' LEFT JOIN users ub ON ub.id = d.buyer_id';
+        . ' JOIN pesanan ps ON ps.id_pesanan = d.id_pesanan'
+        . ' JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran'
+        . ' JOIN produk pr ON pr.id_produk = pn.id_produk'
+        . ' LEFT JOIN perusahaan per ON per.id_perusahaan = ps.id_perusahaan'
+        . ' LEFT JOIN pembeli pb ON pb.id_pembeli = ps.id_pembeli';
     $params = [];
     if ($role === 'pembeli') {
-        $sql .= ' WHERE d.buyer_id = ?';
-        $params[] = (int) $user['id'];
+        $sql .= ' WHERE ps.id_pembeli = ?';
+        $params[] = $idPembeli;
     } elseif ($role === 'perusahaan') {
-        $sql .= ' WHERE p.perusahaan_id = ?';
-        $params[] = (int) $user['id'];
+        $sql .= ' WHERE ps.id_perusahaan = ?';
+        $params[] = $idPerusahaan;
     }
-    $sql .= ' ORDER BY d.created_at DESC LIMIT 50';
+    $sql .= ' ORDER BY d.tanggal_mulai DESC LIMIT 50';
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $rows = $stmt->fetchAll();
@@ -38,6 +45,6 @@ try {
     }
     unset($r);
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dan 03 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 json_ok(['dispute' => $rows]);

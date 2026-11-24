@@ -11,10 +11,14 @@ if (!$user || ($user['role'] ?? '') !== 'admin') {
 
 try {
     $stmt = db()->query(
-        'SELECT o.id, o.buyer_id, u.nama AS nama_buyer, o.produk_id, p.nama AS nama_produk, ' .
-        'o.jumlah_kg, o.total, o.fee, o.status, o.created_at, pu.nama AS nama_perusahaan FROM orders o ' .
-        'JOIN users u ON u.id = o.buyer_id JOIN produk p ON p.id = o.produk_id ' .
-        'LEFT JOIN users pu ON pu.id = p.perusahaan_id ORDER BY o.id DESC'
+        'SELECT ps.id_pesanan AS id, ps.id_pembeli AS buyer_id, pb.nama_pembeli AS nama_buyer, ' .
+        'pn.id_produk AS produk_id, pr.nama_produk AS nama_produk, ' .
+        'ps.jumlah AS jumlah_kg, ps.total_harga AS total, ps.fee_nominal AS fee, ps.status, ' .
+        'ps.tanggal_pesanan AS created_at, per.nama_perusahaan AS nama_perusahaan FROM pesanan ps ' .
+        'JOIN pembeli pb ON pb.id_pembeli = ps.id_pembeli ' .
+        'JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran ' .
+        'JOIN produk pr ON pr.id_produk = pn.id_produk ' .
+        'LEFT JOIN perusahaan per ON per.id_perusahaan = ps.id_perusahaan ORDER BY ps.id_pesanan DESC'
     );
     $orders = $stmt->fetchAll();
     foreach ($orders as &$row) {
@@ -24,7 +28,7 @@ try {
         $row['fee'] = (float) $row['fee'];
     }
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dan 03 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
 json_ok($orders);

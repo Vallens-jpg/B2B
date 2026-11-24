@@ -20,15 +20,22 @@ try {
         if ($perusahaanFilter === 'saya') {
             require_once __DIR__ . '/../lib/auth.php';
             $me = auth_user();
-            $pemilikId = ($me && ($me['role'] ?? '') === 'perusahaan') ? (int) $me['id'] : -1;
+            $pemilikId = -1;
+            if ($me && ($me['role'] ?? '') === 'perusahaan') {
+                // Resolve id profil perusahaan dari session (id_pengguna != id_perusahaan).
+                $stmtProfil = $pdo->prepare('SELECT id_perusahaan FROM pengguna WHERE id_pengguna = ? LIMIT 1');
+                $stmtProfil->execute([(int) $me['id']]);
+                $profil = $stmtProfil->fetch();
+                $pemilikId = $profil && $profil['id_perusahaan'] !== null ? (int) $profil['id_perusahaan'] : -1;
+            }
         } else {
             $pemilikId = (int) $perusahaanFilter;
         }
-        $where = 'WHERE p.perusahaan_id = ?';
+        $where = 'WHERE p.id_perusahaan = ?';
         $params = [$pemilikId];
     }
     if ($cari !== '') {
-        $where .= ($where === '' ? 'WHERE ' : ' AND ') . '(nama LIKE ? OR deskripsi LIKE ?)';
+        $where .= ($where === '' ? 'WHERE ' : ' AND ') . '(p.nama_produk LIKE ? OR p.deskripsi LIKE ?)';
         $params[] = "%$cari%";
         $params[] = "%$cari%";
     }
@@ -37,10 +44,12 @@ try {
     $total = (int) $stmt->fetchColumn();
 
     $stmt = $pdo->prepare(
-        "SELECT p.id, p.perusahaan_id, p.nama, p.deskripsi, p.harga_per_kg, p.stok_kg, p.satuan, p.gambar, " .
-        "COALESCE(AVG(u.rating), 0) AS rating, COUNT(u.id) AS jumlah_ulasan " .
-        "FROM produk p LEFT JOIN ulasan u ON u.produk_id = p.id $where " .
-        "GROUP BY p.id ORDER BY p.id LIMIT $perHalaman OFFSET $offset"
+        "SELECT p.id_produk AS id, p.id_perusahaan AS perusahaan_id, p.nama_produk AS nama, p.deskripsi, p.harga_standar AS harga_per_kg, " .
+        "COALESCE((SELECT s.jumlah_stok FROM stok s WHERE s.id_produk = p.id_produk ORDER BY s.tanggal_stok DESC LIMIT 1), 0) AS stok_kg, " .
+        "p.satuan, p.gambar, " .
+        "COALESCE(AVG(ps.rating), 0) AS rating, COUNT(ps.rating) AS jumlah_ulasan " .
+        "FROM produk p LEFT JOIN penawaran pn ON pn.id_produk = p.id_produk LEFT JOIN pesanan ps ON ps.id_penawaran = pn.id_penawaran AND ps.rating IS NOT NULL $where " .
+        "GROUP BY p.id_produk ORDER BY p.id_produk LIMIT $perHalaman OFFSET $offset"
     );
     $stmt->execute($params);
     $produk = $stmt->fetchAll();
@@ -53,7 +62,7 @@ try {
         $row['jumlah_ulasan'] = (int) $row['jumlah_ulasan'];
     }
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dan 03 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
 json_ok([

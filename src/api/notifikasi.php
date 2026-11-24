@@ -1,6 +1,6 @@
 <?php
 // Daftar notifikasi perubahan status pesanan (20 terakhir, terbaru dulu).
-// Sumber: riwayat_status JOIN orders (+ produk & pembeli).
+// Sumber: riwayat_status JOIN pesanan (+ penawaran -> produk & pembeli).
 // - pembeli: hanya riwayat order miliknya.
 // - perusahaan: hanya riwayat order atas produk miliknya.
 // - admin: semua riwayat.
@@ -29,29 +29,36 @@ $labelStatus = [
 ];
 
 $select =
-    'SELECT r.id AS riwayat_id, r.status_lama, r.status_baru, r.created_at, o.id AS order_id, ' .
-    'p.nama AS nama_produk, u.nama AS nama_buyer, ' .
-    'CASE WHEN d.riwayat_id IS NULL THEN 0 ELSE 1 END AS dibaca ' .
+    'SELECT r.id_riwayat AS riwayat_id, r.status_lama, r.status_baru, r.dibuat_pada AS created_at, ps.id_pesanan AS order_id, ' .
+    'pr.nama_produk AS nama_produk, pb.nama_pembeli AS nama_buyer, ' .
+    'CASE WHEN d.id_riwayat IS NULL THEN 0 ELSE 1 END AS dibaca ' .
     'FROM riwayat_status r ' .
-    'JOIN orders o ON o.id = r.order_id ' .
-    'JOIN produk p ON p.id = o.produk_id ' .
-    'JOIN users u ON u.id = o.buyer_id ' .
-    'LEFT JOIN notifikasi_dibaca d ON d.riwayat_id = r.id AND d.user_id = ? ';
+    'JOIN pesanan ps ON ps.id_pesanan = r.id_pesanan ' .
+    'JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran ' .
+    'JOIN produk pr ON pr.id_produk = pn.id_produk ' .
+    'JOIN pembeli pb ON pb.id_pembeli = ps.id_pembeli ' .
+    'LEFT JOIN notifikasi_dibaca d ON d.id_riwayat = r.id_riwayat AND d.id_pengguna = ? ';
 
 try {
+    // Resolve id profil dari session (rule global 2): $user['id'] = id_pengguna.
+    $stmtProfil = db()->prepare('SELECT id_pembeli, id_perusahaan, id_admin FROM pengguna WHERE id_pengguna = ? LIMIT 1');
+    $stmtProfil->execute([(int) $user['id']]);
+    $profil = $stmtProfil->fetch();
+    $idPembeli = (int) ($profil['id_pembeli'] ?? 0);
+    $idPerusahaan = (int) ($profil['id_perusahaan'] ?? 0);
     if ($role === 'perusahaan') {
-        $stmt = db()->prepare($select . 'WHERE p.perusahaan_id = ? ORDER BY r.id DESC LIMIT 20');
-        $stmt->execute([(int) $user['id'], (int) $user['id']]);
+        $stmt = db()->prepare($select . 'WHERE ps.id_perusahaan = ? ORDER BY r.id_riwayat DESC LIMIT 20');
+        $stmt->execute([(int) $user['id'], $idPerusahaan]);
     } elseif ($role === 'pembeli') {
-        $stmt = db()->prepare($select . 'WHERE o.buyer_id = ? ORDER BY r.id DESC LIMIT 20');
-        $stmt->execute([(int) $user['id'], (int) $user['id']]);
+        $stmt = db()->prepare($select . 'WHERE ps.id_pembeli = ? ORDER BY r.id_riwayat DESC LIMIT 20');
+        $stmt->execute([(int) $user['id'], $idPembeli]);
     } else {
-        $stmt = db()->prepare($select . 'ORDER BY r.id DESC LIMIT 20');
+        $stmt = db()->prepare($select . 'ORDER BY r.id_riwayat DESC LIMIT 20');
         $stmt->execute([(int) $user['id']]);
     }
     $rows = $stmt->fetchAll();
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01, 03, dan 07 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
 $notifikasi = [];

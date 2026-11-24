@@ -7013,7 +7013,7 @@
               statusDb: o.status,
               catatan: 'Total bayar Rp ' + Number(o.total_bayar).toLocaleString('id-ID'),
               pembayaran: o.total_bayar,
-              // Data escrow dari api/order/list.php (LEFT JOIN escrow).
+              // Data escrow dari api/order/list.php (dihitung dari pencairan tahap 1/2).
               // Dipakai hitungSaldoEscrow() untuk saldo pencairan.
               escrow: (o.jumlah_ditahan != null) ? {
                 jumlah_ditahan: Number(o.jumlah_ditahan) || 0,
@@ -7394,17 +7394,17 @@
     /* --------------------------------------------------------------------------
        F4. KEUANGAN / PENCAIRAN DANA LOGIC
        -------------------------------------------------------------------------- */
-    // Saldo pencairan dari tabel escrow (api/order/list.php, dipakai ulang
+    // Saldo pencairan dari tabel pencairan (api/order/list.php, dipakai ulang
     // dari PESANAN_DATA). Aturannya sama dengan api/order/kirim.php dan
-    // terima.php: DP 50% cair saat dikirim, sisanya cair saat selesai.
-    // Siap cair = jumlah yang sudah dicairkan escrow (dp_cair + sisa_cair).
-    // Tertahan = jumlah yang masih ditahan escrow
+    // terima.php: pencairan tahap 1 dibuat saat dikirim, tahap 2 saat selesai.
+    // Siap cair = jumlah yang sudah dicairkan (dp_cair + sisa_cair).
+    // Tertahan = jumlah yang masih ditahan
     // (jumlah_ditahan - dp_cair - sisa_cair) untuk order yang sudah dibayar
     // dan dananya belum dikembalikan. Order 'menunggu_bayar' belum dibayar
     // jadi tidak dihitung; escrow 'kembali' (dibatalkan / putusan uang
     // kembali) dananya sudah kembali ke pembeli. Penarikan dana sendiri
-    // belum tercatat di sistem (belum ada tabel/API pencairan), jadi saldo
-    // siap cair di sini adalah total yang sudah dicairkan escrow.
+    // belum tercatat di sistem, jadi saldo siap cair di sini adalah total
+    // yang sudah dicairkan.
     let saldoSiapCair = 0;
     let nominalPencairanAktif = 0;
 

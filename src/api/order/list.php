@@ -11,27 +11,38 @@ if (!$user || !in_array($user['role'] ?? '', ['pembeli', 'perusahaan'], true)) {
 }
 
 try {
+    // $user['id'] adalah pengguna.id_pengguna, bukan id profil: resolve dulu
+    // ke id_pembeli / id_perusahaan sebelum membandingkan dengan pesanan.
+    $stmt = db()->prepare('SELECT id_pembeli, id_perusahaan FROM pengguna WHERE id_pengguna = ? LIMIT 1');
+    $stmt->execute([(int) $user['id']]);
+    $profil = $stmt->fetch();
+    $idPembeli = $profil['id_pembeli'] !== null ? (int) $profil['id_pembeli'] : null;
+    $idPerusahaan = $profil['id_perusahaan'] !== null ? (int) $profil['id_perusahaan'] : null;
+
     if (($user['role'] ?? '') === 'perusahaan') {
         // Perusahaan: order atas produk miliknya (sinkron dengan pembeli).
-        // Kolom escrow ikut disertakan (LEFT JOIN) untuk saldo pencairan di
-        // dashboard perusahaan: siap cair = dp_cair + sisa_cair,
-        // tertahan = jumlah_ditahan - dp_cair - sisa_cair.
+        // Kolom escrow lama diganti turunan dari pencairan: siap cair =
+        // dp_cair + sisa_cair, tertahan = jumlah_ditahan - dp_cair - sisa_cair.
+        // escrow_status: dibatalkan -> 'kembali'; ada tahap 2 -> 'cair_sisa';
+        // ada tahap 1 -> 'cair_dp'; kalau tidak ada -> 'ditahan'.
         $stmt = db()->prepare(
-            'SELECT o.id, o.jumlah_kg, o.harga_satuan, o.total, o.fee, o.status, o.created_at, p.nama AS nama_produk, u.nama AS nama_buyer, ' .
-            'e.jumlah_ditahan, e.dp_cair, e.sisa_cair, e.status AS escrow_status ' .
-            'FROM orders o JOIN produk p ON p.id = o.produk_id JOIN users u ON u.id = o.buyer_id LEFT JOIN escrow e ON e.order_id = o.id WHERE p.perusahaan_id = ? ORDER BY o.id DESC LIMIT 50'
+            'SELECT ps.id_pesanan AS id, ps.jumlah AS jumlah_kg, ps.harga_satuan, ps.total_harga AS total, ps.fee_nominal AS fee, ps.status, ps.tanggal_pesanan AS created_at, pr.nama_produk AS nama_produk, pb.nama_pembeli AS nama_buyer, ' .
+            'ps.total_harga AS jumlah_ditahan, COALESCE(c1.nominal, 0) AS dp_cair, COALESCE(c2.nominal, 0) AS sisa_cair, ' .
+            "CASE WHEN ps.status = 'dibatalkan' THEN 'kembali' WHEN c2.id_pencairan IS NOT NULL THEN 'cair_sisa' WHEN c1.id_pencairan IS NOT NULL THEN 'cair_dp' ELSE 'ditahan' END AS escrow_status " .
+            'FROM pesanan ps JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran JOIN produk pr ON pr.id_produk = pn.id_produk JOIN pembeli pb ON pb.id_pembeli = ps.id_pembeli ' .
+            'LEFT JOIN pencairan c1 ON c1.id_pesanan = ps.id_pesanan AND c1.tahap = 1 LEFT JOIN pencairan c2 ON c2.id_pesanan = ps.id_pesanan AND c2.tahap = 2 WHERE ps.id_perusahaan = ? ORDER BY ps.id_pesanan DESC LIMIT 50'
         );
-        $stmt->execute([(int) $user['id']]);
+        $stmt->execute([$idPerusahaan]);
     } else {
         $stmt = db()->prepare(
-            'SELECT o.id, o.jumlah_kg, o.harga_satuan, o.total, o.fee, o.status, o.created_at, p.nama AS nama_produk, up.nama AS nama_perusahaan ' .
-            'FROM orders o JOIN produk p ON p.id = o.produk_id LEFT JOIN users up ON up.id = p.perusahaan_id WHERE o.buyer_id = ? ORDER BY o.id DESC LIMIT 50'
+            'SELECT ps.id_pesanan AS id, ps.jumlah AS jumlah_kg, ps.harga_satuan, ps.total_harga AS total, ps.fee_nominal AS fee, ps.status, ps.tanggal_pesanan AS created_at, pr.nama_produk AS nama_produk, per.nama_perusahaan AS nama_perusahaan ' .
+            'FROM pesanan ps JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran JOIN produk pr ON pr.id_produk = pn.id_produk LEFT JOIN perusahaan per ON per.id_perusahaan = ps.id_perusahaan WHERE ps.id_pembeli = ? ORDER BY ps.id_pesanan DESC LIMIT 50'
         );
-        $stmt->execute([(int) $user['id']]);
+        $stmt->execute([$idPembeli]);
     }
     $orders = $stmt->fetchAll();
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dan 03 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
 foreach ($orders as &$o) {

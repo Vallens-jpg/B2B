@@ -27,13 +27,23 @@ if ($orderId <= 0) {
 
 try {
     $pdo = db();
+    // Session menyimpan pengguna.id_pengguna, bukan id profil pembeli.
+    $stmt = $pdo->prepare('SELECT id_pembeli FROM pengguna WHERE id_pengguna = ?');
+    $stmt->execute([(int) $user['id']]);
+    $profil = $stmt->fetch();
+    $idPembeli = $profil ? (int) ($profil['id_pembeli'] ?? 0) : 0;
+    if ($idPembeli <= 0) {
+        json_error('Profil pembeli tidak ditemukan', 403);
+    }
+
     $pdo->beginTransaction();
     $stmt = $pdo->prepare(
-        'SELECT o.id, o.buyer_id, o.status, o.total, o.fee, p.nama AS nama_produk, ' .
-        'i.nomor AS nomor_invoice, u.email AS email_buyer ' .
-        'FROM orders o JOIN produk p ON p.id = o.produk_id ' .
-        'LEFT JOIN invoice i ON i.order_id = o.id ' .
-        'JOIN users u ON u.id = o.buyer_id WHERE o.id = ? FOR UPDATE'
+        'SELECT ps.id_pesanan AS id, ps.id_pembeli, ps.status, ps.total_harga AS total, ps.fee_nominal AS fee, pr.nama_produk, ' .
+        'b.xendit_id AS nomor_invoice, u.email AS email_buyer ' .
+        'FROM pesanan ps JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran ' .
+        'JOIN produk pr ON pr.id_produk = pn.id_produk ' .
+        'LEFT JOIN pembayaran b ON b.id_pesanan = ps.id_pesanan ' .
+        'JOIN pengguna u ON u.id_pembeli = ps.id_pembeli WHERE ps.id_pesanan = ? FOR UPDATE'
     );
     $stmt->execute([$orderId]);
     $order = $stmt->fetch();
@@ -41,7 +51,7 @@ try {
         $pdo->rollBack();
         json_error('Order tidak ditemukan', 404);
     }
-    if ((int) $order['buyer_id'] !== (int) $user['id']) {
+    if ((int) $order['id_pembeli'] !== $idPembeli) {
         $pdo->rollBack();
         json_error('Order ini bukan milik Anda', 403);
     }
@@ -66,11 +76,11 @@ try {
             json_error('Pembayaran belum dikonfigurasi: isi XENDIT_SECRET_KEY di .env, atau aktifkan DEMO_MODE=true hanya untuk latihan lokal.', 503);
         }
         // MODE DEMO eksplisit (DEMO_MODE=true): langsung tandai dibayar.
-        $stmt = $pdo->prepare("UPDATE orders SET status = 'dibayar' WHERE id = ?");
+        $stmt = $pdo->prepare("UPDATE pesanan SET status = 'dibayar' WHERE id_pesanan = ?");
         $stmt->execute([$orderId]);
-        $stmt = $pdo->prepare("UPDATE invoice SET status = 'dibayar' WHERE order_id = ?");
+        $stmt = $pdo->prepare("UPDATE pembayaran SET status = 'paid', paid_at = NOW() WHERE id_pesanan = ?");
         $stmt->execute([$orderId]);
-        $stmt = $pdo->prepare('INSERT INTO riwayat_status (order_id, status_lama, status_baru, dicatat_oleh) VALUES (?, ?, ?, ?)');
+        $stmt = $pdo->prepare('INSERT INTO riwayat_status (id_pesanan, status_lama, status_baru, id_pengguna) VALUES (?, ?, ?, ?)');
         $stmt->execute([$orderId, 'menunggu_bayar', 'dibayar', (int) $user['id']]);
         $pdo->commit();
         json_ok(['order_id' => $orderId, 'status' => 'dibayar']);
@@ -82,7 +92,9 @@ try {
         $pdo->rollBack();
         json_error('Nomor invoice order tidak ditemukan', 500);
     }
-    $totalBayar = (float) $order['total'] + (float) $order['fee'];
+    // Skema v2: pembeli membayar total_harga saja; fee tidak ditambahkan ke tagihan
+    // (fee_nominal hanya dicatat untuk dipotong dari dana perusahaan nanti).
+    $totalBayar = (float) $order['total'];
     $namaProduk = (string) $order['nama_produk'];
     $emailBuyer = $order['email_buyer'] ?? null;
     $pdo->rollBack();
@@ -90,7 +102,7 @@ try {
     if (isset($pdo) && $pdo->inTransaction()) {
         $pdo->rollBack();
     }
-    json_error('Database belum siap. Jalankan migrasi 01 dan 03 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
 // Panggil Xendit di luar transaksi database.
@@ -99,9 +111,18 @@ if (!$hasil['ok']) {
     // Pesan Xendit diteruskan apa adanya; status order tetap menunggu_bayar.
     json_error($hasil['error'], 502);
 }
+// Simpan id invoice + URL Xendit ke baris pembayaran (status tetap pending
+// sampai webhook menandai paid).
+try {
+    $pdo = db();
+    $stmt = $pdo->prepare('UPDATE pembayaran SET xendit_invoice_id = ?, invoice_url = ? WHERE id_pesanan = ?');
+    $stmt->execute([$hasil['invoice_id'] ?? null, $hasil['invoice_url'], $orderId]);
+} catch (Throwable $e) {
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
+}
 json_ok(['order_id' => $orderId, 'status' => 'menunggu_bayar', 'invoice_url' => $hasil['invoice_url']]);
 
-// Buat satu invoice Xendit. Kembalikan ['ok' => true, 'invoice_url' => ...]
+// Buat satu invoice Xendit. Kembalikan ['ok' => true, 'invoice_url' => ..., 'invoice_id' => ...]
 // atau ['ok' => false, 'error' => <pesan Xendit apa adanya>].
 function xendit_buat_invoice(string $secretKey, string $externalId, float $totalBayar, string $namaProduk, int $orderId, $emailBuyer): array
 {
@@ -134,7 +155,7 @@ function xendit_buat_invoice(string $secretKey, string $externalId, float $total
     curl_close($ch);
     $data = json_decode($raw, true);
     if ($http >= 200 && $http < 300 && is_array($data) && !empty($data['invoice_url'])) {
-        return ['ok' => true, 'invoice_url' => $data['invoice_url']];
+        return ['ok' => true, 'invoice_url' => $data['invoice_url'], 'invoice_id' => $data['id'] ?? null];
     }
     $pesan = '';
     if (is_array($data)) {

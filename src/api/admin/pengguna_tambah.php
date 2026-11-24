@@ -35,16 +35,35 @@ if (!in_array($role, ['pembeli', 'perusahaan'], true)) {
 
 try {
     $pdo = db();
-    $stmt = $pdo->prepare('SELECT id FROM users WHERE email = ? LIMIT 1');
+    $stmt = $pdo->prepare('SELECT id_pengguna FROM pengguna WHERE email = ? LIMIT 1');
     $stmt->execute([$email]);
     if ($stmt->fetch()) {
         json_error('Email sudah terdaftar', 409);
     }
-    $stmt = $pdo->prepare('INSERT INTO users (nama, email, password_hash, role) VALUES (?, ?, ?, ?)');
-    $stmt->execute([$nama, $email, password_hash($password, PASSWORD_DEFAULT), $role]);
+
+    // Skema v2: buat profil dulu (pembeli/perusahaan), lalu pengguna dengan
+    // FK ke profil itu. Tanpa profil, akun baru tidak bisa dipakai di v2.
+    $pdo->beginTransaction();
+    if ($role === 'perusahaan') {
+        $stmt = $pdo->prepare('INSERT INTO perusahaan (nama_perusahaan) VALUES (?)');
+        $stmt->execute([$nama]);
+        $idProfil = (int) $pdo->lastInsertId();
+        $stmt = $pdo->prepare('INSERT INTO pengguna (nama_pengguna, email, password, role, id_perusahaan) VALUES (?, ?, ?, ?, ?)');
+        $stmt->execute([$nama, $email, password_hash($password, PASSWORD_DEFAULT), $role, $idProfil]);
+    } else {
+        $stmt = $pdo->prepare('INSERT INTO pembeli (nama_pembeli) VALUES (?)');
+        $stmt->execute([$nama]);
+        $idProfil = (int) $pdo->lastInsertId();
+        $stmt = $pdo->prepare('INSERT INTO pengguna (nama_pengguna, email, password, role, id_pembeli) VALUES (?, ?, ?, ?, ?)');
+        $stmt->execute([$nama, $email, password_hash($password, PASSWORD_DEFAULT), $role, $idProfil]);
+    }
     $userId = (int) $pdo->lastInsertId();
+    $pdo->commit();
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dulu.', 500);
+    if (isset($pdo) && $pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
 json_ok(['user_id' => $userId, 'nama' => $nama, 'email' => $email, 'role' => $role]);

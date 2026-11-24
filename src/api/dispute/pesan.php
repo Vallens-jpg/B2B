@@ -20,8 +20,14 @@ if ($disputeId <= 0) {
 
 try {
     $pdo = db();
+    // Resolve id profil dari session (rule global 2): $user['id'] = id_pengguna.
+    $stmtProfil = $pdo->prepare('SELECT id_pembeli, id_perusahaan, id_admin FROM pengguna WHERE id_pengguna = ? LIMIT 1');
+    $stmtProfil->execute([(int) $user['id']]);
+    $profil = $stmtProfil->fetch();
+    $idPembeli = (int) ($profil['id_pembeli'] ?? 0);
+    $idPerusahaan = (int) ($profil['id_perusahaan'] ?? 0);
     $stmt = $pdo->prepare(
-        'SELECT d.*, o.produk_id, p.perusahaan_id FROM dispute d JOIN orders o ON o.id = d.order_id JOIN produk p ON p.id = o.produk_id WHERE d.id = ? LIMIT 1'
+        'SELECT d.*, ps.id_pembeli AS buyer_id, ps.id_perusahaan AS perusahaan_id, pn.id_produk AS produk_id FROM dispute d JOIN pesanan ps ON ps.id_pesanan = d.id_pesanan JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran WHERE d.id_dispute = ? LIMIT 1'
     );
     $stmt->execute([$disputeId]);
     $dispute = $stmt->fetch();
@@ -29,8 +35,8 @@ try {
         json_error('Dispute tidak ditemukan', 404);
     }
     $role = $user['role'] ?? '';
-    $boleh = (int) $dispute['buyer_id'] === (int) $user['id']
-        || ($role === 'perusahaan' && (int) $dispute['perusahaan_id'] === (int) $user['id'])
+    $boleh = (int) $dispute['buyer_id'] === $idPembeli
+        || ($role === 'perusahaan' && (int) $dispute['perusahaan_id'] === $idPerusahaan)
         || $role === 'admin';
     if (!$boleh) {
         json_error('Dispute ini bukan milik Anda', 403);
@@ -41,16 +47,16 @@ try {
         if ($pesan === '') {
             json_error('Pesan tidak boleh kosong', 400);
         }
-        if (($dispute['status'] ?? '') === 'diputuskan') {
+        if (($dispute['status'] ?? '') === 'selesai') {
             json_error('Dispute sudah diputuskan, diskusi ditutup', 409);
         }
-        $stmt = $pdo->prepare('INSERT INTO dispute_pesan (dispute_id, user_id, pesan) VALUES (?, ?, ?)');
+        $stmt = $pdo->prepare('INSERT INTO dispute_pesan (id_dispute, id_pengguna, pesan) VALUES (?, ?, ?)');
         $stmt->execute([$disputeId, (int) $user['id'], $pesan]);
         $pesanId = (int) $pdo->lastInsertId();
         json_ok(['pesan_id' => $pesanId]);
     }
     $stmt = $pdo->prepare(
-        'SELECT dp.id, dp.pesan, dp.created_at, u.nama, u.role FROM dispute_pesan dp JOIN users u ON u.id = dp.user_id WHERE dp.dispute_id = ? ORDER BY dp.created_at ASC, dp.id ASC LIMIT 100'
+        'SELECT dp.id_pesan AS id, dp.pesan, dp.dibuat_pada AS created_at, u.nama_pengguna AS nama, u.role FROM dispute_pesan dp JOIN pengguna u ON u.id_pengguna = dp.id_pengguna WHERE dp.id_dispute = ? ORDER BY dp.dibuat_pada ASC, dp.id_pesan ASC LIMIT 100'
     );
     $stmt->execute([$disputeId]);
     $rows = $stmt->fetchAll();
@@ -59,6 +65,6 @@ try {
     }
     unset($r);
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01, 03, dan 08 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 json_ok(['pesan' => $rows]);

@@ -15,9 +15,17 @@ if ($id <= 0) {
 
 try {
     $pdo = db();
+    // $user['id'] adalah pengguna.id_pengguna, bukan id profil: resolve dulu
+    // ke id_pembeli / id_perusahaan sebelum membandingkan dengan pesanan.
+    $stmt = $pdo->prepare('SELECT id_pembeli, id_perusahaan FROM pengguna WHERE id_pengguna = ? LIMIT 1');
+    $stmt->execute([(int) $user['id']]);
+    $profil = $stmt->fetch();
+    $idPembeli = $profil['id_pembeli'] !== null ? (int) $profil['id_pembeli'] : null;
+    $idPerusahaan = $profil['id_perusahaan'] !== null ? (int) $profil['id_perusahaan'] : null;
+
     $stmt = $pdo->prepare(
-        'SELECT o.*, p.nama AS nama_produk, p.perusahaan_id, u.nama AS nama_buyer, u2.nama AS nama_perusahaan, i.nomor AS nomor_invoice ' .
-        'FROM orders o JOIN produk p ON p.id = o.produk_id JOIN users u ON u.id = o.buyer_id LEFT JOIN users u2 ON u2.id = p.perusahaan_id LEFT JOIN invoice i ON i.order_id = o.id WHERE o.id = ? LIMIT 1'
+        'SELECT ps.id_pesanan AS id, ps.id_pembeli AS buyer_id, ps.id_perusahaan AS perusahaan_id, pn.id_produk AS produk_id, ps.jumlah AS jumlah_kg, ps.harga_satuan, ps.total_harga AS total, ps.fee_nominal AS fee, ps.status, ps.tanggal_pesanan AS created_at, ps.alasan_batal, pg.no_resi AS resi, pr.nama_produk AS nama_produk, pb.nama_pembeli AS nama_buyer, per.nama_perusahaan AS nama_perusahaan, byr.xendit_id AS nomor_invoice ' .
+        'FROM pesanan ps JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran JOIN produk pr ON pr.id_produk = pn.id_produk JOIN pembeli pb ON pb.id_pembeli = ps.id_pembeli LEFT JOIN perusahaan per ON per.id_perusahaan = ps.id_perusahaan LEFT JOIN pembayaran byr ON byr.id_pesanan = ps.id_pesanan LEFT JOIN pengiriman pg ON pg.id_pesanan = ps.id_pesanan WHERE ps.id_pesanan = ? LIMIT 1'
     );
     $stmt->execute([$id]);
     $order = $stmt->fetch();
@@ -25,17 +33,17 @@ try {
         json_error('Order tidak ditemukan', 404);
     }
     $role = $user['role'] ?? '';
-    $isBuyer = (int) $order['buyer_id'] === (int) $user['id'];
-    $isPerusahaan = $role === 'perusahaan' && (int) $order['perusahaan_id'] === (int) $user['id'];
+    $isBuyer = $idPembeli !== null && (int) $order['buyer_id'] === $idPembeli;
+    $isPerusahaan = $role === 'perusahaan' && $idPerusahaan !== null && (int) $order['perusahaan_id'] === $idPerusahaan;
     $isAdmin = $role === 'admin';
     if (!$isBuyer && !$isPerusahaan && !$isAdmin) {
         json_error('Order ini bukan milik Anda', 403);
     }
-    $stmt = $pdo->prepare('SELECT status_lama, status_baru, created_at FROM riwayat_status WHERE order_id = ? ORDER BY id');
+    $stmt = $pdo->prepare('SELECT status_lama, status_baru, dibuat_pada AS created_at FROM riwayat_status WHERE id_pesanan = ? ORDER BY id_riwayat');
     $stmt->execute([$id]);
     $riwayat = $stmt->fetchAll();
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dan 03 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
 $tombol = [];

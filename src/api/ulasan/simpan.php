@@ -22,28 +22,32 @@ if ($orderId <= 0 || $rating < 1 || $rating > 5) {
 
 try {
     $pdo = db();
-    $stmt = $pdo->prepare('SELECT id, buyer_id, produk_id, status FROM orders WHERE id = ? LIMIT 1');
+    // Resolve id profil pembeli dari session (id_pengguna != id_pembeli).
+    $stmt = $pdo->prepare('SELECT id_pembeli FROM pengguna WHERE id_pengguna = ? LIMIT 1');
+    $stmt->execute([(int) $user['id']]);
+    $profil = $stmt->fetch();
+    $idPembeli = $profil ? (int) $profil['id_pembeli'] : 0;
+    $stmt = $pdo->prepare('SELECT id_pesanan, id_pembeli, status, ulasan FROM pesanan WHERE id_pesanan = ? LIMIT 1');
     $stmt->execute([$orderId]);
     $order = $stmt->fetch();
     if (!$order) {
         json_error('Order tidak ditemukan', 404);
     }
-    if ((int) $order['buyer_id'] !== (int) $user['id']) {
+    if ((int) $order['id_pembeli'] !== $idPembeli) {
         json_error('Order ini bukan milik Anda', 403);
     }
     if ($order['status'] !== 'selesai') {
         json_error('Ulasan hanya bisa diberikan setelah order selesai', 409);
     }
-    $stmt = $pdo->prepare('SELECT id FROM ulasan WHERE order_id = ? LIMIT 1');
-    $stmt->execute([$orderId]);
-    if ($stmt->fetch()) {
+    if ($order['ulasan'] !== null) {
         json_error('Order ini sudah diberi ulasan', 409);
     }
-    $stmt = $pdo->prepare('INSERT INTO ulasan (order_id, produk_id, buyer_id, rating, komentar) VALUES (?, ?, ?, ?, ?)');
-    $stmt->execute([$orderId, (int) $order['produk_id'], (int) $user['id'], $rating, $komentar !== '' ? $komentar : null]);
-    $ulasanId = (int) $pdo->lastInsertId();
+    // Tidak ada lagi tabel ulasan di v2: rating + ulasan disimpan di pesanan.
+    $stmt = $pdo->prepare('UPDATE pesanan SET rating = ?, ulasan = ? WHERE id_pesanan = ?');
+    $stmt->execute([$rating, $komentar !== '' ? $komentar : null, $orderId]);
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dan 03 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
-json_ok(['ulasan_id' => $ulasanId, 'rating' => $rating]);
+// Tidak ada baris ulasan terpisah di v2: ulasan_id kini sama dengan id pesanan.
+json_ok(['ulasan_id' => $orderId, 'rating' => $rating]);

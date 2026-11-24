@@ -1,6 +1,9 @@
 <?php
-// Buat pesanan (produk_id, jumlah kg). Status awal menunggu_bayar, total + fee dihitung server.
-// Fee layanan 2,5% dari total barang.
+// Buat pesanan (produk_id, jumlah kg). Status awal menunggu_bayar, total dihitung server.
+// Skema v2: fee platform 0 (fee dipotong dari dana perusahaan nanti, bukan dari pembeli);
+// pesanan dibuat lewat rantai permintaan -> penawaran -> pesanan, ketiganya dibuat
+// otomatis berstatus disetujui dalam satu transaksi (tidak ada endpoint persetujuan
+// permintaan di repo ini).
 require_once __DIR__ . '/../../lib/db.php';
 require_once __DIR__ . '/../../lib/response.php';
 require_once __DIR__ . '/../../lib/auth.php';
@@ -22,45 +25,65 @@ if ($produkId <= 0 || $jumlahKg <= 0) {
 
 try {
     $pdo = db();
+    // Session menyimpan pengguna.id_pengguna, bukan id profil pembeli.
+    $stmt = $pdo->prepare('SELECT id_pembeli FROM pengguna WHERE id_pengguna = ?');
+    $stmt->execute([(int) $user['id']]);
+    $profil = $stmt->fetch();
+    $idPembeli = $profil ? (int) ($profil['id_pembeli'] ?? 0) : 0;
+    if ($idPembeli <= 0) {
+        json_error('Profil pembeli tidak ditemukan', 403);
+    }
+
     $pdo->beginTransaction();
-    $stmt = $pdo->prepare('SELECT id, harga_per_kg, stok_kg FROM produk WHERE id = ? FOR UPDATE');
+    $stmt = $pdo->prepare('SELECT id_produk, id_perusahaan, nama_produk, harga_standar FROM produk WHERE id_produk = ? FOR UPDATE');
     $stmt->execute([$produkId]);
     $produk = $stmt->fetch();
     if (!$produk) {
         $pdo->rollBack();
         json_error('Produk tidak ditemukan', 404);
     }
-    if ((float) $produk['stok_kg'] < $jumlahKg) {
+    // Stok v2: baris TERBARU per produk di tabel stok (tidak ada lagi kolom stok di produk).
+    $stmt = $pdo->prepare('SELECT id_stok, jumlah_stok FROM stok WHERE id_produk = ? ORDER BY tanggal_stok DESC LIMIT 1 FOR UPDATE');
+    $stmt->execute([$produkId]);
+    $stok = $stmt->fetch();
+    if ($stok && (float) $stok['jumlah_stok'] < $jumlahKg) {
         $pdo->rollBack();
         json_error('Stok produk tidak cukup', 409);
     }
-    $hargaSatuan = (float) $produk['harga_per_kg'];
+    $hargaSatuan = (float) $produk['harga_standar'];
     $total = round($hargaSatuan * $jumlahKg, 2);
-    $fee = round($total * 0.025, 2);
-    $totalBayar = round($total + $fee, 2);
+    $fee = 0;
+    $totalBayar = $total;
 
-    $stmt = $pdo->prepare('UPDATE produk SET stok_kg = stok_kg - ? WHERE id = ?');
-    $stmt->execute([$jumlahKg, $produkId]);
+    if ($stok) {
+        $stmt = $pdo->prepare('UPDATE stok SET jumlah_stok = jumlah_stok - ? WHERE id_stok = ?');
+        $stmt->execute([$jumlahKg, (int) $stok['id_stok']]);
+    }
 
-    $stmt = $pdo->prepare('INSERT INTO orders (buyer_id, produk_id, jumlah_kg, harga_satuan, total, fee, status) VALUES (?, ?, ?, ?, ?, ?, ?)');
-    $stmt->execute([(int) $user['id'], $produkId, $jumlahKg, $hargaSatuan, $total, $fee, 'menunggu_bayar']);
+    $stmt = $pdo->prepare("INSERT INTO permintaan (id_pembeli, id_produk, jenis_komoditas, tanggal_permintaan, jumlah_permintaan, status) VALUES (?, ?, ?, CURDATE(), ?, 'disetujui')");
+    $stmt->execute([$idPembeli, $produkId, (string) $produk['nama_produk'], $jumlahKg]);
+    $permintaanId = (int) $pdo->lastInsertId();
+
+    $stmt = $pdo->prepare("INSERT INTO penawaran (id_permintaan, id_perusahaan, id_produk, tanggal_penawaran, jumlah, harga_satuan, harga_total, status) VALUES (?, ?, ?, CURDATE(), ?, ?, ?, 'disetujui')");
+    $stmt->execute([$permintaanId, (int) $produk['id_perusahaan'], $produkId, $jumlahKg, $hargaSatuan, $total]);
+    $penawaranId = (int) $pdo->lastInsertId();
+
+    $stmt = $pdo->prepare("INSERT INTO pesanan (id_penawaran, id_pembeli, id_perusahaan, jumlah, harga_satuan, total_harga, fee_persen, fee_nominal, persen_dp, status) VALUES (?, ?, ?, ?, ?, ?, 0, 0, 0, 'menunggu_bayar')");
+    $stmt->execute([$penawaranId, $idPembeli, (int) $produk['id_perusahaan'], $jumlahKg, $hargaSatuan, $total]);
     $orderId = (int) $pdo->lastInsertId();
 
     $nomorInvoice = 'INV-' . date('Ymd') . '-' . str_pad((string) $orderId, 6, '0', STR_PAD_LEFT);
-    $stmt = $pdo->prepare('INSERT INTO invoice (order_id, nomor, total, status) VALUES (?, ?, ?, ?)');
-    $stmt->execute([$orderId, $nomorInvoice, $totalBayar, 'belum_bayar']);
+    $stmt = $pdo->prepare("INSERT INTO pembayaran (id_pesanan, xendit_id, jumlah, status) VALUES (?, ?, ?, 'pending')");
+    $stmt->execute([$orderId, $nomorInvoice, $total]);
 
-    $stmt = $pdo->prepare('INSERT INTO escrow (order_id, jumlah_ditahan, status) VALUES (?, ?, ?)');
-    $stmt->execute([$orderId, $totalBayar, 'ditahan']);
-
-    $stmt = $pdo->prepare('INSERT INTO riwayat_status (order_id, status_lama, status_baru, dicatat_oleh) VALUES (?, ?, ?, ?)');
+    $stmt = $pdo->prepare('INSERT INTO riwayat_status (id_pesanan, status_lama, status_baru, id_pengguna) VALUES (?, ?, ?, ?)');
     $stmt->execute([$orderId, null, 'menunggu_bayar', (int) $user['id']]);
     $pdo->commit();
 } catch (Throwable $e) {
     if (isset($pdo) && $pdo->inTransaction()) {
         $pdo->rollBack();
     }
-    json_error('Database belum siap. Jalankan migrasi 01 dan 03 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
 json_ok([

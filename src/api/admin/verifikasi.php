@@ -1,7 +1,7 @@
 <?php
 // Panel admin: daftar perusahaan + putusan verifikasi.
-// GET: daftar users role=perusahaan (id, nama, email, created_at, verifikasi_status, verifikasi_catatan).
-// POST {user_id, status: belum|terverifikasi|ditolak, catatan?}: ubah status verifikasi.
+// GET: daftar perusahaan (id, nama, email, created_at, verifikasi_status, verifikasi_catatan).
+// POST {user_id (= id_perusahaan), status: belum|terverifikasi|ditolak, catatan?}: ubah status verifikasi.
 require_once __DIR__ . '/../../lib/db.php';
 require_once __DIR__ . '/../../lib/response.php';
 require_once __DIR__ . '/../../lib/auth.php';
@@ -23,20 +23,23 @@ try {
         if ($userId <= 0 || !in_array($status, ['belum', 'terverifikasi', 'ditolak'], true)) {
             json_error('Data putusan tidak valid', 400);
         }
-        $stmt = $pdo->prepare("UPDATE users SET verifikasi_status = ?, verifikasi_catatan = ? WHERE id = ? AND role = 'perusahaan'");
-        $stmt->execute([$status, $catatan === '' ? null : $catatan, $userId]);
+        // Skema v2: verifikasi tinggal di perusahaan.status_verifikasi
+        // ('menunggu','terverifikasi','ditolak'); input lama 'belum' = 'menunggu'.
+        $statusSimpan = $status === 'belum' ? 'menunggu' : $status;
+        $stmt = $pdo->prepare('UPDATE perusahaan SET status_verifikasi = ?, catatan_verifikasi = ? WHERE id_perusahaan = ?');
+        $stmt->execute([$statusSimpan, $catatan === '' ? null : $catatan, $userId]);
         if ($stmt->rowCount() === 0) {
             json_error('Perusahaan tidak ditemukan', 404);
         }
-        json_ok(['user_id' => $userId, 'verifikasi_status' => $status]);
+        json_ok(['user_id' => $userId, 'verifikasi_status' => $statusSimpan]);
     }
 
-    $stmt = $pdo->query("SELECT id, nama, email, created_at, verifikasi_status, verifikasi_catatan FROM users WHERE role = 'perusahaan' ORDER BY created_at DESC, id DESC");
+    $stmt = $pdo->query('SELECT per.id_perusahaan AS id, per.nama_perusahaan AS nama, u.email, NULL AS created_at, per.status_verifikasi AS verifikasi_status, per.catatan_verifikasi AS verifikasi_catatan FROM perusahaan per LEFT JOIN pengguna u ON u.id_perusahaan = per.id_perusahaan ORDER BY per.id_perusahaan DESC');
     $rows = $stmt->fetchAll();
     foreach ($rows as &$row) {
         $row['id'] = (int) $row['id'];
     }
     json_ok(['perusahaan' => $rows]);
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dan 09 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }

@@ -24,36 +24,43 @@ $riwayatId = (int) ($input['riwayat_id'] ?? 0);
 
 $base =
     'FROM riwayat_status r ' .
-    'JOIN orders o ON o.id = r.order_id ' .
-    'JOIN produk p ON p.id = o.produk_id ';
+    'JOIN pesanan ps ON ps.id_pesanan = r.id_pesanan ' .
+    'JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran ' .
+    'JOIN produk pr ON pr.id_produk = pn.id_produk ';
 try {
     $pdo = db();
+    // Resolve id profil dari session (rule global 2): $user['id'] = id_pengguna.
+    $stmtProfil = $pdo->prepare('SELECT id_pembeli, id_perusahaan, id_admin FROM pengguna WHERE id_pengguna = ? LIMIT 1');
+    $stmtProfil->execute([(int) $user['id']]);
+    $profil = $stmtProfil->fetch();
+    $idPembeli = (int) ($profil['id_pembeli'] ?? 0);
+    $idPerusahaan = (int) ($profil['id_perusahaan'] ?? 0);
     if ($riwayatId > 0) {
         // Satu notifikasi, hanya bila terlihat oleh peran ini.
         if ($role === 'perusahaan') {
-            $stmt = $pdo->prepare('INSERT IGNORE INTO notifikasi_dibaca (user_id, riwayat_id) SELECT ?, r.id ' . $base . 'WHERE p.perusahaan_id = ? AND r.id = ?');
-            $stmt->execute([(int) $user['id'], (int) $user['id'], $riwayatId]);
+            $stmt = $pdo->prepare('INSERT IGNORE INTO notifikasi_dibaca (id_pengguna, id_riwayat) SELECT ?, r.id_riwayat ' . $base . 'WHERE ps.id_perusahaan = ? AND r.id_riwayat = ?');
+            $stmt->execute([(int) $user['id'], $idPerusahaan, $riwayatId]);
         } elseif ($role === 'pembeli') {
-            $stmt = $pdo->prepare('INSERT IGNORE INTO notifikasi_dibaca (user_id, riwayat_id) SELECT ?, r.id ' . $base . 'WHERE o.buyer_id = ? AND r.id = ?');
-            $stmt->execute([(int) $user['id'], (int) $user['id'], $riwayatId]);
+            $stmt = $pdo->prepare('INSERT IGNORE INTO notifikasi_dibaca (id_pengguna, id_riwayat) SELECT ?, r.id_riwayat ' . $base . 'WHERE ps.id_pembeli = ? AND r.id_riwayat = ?');
+            $stmt->execute([(int) $user['id'], $idPembeli, $riwayatId]);
         } else {
-            $stmt = $pdo->prepare('INSERT IGNORE INTO notifikasi_dibaca (user_id, riwayat_id) SELECT ?, r.id ' . $base . 'WHERE r.id = ?');
+            $stmt = $pdo->prepare('INSERT IGNORE INTO notifikasi_dibaca (id_pengguna, id_riwayat) SELECT ?, r.id_riwayat ' . $base . 'WHERE r.id_riwayat = ?');
             $stmt->execute([(int) $user['id'], $riwayatId]);
         }
     } else {
         // Semua notifikasi yang terlihat oleh peran ini.
         if ($role === 'perusahaan') {
-            $stmt = $pdo->prepare('INSERT IGNORE INTO notifikasi_dibaca (user_id, riwayat_id) SELECT ?, r.id ' . $base . 'WHERE p.perusahaan_id = ?');
-            $stmt->execute([(int) $user['id'], (int) $user['id']]);
+            $stmt = $pdo->prepare('INSERT IGNORE INTO notifikasi_dibaca (id_pengguna, id_riwayat) SELECT ?, r.id_riwayat ' . $base . 'WHERE ps.id_perusahaan = ?');
+            $stmt->execute([(int) $user['id'], $idPerusahaan]);
         } elseif ($role === 'pembeli') {
-            $stmt = $pdo->prepare('INSERT IGNORE INTO notifikasi_dibaca (user_id, riwayat_id) SELECT ?, r.id ' . $base . 'WHERE o.buyer_id = ?');
-            $stmt->execute([(int) $user['id'], (int) $user['id']]);
+            $stmt = $pdo->prepare('INSERT IGNORE INTO notifikasi_dibaca (id_pengguna, id_riwayat) SELECT ?, r.id_riwayat ' . $base . 'WHERE ps.id_pembeli = ?');
+            $stmt->execute([(int) $user['id'], $idPembeli]);
         } else {
-            $stmt = $pdo->prepare('INSERT IGNORE INTO notifikasi_dibaca (user_id, riwayat_id) SELECT ?, r.id ' . $base);
+            $stmt = $pdo->prepare('INSERT IGNORE INTO notifikasi_dibaca (id_pengguna, id_riwayat) SELECT ?, r.id_riwayat ' . $base);
             $stmt->execute([(int) $user['id']]);
         }
     }
     json_ok(['ditandai' => $stmt->rowCount()]);
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 07 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }

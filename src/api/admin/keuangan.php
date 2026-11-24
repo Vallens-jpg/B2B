@@ -1,6 +1,8 @@
 <?php
 // Panel admin: ringkasan escrow seluruh perusahaan + daftar escrow per order.
 // GET saja. Saldo yang tersedia = total dana yang masih ditahan di escrow.
+// Skema v2: tidak ada lagi tabel escrow; angka diturunkan dari pesanan +
+// pencairan (tahap 1 = DP, tahap 2 = pelunasan).
 require_once __DIR__ . '/../../lib/db.php';
 require_once __DIR__ . '/../../lib/response.php';
 require_once __DIR__ . '/../../lib/auth.php';
@@ -14,20 +16,27 @@ try {
     $pdo = db();
     $ringkasan = $pdo->query(
         'SELECT COUNT(*) AS jumlah_order,'
-        . ' COALESCE(SUM(jumlah_ditahan), 0) AS total_ditahan,'
-        . ' COALESCE(SUM(dp_cair), 0) AS total_cair_dp,'
-        . ' COALESCE(SUM(sisa_cair), 0) AS total_cair_sisa,'
-        . ' COALESCE(SUM(jumlah_ditahan - dp_cair - sisa_cair), 0) AS masih_ditahan'
-        . ' FROM escrow'
+        . ' COALESCE(SUM(ps.total_harga), 0) AS total_ditahan,'
+        . ' COALESCE(SUM(COALESCE(c1.nominal, 0)), 0) AS total_cair_dp,'
+        . ' COALESCE(SUM(COALESCE(c2.nominal, 0)), 0) AS total_cair_sisa,'
+        . ' COALESCE(SUM(ps.total_harga - COALESCE(c1.nominal, 0) - COALESCE(c2.nominal, 0)), 0) AS masih_ditahan'
+        . ' FROM pesanan ps'
+        . ' LEFT JOIN pencairan c1 ON c1.id_pesanan = ps.id_pesanan AND c1.tahap = 1'
+        . ' LEFT JOIN pencairan c2 ON c2.id_pesanan = ps.id_pesanan AND c2.tahap = 2'
     )->fetch();
     $stmt = $pdo->query(
-        'SELECT e.id, e.order_id, e.jumlah_ditahan, e.dp_cair, e.sisa_cair, e.status, e.created_at,'
-        . ' o.total, o.status AS status_order, ub.nama AS nama_buyer, p.nama AS nama_produk, pu.nama AS nama_perusahaan'
-        . ' FROM escrow e JOIN orders o ON o.id = e.order_id'
-        . ' JOIN produk p ON p.id = o.produk_id'
-        . ' LEFT JOIN users ub ON ub.id = o.buyer_id'
-        . ' LEFT JOIN users pu ON pu.id = p.perusahaan_id'
-        . ' ORDER BY e.id DESC LIMIT 100'
+        'SELECT ps.id_pesanan AS id, ps.id_pesanan AS order_id, ps.total_harga AS jumlah_ditahan,'
+        . ' COALESCE(c1.nominal, 0) AS dp_cair, COALESCE(c2.nominal, 0) AS sisa_cair,'
+        . " CASE WHEN ps.status = 'dibatalkan' THEN 'kembali' WHEN c2.id_pencairan IS NOT NULL THEN 'cair_sisa' WHEN c1.id_pencairan IS NOT NULL THEN 'cair_dp' ELSE 'ditahan' END AS status,"
+        . ' ps.tanggal_pesanan AS created_at,'
+        . ' ps.total_harga AS total, ps.status AS status_order, pb.nama_pembeli AS nama_buyer, pr.nama_produk AS nama_produk, per.nama_perusahaan AS nama_perusahaan'
+        . ' FROM pesanan ps JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran'
+        . ' JOIN produk pr ON pr.id_produk = pn.id_produk'
+        . ' LEFT JOIN pembeli pb ON pb.id_pembeli = ps.id_pembeli'
+        . ' LEFT JOIN perusahaan per ON per.id_perusahaan = ps.id_perusahaan'
+        . ' LEFT JOIN pencairan c1 ON c1.id_pesanan = ps.id_pesanan AND c1.tahap = 1'
+        . ' LEFT JOIN pencairan c2 ON c2.id_pesanan = ps.id_pesanan AND c2.tahap = 2'
+        . ' ORDER BY ps.id_pesanan DESC LIMIT 100'
     );
     $rows = $stmt->fetchAll();
     foreach ($rows as &$row) {
@@ -45,5 +54,5 @@ try {
     $ringkasan['masih_ditahan'] = (float) $ringkasan['masih_ditahan'];
     json_ok(['ringkasan' => $ringkasan, 'escrow' => $rows]);
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dan 03 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }

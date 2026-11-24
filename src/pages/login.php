@@ -210,7 +210,7 @@ if (!empty($_SESSION['user'])) {
       try {
         await doLogin(email, 'guest123');
       } catch (err) {
-        showLoginError('Tidak bisa terhubung ke server. Pastikan Docker jalan dan migrasi 01, 02, dan 05 sudah dijalankan.');
+        showLoginError('Tidak bisa terhubung ke server. Pastikan Docker jalan dan online_marketplace_v2.sql sudah dijalankan.');
       }
     }
     const guestPembeliBtn = document.getElementById('guestLoginPembeliBtn');

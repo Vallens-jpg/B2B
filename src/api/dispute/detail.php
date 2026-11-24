@@ -15,8 +15,14 @@ if ($id <= 0) {
 
 try {
     $pdo = db();
+    // Resolve id profil dari session (id_pengguna != id_pembeli/id_perusahaan).
+    $stmt = $pdo->prepare('SELECT id_pembeli, id_perusahaan FROM pengguna WHERE id_pengguna = ? LIMIT 1');
+    $stmt->execute([(int) $user['id']]);
+    $profil = $stmt->fetch();
+    $idPembeli = $profil && $profil['id_pembeli'] !== null ? (int) $profil['id_pembeli'] : null;
+    $idPerusahaan = $profil && $profil['id_perusahaan'] !== null ? (int) $profil['id_perusahaan'] : null;
     $stmt = $pdo->prepare(
-        'SELECT d.*, o.produk_id, o.total + o.fee AS total_bayar, o.jumlah_kg, p.perusahaan_id, p.nama AS nama_produk, u.nama AS nama_perusahaan, ub.nama AS nama_buyer FROM dispute d JOIN orders o ON o.id = d.order_id JOIN produk p ON p.id = o.produk_id LEFT JOIN users u ON u.id = p.perusahaan_id LEFT JOIN users ub ON ub.id = d.buyer_id WHERE d.id = ? LIMIT 1'
+        'SELECT d.id_dispute AS id, d.id_pesanan AS order_id, ps.id_pembeli AS buyer_id, ps.id_perusahaan AS perusahaan_id, pn.id_produk AS produk_id, ps.total_harga + ps.fee_nominal AS total_bayar, ps.jumlah AS jumlah_kg, pr.nama_produk AS nama_produk, per.nama_perusahaan AS nama_perusahaan, pb.nama_pembeli AS nama_buyer, d.tanggal_mulai, d.tanggal_mulai AS created_at, d.nama_barang, NULL AS judul, d.keterangan AS deskripsi, d.foto_bukti, d.status, d.keputusan AS putusan, d.catatan_admin, d.tanggal_selesai, d.id_admin, d.kondisi_barang, d.tanggal_upload FROM dispute d JOIN pesanan ps ON ps.id_pesanan = d.id_pesanan JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran JOIN produk pr ON pr.id_produk = pn.id_produk LEFT JOIN pembeli pb ON pb.id_pembeli = ps.id_pembeli LEFT JOIN perusahaan per ON per.id_perusahaan = ps.id_perusahaan WHERE d.id_dispute = ? LIMIT 1'
     );
     $stmt->execute([$id]);
     $dispute = $stmt->fetch();
@@ -24,17 +30,20 @@ try {
         json_error('Dispute tidak ditemukan', 404);
     }
     $role = $user['role'] ?? '';
-    $boleh = (int) $dispute['buyer_id'] === (int) $user['id']
-        || ($role === 'perusahaan' && (int) $dispute['perusahaan_id'] === (int) $user['id'])
+    $boleh = ($idPembeli !== null && (int) $dispute['buyer_id'] === $idPembeli)
+        || ($role === 'perusahaan' && $idPerusahaan !== null && (int) $dispute['perusahaan_id'] === $idPerusahaan)
         || $role === 'admin';
     if (!$boleh) {
         json_error('Dispute ini bukan milik Anda', 403);
     }
-    $esc = $pdo->prepare('SELECT jumlah_ditahan, dp_cair, sisa_cair, status FROM escrow WHERE order_id = ? LIMIT 1');
+    // Escrow v2: diturunkan dari pesanan + pencairan (tahap 1 = DP, tahap 2 = pelunasan).
+    $esc = $pdo->prepare(
+        "SELECT ps.total_harga AS jumlah_ditahan, COALESCE(c1.nominal, 0) AS dp_cair, COALESCE(c2.nominal, 0) AS sisa_cair, CASE WHEN ps.status = 'dibatalkan' THEN 'kembali' WHEN c2.id_pencairan IS NOT NULL THEN 'cair_sisa' WHEN c1.id_pencairan IS NOT NULL THEN 'cair_dp' ELSE 'ditahan' END AS status FROM pesanan ps LEFT JOIN pencairan c1 ON c1.id_pesanan = ps.id_pesanan AND c1.tahap = 1 LEFT JOIN pencairan c2 ON c2.id_pesanan = ps.id_pesanan AND c2.tahap = 2 WHERE ps.id_pesanan = ? LIMIT 1"
+    );
     $esc->execute([(int) $dispute['order_id']]);
     $dispute['escrow'] = $esc->fetch() ?: null;
 } catch (Throwable $e) {
-    json_error('Database belum siap. Jalankan migrasi 01 dan 03 dulu.', 500);
+    json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }
 
 $dispute['id'] = (int) $dispute['id'];
