@@ -1037,8 +1037,8 @@
             document.getElementById('caseUsulan').textContent = d.deskripsi || '—';
             let badgeHtml = '<span class="badge badge-pending"><span class="badge-dot">●</span> Menunggu Verifikasi Admin</span>';
             if (d.status === 'diproses') badgeHtml = '<span class="badge badge-waiting"><span class="badge-dot">●</span> Diproses</span>';
-            if (d.status === 'diputuskan' && d.putusan === 'uang_kembali') badgeHtml = '<span class="badge badge-approved"><span class="badge-dot">●</span> Diputuskan: Uang Kembali</span>';
-            if (d.status === 'diputuskan' && d.putusan === 'lanjut_perusahaan') badgeHtml = '<span class="badge badge-rejected"><span class="badge-dot">●</span> Diputuskan: Lanjut Perusahaan</span>';
+            if (d.status === 'selesai' && d.putusan === 'uang_kembali') badgeHtml = '<span class="badge badge-approved"><span class="badge-dot">●</span> Selesai: Uang Kembali</span>';
+            if (d.status === 'selesai' && d.putusan === 'lanjut_perusahaan') badgeHtml = '<span class="badge badge-rejected"><span class="badge-dot">●</span> Selesai: Lanjut Perusahaan</span>';
             document.getElementById('caseStatusBadge').innerHTML = badgeHtml;
             return fetch('../../api/order/detail.php?id=' + d.order_id)
               .then(function (r) { return r.json(); })

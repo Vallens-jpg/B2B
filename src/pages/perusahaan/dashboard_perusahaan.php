@@ -5126,9 +5126,9 @@
 
           <div class="dispute-tabs">
             <button class="dispute-tab active" type="button" onclick="filterDispute('semua', this)">Semua</button>
-            <button class="dispute-tab" type="button" onclick="filterDispute('dibuka', this)">Dibuka</button>
+            <button class="dispute-tab" type="button" onclick="filterDispute('diajukan', this)">Diajukan</button>
             <button class="dispute-tab" type="button" onclick="filterDispute('diproses', this)">Diproses</button>
-            <button class="dispute-tab" type="button" onclick="filterDispute('diputuskan', this)">Diputuskan</button>
+            <button class="dispute-tab" type="button" onclick="filterDispute('selesai', this)">Selesai</button>
           </div>
 
           <section class="dispute-table-card">
@@ -5561,7 +5561,7 @@
       <div class="pencairan-review-rows">
         <div class="pencairan-review-row">
           <span class="label">Rekening Tujuan</span>
-          <span class="value">—</span>
+          <span class="value" id="pencairanReviewRekening">—</span>
         </div>
         <div class="pencairan-review-row">
           <span class="label">Nominal Pencairan</span>
@@ -6588,10 +6588,9 @@
     /* --------------------------------------------------------------------------
        F2. PROFIL AKUN LOGIC
        -------------------------------------------------------------------------- */
-    // Profil dari database (api/auth/me.php): hanya nama dan email yang
-    // tersimpan di tabel users. Telepon, kota, alamat, bank, dan nomor
-    // rekening belum punya kolom di database, jadi kolom itu dikosongkan
-    // (bukan diisi contoh) dan tidak ikut tersimpan saat tombol Simpan ditekan.
+    // Profil dari database (api/auth/me.php): nama, email, telepon, kota,
+    // alamat, bank, nomor rekening, dan atas nama tersimpan di tabel
+    // perusahaan (skema v2) dan dimuat di sini.
     const PROFILE_FIELD_IDS = [
       'profileNamaUsaha',
       'profileEmail',
@@ -6640,13 +6639,29 @@
           };
           isi('profileNamaUsaha', nama);
           isi('profileEmail', email);
-          isi('profileAtasNama', nama);
+          isi('profileTelepon', res.data.telepon || '');
+          isi('profileKota', res.data.kota || '');
+          isi('profileAlamat', res.data.alamat || '');
+          isi('profileBank', res.data.nama_bank || '');
+          isi('profileNoRek', res.data.no_rekening || '');
+          isi('profileAtasNama', res.data.atas_nama || nama);
+          terapkanRekening(res.data.nama_bank || '', res.data.no_rekening || '', res.data.atas_nama || nama);
           applyProfileSummary();
           terapkanNamaPerusahaan(nama);
         })
         .catch(function () { /* biarkan form kosong kalau API gagal dimuat */ });
     }
     muatProfilPerusahaan();
+
+    // Rekening tujuan pencairan: tampil di kotak rekening + baris tinjauan.
+    function terapkanRekening(bank, noRek, atasNama) {
+      const namaBankEl = document.querySelector('.bank-account-box .bank-name');
+      if (namaBankEl) namaBankEl.textContent = (bank && noRek) ? (bank + ' · ' + noRek) : (bank || noRek || '—');
+      const pemilikEl = document.querySelector('.bank-account-box .bank-owner');
+      if (pemilikEl) pemilikEl.textContent = atasNama || '—';
+      const tinjauEl = document.getElementById('pencairanReviewRekening');
+      if (tinjauEl) tinjauEl.textContent = (bank && noRek) ? (bank + ' · ' + noRek + (atasNama ? ' (' + atasNama + ')' : '')) : '—';
+    }
 
     function resetProfileForm() {
       PROFILE_FIELD_IDS.forEach(id => {
@@ -6684,16 +6699,25 @@
         return;
       }
 
-      // Hanya nama dan email yang bisa tersimpan (api/auth/update.php).
-      const adaIsianTambahan = ['profileTelepon', 'profileKota', 'profileAlamat', 'profileBank', 'profileNoRek'].some(function (id) {
+      // Semua kolom profil tersimpan lewat api/auth/update.php
+      // (nama, email, telepon, kota, alamat, bank, nomor rekening, atas nama).
+      const ambil = function (id) {
         const el = document.getElementById(id);
-        return el && String(el.value || '').trim() !== '';
-      });
-
+        return el ? el.value.trim() : '';
+      };
       fetch('../../api/auth/update.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nama: namaEl.value.trim(), email: emailEl.value.trim() })
+        body: JSON.stringify({
+          nama: namaEl.value.trim(),
+          email: emailEl.value.trim(),
+          telepon: ambil('profileTelepon'),
+          kota: ambil('profileKota'),
+          alamat: ambil('profileAlamat'),
+          nama_bank: ambil('profileBank'),
+          no_rekening: ambil('profileNoRek'),
+          atas_nama: ambil('profileAtasNama')
+        })
       })
         .then(function (r) { return r.json(); })
         .then(function (res) {
@@ -6706,14 +6730,15 @@
           profileSaved.profileAtasNama = namaEl.value.trim();
           const atasNamaEl = document.getElementById('profileAtasNama');
           if (atasNamaEl) atasNamaEl.value = profileSaved.profileAtasNama;
+          PROFILE_FIELD_IDS.forEach(function (id) {
+            const el = document.getElementById(id);
+            if (el) profileSaved[id] = el.value;
+          });
+          terapkanRekening(ambil('profileBank'), ambil('profileNoRek'), ambil('profileAtasNama'));
 
           applyProfileSummary();
           terapkanNamaPerusahaan(res.data.nama);
-          if (adaIsianTambahan) {
-            showToast('Nama & email tersimpan. Telepon, alamat & rekening belum tersimpan (belum ada kolom di database).');
-          } else {
-            showToast('Perubahan profil berhasil disimpan');
-          }
+          showToast('Perubahan profil berhasil disimpan');
 
           // Kembali otomatis ke Dashboard setelah perubahan tersimpan
           setTimeout(() => {
@@ -6735,10 +6760,10 @@
           if (!res.ok || !res.data || !res.data.dispute) return;
           DISPUTE_DATA = res.data.dispute.map(function (d) {
             let keputusan = 'ditinjau';
-            let label = 'Dibuka';
+            let label = 'Diajukan';
             if (d.status === 'diproses') { keputusan = 'ditinjau'; label = 'Diproses'; }
-            else if (d.status === 'diputuskan' && d.putusan === 'uang_kembali') { keputusan = 'disetujui'; label = 'Disetujui'; }
-            else if (d.status === 'diputuskan') { keputusan = 'ditolak'; label = 'Ditolak'; }
+            else if (d.status === 'selesai' && d.putusan === 'uang_kembali') { keputusan = 'disetujui'; label = 'Disetujui'; }
+            else if (d.status === 'selesai') { keputusan = 'ditolak'; label = 'Ditolak'; }
             const tgl = (d.created_at || '').slice(0, 10);
             return {
               id: '#DSP-' + String(d.id).padStart(4, '0'),
@@ -6889,7 +6914,7 @@
       let stepDone = 0;
       let stepCurrent = 0;
       if (detail.status === 'diproses') { stepDone = 1; stepCurrent = 1; }
-      else if (detail.status === 'diputuskan') { stepDone = 3; stepCurrent = -1; }
+      else if (detail.status === 'selesai') { stepDone = 3; stepCurrent = -1; }
       const steps = document.getElementById('disputeSteps');
       if (steps) {
         steps.innerHTML = langkah.map((label, index) => {

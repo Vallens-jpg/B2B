@@ -1163,12 +1163,12 @@
         })
         .catch(function () {});
 
-      // Dispute Terbuka asli (status dibuka + diproses).
+      // Dispute Terbuka asli (status diajukan + diproses).
       fetch('../../api/dispute/list.php')
         .then(function (r) { return r.json(); })
         .then(function (res) {
           if (!res.ok || !res.data || !Array.isArray(res.data.dispute)) return;
-          var terbuka = res.data.dispute.filter(function (d) { return d.status === 'dibuka' || d.status === 'diproses'; }).length;
+          var terbuka = res.data.dispute.filter(function (d) { return d.status === 'diajukan' || d.status === 'diproses'; }).length;
           document.getElementById('statDisputeTerbuka').textContent = terbuka.toLocaleString('id-ID');
         })
         .catch(function () {});

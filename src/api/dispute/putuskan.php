@@ -78,7 +78,14 @@ try {
                     $stmt->execute([(int) $order['id_pembeli']]);
                     $akunBuyer = $stmt->fetch();
                     if ($akunBuyer) {
-                        $total = round((float) $order['total_harga'], 2);
+                        // Refund = sisa dana yang masih ditahan: total dikurangi
+                        // DP tahap 1 yang sudah cair ke perusahaan (bila ada).
+                        // Tanpa pengurangan ini, refund setelah kirim akan
+                        // melebihi dana yang ditahan.
+                        $stmt = $pdo->prepare('SELECT COALESCE(SUM(nominal), 0) AS dp_cair FROM pencairan WHERE id_pesanan = ? AND tahap = 1');
+                        $stmt->execute([$orderId]);
+                        $dpRow = $stmt->fetch();
+                        $total = round((float) $order['total_harga'] - (float) ($dpRow['dp_cair'] ?? 0), 2);
                         $stmt = $pdo->prepare('SELECT nama_bank, no_rekening, atas_nama FROM pembeli WHERE id_pembeli = ? LIMIT 1');
                         $stmt->execute([(int) $order['id_pembeli']]);
                         $bankBuyer = $stmt->fetch();

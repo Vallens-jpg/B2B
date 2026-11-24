@@ -1129,11 +1129,11 @@
       return parseInt(m[3], 10) + ' ' + BULAN_ID[parseInt(m[2], 10) - 1] + ' ' + m[1];
     }
 
-    // Badge untuk status asli dari API (dibuka/diproses/diputuskan).
+    // Badge untuk status asli dari API (diajukan/diproses/selesai).
     function badgeForApi(d) {
       if (d.status === 'diproses') return '<span class="badge badge-waiting"><span class="badge-dot">●</span> Diproses</span>';
-      if (d.status === 'diputuskan' && d.putusan === 'uang_kembali') return '<span class="badge badge-approved"><span class="badge-dot">●</span> Diputuskan: Uang Kembali</span>';
-      if (d.status === 'diputuskan' && d.putusan === 'lanjut_perusahaan') return '<span class="badge badge-rejected"><span class="badge-dot">●</span> Diputuskan: Lanjut Perusahaan</span>';
+      if (d.status === 'selesai' && d.putusan === 'uang_kembali') return '<span class="badge badge-approved"><span class="badge-dot">●</span> Selesai: Uang Kembali</span>';
+      if (d.status === 'selesai' && d.putusan === 'lanjut_perusahaan') return '<span class="badge badge-rejected"><span class="badge-dot">●</span> Selesai: Lanjut Perusahaan</span>';
       return '<span class="badge badge-pending"><span class="badge-dot">●</span> Pending</span>';
     }
 

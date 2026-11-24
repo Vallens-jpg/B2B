@@ -785,8 +785,8 @@
             let status = 'pending';
             let label = 'Pending';
             if (d.status === 'diproses') { status = 'waiting'; label = 'Menunggu Barang'; }
-            else if (d.status === 'diputuskan' && d.putusan === 'uang_kembali') { status = 'approved'; label = 'Disetujui'; }
-            else if (d.status === 'diputuskan') { status = 'rejected'; label = 'Ditolak'; }
+            else if (d.status === 'selesai' && d.putusan === 'uang_kembali') { status = 'approved'; label = 'Disetujui'; }
+            else if (d.status === 'selesai') { status = 'rejected'; label = 'Ditolak'; }
             const tgl = (d.created_at || '').slice(0, 10);
             return {
               id: '#DSP-' + String(d.id).padStart(4, '0'),
