@@ -337,6 +337,33 @@
 
         </div>
 
+        <!-- 2. Rekening Bank Card (tujuan refund/pencairan; hanya pembeli & perusahaan) -->
+        <div class="profil-card" id="rekeningCard" style="display:none;">
+          <h2 class="profil-section-heading">Rekening Bank</h2>
+          <p style="color:#64748b; font-size:.9rem; margin:.25rem 0 1rem;">Rekening tujuan pengembalian dana (refund) bila pesanan dibatalkan atau dispute diputuskan uang kembali, dan pencairan dana perusahaan.</p>
+
+          <div class="form-row-two-col">
+            <div class="form-group-item">
+              <label for="namaBank" class="profil-input-label">Nama Bank</label>
+              <input type="text" id="namaBank" class="profil-input-field" value="" placeholder="Contoh: BCA">
+            </div>
+            <div class="form-group-item">
+              <label for="noRekening" class="profil-input-label">Nomor Rekening</label>
+              <input type="text" id="noRekening" class="profil-input-field" value="" placeholder="Contoh: 1234567890">
+            </div>
+          </div>
+
+          <div class="form-row-two-col">
+            <div class="form-group-item">
+              <label for="atasNama" class="profil-input-label">Atas Nama</label>
+              <input type="text" id="atasNama" class="profil-input-field" value="" placeholder="Nama pemilik rekening">
+            </div>
+          </div>
+
+        </div>
+
+        <div id="profilMsg" style="display:none; margin-bottom:1rem; padding:.75rem 1rem; border-radius:8px; font-weight:600;"></div>
+
         <!-- Bottom Action Buttons -->
         <div class="profil-action-buttons">
           <a href="pembeli/dashboard_buyer.php" class="btn-profil-batal">Batal</a>
@@ -384,35 +411,64 @@
             const roleEl = document.getElementById('displayRole');
             if (roleEl) roleEl.innerText = labelRole[u.role] || u.role;
           }
+          // Rekening bank: tampil hanya untuk pembeli & perusahaan
+          // (admin tidak punya rekening di database).
+          if (u.role === 'pembeli' || u.role === 'perusahaan') {
+            const rk = document.getElementById('rekeningCard');
+            if (rk) rk.style.display = '';
+            const nb = document.getElementById('namaBank');
+            if (nb) nb.value = u.nama_bank || '';
+            const nr = document.getElementById('noRekening');
+            if (nr) nr.value = u.no_rekening || '';
+            const an = document.getElementById('atasNama');
+            if (an) an.value = u.atas_nama || '';
+          }
         })
         .catch(function () { /* biarkan nilai netral bila API gagal */ });
     })();
+
+    // Pesan di halaman (bukan alert bawaan browser, supaya selalu terlihat).
+    function tampilkanPesanProfil(teks, sukses) {
+      var el = document.getElementById('profilMsg');
+      if (!el) return;
+      el.innerText = teks;
+      el.style.display = 'block';
+      el.style.background = sukses ? '#dcfce7' : '#fee2e2';
+      el.style.color = sukses ? '#166534' : '#991b1b';
+    }
 
     // Simpan profil ke database lewat API (bukan hanya ubah tampilan).
     function simpanProfil() {
       const nama = document.getElementById('namaUsaha').value.trim();
       const email = document.getElementById('emailUsaha').value.trim();
       if (!nama || !email) {
-        alert('Nama dan email wajib diisi.');
+        tampilkanPesanProfil('Nama dan email wajib diisi.', false);
         return;
+      }
+      const payload = { nama: nama, email: email };
+      const rk = document.getElementById('rekeningCard');
+      if (rk && rk.style.display !== 'none') {
+        payload.nama_bank = document.getElementById('namaBank').value.trim();
+        payload.no_rekening = document.getElementById('noRekening').value.trim();
+        payload.atas_nama = document.getElementById('atasNama').value.trim();
       }
       fetch('../api/auth/update.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nama: nama, email: email })
+        body: JSON.stringify(payload)
       })
         .then(function (r) { return r.json(); })
         .then(function (res) {
           if (!res.ok) {
-            alert(res.error || 'Gagal menyimpan profil.');
+            tampilkanPesanProfil(res.error || 'Gagal menyimpan profil.', false);
             return;
           }
           document.getElementById('displayBusinessName').innerText = res.data.nama;
           document.getElementById('displayEmail').innerText = res.data.email;
           document.querySelectorAll('.user-name-text').forEach(function (el) { el.innerText = res.data.nama; });
-          alert('Perubahan profil berhasil disimpan!');
+          tampilkanPesanProfil('Perubahan profil berhasil disimpan!', true);
         })
-        .catch(function () { alert('Gagal menghubungi server.'); });
+        .catch(function () { tampilkanPesanProfil('Gagal menghubungi server.', false); });
     }
 
     // Dropdown notification helpers
