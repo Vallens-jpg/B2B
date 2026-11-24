@@ -804,6 +804,19 @@
 
     </div>
 
+      <!-- Ulasan Anda: hanya tampil kalau pesanan ini sudah diberi ulasan. -->
+      <div class="dp-info-card" id="ulasanCard" style="display:none; margin-top:1.25rem;">
+        <div class="dp-info-title">Ulasan Anda</div>
+        <div class="dp-info-row">
+          <div class="dp-info-label">Rating</div>
+          <div class="dp-info-value" id="ulasanBintang">—</div>
+        </div>
+        <div class="dp-info-row">
+          <div class="dp-info-label">Komentar</div>
+          <div class="dp-info-value" id="ulasanTeks">—</div>
+        </div>
+      </div>
+
     <!-- Ringkasan Pembayaran -->
     <div style="display: grid; grid-template-columns: 1fr 320px; gap: 1.25rem;">
       <div class="dp-ringkasan-card">
@@ -927,8 +940,21 @@
           if (btnBayar && o.status === 'menunggu_bayar') btnBayar.style.display = '';
           if (btnBatal && (o.status === 'menunggu_bayar' || o.status === 'dibayar')) btnBatal.style.display = '';
           if (btnTerima && (o.status === 'dikirim' || o.status === 'diterima')) btnTerima.style.display = '';
+          var sudahUlas = o.rating !== null && o.rating !== undefined;
           var btnUlasan = document.getElementById('btnUlasan');
-          if (btnUlasan && o.status === 'selesai') btnUlasan.style.display = '';
+          if (btnUlasan && o.status === 'selesai' && !sudahUlas) btnUlasan.style.display = '';
+          // Ulasan yang sudah tersimpan: tampilkan di kartu, tombol disembunyikan.
+          var ulasanCard = document.getElementById('ulasanCard');
+          if (ulasanCard) {
+            if (sudahUlas) {
+              var bintang = '★'.repeat(o.rating) + '☆'.repeat(5 - o.rating);
+              document.getElementById('ulasanBintang').innerText = bintang + ' (' + o.rating + '/5)';
+              document.getElementById('ulasanTeks').innerText = o.ulasan ? o.ulasan : 'Tanpa komentar.';
+              ulasanCard.style.display = '';
+            } else {
+              ulasanCard.style.display = 'none';
+            }
+          }
           // Bukti pengiriman berupa foto (wajib saat kirim): kartu hanya
           // tampil kalau ada foto bukti asli.
           var buktiCard = document.getElementById('buktiCard');

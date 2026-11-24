@@ -24,7 +24,7 @@ try {
     $idPerusahaan = $profil['id_perusahaan'] !== null ? (int) $profil['id_perusahaan'] : null;
 
     $stmt = $pdo->prepare(
-        'SELECT ps.id_pesanan AS id, ps.id_pembeli AS buyer_id, ps.id_perusahaan AS perusahaan_id, pn.id_produk AS produk_id, ps.jumlah AS jumlah_kg, ps.harga_satuan, ps.total_harga AS total, ps.fee_nominal AS fee, ps.status, ps.tanggal_pesanan AS created_at, ps.alasan_batal, pg.tanggal_pengiriman AS tanggal_kirim, pg.jasa_pengiriman AS jasa_kirim, pg.no_resi AS resi, pg.foto_bukti AS foto_bukti, pr.nama_produk AS nama_produk, pb.nama_pembeli AS nama_buyer, per.nama_perusahaan AS nama_perusahaan, byr.xendit_id AS nomor_invoice ' .
+        'SELECT ps.id_pesanan AS id, ps.id_pembeli AS buyer_id, ps.id_perusahaan AS perusahaan_id, pn.id_produk AS produk_id, ps.jumlah AS jumlah_kg, ps.harga_satuan, ps.total_harga AS total, ps.fee_nominal AS fee, ps.status, ps.rating, ps.ulasan, ps.tanggal_pesanan AS created_at, ps.alasan_batal, pg.tanggal_pengiriman AS tanggal_kirim, pg.jasa_pengiriman AS jasa_kirim, pg.no_resi AS resi, pg.foto_bukti AS foto_bukti, pr.nama_produk AS nama_produk, pb.nama_pembeli AS nama_buyer, per.nama_perusahaan AS nama_perusahaan, byr.xendit_id AS nomor_invoice ' .
         'FROM pesanan ps JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran JOIN produk pr ON pr.id_produk = pn.id_produk JOIN pembeli pb ON pb.id_pembeli = ps.id_pembeli LEFT JOIN perusahaan per ON per.id_perusahaan = ps.id_perusahaan LEFT JOIN pembayaran byr ON byr.id_pesanan = ps.id_pesanan LEFT JOIN pengiriman pg ON pg.id_pesanan = ps.id_pesanan WHERE ps.id_pesanan = ? LIMIT 1'
     );
     $stmt->execute([$id]);
@@ -64,7 +64,11 @@ if ($isBuyer && $status === 'dikirim') {
     $tombol[] = 'terima';
 }
 if ($isBuyer && $status === 'selesai') {
-    $tombol[] = 'ulasan';
+    // Tombol ulasan hanya kalau pesanan ini belum pernah diberi ulasan
+    // (rating null = belum ada ulasan; komentar boleh kosong).
+    if ($order['rating'] === null) {
+        $tombol[] = 'ulasan';
+    }
     $tombol[] = 'dispute';
 }
 
@@ -73,6 +77,7 @@ $order['jumlah_kg'] = (float) $order['jumlah_kg'];
 $order['harga_satuan'] = (float) $order['harga_satuan'];
 $order['total'] = (float) $order['total'];
 $order['fee'] = (float) $order['fee'];
+$order['rating'] = $order['rating'] !== null ? (int) $order['rating'] : null;
 // Pembeli hanya membayar total_harga; fee platform dipotong dari dana
 // perusahaan, jadi fee TIDAK ditambahkan ke total bayar pembeli.
 $order['total_bayar'] = (float) $order['total'];

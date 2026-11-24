@@ -43,6 +43,7 @@
       <span class="dp-badge-pill">Detail Produk</span>
       <h2 id="productTitle" class="dp-product-title">Memuat…</h2>
       <div id="productPrice" class="dp-product-price">—</div>
+      <div id="productRating" style="margin-top:.25rem; font-weight:600; color:#b45309;">—</div>
 
       <!-- Tentang Produk Card -->
       <div class="dp-card">
@@ -244,6 +245,14 @@
           var pr = res.data;
           document.getElementById('productTitle').innerText = pr.nama;
           document.getElementById('productPrice').innerHTML = `Rp ${Number(pr.harga_per_kg).toLocaleString('id-ID')} <span>/ kg</span>`;
+          var ratingEl = document.getElementById('productRating');
+          if (ratingEl) {
+            if (pr.jumlah_ulasan > 0) {
+              ratingEl.innerText = '★ ' + Number(pr.rating).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' (' + pr.jumlah_ulasan + ' ulasan)';
+            } else {
+              ratingEl.innerText = 'Belum ada ulasan';
+            }
+          }
           var desc = document.querySelector('.dp-about-desc');
           if (desc && pr.deskripsi) desc.innerText = pr.deskripsi;
           var stokRow = document.querySelectorAll('.dp-info-value')[0];

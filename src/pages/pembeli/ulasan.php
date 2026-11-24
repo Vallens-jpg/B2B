@@ -466,6 +466,8 @@
         ></textarea>
       </div>
 
+      <div id="ulasanMsg" style="display:none; margin-top:1rem; padding:.75rem 1rem; border-radius:8px; font-weight:600;"></div>
+
       <!-- 4. ACTION BUTTONS -->
       <div class="ulasan-actions">
         <a id="cancelBtn" href="order_list.php" class="btn-ulasan-batal">BATAL</a>
@@ -500,6 +502,15 @@
           document.getElementById('summaryAmount').innerText = rupiah(o.total_bayar);
           var q = document.getElementById('summaryQty');
           if (q) q.innerText = o.jumlah_kg + ' kg';
+          // Kalau pesanan ini sudah diberi ulasan, tampilkan dan kunci form.
+          if (o.rating !== null && o.rating !== undefined) {
+            selectRating(o.rating);
+            var ta = document.getElementById('reviewDetail');
+            if (ta) { ta.value = o.ulasan || ''; ta.readOnly = true; }
+            var kirimBtn = document.querySelector('.btn-ulasan-kirim');
+            if (kirimBtn) kirimBtn.disabled = true;
+            tampilkanPesanUlasan('Pesanan ini sudah diberi ulasan.', true);
+          }
         })
         .catch(function () {
           document.getElementById('summaryTitle').innerText = 'Gagal memuat pesanan.';
@@ -546,14 +557,24 @@
       });
     }
 
+    // Pesan di halaman (bukan alert bawaan browser, supaya selalu terlihat).
+    function tampilkanPesanUlasan(teks, sukses) {
+      var el = document.getElementById('ulasanMsg');
+      if (!el) return;
+      el.innerText = teks;
+      el.style.display = 'block';
+      el.style.background = sukses ? '#dcfce7' : '#fee2e2';
+      el.style.color = sukses ? '#166534' : '#991b1b';
+    }
+
     // Submit Review (kirim asli ke API)
     function kirimUlasan() {
       if (currentRating === 0) {
-        alert('Silakan pilih rating bintang terlebih dahulu.');
+        tampilkanPesanUlasan('Silakan pilih rating bintang terlebih dahulu.', false);
         return;
       }
       if (!orderId) {
-        alert('Pesanan tidak ditemukan.');
+        tampilkanPesanUlasan('Pesanan tidak ditemukan.', false);
         return;
       }
       fetch('../../api/ulasan/simpan.php', {
@@ -564,13 +585,13 @@
         .then(function (r) { return r.json(); })
         .then(function (res) {
           if (!res || !res.ok) {
-            alert((res && res.message) || 'Gagal mengirim ulasan.');
+            tampilkanPesanUlasan((res && res.message) || 'Gagal mengirim ulasan.', false);
             return;
           }
-          alert('Terima kasih! Ulasan Anda berhasil dikirim.');
-          window.location.href = 'order_list.php';
+          tampilkanPesanUlasan('Terima kasih! Ulasan Anda berhasil dikirim.', true);
+          setTimeout(function () { window.location.href = 'order_list.php'; }, 1500);
         })
-        .catch(function () { alert('Gagal mengirim ulasan. Periksa koneksi.'); });
+        .catch(function () { tampilkanPesanUlasan('Gagal mengirim ulasan. Periksa koneksi.', false); });
     }
     // Badge lonceng: jumlah notifikasi belum dibaca.
     (function () {
