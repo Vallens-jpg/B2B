@@ -567,6 +567,61 @@
       font-size: 0.9rem;
       opacity: 0.85;
     }
+    /* Modal konfirmasi batal (pengganti confirm() native, yang tidak bisa
+       diklik di browser otomatis dan menggantung halaman). */
+    .dp-confirm {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .dp-confirm.open {
+      display: flex;
+    }
+    .dp-confirm-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+    }
+    .dp-confirm-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.5rem;
+    }
+    .dp-confirm-text {
+      font-size: 0.9rem;
+      color: #475569;
+      margin: 0 0 1.25rem;
+    }
+    .dp-confirm-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+    }
+    .dp-confirm-btn {
+      border: none;
+      border-radius: 8px;
+      padding: 0.55rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .dp-confirm-btn.ya {
+      background: #dc2626;
+      color: #fff;
+    }
+    .dp-confirm-btn.tidak {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
     .dp-lightbox-close {
       position: absolute;
       top: 1.25rem;
@@ -972,7 +1027,19 @@
 
     function batalkanPesanan() {
       if (!orderIdParam) return;
-      if (!confirm('Batalkan pesanan ini?')) return;
+      // Buka modal konfirmasi (bukan confirm() native).
+      var modal = document.getElementById('dpConfirmBatal');
+      if (modal) modal.classList.add('open');
+    }
+
+    function tutupConfirmBatal() {
+      var modal = document.getElementById('dpConfirmBatal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    function konfirmasiBatalYa() {
+      if (!orderIdParam) return;
+      tutupConfirmBatal();
       fetch('../api/order/batal.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1029,6 +1096,18 @@
     <button class="dp-lightbox-close" onclick="tutupLightbox()" aria-label="Tutup">&times;</button>
     <img id="dpLightboxImg" src="" alt="Bukti Pengiriman">
     <div class="dp-lightbox-caption" id="dpLightboxCaption"></div>
+  </div>
+
+  <!-- Modal Konfirmasi Batalkan Pesanan -->
+  <div class="dp-confirm" id="dpConfirmBatal" onclick="if (event.target === this) tutupConfirmBatal()">
+    <div class="dp-confirm-card">
+      <div class="dp-confirm-title">Batalkan pesanan ini?</div>
+      <p class="dp-confirm-text">Pesanan yang sudah dibayar akan direfund ke rekening pembeli. Tindakan ini tidak bisa dibatalkan.</p>
+      <div class="dp-confirm-actions">
+        <button type="button" class="dp-confirm-btn tidak" onclick="tutupConfirmBatal()">Tidak</button>
+        <button type="button" class="dp-confirm-btn ya" onclick="konfirmasiBatalYa()">Ya, batalkan</button>
+      </div>
+    </div>
   </div>
   <script>
     // Badge lonceng asli: jumlah notifikasi belum dibaca dari API.
