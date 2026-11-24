@@ -1143,9 +1143,9 @@
 
       <!-- Toolbar Row 2: Role Filter Pills -->
       <div class="pills-row" id="rolePillsRow">
-        <button type="button" class="role-pill active" data-role="all">Semua User (<span id="countAll">128</span>)</button>
-        <button type="button" class="role-pill" data-role="company">Perusahaan (<span id="countCompany">33</span>)</button>
-        <button type="button" class="role-pill" data-role="buyer">Pembeli (<span id="countBuyer">95</span>)</button>
+        <button type="button" class="role-pill active" data-role="all">Semua User (<span id="countAll">0</span>)</button>
+        <button type="button" class="role-pill" data-role="company">Perusahaan (<span id="countCompany">0</span>)</button>
+        <button type="button" class="role-pill" data-role="buyer">Pembeli (<span id="countBuyer">0</span>)</button>
       </div>
 
       <!-- Table Card -->
@@ -1173,7 +1173,7 @@
 
         <!-- Table Footer -->
         <div class="card-footer">
-          <span class="footer-info" id="footerInfo">Menampilkan 1–3 dari 128 user</span>
+          <span class="footer-info" id="footerInfo">Menampilkan 0 user</span>
           <button class="btn-pagination" id="btnNextPage" type="button">Selanjutnya</button>
         </div>
       </div>
@@ -1457,8 +1457,8 @@
       }
 
       function updateCountsAndFooter(visibleCount) {
-        // Jumlah asli dari data yang sedang tampil (API bila berhasil,
-        // data contoh bila API gagal) — bukan lagi angka contoh 128/33/95.
+        // Jumlah asli dari data yang sedang tampil (API).
+        // Nilai awal di HTML adalah 0 sampai data dimuat.
         const totalAll = users.length;
         const totalCompany = users.filter(u => u.role === 'company').length;
         const totalBuyer = users.filter(u => u.role === 'buyer').length;

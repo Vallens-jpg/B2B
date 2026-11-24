@@ -1293,7 +1293,7 @@
         <div class="modal-grid-2">
           <div class="modal-info-item">
             <span class="modal-label">Metode Pembayaran</span>
-            <span class="modal-val" id="modalPaymentMethod">Transfer Bank BCA</span>
+            <span class="modal-val" id="modalPaymentMethod">—</span>
           </div>
           <div class="modal-info-item">
             <span class="modal-label">Nomor Rekening Tujuan</span>
@@ -1310,11 +1310,11 @@
         <div class="modal-summary-box">
           <div class="summary-row">
             <span class="label">Subtotal</span>
-            <span class="val" id="modalSubtotal">Rp 1.200.000</span>
+            <span class="val" id="modalSubtotal">Rp 0</span>
           </div>
           <div class="summary-row">
             <span class="label">Biaya Pengiriman</span>
-            <span class="val" id="modalShipping">Rp 50.000</span>
+            <span class="val" id="modalShipping">Rp 0</span>
           </div>
           <div class="summary-row">
             <span class="label">Biaya Layanan Admin</span>
@@ -1322,7 +1322,7 @@
           </div>
           <div class="summary-row total-row">
             <span class="label">Total Pembayaran</span>
-            <span class="val" id="modalTotal">Rp 1.250.000</span>
+            <span class="val" id="modalTotal">Rp 0</span>
           </div>
         </div>
       </div>
