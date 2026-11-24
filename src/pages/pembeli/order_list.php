@@ -560,7 +560,7 @@
           }
           updateCounts(res.data.orders);
           list.innerHTML = res.data.orders.map(function (o) {
-            return '<article class="order-card" data-status="' + filterKey(o.status) + '">'
+            return '<article class="order-card" data-status="' + filterKey(o.status) + '" data-supplier="' + (o.nama_perusahaan || '').replace(/"/g, '&quot;') + '" data-orderid="#' + o.id + '">'
               + '<div class="order-card-top">'
               + '<div class="order-meta-item" style="min-width:120px;"><span class="order-meta-label">tanggal :</span><span class="order-meta-value">' + (o.created_at || '-') + '</span></div>'
               + '<div class="order-meta-item" style="min-width:140px;"><span class="order-meta-label">order id :</span><span class="order-meta-value">#' + o.id + '</span></div>'
@@ -594,8 +594,8 @@
 
       cards.forEach(card => {
         const status = card.getAttribute('data-status');
-        const supplier = card.getAttribute('data-supplier').toLowerCase();
-        const orderId = card.getAttribute('data-orderid').toLowerCase();
+        const supplier = (card.getAttribute('data-supplier') || '').toLowerCase();
+        const orderId = (card.getAttribute('data-orderid') || '').toLowerCase();
 
         let matchesStatus = (currentFilter === 'semua') || (status === currentFilter);
         let matchesQuery = !q || supplier.includes(q) || orderId.includes(q);
