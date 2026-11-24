@@ -27,6 +27,18 @@ if (empty($_FILES['foto']) || ($_FILES['foto']['error'] ?? UPLOAD_ERR_NO_FILE) =
     json_error('Foto bukti pengiriman wajib diunggah', 400);
 }
 if (($_FILES['foto']['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+    // Bedakan penyebabnya supaya pesannya jelas: foto yang melebihi batas
+    // server (default php:apache hanya 2 MB) adalah penyebab paling umum.
+    $kodeUnggah = (int) $_FILES['foto']['error'];
+    if ($kodeUnggah === UPLOAD_ERR_INI_SIZE || $kodeUnggah === UPLOAD_ERR_FORM_SIZE) {
+        json_error('Foto terlalu besar untuk server (maks 5 MB). Coba foto yang lebih kecil atau kompres dulu', 400);
+    }
+    if ($kodeUnggah === UPLOAD_ERR_PARTIAL) {
+        json_error('Foto hanya terunggah sebagian. Coba lagi', 400);
+    }
+    if ($kodeUnggah === UPLOAD_ERR_NO_TMP_DIR || $kodeUnggah === UPLOAD_ERR_CANT_WRITE) {
+        json_error('Server tidak bisa menerima foto (folder sementara bermasalah)', 500);
+    }
     json_error('Gagal mengunggah foto bukti pengiriman', 400);
 }
 $infoGambar = @getimagesize($_FILES['foto']['tmp_name']);
