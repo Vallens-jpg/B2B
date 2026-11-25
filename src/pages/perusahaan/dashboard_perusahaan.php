@@ -5728,6 +5728,23 @@
   </div>
 
   <!-- ==========================================================================
+       MODAL KONFIRMASI HAPUS PRODUK
+       ========================================================================== -->
+  <div class="modal-overlay" id="hapusModalOverlay" onclick="if (event.target === this) tutupModalHapus()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Hapus produk ini?</h2>
+        <p class="modal-subtitle" id="hapusModalLabel"></p>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-modal-cancel" onclick="tutupModalHapus()">Batal</button>
+        <button type="button" class="btn-modal-submit" onclick="konfirmasiHapusYa()">Ya, hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
        MODAL CETAK INVOICE
        ========================================================================== -->
   <div class="invoice-overlay" id="invoiceOverlay" onclick="if (event.target === this) tutupInvoice()">
@@ -6438,24 +6455,40 @@
       syncFillScroll();
     }
 
+    let hapusProdukIndex = null;
+
     function handleDeleteProduct(index) {
       const item = PRODUCTS_DATA[index];
       if (!item || !item.id) { showToast('Produk ini belum tersimpan di database'); return; }
       const labelHapus = item.gradeKey ? (item.jenis + ' (Grade ' + item.gradeKey + ')') : (item.namaAsli || item.jenis);
-      if (confirm('Apakah Anda yakin ingin menghapus "' + labelHapus + '"?')) {
-        fetch('../../api/produk/hapus.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ produk_id: item.id })
+      hapusProdukIndex = index;
+      document.getElementById('hapusModalLabel').textContent = 'Produk "' + labelHapus + '" akan dihapus.';
+      document.getElementById('hapusModalOverlay').classList.add('show');
+    }
+
+    function tutupModalHapus() {
+      document.getElementById('hapusModalOverlay').classList.remove('show');
+      hapusProdukIndex = null;
+    }
+
+    function konfirmasiHapusYa() {
+      const index = hapusProdukIndex;
+      tutupModalHapus();
+      if (index === null || index === undefined) { return; }
+      const item = PRODUCTS_DATA[index];
+      if (!item || !item.id) { return; }
+      fetch('../../api/produk/hapus.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ produk_id: item.id })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) { showToast('Gagal menghapus: ' + (res.error || 'tidak diketahui')); return; }
+          muatProdukPerusahaan();
+          showToast('Produk berhasil dihapus');
         })
-          .then(function (r) { return r.json(); })
-          .then(function (res) {
-            if (!res.ok) { showToast('Gagal menghapus: ' + (res.error || 'tidak diketahui')); return; }
-            muatProdukPerusahaan();
-            showToast('Produk berhasil dihapus');
-          })
-          .catch(function () { showToast('Gagal menghapus produk. Pastikan sudah login sebagai perusahaan.'); });
-      }
+        .catch(function () { showToast('Gagal menghapus produk. Pastikan sudah login sebagai perusahaan.'); });
     }
 
     /* --------------------------------------------------------------------------
