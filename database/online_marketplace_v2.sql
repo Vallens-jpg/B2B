@@ -328,13 +328,13 @@ CREATE TABLE dompet_sistem (
 CREATE TABLE otp_kode (
   id               INT AUTO_INCREMENT PRIMARY KEY,
   email            VARCHAR(255) NOT NULL,
-  tujuan           ENUM('reset_sandi','registrasi') NOT NULL DEFAULT 'reset_sandi',
+  tujuan           ENUM('reset_sandi','registrasi','login') NOT NULL DEFAULT 'reset_sandi',
   kode_hash        CHAR(60) NOT NULL,              -- password_hash dari kode 6 digit
   expires_at       DATETIME NOT NULL,              -- kode berlaku 10 menit sejak dibuat
   percobaan        INT NOT NULL DEFAULT 0,         -- maks 5 percobaan salah, lalu terkunci
   dipakai          TINYINT(1) NOT NULL DEFAULT 0,
   token_hash       CHAR(60) NULL,                  -- password_hash dari token reset sekali pakai
-  token_expires_at DATETIME NULL,                  -- token berlaku 15 menit
+  token_expires_at DATETIME NULL,                  -- token berlaku 10 menit
   created_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_otp_email (email, tujuan, dipakai)
 ) ENGINE=InnoDB;

@@ -7,533 +7,298 @@
   <title>Lupa Kata Sandi - Staplr</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --accent: #F59E0B;
-      --accent-hover: #E59008;
-      --text-light: #ffffff;
-      --text-muted-light: rgba(255, 255, 255, 0.85);
-      --text-dark: #0F172A;
-      --border: rgba(255, 255, 255, 0.35);
-      --card-bg: rgba(15, 23, 42, 0.55);
-      --input-bg: rgba(255, 255, 255, 0.98);
-    }
-
+    /* Tampilan mengikuti desain Figma "Lupa Sandi" (node 5:3704):
+       latar gradien navy ke hijau, modal putih 560px, tombol navy. */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
     }
 
     html,
     body {
-      height: 100vh;
-      overflow: hidden;
+      height: 100%;
     }
 
     body {
-      color: var(--text-light);
-      background: #0f1f17;
-    }
-
-    .auth-page {
-      position: relative;
-      height: 100vh;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .auth-bg {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-    }
-
-    .auth-bg-image {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-    }
-
-    .auth-bg-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg,
-          rgba(9, 27, 21, 0.96) 0%,
-          rgba(9, 27, 21, 0.92) 38%,
-          rgba(9, 27, 21, 0.72) 62%,
-          rgba(9, 27, 21, 0.48) 100%);
-    }
-
-    .auth-left {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 40px 64px;
-      gap: 32px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: var(--text-light);
-    }
-
-    .brand-logo {
-      height: 52px;
-      width: auto;
-    }
-
-    .brand-text {
-      font-size: 1.6rem;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      letter-spacing: -0.01em;
-    }
-
-    .brand-dot {
-      color: var(--accent);
-    }
-
-    .left-content {
-      display: grid;
-      gap: 26px;
-      max-width: 520px;
-    }
-
-    .trusted-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 18px;
-      border-radius: 999px;
-      background: rgba(245, 158, 11, 0.95);
-      color: #111827;
-      font-weight: 800;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      font-size: 0.78rem;
-      width: fit-content;
-      box-shadow: 0 18px 40px -20px rgba(245, 158, 11, 0.9);
-    }
-
-    .left-heading {
-      font-size: clamp(2.6rem, 4vw, 4rem);
-      font-weight: 800;
-      line-height: 1.08;
-      letter-spacing: -0.04em;
-    }
-
-    .left-subtitle {
-      font-size: 1.02rem;
-      color: var(--text-muted-light);
-      max-width: 460px;
-    }
-
-    .auth-right {
-      position: relative;
-      z-index: 1;
+      background: linear-gradient(144.58deg, rgb(15, 42, 74) 0%, rgb(32, 177, 90) 100%);
+      color: #0f2a4a;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 48px;
-    }
-
-    .form-card {
-      width: 100%;
-      max-width: 440px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      background: var(--card-bg);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      box-shadow: 0 60px 120px -80px rgba(15, 23, 42, 0.95);
+      padding: 24px 16px;
+      position: relative;
       overflow: hidden;
     }
 
-    .form-card-inner {
-      display: grid;
-      gap: 18px;
-      padding: 28px 32px;
+    .decor {
+      position: absolute;
+      pointer-events: none;
     }
 
-    .form-header {
-      text-align: center;
-      display: grid;
-      gap: 8px;
-    }
+    .decor-1 { width: 700px; height: 700px; left: -220px; top: -240px; }
+    .decor-2 { width: 600px; height: 600px; left: 1000px; top: 620px; }
+    .decor-3 { width: 360px; height: 360px; left: 1020px; top: 60px; }
+    .decor-4 { width: 300px; height: 300px; left: 80px; top: 700px; }
 
-    .form-title {
-      font-size: 1.8rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-
-    .form-subtitle {
-      color: var(--text-muted-light);
-      font-size: 0.95rem;
-    }
-
-    .step-indicator {
+    .modal {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 560px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px 0 rgba(6, 24, 46, 0.12), 0 28px 60px -10px rgba(6, 24, 46, 0.28);
+      padding: 40px;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
+      flex-direction: column;
+      gap: 18px;
     }
 
-    .step-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.4);
+    .modal-header {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-bottom: 6px;
     }
 
-    .step-dot.active {
-      background: var(--accent);
-      box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.18);
+    .modal-title {
+      font-size: 30px;
+      font-weight: 700;
+      color: #0f2a4a;
     }
 
-    .form-grid {
-      display: grid;
-      gap: 14px;
+    .modal-subtitle {
+      font-size: 15px;
+      font-weight: 400;
+      color: #64748b;
     }
 
     .field {
-      display: grid;
+      display: flex;
+      flex-direction: column;
       gap: 8px;
     }
 
     .field-label {
+      font-size: 14px;
       font-weight: 600;
+      color: #0f2a4a;
     }
 
     .field-input {
       width: 100%;
+      height: 52px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
       border-radius: 10px;
-      border: 1px solid transparent;
-      background: var(--input-bg);
-      color: var(--text-dark);
-      padding: 9px 12px;
-      font-size: 0.96rem;
+      padding: 0 16px;
+      font-size: 15px;
       font-family: inherit;
+      color: #0f2a4a;
     }
 
     .field-input::placeholder {
-      color: #94A3B8;
+      color: #94a3b8;
     }
 
     .field-input:focus {
-      outline: 2px solid rgba(245, 158, 11, 0.35);
+      outline: 2px solid rgba(15, 42, 74, 0.35);
+      border-color: #0f2a4a;
     }
 
-    .otp-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 10px;
+    .actions {
+      display: flex;
+      gap: 12px;
+      padding-top: 6px;
     }
 
-    .otp-input {
-      width: 100%;
-      text-align: center;
-      border-radius: 10px;
-      border: 1px solid transparent;
-      background: var(--input-bg);
-      color: var(--text-dark);
-      padding: 10px 0;
-      font-size: 1.1rem;
+    .btn {
+      flex: 1 0 0;
+      height: 56px;
+      border-radius: 12px;
+      font-size: 16px;
       font-weight: 700;
-    }
-
-    .otp-input:focus {
-      outline: 2px solid rgba(245, 158, 11, 0.35);
-    }
-
-    .cta-btn {
-      border: none;
-      background: linear-gradient(90deg, var(--accent) 0%, #FBBF24 100%);
-      color: #111827;
-      font-weight: 800;
-      padding: 11px 16px;
-      border-radius: 10px;
-      font-size: 0.98rem;
+      font-family: inherit;
       cursor: pointer;
-      box-shadow: 0 24px 60px -30px rgba(245, 158, 11, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
     }
 
-    .cta-btn:hover {
-      background: linear-gradient(90deg, var(--accent-hover) 0%, #F59E0B 100%);
+    .btn-secondary {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      color: #0f2a4a;
     }
 
-    .cta-btn.secondary {
-      background: transparent;
-      color: var(--text-light);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      box-shadow: none;
+    .btn-primary {
+      background: linear-gradient(180deg, #17385f 0%, #0f2a4a 100%);
+      border: none;
+      color: #ffffff;
+      box-shadow: 0 2px 6px 0 rgba(15, 42, 74, 0.18), 0 10px 24px -4px rgba(15, 42, 74, 0.38);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .pesan-error {
+      display: none;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+      font-size: 14px;
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+
+    .pesan-error.tampil {
+      display: block;
     }
 
     .form-footer {
       text-align: center;
-      color: var(--text-muted-light);
+      font-size: 14px;
+      color: #64748b;
     }
 
     .form-footer a {
-      color: #FBBF24;
+      color: #0f2a4a;
       font-weight: 700;
       text-decoration: none;
     }
 
-    .hidden {
-      display: none;
-    }
-
-    /* CSS :target multi-step navigation */
-    .step-panel { display: none; }
-    .step-panel#lupa-step-1 { display: block; }
-    .step-panel:target { display: block; }
-    /* Sembunyikan step-1 saat step-2 atau step-3 di-target menggunakan :has() */
-    .form-card-inner:has(#lupa-step-2:target) #lupa-step-1,
-    .form-card-inner:has(#lupa-step-3:target) #lupa-step-1 { display: none; }
-
-    @media (max-width: 1080px) {
-      html,
-      body {
-        height: auto;
-        overflow: auto;
+    @media (max-width: 640px) {
+      .modal {
+        padding: 28px 22px;
       }
 
-      .auth-page {
-        height: auto;
-        min-height: 100vh;
-        grid-template-columns: 1fr;
+      .modal-title {
+        font-size: 26px;
       }
 
-      .auth-left {
+      .decor {
         display: none;
-      }
-
-      .auth-right {
-        padding: 32px 18px;
-      }
-
-      .form-card-inner {
-        padding: 32px 26px;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="auth-page">
-    <div class="auth-bg">
-      <img src="../assets/img/farm-original.jpg" alt="Peternakan ayam" class="auth-bg-image">
-      <div class="auth-bg-overlay"></div>
+  <img class="decor decor-1" src="../assets/img/figma_decor_1.svg" alt="">
+  <img class="decor decor-2" src="../assets/img/figma_decor_2.svg" alt="">
+  <img class="decor decor-3" src="../assets/img/figma_decor_3.svg" alt="">
+  <img class="decor decor-4" src="../assets/img/figma_decor_4.svg" alt="">
+
+  <div class="modal">
+    <div class="modal-header">
+      <h1 class="modal-title">Lupa Kata Sandi</h1>
+      <p class="modal-subtitle">Masukkan email dan kata sandi baru Anda.</p>
     </div>
 
-    <div class="auth-left">
-      <a class="brand" href="../index.html">
-        <img src="../assets/img/logo-staplr.png" alt="Staplr" class="brand-logo">
-        <div class="brand-text">
-          <span class="brand-dot">•</span> Staplr
+    <div class="pesan-error" id="pesanError"></div>
+
+    <form id="formLupa" novalidate>
+      <div style="display:flex;flex-direction:column;gap:18px;">
+        <div class="field">
+          <label class="field-label" for="email">Email</label>
+          <input class="field-input" id="email" type="email" placeholder="nama@email.com" autocomplete="email" required>
         </div>
-      </a>
 
-      <div class="left-content">
-        <div class="trusted-badge">
-          <span>PLATFORM TERPERCAYA</span>
+        <div class="field">
+          <label class="field-label" for="passwordBaru">Kata Sandi Baru</label>
+          <input class="field-input" id="passwordBaru" type="password" placeholder="••••••••" autocomplete="new-password" required>
         </div>
-        <div>
-          <h1 class="left-heading">Atur Ulang Kata Sandi</h1>
-          <p class="left-subtitle">
-            Lakukan verifikasi email, masukkan kode OTP, lalu buat kata sandi baru untuk mengamankan akun Anda.
-          </p>
+
+        <div class="field">
+          <label class="field-label" for="konfirmasiPassword">Konfirmasi Kata Sandi</label>
+          <input class="field-input" id="konfirmasiPassword" type="password" placeholder="••••••••" autocomplete="new-password" required>
         </div>
-      </div>
 
-      <div></div>
-    </div>
-
-    <div class="auth-right">
-      <div class="form-card">
-        <div class="form-card-inner">
-          <div class="form-header">
-            <h2 class="form-title">Lupa Kata Sandi</h2>
-            <p class="form-subtitle" id="step-subtitle">Ikuti langkah-langkah untuk mengatur ulang kata sandi Anda</p>
-          </div>
-
-          <div class="step-indicator">
-            <div class="step-dot active" id="dot-1"></div>
-            <div class="step-dot" id="dot-2"></div>
-            <div class="step-dot" id="dot-3"></div>
-          </div>
-
-          <p id="pesanLupa" style="text-align:center;font-size:0.92rem;min-height:1.2em;"></p>
-
-          <!-- Step 1: Email -->
-          <div class="step-panel" id="lupa-step-1">
-            <form class="form-grid" id="formLupaEmail">
-              <div class="field">
-                <label class="field-label" for="email">Email Terdaftar</label>
-                <input class="field-input" id="email" type="email" placeholder="Masukkan alamat email" required>
-              </div>
-              <a href="#lupa-step-2" id="btnKirimOtp" class="cta-btn" style="text-align:center;text-decoration:none;display:block;padding:11px 16px;">Kirim Kode OTP</a>
-            </form>
-          </div>
-
-          <!-- Step 2: OTP -->
-          <div class="step-panel" id="lupa-step-2">
-            <form class="form-grid" id="formVerifikasiOtp">
-              <div class="field">
-                <label class="field-label">Kode OTP</label>
-                <div class="otp-grid">
-                  <input class="otp-input" maxlength="1">
-                  <input class="otp-input" maxlength="1">
-                  <input class="otp-input" maxlength="1">
-                  <input class="otp-input" maxlength="1">
-                  <input class="otp-input" maxlength="1">
-                  <input class="otp-input" maxlength="1">
-                </div>
-              </div>
-              <a href="#lupa-step-3" id="btnVerifikasiOtp" class="cta-btn" style="text-align:center;text-decoration:none;display:block;padding:11px 16px;">Verifikasi OTP</a>
-              <a href="#lupa-step-1" id="btnKirimUlang" class="cta-btn secondary" style="text-align:center;text-decoration:none;display:block;padding:11px 16px;">Kirim Ulang Kode</a>
-            </form>
-          </div>
-
-          <!-- Step 3: Password Baru -->
-          <div class="step-panel" id="lupa-step-3">
-            <form class="form-grid" id="formResetSandi">
-              <div class="field">
-                <label class="field-label" for="new-password">Kata Sandi Baru</label>
-                <input class="field-input" id="new-password" type="password" placeholder="Masukkan kata sandi baru" required>
-              </div>
-              <div class="field">
-                <label class="field-label" for="confirm-password">Konfirmasi Kata Sandi Baru</label>
-                <input class="field-input" id="confirm-password" type="password" placeholder="Ulangi kata sandi baru" required>
-              </div>
-              <button class="cta-btn" type="submit">Simpan Kata Sandi</button>
-            </form>
-          </div>
-
-          <div class="form-footer">
-            <a href="login.php">Kembali ke Halaman Masuk</a>
-          </div>
+        <div class="actions">
+          <a class="btn btn-secondary" href="login.php">Batal</a>
+          <button class="btn btn-primary" id="btnSimpan" type="submit">Simpan</button>
         </div>
       </div>
+    </form>
+
+    <div class="form-footer">
+      <a href="login.php">Kembali ke Halaman Masuk</a>
     </div>
   </div>
 
   <script>
-    // Alur lupa kata sandi (3 langkah) memakai endpoint api/auth/lupa_*.php:
-    // kirim OTP -> verifikasi OTP (dapat token reset) -> simpan kata sandi baru.
     (function () {
-      var pesanEl = document.getElementById('pesanLupa');
-      var emailEl = document.getElementById('email');
-      var otpInputs = Array.prototype.slice.call(document.querySelectorAll('.otp-input'));
-      var tokenReset = '';
+      var form = document.getElementById('formLupa');
+      var pesan = document.getElementById('pesanError');
+      var btn = document.getElementById('btnSimpan');
 
-      function tampilPesan(teks, salah) {
-        if (!pesanEl) return;
-        pesanEl.textContent = teks;
-        pesanEl.style.color = salah ? '#FCA5A5' : '#BBF7D0';
-      }
-      function bukaStep(n) {
-        location.hash = '#lupa-step-' + n;
-        [1, 2, 3].forEach(function (i) {
-          var dot = document.getElementById('dot-' + i);
-          if (dot) dot.classList.toggle('active', i === n);
-        });
-      }
-      function ambilKodeOtp() {
-        return otpInputs.map(function (el) { return el.value; }).join('');
-      }
-      function kirimJson(url, data) {
-        return fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        }).then(function (r) { return r.json(); });
+      function tampilError(teks) {
+        pesan.textContent = teks;
+        pesan.classList.add('tampil');
       }
 
-      // OTP: ketik 1 digit lalu pindah ke kotak berikut; backspace mundur.
-      otpInputs.forEach(function (el, i) {
-        el.addEventListener('input', function () {
-          el.value = el.value.replace(/[^0-9]/g, '').slice(0, 1);
-          if (el.value && i < otpInputs.length - 1) otpInputs[i + 1].focus();
-        });
-        el.addEventListener('keydown', function (e) {
-          if (e.key === 'Backspace' && !el.value && i > 0) otpInputs[i - 1].focus();
-        });
-      });
-
-      function mintaKode() {
-        var email = emailEl.value.trim();
-        if (!email) { tampilPesan('Isi dulu alamat emailnya.', true); emailEl.focus(); return; }
-        tampilPesan('Mengirim kode OTP…', false);
-        kirimJson('../../api/auth/lupa_kirim.php', { email: email })
-          .then(function (res) {
-            if (!res.ok) throw new Error(res.error || 'Gagal mengirim kode.');
-            var teks = 'Kode OTP dikirim ke ' + email + '. Kode berlaku 10 menit.';
-            if (res.data && res.data.kode_demo) teks += ' (Demo: ' + res.data.kode_demo + ')';
-            if (res.data && res.data.peringatan) teks += ' Peringatan: ' + res.data.peringatan;
-            tampilPesan(teks, false);
-            bukaStep(2);
-            if (otpInputs[0]) otpInputs[0].focus();
-          })
-          .catch(function (err) { tampilPesan(err.message || 'Gagal mengirim kode.', true); });
-      }
-
-      var btnKirim = document.getElementById('btnKirimOtp');
-      if (btnKirim) btnKirim.addEventListener('click', function (e) { e.preventDefault(); mintaKode(); });
-      var btnUlang = document.getElementById('btnKirimUlang');
-      if (btnUlang) btnUlang.addEventListener('click', function (e) { e.preventDefault(); mintaKode(); });
-
-      var btnVerifikasi = document.getElementById('btnVerifikasiOtp');
-      if (btnVerifikasi) btnVerifikasi.addEventListener('click', function (e) {
+      form.addEventListener('submit', async function (e) {
         e.preventDefault();
-        var kode = ambilKodeOtp();
-        if (kode.length !== 6) { tampilPesan('Isi dulu 6 digit kode OTP.', true); return; }
-        tampilPesan('Memeriksa kode OTP…', false);
-        kirimJson('../../api/auth/lupa_verifikasi.php', { email: emailEl.value.trim(), kode: kode })
-          .then(function (res) {
-            if (!res.ok) throw new Error(res.error || 'Kode OTP salah.');
-            tokenReset = res.data.token;
-            tampilPesan('Kode cocok. Buat kata sandi baru.', false);
-            bukaStep(3);
-          })
-          .catch(function (err) { tampilPesan(err.message || 'Kode OTP salah.', true); });
-      });
+        pesan.classList.remove('tampil');
 
-      var formReset = document.getElementById('formResetSandi');
-      if (formReset) formReset.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var baru = document.getElementById('new-password').value;
-        var ulang = document.getElementById('confirm-password').value;
-        if (baru.length < 8) { tampilPesan('Kata sandi baru minimal 8 karakter.', true); return; }
-        if (baru !== ulang) { tampilPesan('Konfirmasi kata sandi tidak sama.', true); return; }
-        if (!tokenReset) { tampilPesan('Verifikasi dulu kode OTP-nya.', true); bukaStep(2); return; }
-        tampilPesan('Menyimpan kata sandi baru…', false);
-        kirimJson('../../api/auth/lupa_reset.php', { email: emailEl.value.trim(), token: tokenReset, password_baru: baru })
-          .then(function (res) {
-            if (!res.ok) throw new Error(res.error || 'Gagal menyimpan kata sandi.');
-            tampilPesan('Kata sandi berhasil diubah. Silakan masuk.', false);
-            setTimeout(function () { window.location.href = 'login.php'; }, 1500);
-          })
-          .catch(function (err) { tampilPesan(err.message || 'Gagal menyimpan kata sandi.', true); });
+        var email = document.getElementById('email').value.trim();
+        var baru = document.getElementById('passwordBaru').value;
+        var konfirmasi = document.getElementById('konfirmasiPassword').value;
+
+        if (!email || email.indexOf('@') < 0) {
+          tampilError('Masukkan alamat email yang valid.');
+          return;
+        }
+        if (baru.length < 6) {
+          tampilError('Kata sandi baru minimal 6 karakter.');
+          return;
+        }
+        if (baru !== konfirmasi) {
+          tampilError('Konfirmasi kata sandi tidak cocok.');
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Mengirim...';
+        try {
+          var res = await fetch('../api/auth/otp_minta.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+          });
+          var hasil = await res.json();
+          if (!hasil.ok) {
+            tampilError(hasil.error || 'Gagal meminta kode OTP.');
+            return;
+          }
+          // Kata sandi baru disimpan sementara di browser sampai OTP terverifikasi,
+          // lalu dikirim ke reset_password.php dan langsung dihapus.
+          sessionStorage.setItem('otp_reset_email', email);
+          sessionStorage.setItem('otp_reset_password', baru);
+          if (hasil.data && hasil.data.kode_uji) {
+            sessionStorage.setItem('otp_kode_uji', hasil.data.kode_uji);
+          }
+          if (hasil.data && hasil.data.kedaluwarsa_detik) {
+            sessionStorage.setItem('otp_kedaluwarsa_ts', String(Date.now() + hasil.data.kedaluwarsa_detik * 1000));
+          }
+          window.location.href = 'verifikasi_otp.php?email=' + encodeURIComponent(email);
+        } catch (err) {
+          tampilError('Tidak dapat terhubung ke server. Coba lagi.');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Simpan';
+        }
       });
     })();
   </script>
-
 </body>
 
 </html>
