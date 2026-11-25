@@ -333,6 +333,17 @@
             </div>
           </div>
 
+          <div class="form-row-two-col" id="nibNpwpRow" style="display:none;">
+            <div class="form-group-item">
+              <label for="nibUsaha" class="profil-input-label">NIB</label>
+              <input type="text" id="nibUsaha" class="profil-input-field" value="" placeholder="Nomor Induk Berusaha" maxlength="30">
+            </div>
+            <div class="form-group-item">
+              <label for="npwpUsaha" class="profil-input-label">NPWP</label>
+              <input type="text" id="npwpUsaha" class="profil-input-field" value="" placeholder="NPWP perusahaan" maxlength="20">
+            </div>
+          </div>
+
           </div>
 
         </div>
@@ -423,6 +434,15 @@
             const an = document.getElementById('atasNama');
             if (an) an.value = u.atas_nama || '';
           }
+          // NIB/NPWP: hanya perusahaan.
+          if (u.role === 'perusahaan') {
+            const nn = document.getElementById('nibNpwpRow');
+            if (nn) nn.style.display = '';
+            const nibEl = document.getElementById('nibUsaha');
+            if (nibEl) nibEl.value = u.nib || '';
+            const npwpEl = document.getElementById('npwpUsaha');
+            if (npwpEl) npwpEl.value = u.npwp || '';
+          }
         })
         .catch(function () { /* biarkan nilai netral bila API gagal */ });
     })();
@@ -451,6 +471,11 @@
         payload.nama_bank = document.getElementById('namaBank').value.trim();
         payload.no_rekening = document.getElementById('noRekening').value.trim();
         payload.atas_nama = document.getElementById('atasNama').value.trim();
+      }
+      const nn = document.getElementById('nibNpwpRow');
+      if (nn && nn.style.display !== 'none') {
+        payload.nib = document.getElementById('nibUsaha').value.trim();
+        payload.npwp = document.getElementById('npwpUsaha').value.trim();
       }
       fetch('../api/auth/update.php', {
         method: 'POST',

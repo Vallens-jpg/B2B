@@ -15,8 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $input = json_input();
 $id = (int) ($input['dispute_id'] ?? $input['id'] ?? 0);
 $putusan = trim($input['putusan'] ?? '');
-if ($id <= 0 || !in_array($putusan, ['uang_kembali', 'lanjut_perusahaan'], true)) {
-    json_error('Putusan harus uang_kembali atau lanjut_perusahaan', 400);
+$catatan = trim((string) ($input['catatan'] ?? ''));
+if (mb_strlen($catatan) > 1000) {
+    $catatan = mb_substr($catatan, 0, 1000);
+}
+if ($id <= 0 || !in_array($putusan, ['uang_kembali', 'lanjut_perusahaan', 'revisi'], true)) {
+    json_error('Putusan harus uang_kembali, lanjut_perusahaan, atau revisi', 400);
 }
 
 try {
@@ -33,13 +37,25 @@ try {
         $pdo->rollBack();
         json_error('Dispute ini sudah diputuskan', 409);
     }
+    // 'revisi': bukan putusan akhir — kembalikan tiket ke 'diproses' dan
+    // sampaikan catatan admin sebagai pesan diskusi, supaya buyer &
+    // perusahaan bisa merevisi usulan. Escrow/order tidak disentuh.
+    if ($putusan === 'revisi') {
+        $pesanRevisi = $catatan !== '' ? $catatan : 'Admin meminta revisi rincian usulan dispute.';
+        $stmt = $pdo->prepare('INSERT INTO dispute_pesan (id_dispute, id_pengguna, pesan) VALUES (?, ?, ?)');
+        $stmt->execute([$id, (int) $user['id'], $pesanRevisi]);
+        $stmt = $pdo->prepare("UPDATE dispute SET status = 'diproses', keputusan = NULL, catatan_admin = ?, tanggal_selesai = NULL WHERE id_dispute = ?");
+        $stmt->execute([$catatan !== '' ? $catatan : null, $id]);
+        $pdo->commit();
+        json_ok(['dispute_id' => $id, 'status' => 'diproses', 'putusan' => 'revisi']);
+    }
     // Catat admin pemutus (profil admin dari akun session) bila ada.
     $stmt = $pdo->prepare('SELECT id_admin FROM pengguna WHERE id_pengguna = ? LIMIT 1');
     $stmt->execute([(int) $user['id']]);
     $profilAdmin = $stmt->fetch();
     $idAdmin = ($profilAdmin && !empty($profilAdmin['id_admin'])) ? (int) $profilAdmin['id_admin'] : null;
-    $stmt = $pdo->prepare("UPDATE dispute SET status = 'selesai', keputusan = ?, tanggal_selesai = NOW(), id_admin = ? WHERE id_dispute = ?");
-    $stmt->execute([$putusan, $idAdmin, $id]);
+    $stmt = $pdo->prepare("UPDATE dispute SET status = 'selesai', keputusan = ?, catatan_admin = ?, tanggal_selesai = NOW(), id_admin = ? WHERE id_dispute = ?");
+    $stmt->execute([$putusan, $catatan !== '' ? $catatan : null, $idAdmin, $id]);
 
     $orderId = (int) $dispute['id_pesanan'];
     $stmt = $pdo->prepare('SELECT ps.id_pesanan, ps.id_pembeli, ps.id_perusahaan, ps.jumlah, ps.total_harga, ps.fee_nominal, ps.persen_dp, ps.status, pn.id_produk FROM pesanan ps JOIN penawaran pn ON pn.id_penawaran = ps.id_penawaran WHERE ps.id_pesanan = ? FOR UPDATE');

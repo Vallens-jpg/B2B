@@ -1077,10 +1077,28 @@
             <div class="field-box" id="fieldUsulan">—</div>
           </div>
 
+          <!-- Section 3b: Catatan Putusan (tampil bila admin sudah menulis catatan) -->
+          <div class="field-section" id="fieldCatatanWrap" style="display:none;">
+            <label class="field-label">Catatan Putusan</label>
+            <div class="field-box" id="fieldCatatan">—</div>
+          </div>
+
           <!-- Section 4: Action Buttons -->
           <div class="action-row">
             <button type="button" class="btn-reject" id="btnRejectDispute">Tolak</button>
             <a href="verifikasi-dispute.php" class="btn-forward" id="btnForwardDispute">Teruskan ke Verifikasi ke 2 Pihak</a>
+          </div>
+
+          <!-- Section 5: Diskusi (admin bisa membaca & membalas) -->
+          <div class="field-section">
+            <label class="field-label">Diskusi</label>
+            <div id="diskusiAdminList" style="display:grid;gap:10px;padding:4px 0;">
+              <p style="color:#64748B;font-size:13.5px;">Memuat diskusi…</p>
+            </div>
+            <div id="diskusiAdminForm" style="display:grid;gap:8px;margin-top:10px;">
+              <textarea id="diskusiAdminText" rows="3" placeholder="Tulis balasan sebagai admin..." style="width:100%;border:1px solid #E2E8F0;border-radius:8px;padding:10px 12px;font:inherit;font-size:13.5px;resize:vertical;"></textarea>
+              <div><button type="button" id="btnKirimDiskusiAdmin" style="background:#0F2A4A;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-weight:600;cursor:pointer;">Kirim Balasan</button></div>
+            </div>
           </div>
 
         </div>
@@ -1186,6 +1204,10 @@
             document.getElementById('rightCardBadge').innerHTML = badgeForApi(d);
             document.getElementById('fieldKomplain').textContent = d.deskripsi || '—';
             document.getElementById('fieldUsulan').textContent = '—';
+            if (d.catatan_admin) {
+              document.getElementById('fieldCatatan').textContent = d.catatan_admin;
+              document.getElementById('fieldCatatanWrap').style.display = '';
+            }
             // Refund tahap 3 yang sudah dicatat (bila putusan uang kembali);
             // tombol aksi disembunyikan bila dispute sudah diputuskan.
             document.getElementById('caseRefund').textContent = (d.escrow && Number(d.escrow.refund || 0) > 0)
@@ -1193,6 +1215,9 @@
             if (d.status === 'selesai') {
               const actionRow = document.querySelector('.action-row');
               if (actionRow) actionRow.style.display = 'none';
+              // Diskusi ditutup bila sudah diputuskan: sembunyikan form balas.
+              const formDiskusi = document.getElementById('diskusiAdminForm');
+              if (formDiskusi) formDiskusi.style.display = 'none';
             }
             const att = d.bukti_foto
               ? [{ type: String(d.bukti_foto).split('.').pop().toUpperCase(), title: d.bukti_foto, desc: 'Lampiran foto bukti dari pembeli' }]
@@ -1260,6 +1285,59 @@
       }
 
       if (disputeIdApi <= 0) renderAttachments([]);
+
+      // 4b. Diskusi admin (baca + balas via api/dispute/pesan.php — API
+      // sudah mengizinkan admin; posting ditolak bila status 'selesai').
+      function escapeHtmlAdmin(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+      function muatDiskusiAdmin() {
+        const list = document.getElementById('diskusiAdminList');
+        if (!list) return;
+        if (disputeIdApi <= 0) {
+          list.innerHTML = '<p style="color:#64748B;font-size:13.5px;">Buka dispute dari daftar dulu.</p>';
+          return;
+        }
+        fetch('../../api/dispute/pesan.php?dispute_id=' + disputeIdApi)
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok || !res.data || !Array.isArray(res.data.pesan) || !res.data.pesan.length) {
+              list.innerHTML = '<p style="color:#64748B;font-size:13.5px;">Belum ada pesan diskusi.</p>';
+              return;
+            }
+            list.innerHTML = res.data.pesan.map(function (m) {
+              return '<div style="border:1px solid #E2E8F0;border-radius:8px;padding:10px 12px;">'
+                + '<div style="font-size:12.5px;color:#64748B;margin-bottom:4px;"><strong style="color:#0F172A;">' + escapeHtmlAdmin(m.nama) + '</strong> · ' + escapeHtmlAdmin(m.role) + ' · ' + escapeHtmlAdmin(m.created_at) + '</div>'
+                + '<div style="font-size:13.5px;color:#0F172A;white-space:pre-wrap;">' + escapeHtmlAdmin(m.pesan) + '</div></div>';
+            }).join('');
+          })
+          .catch(function () {
+            list.innerHTML = '<p style="color:#64748B;font-size:13.5px;">Gagal memuat diskusi.</p>';
+          });
+      }
+      function kirimBalasanAdmin() {
+        const ta = document.getElementById('diskusiAdminText');
+        const teks = ta ? ta.value.trim() : '';
+        if (!teks) { if (ta) ta.focus(); return; }
+        if (disputeIdApi <= 0) return;
+        fetch('../../api/dispute/pesan.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dispute_id: disputeIdApi, pesan: teks })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok) throw new Error(res.error || 'Gagal mengirim balasan.');
+            ta.value = '';
+            muatDiskusiAdmin();
+          })
+          .catch(function (err) { showToast(err.message || 'Gagal mengirim balasan.', 'danger'); });
+      }
+      const btnKirimDiskusi = document.getElementById('btnKirimDiskusiAdmin');
+      if (btnKirimDiskusi) btnKirimDiskusi.addEventListener('click', kirimBalasanAdmin);
+      muatDiskusiAdmin();
 
       // 5. Modal Attachment Preview Controls
       const modal = document.getElementById('attachmentModal');

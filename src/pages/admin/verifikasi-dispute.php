@@ -922,6 +922,14 @@
         <div class="card right-card">
           <h3>Pilih Putusan</h3>
 
+          <!-- Diskusi (hanya baca — balas di halaman Detail Dispute) -->
+          <div class="field-section">
+            <label class="field-label">Diskusi</label>
+            <div id="diskusiVerifikasiList" style="display:grid;gap:10px;padding:4px 0;">
+              <p style="color:#64748B;font-size:13.5px;">Memuat diskusi…</p>
+            </div>
+          </div>
+
           <!-- Decision Radio Options -->
           <div class="decision-options">
             <!-- Option 1: Setujui usulan refund (Selected) -->
@@ -978,6 +986,7 @@
 
   <script>
     let selectedDecision = 'approved';
+    const catatanInput = document.getElementById('catatanPutusan');
 
     // ID dispute asli (angka) dari ?id= — dipakai untuk memanggil API putusan.
     function disputeIdDariParam(param) {
@@ -994,11 +1003,12 @@
     }
 
     // Pemetaan pilihan di halaman ini ke nilai putusan API
-    // (../../api/dispute/putuskan.php hanya menerima dua nilai ini):
+    // (../../api/dispute/putuskan.php):
     // 'Setujui usulan refund' -> uang kembali ke buyer,
-    // 'Tolak usulan refund' -> lanjut ke perusahaan.
-    // 'Minta revisi usulan' TIDAK punya nilai di API, jadi tidak bisa diputuskan dari halaman ini.
-    const PUTUSAN_BY_DECISION = { approved: 'uang_kembali', rejected: 'lanjut_perusahaan' };
+    // 'Tolak usulan refund' -> lanjut ke perusahaan,
+    // 'Minta revisi usulan' -> revisi (tiket kembali diproses + catatan
+    // admin dikirim sebagai pesan diskusi).
+    const PUTUSAN_BY_DECISION = { approved: 'uang_kembali', rejected: 'lanjut_perusahaan', revision: 'revisi' };
 
 
     function showToast(message, type = 'success') {
@@ -1060,6 +1070,37 @@
           .catch(function () { showToast('Gagal memuat dispute.', 'info'); });
       }
 
+      // Diskusi (hanya baca) supaya admin yang memutuskan melihat konteks.
+      function escapeHtmlVerifikasi(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+      (function muatDiskusiVerifikasi() {
+        const list = document.getElementById('diskusiVerifikasiList');
+        if (!list) return;
+        if (disputeIdApi <= 0) {
+          list.innerHTML = '<p style="color:#64748B;font-size:13.5px;">Buka dispute dari daftar dulu.</p>';
+          return;
+        }
+        fetch('../../api/dispute/pesan.php?dispute_id=' + disputeIdApi)
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok || !res.data || !Array.isArray(res.data.pesan) || !res.data.pesan.length) {
+              list.innerHTML = '<p style="color:#64748B;font-size:13.5px;">Belum ada pesan diskusi.</p>';
+              return;
+            }
+            list.innerHTML = res.data.pesan.map(function (m) {
+              return '<div style="border:1px solid #E2E8F0;border-radius:8px;padding:10px 12px;">'
+                + '<div style="font-size:12.5px;color:#64748B;margin-bottom:4px;"><strong style="color:#0F172A;">' + escapeHtmlVerifikasi(m.nama) + '</strong> · ' + escapeHtmlVerifikasi(m.role) + ' · ' + escapeHtmlVerifikasi(m.created_at) + '</div>'
+                + '<div style="font-size:13.5px;color:#0F172A;white-space:pre-wrap;">' + escapeHtmlVerifikasi(m.pesan) + '</div></div>';
+            }).join('');
+          })
+          .catch(function () {
+            list.innerHTML = '<p style="color:#64748B;font-size:13.5px;">Gagal memuat diskusi.</p>';
+          });
+      })();
+
       // 2. Tautan kembali ke detail (pakai ID angka yang sama).
       const detailUrl = 'detail-dispute.php?id=' + disputeIdApi;
       document.getElementById('stepperDetailLink').href = detailUrl;
@@ -1087,23 +1128,37 @@
       const btnSubmit = document.getElementById('btnSubmitPutusan');
       btnSubmit.addEventListener('click', () => {
         // Putusan asli lewat API (admin only): POST ../../api/dispute/putuskan.php
-        // dengan { dispute_id, putusan }. Nominal refund & catatan di form ini
+        // dengan { dispute_id, putusan, catatan }. Nominal refund di form ini
         // tidak dikirim: nominal dihitung server (total − DP yang sudah cair)
-        // dan hanya ditampilkan di kolom Nominal refund di atas.
+        // dan hanya ditampilkan di kolom Nominal refund di atas. Catatan
+        // putusan disimpan ke dispute.catatan_admin dan terlihat buyer &
+        // perusahaan; untuk 'revisi' catatan wajib diisi.
         const putusan = PUTUSAN_BY_DECISION[selectedDecision];
+        const catatan = catatanInput ? catatanInput.value.trim() : '';
         if (disputeIdApi > 0 && putusan) {
+          if (putusan === 'revisi' && catatan === '') {
+            showToast('Tulis dulu catatan revisinya di kolom Catatan putusan.', 'info');
+            if (catatanInput) catatanInput.focus();
+            return;
+          }
           btnSubmit.disabled = true;
           fetch('../../api/dispute/putuskan.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ dispute_id: disputeIdApi, putusan: putusan })
+            body: JSON.stringify({ dispute_id: disputeIdApi, putusan: putusan, catatan: catatan })
           })
             .then(function (r) { return r.json(); })
             .then(function (res) {
               if (!res.ok) throw new Error(res.error || 'Putusan gagal');
-              showToast('Putusan dispute #' + disputeIdApi + ' berhasil ditetapkan: ' + (putusan === 'uang_kembali' ? 'uang kembali ke buyer.' : 'lanjut ke perusahaan.'), 'success');
+              if (putusan === 'revisi') {
+                showToast('Permintaan revisi dispute #' + disputeIdApi + ' berhasil dikirim.', 'success');
+              } else {
+                showToast('Putusan dispute #' + disputeIdApi + ' berhasil ditetapkan: ' + (putusan === 'uang_kembali' ? 'uang kembali ke buyer.' : 'lanjut ke perusahaan.'), 'success');
+              }
               setTimeout(() => {
-                window.location.href = 'dispute.php';
+                // Revisi membuka lagi tiketnya: kembali ke detail dispute.
+                // Putusan akhir kembali ke daftar.
+                window.location.href = putusan === 'revisi' ? ('detail-dispute.php?id=' + disputeIdApi) : 'dispute.php';
               }, 900);
             })
             .catch(function (err) {
@@ -1113,13 +1168,8 @@
           return;
         }
 
-        // Tanpa ID dispute asli, atau pilihan 'Minta revisi' (tidak ada
-        // nilai putusannya di API), putusan tidak bisa dikirim.
-        if (disputeIdApi <= 0) {
-          showToast('Buka dispute dari daftar dulu (butuh ID dispute asli).', 'info');
-        } else {
-          showToast('Minta revisi usulan belum tersedia — putusan hanya Disetujui (uang kembali) atau Ditolak (lanjut perusahaan).', 'info');
-        }
+        // Tanpa ID dispute asli, putusan tidak bisa dikirim.
+        showToast('Buka dispute dari daftar dulu (butuh ID dispute asli).', 'info');
       });
 
       // 5. Topbar Profile button

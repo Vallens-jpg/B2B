@@ -768,6 +768,11 @@
             <span class="pd-detail-value" id="detailDiajukan">—</span>
           </div>
 
+          <div class="pd-detail-row" id="detailCatatanRow" style="display:none;">
+            <span class="pd-detail-label">Catatan Admin</span>
+            <span class="pd-detail-value" id="detailCatatan">—</span>
+          </div>
+
 
         </div>
 
@@ -872,6 +877,11 @@
           setText('summaryNilai', rupiah(d.total_bayar));
           setText('detailJenis', d.judul || '-');
           setText('detailDiajukan', waktuId(d.created_at));
+          if (d.catatan_admin) {
+            setText('detailCatatan', d.catatan_admin);
+            var cr = document.getElementById('detailCatatanRow');
+            if (cr) cr.style.display = '';
+          }
           var labelStatus = d.status === 'diajukan' ? 'Diajukan' : (d.status === 'diproses' ? 'Diproses' : 'Selesai');
           setText('statusPillText', labelStatus);
           var langkah = ['Diajukan', 'Diproses', 'Selesai'];

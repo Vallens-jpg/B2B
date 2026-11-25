@@ -1024,8 +1024,8 @@
           document.getElementById('tileEmail').textContent = u.email || '—';
           document.getElementById('tilePhone').textContent = '—';
           document.getElementById('tileAddress').textContent = '—';
-          document.getElementById('tileNib').textContent = '—';
-          document.getElementById('tileNpwp').textContent = '—';
+          document.getElementById('tileNib').textContent = u.nib || '—';
+          document.getElementById('tileNpwp').textContent = u.npwp || '—';
           const status = (u.verifikasi_status === 'terverifikasi') ? 'approved'
             : ((u.verifikasi_status === 'ditolak') ? 'rejected' : 'pending');
           if (status === 'approved') {

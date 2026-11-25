@@ -5626,7 +5626,7 @@
         <!-- Hidden input for edit mode index -->
         <input type="hidden" id="editProductIndex" value="-1">
 
-        <!-- Row 1: Jenis Produk & Grade (Telur Bebek telah dihapus) -->
+        <!-- Row 1: Jenis Produk & Grade -->
         <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="inputJenisProduk">Jenis Produk</label>
@@ -5634,6 +5634,14 @@
               <option value="Telur Ayam Ras">Telur Ayam Ras</option>
               <option value="Telur Ayam Kampung">Telur Ayam Kampung</option>
               <option value="Telur Omega">Telur Omega</option>
+              <option value="Beras">Beras</option>
+              <option value="Gula Pasir">Gula Pasir</option>
+              <option value="Minyak Goreng">Minyak Goreng</option>
+              <option value="Tepung Terigu">Tepung Terigu</option>
+              <option value="Garam">Garam</option>
+              <option value="Kopi">Kopi</option>
+              <option value="Teh">Teh</option>
+              <option value="Lainnya">Lainnya</option>
             </select>
           </div>
 
@@ -5644,6 +5652,14 @@
               <option value="B">B</option>
               <option value="C">C</option>
             </select>
+          </div>
+        </div>
+
+        <!-- Row 1b: Nama jenis lain (tampil bila Jenis Produk = Lainnya) -->
+        <div class="form-row" id="rowJenisLain" style="display:none;">
+          <div class="form-group">
+            <label class="form-label" for="inputJenisLain">Nama Jenis Produk</label>
+            <input type="text" class="form-input" id="inputJenisLain" placeholder="Contoh: Beras Premium">
           </div>
         </div>
 
@@ -5876,7 +5892,7 @@
       'pendapatan': {
         type: 'dual-charts',
         chartLeft: {
-          title: 'Volume telur (kg)',
+          title: 'Volume produk (kg)',
           subtitle: 'Pendapatan minggu ini',
           total: '—',
           maxVal: 1,
@@ -5908,13 +5924,24 @@
         .then(function (res) {
           if (!res.ok || !res.data || !res.data.produk) { showToast('Gagal memuat produk: ' + (res.error || 'tidak diketahui')); return; }
           PRODUCTS_DATA = res.data.produk.map(function (pr) {
-            var gradeKey = /grade b/i.test(pr.nama) ? 'B' : (/grade c/i.test(pr.nama) ? 'C' : 'A');
-            var jenis = /kampung/i.test(pr.nama) ? 'Telur Ayam Kampung' : (/omega/i.test(pr.nama) ? 'Telur Omega' : 'Telur Ayam Ras');
+            var namaAsli = pr.nama || '';
+            var isTelur = /telur/i.test(namaAsli);
+            var gradeKey = '';
+            var jenis = namaAsli;
+            if (isTelur) {
+              // Produk telur: petakan nama ke jenis + grade seperti semula.
+              gradeKey = /grade b/i.test(namaAsli) ? 'B' : (/grade c/i.test(namaAsli) ? 'C' : 'A');
+              jenis = /kampung/i.test(namaAsli) ? 'Telur Ayam Kampung' : (/omega/i.test(namaAsli) ? 'Telur Omega' : 'Telur Ayam Ras');
+            } else {
+              // Bukan telur: jenis = nama apa adanya tanpa akhiran " Grade X".
+              jenis = namaAsli.replace(/\s+grade\s+[abc]\s*$/i, '');
+            }
             return {
               id: pr.id,
+              namaAsli: namaAsli,
               deskripsi: pr.deskripsi || '',
               jenis: jenis,
-              grade: 'Grade ' + gradeKey,
+              grade: gradeKey ? 'Grade ' + gradeKey : '—',
               gradeKey: gradeKey,
               harga: 'Rp ' + Number(pr.harga_per_kg).toLocaleString('id-ID'),
               stok: Number(pr.stok_kg).toLocaleString('id-ID') + ' kg',
@@ -6093,7 +6120,7 @@
 
       // --- Panel stok: batang dari stok tiap produk ---
       const stokBars = PRODUCTS_DATA.map(function (pr) {
-        const label = pr.jenis === 'Telur Ayam Ras' ? pr.grade : pr.jenis;
+        const label = pr.namaAsli || pr.jenis;
         const nilai = Number(pr.stokKg) || 0;
         return { label: label, value: nilai, displayVal: nilai.toLocaleString('id-ID') };
       });
@@ -6171,7 +6198,7 @@
       DASHBOARD_CONFIGS['pendapatan'] = {
         type: 'dual-charts',
         chartLeft: {
-          title: 'Volume telur (kg)',
+          title: 'Volume produk (kg)',
           subtitle: 'Pendapatan minggu ini',
           total: totalKg.toLocaleString('id-ID') + ' kg',
           maxVal: maksVol,
@@ -6379,11 +6406,14 @@
 
       PRODUCTS_DATA.forEach((prod, index) => {
         const gradeClass = prod.gradeKey === 'A' ? 'grade-a' : (prod.gradeKey === 'B' ? 'grade-b' : 'grade-c');
+        const gradeCell = prod.gradeKey
+          ? `<span class="grade-badge ${gradeClass}">• Grade ${prod.gradeKey}</span>`
+          : '—';
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td><strong>${prod.jenis}</strong></td>
+          <td><strong>${prod.namaAsli || prod.jenis}</strong></td>
           <td>
-            <span class="grade-badge ${gradeClass}">• Grade ${prod.gradeKey}</span>
+            ${gradeCell}
           </td>
           <td>${prod.harga}</td>
           <td>${prod.stok}</td>
@@ -6407,7 +6437,8 @@
     function handleDeleteProduct(index) {
       const item = PRODUCTS_DATA[index];
       if (!item || !item.id) { showToast('Produk ini belum tersimpan di database'); return; }
-      if (confirm(`Apakah Anda yakin ingin menghapus "${item.jenis} (Grade ${item.gradeKey})"?`)) {
+      const labelHapus = item.gradeKey ? (item.jenis + ' (Grade ' + item.gradeKey + ')') : (item.namaAsli || item.jenis);
+      if (confirm('Apakah Anda yakin ingin menghapus "' + labelHapus + '"?')) {
         fetch('../../api/produk/hapus.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -6458,7 +6489,22 @@
     }
 
     // Listen to Jenis Produk changes to adjust Grade options
+    // Jenis yang memakai grade hanya produk telur; jenis lain bebas
+    // (Beras, Gula Pasir, dst.) dan tidak memakai grade.
+    const JENIS_TELUR = ['Telur Ayam Ras', 'Telur Ayam Kampung', 'Telur Omega'];
+    const JENIS_TETAP = JENIS_TELUR.concat(['Beras', 'Gula Pasir', 'Minyak Goreng', 'Tepung Terigu', 'Garam', 'Kopi', 'Teh']);
+
+    // Nonaktifkan pilihan grade untuk jenis non-telur, dan tampilkan isian
+    // "Nama Jenis Produk" bila Jenis Produk = Lainnya.
+    function sesuaikanGradeDenganJenis() {
+      const isTelur = JENIS_TELUR.indexOf(inputJenis.value) !== -1;
+      inputGrade.disabled = !isTelur;
+      const rowLain = document.getElementById('rowJenisLain');
+      if (rowLain) rowLain.style.display = inputJenis.value === 'Lainnya' ? '' : 'none';
+    }
+
     inputJenis.addEventListener('change', () => {
+      sesuaikanGradeDenganJenis();
       updateGradeOptions(inputGrade.value);
     });
 
@@ -6475,6 +6521,9 @@
       // bukan isian angka; satuan selalu KG.
       inputJenis.value = 'Telur Ayam Ras';
       updateGradeOptions('A');
+      sesuaikanGradeDenganJenis();
+      const inputLainBaru = document.getElementById('inputJenisLain');
+      if (inputLainBaru) inputLainBaru.value = '';
       inputHarga.value = '';
       inputStok.value = '';
       inputMinOrder.value = '';
@@ -6493,8 +6542,17 @@
       btnModalSubmit.textContent = 'Simpan Perubahan';
       editIndexInput.value = index;
 
-      inputJenis.value = prod.jenis;
+      // Jenis yang tidak ada di daftar pilihan tetap dibuka lewat "Lainnya"
+      // dengan nama aslinya di isian nama jenis.
+      if (JENIS_TETAP.indexOf(prod.jenis) !== -1) {
+        inputJenis.value = prod.jenis;
+      } else {
+        inputJenis.value = 'Lainnya';
+        const inputLainEdit = document.getElementById('inputJenisLain');
+        if (inputLainEdit) inputLainEdit.value = prod.namaAsli || prod.jenis;
+      }
       updateGradeOptions(prod.gradeKey);
+      sesuaikanGradeDenganJenis();
       inputHarga.value = prod.harga;
       inputStok.value = prod.stok;
       // Minimal order tidak tersimpan di database: jangan isi '-' ke
@@ -6522,27 +6580,36 @@
       const index = parseInt(editIndexInput.value, 10);
       const gradeSelected = inputGrade.value;
 
+      const jenisDipilih = inputJenis.value;
+      const isTelur = JENIS_TELUR.indexOf(jenisDipilih) !== -1;
+      const jenisLain = ((document.getElementById('inputJenisLain') || {}).value || '').trim();
+      // Nama jenis: telur pakai pilihan; "Lainnya" pakai isian bebas;
+      // pilihan tetap non-telur (Beras, Gula, dst.) pakai namanya sendiri.
+      const jenisProduk = isTelur ? jenisDipilih : (jenisDipilih === 'Lainnya' ? jenisLain : jenisDipilih);
+      if (!jenisProduk) { showToast('Isi dulu nama jenis produknya.'); return; }
+
       const productPayload = {
-        jenis: inputJenis.value,
-        grade: `Grade ${gradeSelected}`,
-        gradeKey: gradeSelected,
+        jenis: jenisProduk,
+        grade: isTelur ? ('Grade ' + gradeSelected) : '—',
+        gradeKey: isTelur ? gradeSelected : '',
         harga: inputHarga.value,
         stok: inputStok.value,
         minOrder: inputMinOrder.value,
         satuan: 'KG'
       };
 
-      // Nama produk mengikuti skema database: Ras selalu pakai grade
-      // ("Telur Ayam Grade A"); Kampung/Omega tanpa grade untuk A
-      // ("Telur Ayam Kampung") dan pakai grade untuk B/C
-      // ("Telur Ayam Kampung Grade B") supaya namanya tidak bentrok.
+      // Nama produk: skema telur seperti semula (Ras selalu pakai grade;
+      // Kampung/Omega tanpa grade untuk A, pakai grade untuk B/C);
+      // produk non-telur memakai nama jenisnya apa adanya.
       var namaProduk;
-      if (productPayload.jenis === 'Telur Ayam Ras') {
+      if (jenisDipilih === 'Telur Ayam Ras') {
         namaProduk = 'Telur Ayam Grade ' + gradeSelected;
+      } else if (!isTelur) {
+        namaProduk = jenisProduk;
       } else if (gradeSelected === 'A') {
-        namaProduk = productPayload.jenis;
+        namaProduk = jenisProduk;
       } else {
-        namaProduk = productPayload.jenis + ' Grade ' + gradeSelected;
+        namaProduk = jenisProduk + ' Grade ' + gradeSelected;
       }
       var produkId = (index >= 0 && index < PRODUCTS_DATA.length && PRODUCTS_DATA[index].id) ? PRODUCTS_DATA[index].id : 0;
       // Edit: pertahankan deskripsi lama dari database (modal tidak punya
@@ -7209,7 +7276,7 @@
       const harga = Number(item.harga) || 0;
 
       return '<div class="pesanan-item-row">' +
-        '<input class="pesanan-input pesanan-item-produk" type="text" value="' + escapeHtmlPesanan(item.produk || '') + '" placeholder="Telur ayam" oninput="hitungPesanan()">' +
+        '<input class="pesanan-input pesanan-item-produk" type="text" value="' + escapeHtmlPesanan(item.produk || '') + '" placeholder="Nama produk" oninput="hitungPesanan()">' +
         '<div class="pesanan-qty-wrap">' +
           '<input class="pesanan-item-qty" type="number" min="1" step="1" value="' + qty + '" oninput="hitungPesanan()">' +
           '<span>Kg</span>' +
@@ -7287,13 +7354,13 @@
       if (!container) return;
 
       const lastRow = container.querySelector('.pesanan-item-row:last-child');
-      const produk = lastRow ? lastRow.querySelector('.pesanan-item-produk').value : 'Telur Ayam';
-      const harga = lastRow ? parseRupiah(lastRow.querySelector('.pesanan-item-harga').value) : 250000;
+      const produk = lastRow ? lastRow.querySelector('.pesanan-item-produk').value : '';
+      const harga = lastRow ? parseRupiah(lastRow.querySelector('.pesanan-item-harga').value) : 0;
 
       container.insertAdjacentHTML('beforeend', itemPesananRowHTML({
         produk: produk,
         qty: 1,
-        harga: harga > 0 ? harga : 250000
+        harga: harga > 0 ? harga : 0
       }));
 
       hitungPesanan();

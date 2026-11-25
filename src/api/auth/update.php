@@ -40,6 +40,12 @@ try {
     $telepon = trim((string) ($input['telepon'] ?? ''));
     $kota = trim((string) ($input['kota'] ?? ''));
     $alamat = trim((string) ($input['alamat'] ?? ''));
+    // NIB/NPWP hanya untuk perusahaan; panjang dibatasi kolom database.
+    $nib = trim((string) ($input['nib'] ?? ''));
+    $npwp = trim((string) ($input['npwp'] ?? ''));
+    if (mb_strlen($nib) > 30 || mb_strlen($npwp) > 20) {
+        json_error('NIB maksimal 30 karakter dan NPWP maksimal 20 karakter', 422);
+    }
     if ($role === 'pembeli' && !empty($profil['id_pembeli'])) {
         $stmt = $pdo->prepare(
             'UPDATE pembeli SET nama_pembeli = ?,'
@@ -60,10 +66,12 @@ try {
             . ' atas_nama = COALESCE(NULLIF(?, \'\'), atas_nama),'
             . ' telepon = COALESCE(NULLIF(?, \'\'), telepon),'
             . ' kota = COALESCE(NULLIF(?, \'\'), kota),'
-            . ' alamat = COALESCE(NULLIF(?, \'\'), alamat)'
+            . ' alamat = COALESCE(NULLIF(?, \'\'), alamat),'
+            . ' nib = COALESCE(NULLIF(?, \'\'), nib),'
+            . ' npwp = COALESCE(NULLIF(?, \'\'), npwp)'
             . ' WHERE id_perusahaan = ?'
         );
-        $stmt->execute([$nama, $namaBank, $noRek, $atasNama, $telepon, $kota, $alamat, (int) $profil['id_perusahaan']]);
+        $stmt->execute([$nama, $namaBank, $noRek, $atasNama, $telepon, $kota, $alamat, $nib, $npwp, (int) $profil['id_perusahaan']]);
     } elseif ($role === 'admin' && !empty($profil['id_admin'])) {
         $stmt = $pdo->prepare('UPDATE admin SET nama = ? WHERE id_admin = ?');
         $stmt->execute([$nama, (int) $profil['id_admin']]);
@@ -89,4 +97,6 @@ json_ok([
     'telepon' => $telepon ?? '',
     'kota' => $kota ?? '',
     'alamat' => $alamat ?? '',
+    'nib' => $nib ?? '',
+    'npwp' => $npwp ?? '',
 ]);

@@ -21,7 +21,7 @@ try {
     $stmt->execute([(int) ($user['id'] ?? 0)]);
     $baris = $stmt->fetch();
     if ($baris && ($baris['role'] ?? '') === 'perusahaan' && !empty($baris['id_perusahaan'])) {
-        $stmt = $pdo->prepare('SELECT nama_bank, no_rekening, atas_nama, telepon, kota, alamat FROM perusahaan WHERE id_perusahaan = ? LIMIT 1');
+        $stmt = $pdo->prepare('SELECT nama_bank, no_rekening, atas_nama, telepon, kota, alamat, nib, npwp FROM perusahaan WHERE id_perusahaan = ? LIMIT 1');
         $stmt->execute([(int) $baris['id_perusahaan']]);
         $profil = $stmt->fetch() ?: [];
     } elseif ($baris && ($baris['role'] ?? '') === 'pembeli' && !empty($baris['id_pembeli'])) {
@@ -44,4 +44,6 @@ json_ok([
     'telepon' => $profil['telepon'] ?? '',
     'kota' => $profil['kota'] ?? '',
     'alamat' => $profil['alamat'] ?? '',
+    'nib' => $profil['nib'] ?? '',
+    'npwp' => $profil['npwp'] ?? '',
 ]);

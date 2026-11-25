@@ -33,7 +33,7 @@ try {
         json_ok(['user_id' => $userId, 'status' => $status]);
     }
 
-    $stmt = $pdo->query('SELECT id_pengguna AS id, nama_pengguna AS nama, email, role, status, dibuat_pada AS created_at FROM pengguna ORDER BY id_pengguna');
+    $stmt = $pdo->query('SELECT u.id_pengguna AS id, u.nama_pengguna AS nama, u.email, u.role, u.status, u.dibuat_pada AS created_at, per.nib, per.npwp FROM pengguna u LEFT JOIN perusahaan per ON per.id_perusahaan = u.id_perusahaan ORDER BY u.id_pengguna');
     $pengguna = $stmt->fetchAll();
     foreach ($pengguna as &$row) {
         $row['id'] = (int) $row['id'];

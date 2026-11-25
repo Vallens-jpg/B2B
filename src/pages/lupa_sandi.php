@@ -378,20 +378,22 @@
             <div class="step-dot" id="dot-3"></div>
           </div>
 
+          <p id="pesanLupa" style="text-align:center;font-size:0.92rem;min-height:1.2em;"></p>
+
           <!-- Step 1: Email -->
           <div class="step-panel" id="lupa-step-1">
-            <form class="form-grid">
+            <form class="form-grid" id="formLupaEmail">
               <div class="field">
                 <label class="field-label" for="email">Email Terdaftar</label>
                 <input class="field-input" id="email" type="email" placeholder="Masukkan alamat email" required>
               </div>
-              <a href="#lupa-step-2" class="cta-btn" style="text-align:center;text-decoration:none;display:block;padding:11px 16px;">Kirim Kode OTP</a>
+              <a href="#lupa-step-2" id="btnKirimOtp" class="cta-btn" style="text-align:center;text-decoration:none;display:block;padding:11px 16px;">Kirim Kode OTP</a>
             </form>
           </div>
 
           <!-- Step 2: OTP -->
           <div class="step-panel" id="lupa-step-2">
-            <form class="form-grid">
+            <form class="form-grid" id="formVerifikasiOtp">
               <div class="field">
                 <label class="field-label">Kode OTP</label>
                 <div class="otp-grid">
@@ -403,14 +405,14 @@
                   <input class="otp-input" maxlength="1">
                 </div>
               </div>
-              <a href="#lupa-step-3" class="cta-btn" style="text-align:center;text-decoration:none;display:block;padding:11px 16px;">Verifikasi OTP</a>
-              <a href="#lupa-step-1" class="cta-btn secondary" style="text-align:center;text-decoration:none;display:block;padding:11px 16px;">Kirim Ulang Kode</a>
+              <a href="#lupa-step-3" id="btnVerifikasiOtp" class="cta-btn" style="text-align:center;text-decoration:none;display:block;padding:11px 16px;">Verifikasi OTP</a>
+              <a href="#lupa-step-1" id="btnKirimUlang" class="cta-btn secondary" style="text-align:center;text-decoration:none;display:block;padding:11px 16px;">Kirim Ulang Kode</a>
             </form>
           </div>
 
           <!-- Step 3: Password Baru -->
           <div class="step-panel" id="lupa-step-3">
-            <form class="form-grid" action="login.php" method="get">
+            <form class="form-grid" id="formResetSandi">
               <div class="field">
                 <label class="field-label" for="new-password">Kata Sandi Baru</label>
                 <input class="field-input" id="new-password" type="password" placeholder="Masukkan kata sandi baru" required>
@@ -430,6 +432,107 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // Alur lupa kata sandi (3 langkah) memakai endpoint api/auth/lupa_*.php:
+    // kirim OTP -> verifikasi OTP (dapat token reset) -> simpan kata sandi baru.
+    (function () {
+      var pesanEl = document.getElementById('pesanLupa');
+      var emailEl = document.getElementById('email');
+      var otpInputs = Array.prototype.slice.call(document.querySelectorAll('.otp-input'));
+      var tokenReset = '';
+
+      function tampilPesan(teks, salah) {
+        if (!pesanEl) return;
+        pesanEl.textContent = teks;
+        pesanEl.style.color = salah ? '#FCA5A5' : '#BBF7D0';
+      }
+      function bukaStep(n) {
+        location.hash = '#lupa-step-' + n;
+        [1, 2, 3].forEach(function (i) {
+          var dot = document.getElementById('dot-' + i);
+          if (dot) dot.classList.toggle('active', i === n);
+        });
+      }
+      function ambilKodeOtp() {
+        return otpInputs.map(function (el) { return el.value; }).join('');
+      }
+      function kirimJson(url, data) {
+        return fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        }).then(function (r) { return r.json(); });
+      }
+
+      // OTP: ketik 1 digit lalu pindah ke kotak berikut; backspace mundur.
+      otpInputs.forEach(function (el, i) {
+        el.addEventListener('input', function () {
+          el.value = el.value.replace(/[^0-9]/g, '').slice(0, 1);
+          if (el.value && i < otpInputs.length - 1) otpInputs[i + 1].focus();
+        });
+        el.addEventListener('keydown', function (e) {
+          if (e.key === 'Backspace' && !el.value && i > 0) otpInputs[i - 1].focus();
+        });
+      });
+
+      function mintaKode() {
+        var email = emailEl.value.trim();
+        if (!email) { tampilPesan('Isi dulu alamat emailnya.', true); emailEl.focus(); return; }
+        tampilPesan('Mengirim kode OTP…', false);
+        kirimJson('../../api/auth/lupa_kirim.php', { email: email })
+          .then(function (res) {
+            if (!res.ok) throw new Error(res.error || 'Gagal mengirim kode.');
+            var teks = 'Kode OTP dikirim ke ' + email + '. Kode berlaku 10 menit.';
+            if (res.data && res.data.kode_demo) teks += ' (Demo: ' + res.data.kode_demo + ')';
+            if (res.data && res.data.peringatan) teks += ' Peringatan: ' + res.data.peringatan;
+            tampilPesan(teks, false);
+            bukaStep(2);
+            if (otpInputs[0]) otpInputs[0].focus();
+          })
+          .catch(function (err) { tampilPesan(err.message || 'Gagal mengirim kode.', true); });
+      }
+
+      var btnKirim = document.getElementById('btnKirimOtp');
+      if (btnKirim) btnKirim.addEventListener('click', function (e) { e.preventDefault(); mintaKode(); });
+      var btnUlang = document.getElementById('btnKirimUlang');
+      if (btnUlang) btnUlang.addEventListener('click', function (e) { e.preventDefault(); mintaKode(); });
+
+      var btnVerifikasi = document.getElementById('btnVerifikasiOtp');
+      if (btnVerifikasi) btnVerifikasi.addEventListener('click', function (e) {
+        e.preventDefault();
+        var kode = ambilKodeOtp();
+        if (kode.length !== 6) { tampilPesan('Isi dulu 6 digit kode OTP.', true); return; }
+        tampilPesan('Memeriksa kode OTP…', false);
+        kirimJson('../../api/auth/lupa_verifikasi.php', { email: emailEl.value.trim(), kode: kode })
+          .then(function (res) {
+            if (!res.ok) throw new Error(res.error || 'Kode OTP salah.');
+            tokenReset = res.data.token;
+            tampilPesan('Kode cocok. Buat kata sandi baru.', false);
+            bukaStep(3);
+          })
+          .catch(function (err) { tampilPesan(err.message || 'Kode OTP salah.', true); });
+      });
+
+      var formReset = document.getElementById('formResetSandi');
+      if (formReset) formReset.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var baru = document.getElementById('new-password').value;
+        var ulang = document.getElementById('confirm-password').value;
+        if (baru.length < 8) { tampilPesan('Kata sandi baru minimal 8 karakter.', true); return; }
+        if (baru !== ulang) { tampilPesan('Konfirmasi kata sandi tidak sama.', true); return; }
+        if (!tokenReset) { tampilPesan('Verifikasi dulu kode OTP-nya.', true); bukaStep(2); return; }
+        tampilPesan('Menyimpan kata sandi baru…', false);
+        kirimJson('../../api/auth/lupa_reset.php', { email: emailEl.value.trim(), token: tokenReset, password_baru: baru })
+          .then(function (res) {
+            if (!res.ok) throw new Error(res.error || 'Gagal menyimpan kata sandi.');
+            tampilPesan('Kata sandi berhasil diubah. Silakan masuk.', false);
+            setTimeout(function () { window.location.href = 'login.php'; }, 1500);
+          })
+          .catch(function (err) { tampilPesan(err.message || 'Gagal menyimpan kata sandi.', true); });
+      });
+    })();
+  </script>
 
 </body>
 

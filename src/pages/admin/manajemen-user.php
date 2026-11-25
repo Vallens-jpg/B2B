@@ -1251,8 +1251,8 @@
           phone: '',
           role: role,
           roleLabel: role === 'company' ? 'Perusahaan' : (role === 'admin' ? 'Admin' : 'Pembeli'),
-          nib: '—',
-          npwp: '—',
+          nib: u.nib || '—',
+          npwp: u.npwp || '—',
           date: formatApiDate(u.created_at),
           status: (u.status === 'nonaktif') ? 'inactive' : 'active'
         };
