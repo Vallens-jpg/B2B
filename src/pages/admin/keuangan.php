@@ -989,6 +989,7 @@
           <table>
             <thead>
               <tr>
+                <th>ID PENCAIRAN</th>
                 <th>TANGGAL CAIR</th>
                 <th>NOMINAL</th>
                 <th>TUJUAN</th>
@@ -1246,13 +1247,13 @@
         if (!body) return;
         body.innerHTML = '';
         if (!RIWAYAT_PENCAIRAN.length) {
-          body.innerHTML = '<tr class="empty-row"><td colspan="5">Belum ada pencairan yang dicatat.</td></tr>';
+          body.innerHTML = '<tr class="empty-row"><td colspan="6">Belum ada pencairan yang dicatat.</td></tr>';
           return;
         }
         RIWAYAT_PENCAIRAN.forEach(function (p) {
           const w = formatTanggalApi(p.tanggal_cair);
           const tr = document.createElement('tr');
-          tr.innerHTML = '\n            <td>\n              <div class="td-date-title">' + ((typeof w === 'object') ? w.date : '—') + '</div>\n              <div class="td-date-sub">' + ((typeof w === 'object') ? w.time : '') + '</div>\n            </td>\n            <td>\n              <div class="td-nominal">' + formatRupiah(Math.round(Number(p.nominal || 0))) + '</div>\n            </td>\n            <td>\n              <div class="td-target-title">' + (p.nama_perusahaan || '—') + ' — Order #' + p.order_id + '</div>\n              <div class="td-target-sub">' + labelTahap(p.tahap) + ' · ' + rekeningText(p) + '</div>\n            </td>\n            <td>\n              <div class="td-target-sub">' + (p.referensi || '—') + '</div>\n            </td>\n            <td>\n              <span class="badge-success">\n                <span class="badge-dot">●</span> Berhasil\n              </span>\n            </td>\n          ';
+          tr.innerHTML = '\n            <td>\n              <div class="td-target-sub">' + (p.external_id || '—') + '</div>\n            </td>\n            <td>\n              <div class="td-date-title">' + ((typeof w === 'object') ? w.date : '—') + '</div>\n              <div class="td-date-sub">' + ((typeof w === 'object') ? w.time : '') + '</div>\n            </td>\n            <td>\n              <div class="td-nominal">' + formatRupiah(Math.round(Number(p.nominal || 0))) + '</div>\n            </td>\n            <td>\n              <div class="td-target-title">' + (p.nama_perusahaan || '—') + ' — Order #' + p.order_id + '</div>\n              <div class="td-target-sub">' + labelTahap(p.tahap) + ' · ' + rekeningText(p) + '</div>\n            </td>\n            <td>\n              <div class="td-target-sub">' + (p.referensi || '—') + '</div>\n            </td>\n            <td>\n              <span class="badge-success">\n                <span class="badge-dot">●</span> Berhasil\n              </span>\n            </td>\n          ';
           body.appendChild(tr);
         });
       }
