@@ -34,7 +34,7 @@ try {
         json_ok(['user_id' => $userId, 'verifikasi_status' => $statusSimpan]);
     }
 
-    $stmt = $pdo->query('SELECT per.id_perusahaan AS id, per.nama_perusahaan AS nama, u.email, NULL AS created_at, per.status_verifikasi AS verifikasi_status, per.catatan_verifikasi AS verifikasi_catatan, per.nib, per.npwp FROM perusahaan per LEFT JOIN pengguna u ON u.id_perusahaan = per.id_perusahaan ORDER BY per.id_perusahaan DESC');
+    $stmt = $pdo->query('SELECT per.id_perusahaan AS id, per.nama_perusahaan AS nama, u.email, u.dibuat_pada AS created_at, per.status_verifikasi AS verifikasi_status, per.catatan_verifikasi AS verifikasi_catatan, per.nib, per.npwp, per.telepon, per.alamat FROM perusahaan per LEFT JOIN pengguna u ON u.id_perusahaan = per.id_perusahaan ORDER BY per.id_perusahaan DESC');
     $rows = $stmt->fetchAll();
     foreach ($rows as &$row) {
         $row['id'] = (int) $row['id'];

@@ -414,7 +414,7 @@
         .then(function (r) { return r.json(); })
         .then(function (res) {
           if (!res || !res.ok || !res.data || !res.data.order) {
-            document.getElementById('summaryTitle').innerText = (res && res.message) || 'Pesanan tidak ditemukan.';
+            document.getElementById('summaryTitle').innerText = (res && res.error) || 'Pesanan tidak ditemukan.';
             return;
           }
           var o = res.data.order;
@@ -471,7 +471,7 @@
         .then(function (r) { return r.json(); })
         .then(function (res) {
           if (!res || !res.ok) {
-            alert((res && res.message) || 'Gagal mengirim pengajuan dispute.');
+            alert((res && res.error) || 'Gagal mengirim pengajuan dispute.');
             return;
           }
           window.location.href = 'dispute_detail.php?id=' + res.data.dispute_id;

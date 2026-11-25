@@ -493,7 +493,7 @@
         .then(function (r) { return r.json(); })
         .then(function (res) {
           if (!res || !res.ok || !res.data || !res.data.order) {
-            document.getElementById('summaryTitle').innerText = (res && res.message) || 'Pesanan tidak ditemukan.';
+            document.getElementById('summaryTitle').innerText = (res && res.error) || 'Pesanan tidak ditemukan.';
             return;
           }
           var o = res.data.order;
@@ -585,7 +585,7 @@
         .then(function (r) { return r.json(); })
         .then(function (res) {
           if (!res || !res.ok) {
-            tampilkanPesanUlasan((res && res.message) || 'Gagal mengirim ulasan.', false);
+            tampilkanPesanUlasan((res && res.error) || 'Gagal mengirim ulasan.', false);
             return;
           }
           tampilkanPesanUlasan('Terima kasih! Ulasan Anda berhasil dikirim.', true);

@@ -866,7 +866,7 @@
               <span>NO HP</span>
             </div>
             <div class="tile-value" id="tilePhone">—</div>
-            <div class="tile-sub">Belum tersedia</div>
+            <div class="tile-sub">Nomor HP perusahaan</div>
           </div>
 
           <!-- Tile 4: Alamat -->
@@ -879,7 +879,7 @@
               <span>ALAMAT</span>
             </div>
             <div class="tile-value" id="tileAddress">—</div>
-            <div class="tile-sub">Belum tersedia</div>
+            <div class="tile-sub">Alamat perusahaan</div>
           </div>
 
           <!-- Tile 5: NIB -->
@@ -894,7 +894,7 @@
               <span>NIB</span>
             </div>
             <div class="tile-value" id="tileNib">—</div>
-            <div class="tile-sub">Belum tersedia</div>
+            <div class="tile-sub">Nomor Induk Berusaha</div>
           </div>
 
           <!-- Tile 6: NPWP -->
@@ -909,7 +909,7 @@
               <span>NPWP</span>
             </div>
             <div class="tile-value" id="tileNpwp">—</div>
-            <div class="tile-sub">Belum tersedia</div>
+            <div class="tile-sub">NPWP perusahaan</div>
           </div>
         </div>
       </div>
@@ -1022,8 +1022,8 @@
           document.getElementById('companyHeadingEmail').textContent = u.email || '—';
           document.getElementById('tileFullName').textContent = displayCompanyName;
           document.getElementById('tileEmail').textContent = u.email || '—';
-          document.getElementById('tilePhone').textContent = '—';
-          document.getElementById('tileAddress').textContent = '—';
+          document.getElementById('tilePhone').textContent = u.telepon || '—';
+          document.getElementById('tileAddress').textContent = u.alamat || '—';
           document.getElementById('tileNib').textContent = u.nib || '—';
           document.getElementById('tileNpwp').textContent = u.npwp || '—';
           const status = (u.verifikasi_status === 'terverifikasi') ? 'approved'

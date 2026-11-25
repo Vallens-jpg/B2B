@@ -1090,10 +1090,10 @@
               avatar: inisialNama(u.nama),
               avatarClass: AVATAR_CLASSES[Number(u.id) % AVATAR_CLASSES.length],
               date: formatTanggalApi(u.created_at),
-              phone: '—',
-              address: '—',
-              nib: '—',
-              npwp: '—',
+              phone: u.telepon || '—',
+              address: u.alamat || '—',
+              nib: u.nib || '—',
+              npwp: u.npwp || '—',
               status: status,
               note: u.verifikasi_catatan || ''
             };

@@ -864,7 +864,7 @@
         .then(function (r) { return r.json(); })
         .then(function (res) {
           if (!res || !res.ok || !res.data) {
-            if (timeline) timeline.innerHTML = '<p style="text-align:center;padding:1rem;color:#6B7280;">' + escapeHtml((res && res.message) || 'Dispute tidak ditemukan.') + '</p>';
+            if (timeline) timeline.innerHTML = '<p style="text-align:center;padding:1rem;color:#6B7280;">' + escapeHtml((res && res.error) || 'Dispute tidak ditemukan.') + '</p>';
             return;
           }
           var d = res.data;
@@ -918,7 +918,7 @@
         .then(function (r) { return r.json(); })
         .then(function (res) {
           if (!res || !res.ok) {
-            alert((res && res.message) || 'Gagal mengirim komentar.');
+            alert((res && res.error) || 'Gagal mengirim komentar.');
             return;
           }
           textarea.value = '';
