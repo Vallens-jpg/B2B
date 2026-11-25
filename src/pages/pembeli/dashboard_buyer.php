@@ -2,6 +2,7 @@
 ﻿<!DOCTYPE html>
 <html lang="id">
 <head>
+  <script src="../../assets/js/buyer-guard.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Staplr - Dashboard Buyer</title>
