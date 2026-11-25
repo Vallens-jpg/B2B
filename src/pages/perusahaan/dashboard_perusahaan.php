@@ -5355,6 +5355,10 @@
               <span class="value" id="ringkasanSaldo">Rp 0</span>
             </div>
             <div class="ringkasan-row">
+              <span class="label">Sudah dicairkan</span>
+              <span class="value" id="ringkasanSudahCair">Rp 0</span>
+            </div>
+            <div class="ringkasan-row">
               <span class="label">Nominal pencairan</span>
               <span class="value" id="ringkasanNominal">Rp 0</span>
             </div>
@@ -5393,7 +5397,7 @@
                   <th>TANGGAL</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="riwayatPencairanBody">
                 <tr>
                   <td colspan="6" style="text-align: center; color: var(--muted, #888);">Belum ada riwayat pencairan — pencairan belum dicatat di sistem.</td>
                 </tr>
@@ -7105,6 +7109,7 @@
     // dibayar -> menunggu-persetujuan (perlu diproses), diproses -> diproses,
     // dikirim -> dikirim, diterima -> diterima, selesai -> selesai.
     let PESANAN_DATA = [];
+    let PENCARIAN_ROWS = [];
     function muatPesananPerusahaan() {
       return fetch('../../api/order/list.php')
         .then(function (r) { return r.json(); })
@@ -7137,6 +7142,9 @@
                 jumlah_ditahan: Number(o.jumlah_ditahan) || 0,
                 dp_cair: Number(o.dp_cair) || 0,
                 sisa_cair: Number(o.sisa_cair) || 0,
+                dp_pending: (o.dp_pending != null) ? Number(o.dp_pending) : null,
+                sisa_pending: (o.sisa_pending != null) ? Number(o.sisa_pending) : null,
+                sudah_cair: Number(o.sudah_cair) || 0,
                 status: o.escrow_status || null
               } : null,
               items: [{ produk: o.nama_produk, qty: o.jumlah_kg, harga: o.harga_satuan }]
@@ -7146,6 +7154,8 @@
           bangunDashboard();
           bangunRiwayatDariPesanan();
           hitungSaldoEscrow();
+          PENCARIAN_ROWS = res.data.pencairan || [];
+          renderRiwayatPencairan();
         })
         .catch(function () { /* biarkan tabel kosong kalau API gagal dimuat */ });
     }
@@ -7556,36 +7566,42 @@
     // Saldo pencairan dari tabel pencairan (api/order/list.php, dipakai ulang
     // dari PESANAN_DATA). Aturannya sama dengan api/order/kirim.php dan
     // terima.php: pencairan tahap 1 dibuat saat dikirim, tahap 2 saat selesai.
-    // Siap cair = jumlah yang sudah dicairkan (dp_cair + sisa_cair).
+    // Siap cair = baris tahap 1/2 yang masih 'pending' (belum dicatat cair
+    // admin). Sudah dicairkan = baris yang statusnya 'berhasil'.
     // Tertahan = jumlah yang masih ditahan
     // (jumlah_ditahan - dp_cair - sisa_cair) untuk order yang sudah dibayar
     // dan dananya belum dikembalikan. Order 'menunggu_bayar' belum dibayar
     // jadi tidak dihitung; escrow 'kembali' (dibatalkan / putusan uang
-    // kembali) dananya sudah kembali ke pembeli. Penarikan dana sendiri
-    // belum tercatat di sistem, jadi saldo siap cair di sini adalah total
-    // yang sudah dicairkan.
+    // kembali) dananya sudah kembali ke pembeli.
     let saldoSiapCair = 0;
     let nominalPencairanAktif = 0;
 
     function hitungSaldoEscrow() {
       var siap = 0;
       var tertahan = 0;
+      var sudahCair = 0;
       PESANAN_DATA.forEach(function (o) {
         if (!o.escrow || o.statusDb === 'menunggu_bayar') return;
         var ditahan = Number(o.escrow.jumlah_ditahan) || 0;
         var dp = Number(o.escrow.dp_cair) || 0;
         var sisa = Number(o.escrow.sisa_cair) || 0;
-        siap += dp + sisa;
+        var dpPending = (o.escrow.dp_pending != null) ? Number(o.escrow.dp_pending) : dp;
+        var sisaPending = (o.escrow.sisa_pending != null) ? Number(o.escrow.sisa_pending) : sisa;
+        siap += dpPending + sisaPending;
+        sudahCair += Number(o.escrow.sudah_cair) || 0;
         if (o.escrow.status === 'ditahan' || o.escrow.status === 'cair_dp') {
           tertahan += Math.max(0, ditahan - dp - sisa);
         }
       });
       saldoSiapCair = Math.round(siap);
       tertahan = Math.round(tertahan);
+      sudahCair = Math.round(sudahCair);
       var elSiap = document.getElementById('saldoSiapCair');
       if (elSiap) elSiap.textContent = formatRupiah(saldoSiapCair);
       var elTertahan = document.getElementById('saldoTertahan');
       if (elTertahan) elTertahan.textContent = formatRupiah(tertahan);
+      var elSudah = document.getElementById('ringkasanSudahCair');
+      if (elSudah) elSudah.textContent = formatRupiah(sudahCair);
       var elRingkasan = document.getElementById('ringkasanSaldo');
       if (elRingkasan) elRingkasan.textContent = formatRupiah(saldoSiapCair);
       var elMaks = document.getElementById('maksPencairanHint');
@@ -7687,15 +7703,40 @@
       document.body.style.overflow = '';
     }
 
+    function renderRiwayatPencairan() {
+      var body = document.getElementById('riwayatPencairanBody');
+      if (!body) return;
+      body.innerHTML = '';
+      if (!PENCARIAN_ROWS.length) {
+        body.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--muted, #888);">Belum ada riwayat pencairan — pencairan belum dicatat di sistem.</td></tr>';
+        return;
+      }
+      PENCARIAN_ROWS.forEach(function (p) {
+        var tr = document.createElement('tr');
+        var tanggal = p.tanggal_cair || p.created_at || '';
+        var tgl = tanggal.slice(0, 10);
+        var jam = tanggal.length > 10 ? tanggal.slice(11, 16) : '';
+        var labelTahap = p.tahap === 1 ? 'DP 50%' : (p.tahap === 2 ? 'Pelunasan' : 'Tahap ' + p.tahap);
+        var rekening = (p.nama_bank || '—') + ' · ' + (p.no_rekening || '—');
+        var status = p.status === 'berhasil' ? 'Sudah dicairkan' : 'Menunggu transfer';
+        tr.innerHTML = '<td>' + (p.external_id || ('#' + p.id)) + '</td>' +
+          '<td>' + rekening + '</td>' +
+          '<td>' + labelTahap + ' — Order #' + p.order_id + '</td>' +
+          '<td>' + formatRupiah(Math.round(Number(p.nominal || 0))) + '</td>' +
+          '<td>' + status + '</td>' +
+          '<td>' + (tgl ? formatTanggalPesanan(tgl) : '-') + (jam ? ' ' + jam : '') + '</td>';
+        body.appendChild(tr);
+      });
+    }
+
     function konfirmasiPencairan() {
-      // Pencairan belum bisa dicatat: belum ada tabel/API pencairan di
-      // sistem, jadi jangan tampilkan modal sukses palsu. Form tinjau tetap
-      // bisa dibuka untuk memeriksa nominal terhadap saldo asli.
+      // Pencairan dicatat oleh admin (api/admin/pencairan.php); perusahaan
+      // tidak bisa mencatat sendiri, jadi jangan tampilkan modal sukses palsu.
       const reviewOverlay = document.getElementById('pencairanReviewOverlay');
       if (reviewOverlay) reviewOverlay.classList.remove('show');
       document.body.style.overflow = '';
       nominalPencairanAktif = 0;
-      showToast('Pencairan belum dapat dicatat — belum ada API pencairan di sistem');
+      showToast('Pencairan dicatat oleh admin. Hubungi admin untuk mencairkan dana.');
     }
 
     function tutupModalPencairan() {
@@ -7705,7 +7746,7 @@
 
       nominalPencairanAktif = 0;
       kembaliKeDetailPencairan();
-      showToast('Pencairan belum dicatat — belum ada API pencairan di sistem');
+      showToast('Pencairan belum dicatat. Hubungi admin untuk mencairkan dana.');
     }
 
     document.addEventListener('keydown', event => {

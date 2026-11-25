@@ -46,6 +46,50 @@ try {
         . ' ORDER BY ps.id_pesanan DESC LIMIT 100'
     );
     $rows = $stmt->fetchAll();
+    // Baris pencairan tahap 1/2 yang masih 'pending' = dana siap dicairkan
+    // ke perusahaan (sudah dilepas escrow, belum ditransfer).
+    $stmt = $pdo->query(
+        'SELECT pc.id_pencairan AS id, pc.id_pesanan AS order_id, pc.tahap, pc.nominal, pc.external_id, pc.tanggal_permintaan AS created_at,'
+        . ' per.nama_perusahaan, per.nama_bank, per.no_rekening, per.atas_nama'
+        . ' FROM pencairan pc JOIN pesanan ps ON ps.id_pesanan = pc.id_pesanan'
+        . ' JOIN perusahaan per ON per.id_perusahaan = ps.id_perusahaan'
+        . " WHERE pc.tahap IN (1, 2) AND pc.penerima = 'perusahaan' AND pc.status = 'pending'"
+        . ' ORDER BY per.nama_perusahaan, pc.id_pencairan'
+    );
+    $pending = $stmt->fetchAll();
+    // Baris yang sudah dicatat cair ('berhasil') = riwayat pencairan.
+    $stmt = $pdo->query(
+        'SELECT pc.id_pencairan AS id, pc.id_pesanan AS order_id, pc.tahap, pc.nominal, pc.external_id, pc.tanggal_cair, pc.xendit_payout_id AS referensi,'
+        . ' per.nama_perusahaan, per.nama_bank, per.no_rekening, per.atas_nama'
+        . ' FROM pencairan pc JOIN pesanan ps ON ps.id_pesanan = pc.id_pesanan'
+        . ' JOIN perusahaan per ON per.id_perusahaan = ps.id_perusahaan'
+        . " WHERE pc.tahap IN (1, 2) AND pc.penerima = 'perusahaan' AND pc.status = 'berhasil'"
+        . ' ORDER BY pc.tanggal_cair DESC, pc.id_pencairan DESC LIMIT 100'
+    );
+    $riwayat = $stmt->fetchAll();
+    foreach ($pending as &$row) {
+        $row['id'] = (int) $row['id'];
+        $row['order_id'] = (int) $row['order_id'];
+        $row['tahap'] = (int) $row['tahap'];
+        $row['nominal'] = (float) $row['nominal'];
+    }
+    foreach ($riwayat as &$row) {
+        $row['id'] = (int) $row['id'];
+        $row['order_id'] = (int) $row['order_id'];
+        $row['tahap'] = (int) $row['tahap'];
+        $row['nominal'] = (float) $row['nominal'];
+    }
+    unset($row);
+    $totalSiapCair = 0.0;
+    foreach ($pending as $row) {
+        $totalSiapCair += (float) $row['nominal'];
+    }
+    $totalSudahCair = 0.0;
+    foreach ($riwayat as $row) {
+        $totalSudahCair += (float) $row['nominal'];
+    }
+    $ringkasan['total_siap_cair'] = $totalSiapCair;
+    $ringkasan['total_sudah_cair'] = $totalSudahCair;
     foreach ($rows as &$row) {
         $row['id'] = (int) $row['id'];
         $row['order_id'] = (int) $row['order_id'];
@@ -61,7 +105,9 @@ try {
     $ringkasan['total_cair_sisa'] = (float) $ringkasan['total_cair_sisa'];
     $ringkasan['total_refund'] = (float) $ringkasan['total_refund'];
     $ringkasan['masih_ditahan'] = (float) $ringkasan['masih_ditahan'];
-    json_ok(['ringkasan' => $ringkasan, 'escrow' => $rows]);
+    $ringkasan['total_siap_cair'] = (float) $ringkasan['total_siap_cair'];
+    $ringkasan['total_sudah_cair'] = (float) $ringkasan['total_sudah_cair'];
+    json_ok(['ringkasan' => $ringkasan, 'escrow' => $rows, 'pending' => $pending, 'riwayat_pencairan' => $riwayat]);
 } catch (Throwable $e) {
     json_error('Database belum siap. Jalankan online_marketplace_v2.sql dulu.', 500);
 }

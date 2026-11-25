@@ -558,6 +558,87 @@
       transform: rotate(0deg);
     }
 
+    .btn-submit:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Daftar pencairan siap dicairkan (Form Pencairan) */
+    .pending-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .pending-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+    }
+
+    .pending-item input {
+      margin-top: 3px;
+      width: 18px;
+      height: 18px;
+      accent-color: #143358;
+      flex-shrink: 0;
+    }
+
+    .pending-item-nama {
+      font-weight: 700;
+      font-size: 14px;
+      color: #0f172a;
+    }
+
+    .pending-item-sub {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .pending-item-nominal {
+      margin-left: auto;
+      font-weight: 700;
+      font-size: 14px;
+      color: #0f172a;
+      white-space: nowrap;
+    }
+
+    .pending-pilih-semua {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+
+    .pending-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 14px;
+      color: #334155;
+    }
+
+    .pending-empty {
+      font-size: 13px;
+      color: #64748b;
+      padding: 8px 0;
+    }
+
     /* ============ 3. RIWAYAT PENCAIRAN ============ */
     .history-card {
       padding: 26px 28px;
@@ -849,100 +930,39 @@
       <!-- ============ 2. FORM PENCAIRAN ============ -->
       <div class="card form-card">
         <h2 class="card-title">Form Pencairan</h2>
-          <p style="font-size: 13px; color: #64748b; margin: 4px 0 0;">Pencairan dana belum tersedia — belum ada backend payout. Saldo di bawah adalah dana escrow yang masih ditahan.</p>
+          <p style="font-size: 13px; color: #64748b; margin: 4px 0 0;">Centang baris pencairan yang sudah ditransfer ke rekening perusahaan, lalu catat. Transfer dilakukan manual di luar sistem; yang dicatat di sini hanya buktinya.</p>
 
-        <!-- Field: Nominal Pencairan -->
+        <!-- Daftar dana siap dicairkan -->
+        <div class="pending-list" id="pendingList">
+          <!-- Rendered via JavaScript -->
+        </div>
+        <label class="pending-pilih-semua"><input type="checkbox" id="pilihSemuaPending"> Pilih semua</label>
+
+        <!-- Field: Referensi transfer -->
         <div class="form-group">
-          <label class="form-label" for="nominalPencairan">Nominal Pencairan</label>
+          <label class="form-label" for="referensiPencairan">No. Referensi Transfer (opsional)</label>
           <div class="input-nominal-wrap">
-            <span class="input-prefix">Rp</span>
-            <input type="text" id="nominalPencairan" class="input-nominal" value="" placeholder="Belum tersedia" disabled>
+            <input type="text" id="referensiPencairan" class="input-nominal" value="" placeholder="cth: TRF-20261125-001">
           </div>
         </div>
 
-        <!-- Field: Rekening Tujuan -->
-        <div class="form-group">
-          <label class="form-label">Rekening Tujuan</label>
-          <div class="account-select-wrap">
-            <div class="account-select" id="accountSelectBtn">
-              <div class="account-left">
-                <div class="bank-logo-box">
-                  <!-- BCA Logo representation -->
-                  <svg viewBox="0 0 32 32" width="24" height="24">
-                    <rect width="32" height="32" rx="6" fill="#005EAA"/>
-                    <path d="M9 16 C9 12 12 9 16 9 C19 9 21.5 10.5 22.5 12.5 L19.5 14 C18.8 12.8 17.5 12 16 12 C13.8 12 12 13.8 12 16 C12 18.2 13.8 20 16 20 C17.5 20 18.8 19.2 19.5 18 L22.5 19.5 C21.5 21.5 19 23 16 23 C12 23 9 20 9 16 Z" fill="#FFFFFF"/>
-                    <circle cx="16" cy="16" r="2.5" fill="#E31837"/>
-                  </svg>
-                </div>
-                <div class="account-info">
-                  <span class="account-name" id="selectedAccountName">—</span>
-                  <span class="account-sub" id="selectedAccountSub">Belum ada rekening tujuan</span>
-                </div>
-              </div>
-              <div class="select-chevron" id="selectChevron">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </div>
-            </div>
-
-            <!-- Dropdown Menu -->
-            <div class="account-dropdown-menu" id="accountDropdownMenu">
-              <div class="account-option selected" data-name="BCA - Tabungan" data-sub="—">
-                <div class="bank-logo-box">
-                  <svg viewBox="0 0 32 32" width="24" height="24">
-                    <rect width="32" height="32" rx="6" fill="#005EAA"/>
-                    <path d="M9 16 C9 12 12 9 16 9 C19 9 21.5 10.5 22.5 12.5 L19.5 14 C18.8 12.8 17.5 12 16 12 C13.8 12 12 13.8 12 16 C12 18.2 13.8 20 16 20 C17.5 20 18.8 19.2 19.5 18 L22.5 19.5 C21.5 21.5 19 23 16 23 C12 23 9 20 9 16 Z" fill="#FFFFFF"/>
-                    <circle cx="16" cy="16" r="2.5" fill="#E31837"/>
-                  </svg>
-                </div>
-                <div class="account-info">
-                  <span class="account-name">BCA - Tabungan</span>
-                  <span class="account-sub">—</span>
-                </div>
-              </div>
-
-              <div class="account-option" data-name="Mandiri - Tabungan Bisnis" data-sub="—">
-                <div class="bank-logo-box">
-                  <svg viewBox="0 0 32 32" width="24" height="24">
-                    <rect width="32" height="32" rx="6" fill="#003D79"/>
-                    <text x="16" y="20" font-size="10" font-weight="bold" fill="#FDB813" text-anchor="middle">MANDIRI</text>
-                  </svg>
-                </div>
-                <div class="account-info">
-                  <span class="account-name">Mandiri - Tabungan Bisnis</span>
-                  <span class="account-sub">—</span>
-                </div>
-              </div>
-
-              <div class="account-option" data-name="BRI - BritAma Bisnis" data-sub="—">
-                <div class="bank-logo-box">
-                  <svg viewBox="0 0 32 32" width="24" height="24">
-                    <rect width="32" height="32" rx="6" fill="#00529C"/>
-                    <text x="16" y="20" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">BRI</text>
-                  </svg>
-                </div>
-                <div class="account-info">
-                  <span class="account-name">BRI - BritAma Bisnis</span>
-                  <span class="account-sub">—</span>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="pending-total-row">
+          <span>Total terpilih</span>
+          <strong id="totalTerpilih">Rp 0</strong>
         </div>
 
         <!-- Submit Button -->
-        <button type="button" class="btn-submit" id="btnSubmitPencairan" disabled title="Pencairan belum tersedia">
-          <span>Cairkan Dana</span>
+        <button type="button" class="btn-submit" id="btnSubmitPencairan" disabled>
+          <span>Catat Pencairan</span>
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
           </svg>
         </button>
       </div>
 
-      <!-- ============ 3. RIWAYAT PENCAIRAN ============ -->
+      <!-- ============ 3. DANA ESCROW PER PESANAN ============ -->
       <div class="card history-card">
-        <h2 class="card-title">Riwayat Pencairan</h2>
+        <h2 class="card-title">Dana Escrow per Pesanan</h2>
 
         <div class="table-responsive">
           <table>
@@ -961,6 +981,28 @@
         </div>
       </div>
 
+      <!-- ============ 4. RIWAYAT PENCAIRAN ============ -->
+      <div class="card history-card">
+        <h2 class="card-title">Riwayat Pencairan</h2>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>TANGGAL CAIR</th>
+                <th>NOMINAL</th>
+                <th>TUJUAN</th>
+                <th>REFERENSI</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody id="riwayatPencairanBody">
+              <!-- Rendered via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </section>
   </main>
 
@@ -971,7 +1013,14 @@
   <script>
     (function() {
       let ESCROW_LIST = [];
+      let PENDING_LIST = [];
+      let RIWAYAT_PENCAIRAN = [];
       let SALDO_DITAHAN = 0;
+      // Didefinisikan di halaman ini (sebelumnya tidak ada sehingga
+      // muatKeuanganAdmin() gagal dan saldo selalu tampil Rp 0).
+      function formatRupiah(nilai) {
+        return 'Rp ' + Number(nilai || 0).toLocaleString('id-ID');
+      }
       const BULAN_ID = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
       function formatTanggalApi(waktu) {
         if (!waktu) return '—';
@@ -996,10 +1045,14 @@
             if (!res.ok || !res.data) {
               renderSaldo();
               renderTable();
+              renderPending();
+              renderRiwayatPencairan();
               return;
             }
             const ringkasan = res.data.ringkasan || {};
             SALDO_DITAHAN = Number(ringkasan.masih_ditahan || 0);
+            PENDING_LIST = res.data.pending || [];
+            RIWAYAT_PENCAIRAN = res.data.riwayat_pencairan || [];
             ESCROW_LIST = (res.data.escrow || []).map(function (e) {
               const w = formatTanggalApi(e.created_at);
               return {
@@ -1013,18 +1066,14 @@
             });
             renderSaldo();
             renderTable();
+            renderPending();
+            renderRiwayatPencairan();
           })
-          .catch(function () { renderSaldo(); renderTable(); });
+          .catch(function () { renderSaldo(); renderTable(); renderPending(); renderRiwayatPencairan(); });
       }
 
       const saldoDisplay = document.getElementById('saldoDisplay');
       const riwayatTableBody = document.getElementById('riwayatTableBody');
-      const nominalInput = document.getElementById('nominalPencairan');
-      const accountSelectBtn = document.getElementById('accountSelectBtn');
-      const accountDropdownMenu = document.getElementById('accountDropdownMenu');
-      const selectChevron = document.getElementById('selectChevron');
-      const selectedAccountName = document.getElementById('selectedAccountName');
-      const selectedAccountSub = document.getElementById('selectedAccountSub');
       const btnSubmitPencairan = document.getElementById('btnSubmitPencairan');
       const adminProfileBtn = document.getElementById('adminProfileBtn');
       const toastContainer = document.getElementById('toastContainer');
@@ -1086,7 +1135,128 @@
         });
       }
 
-      // Form pencairan dinonaktifkan: belum ada backend payout.
+      // ---- Form pencairan: centang baris yang sudah ditransfer ----
+      const pendingListEl = document.getElementById('pendingList');
+      const pilihSemuaEl = document.getElementById('pilihSemuaPending');
+      const totalTerpilihEl = document.getElementById('totalTerpilih');
+      const referensiEl = document.getElementById('referensiPencairan');
+
+      function labelTahap(tahap) {
+        return tahap === 1 ? 'DP 50%' : (tahap === 2 ? 'Pelunasan' : 'Tahap ' + tahap);
+      }
+
+      function rekeningText(p) {
+        const bank = p.nama_bank || '—';
+        const no = p.no_rekening || '—';
+        const nama = p.atas_nama || (p.nama_perusahaan || '—');
+        return bank + ' · ' + no + ' (' + nama + ')';
+      }
+
+      function renderPending() {
+        if (!pendingListEl) return;
+        pendingListEl.innerHTML = '';
+        if (!PENDING_LIST.length) {
+          pendingListEl.innerHTML = '<div class="pending-empty">Tidak ada dana siap dicairkan.</div>';
+        }
+        PENDING_LIST.forEach(function (p) {
+          const label = document.createElement('label');
+          label.className = 'pending-item';
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.className = 'pending-cb';
+          cb.value = String(p.id);
+          cb.addEventListener('change', updateTotalTerpilih);
+          const teks = document.createElement('div');
+          const nama = document.createElement('div');
+          nama.className = 'pending-item-nama';
+          nama.textContent = (p.nama_perusahaan || '—') + ' — Order #' + p.order_id + ' · ' + labelTahap(p.tahap);
+          const sub = document.createElement('div');
+          sub.className = 'pending-item-sub';
+          sub.textContent = rekeningText(p);
+          teks.appendChild(nama);
+          teks.appendChild(sub);
+          const nominal = document.createElement('div');
+          nominal.className = 'pending-item-nominal';
+          nominal.textContent = formatRupiah(Math.round(Number(p.nominal || 0)));
+          label.appendChild(cb);
+          label.appendChild(teks);
+          label.appendChild(nominal);
+          pendingListEl.appendChild(label);
+        });
+        if (pilihSemuaEl) pilihSemuaEl.checked = false;
+        updateTotalTerpilih();
+      }
+
+      function updateTotalTerpilih() {
+        let total = 0;
+        let terpilih = 0;
+        document.querySelectorAll('.pending-cb').forEach(function (cb) {
+          if (!cb.checked) return;
+          terpilih += 1;
+          const item = PENDING_LIST.find(function (p) { return String(p.id) === cb.value; });
+          if (item) total += Number(item.nominal || 0);
+        });
+        if (totalTerpilihEl) totalTerpilihEl.textContent = formatRupiah(Math.round(total));
+        if (btnSubmitPencairan) btnSubmitPencairan.disabled = terpilih === 0;
+        if (pilihSemuaEl) {
+          const semua = document.querySelectorAll('.pending-cb');
+          pilihSemuaEl.checked = semua.length > 0 && terpilih === semua.length;
+        }
+      }
+
+      if (pilihSemuaEl) {
+        pilihSemuaEl.addEventListener('change', function () {
+          document.querySelectorAll('.pending-cb').forEach(function (cb) { cb.checked = pilihSemuaEl.checked; });
+          updateTotalTerpilih();
+        });
+      }
+
+      function catatPencairan() {
+        const ids = [];
+        document.querySelectorAll('.pending-cb:checked').forEach(function (cb) { ids.push(parseInt(cb.value, 10)); });
+        if (!ids.length) { showToast('Pilih minimal satu baris pencairan', 'warning'); return; }
+        if (btnSubmitPencairan) btnSubmitPencairan.disabled = true;
+        fetch('../../api/admin/pencairan.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ids: ids, referensi: referensiEl ? referensiEl.value.trim() : '' })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok) {
+              showToast('Gagal: ' + (res.error || 'tidak diketahui'), 'warning');
+              updateTotalTerpilih();
+              return;
+            }
+            showToast('Pencairan ' + res.data.dicatat + ' baris dicatat: ' + formatRupiah(Math.round(Number(res.data.total_nominal || 0))));
+            if (referensiEl) referensiEl.value = '';
+            muatKeuanganAdmin();
+          })
+          .catch(function () {
+            showToast('Gagal menghubungi server.', 'warning');
+            updateTotalTerpilih();
+          });
+      }
+
+      if (btnSubmitPencairan) btnSubmitPencairan.addEventListener('click', catatPencairan);
+
+      // ---- Riwayat pencairan (baris yang sudah 'berhasil') ----
+      function renderRiwayatPencairan() {
+        const body = document.getElementById('riwayatPencairanBody');
+        if (!body) return;
+        body.innerHTML = '';
+        if (!RIWAYAT_PENCAIRAN.length) {
+          body.innerHTML = '<tr class="empty-row"><td colspan="5">Belum ada pencairan yang dicatat.</td></tr>';
+          return;
+        }
+        RIWAYAT_PENCAIRAN.forEach(function (p) {
+          const w = formatTanggalApi(p.tanggal_cair);
+          const tr = document.createElement('tr');
+          tr.innerHTML = '\n            <td>\n              <div class="td-date-title">' + ((typeof w === 'object') ? w.date : '—') + '</div>\n              <div class="td-date-sub">' + ((typeof w === 'object') ? w.time : '') + '</div>\n            </td>\n            <td>\n              <div class="td-nominal">' + formatRupiah(Math.round(Number(p.nominal || 0))) + '</div>\n            </td>\n            <td>\n              <div class="td-target-title">' + (p.nama_perusahaan || '—') + ' — Order #' + p.order_id + '</div>\n              <div class="td-target-sub">' + labelTahap(p.tahap) + ' · ' + rekeningText(p) + '</div>\n            </td>\n            <td>\n              <div class="td-target-sub">' + (p.referensi || '—') + '</div>\n            </td>\n            <td>\n              <span class="badge-success">\n                <span class="badge-dot">●</span> Berhasil\n              </span>\n            </td>\n          ';
+          body.appendChild(tr);
+        });
+      }
+
       // Saldo dan riwayat di atas berasal dari escrow asli (API admin/keuangan.php).
 
       // Initial Render: muat dari API
