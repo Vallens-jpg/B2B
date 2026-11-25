@@ -160,6 +160,7 @@
     .dp-step-status.selesai  { color: #059669; }
     .dp-step-status.aktif   { color: #d97706; }
     .dp-step-status.menunggu { color: #94a3b8; }
+    .dp-step-status.batal   { color: #dc2626; }
 
     .dp-step-status.aktif::before {
       content: "● ";
@@ -566,6 +567,61 @@
       font-size: 0.9rem;
       opacity: 0.85;
     }
+    /* Modal konfirmasi batal (pengganti confirm() native, yang tidak bisa
+       diklik di browser otomatis dan menggantung halaman). */
+    .dp-confirm {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .dp-confirm.open {
+      display: flex;
+    }
+    .dp-confirm-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+    }
+    .dp-confirm-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.5rem;
+    }
+    .dp-confirm-text {
+      font-size: 0.9rem;
+      color: #475569;
+      margin: 0 0 1.25rem;
+    }
+    .dp-confirm-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+    }
+    .dp-confirm-btn {
+      border: none;
+      border-radius: 8px;
+      padding: 0.55rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .dp-confirm-btn.ya {
+      background: #dc2626;
+      color: #fff;
+    }
+    .dp-confirm-btn.tidak {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
     .dp-lightbox-close {
       position: absolute;
       top: 1.25rem;
@@ -591,19 +647,19 @@
 
   <!-- Top Navigation Header -->
   <header class="detail-navbar">
-    <a id="backLink" href="invoice.php" class="back-btn-circle" aria-label="Kembali">
+    <a id="backLink" href="pembeli/order_list.php" class="back-btn-circle" aria-label="Kembali">
       <svg class="back-arrow-icon" viewBox="0 0 24 24" fill="none">
         <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </a>
     <h1 class="detail-page-heading">Detail Pesanan</h1>
     <div class="navbar-actions">
-      <button type="button" class="notification-bell-btn" aria-label="Notifikasi">
+      <a href="notifikasi.php" class="notification-bell-btn" aria-label="Notifikasi" style="text-decoration:none">
         <svg class="bell-icon" viewBox="0 0 24 24">
           <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
         </svg>
-        <span class="notification-badge-red">3</span>
-      </button>
+        <span class="notification-badge-red" id="notifBadgeRed" style="display:none"></span>
+      </a>
       <div class="user-profile-capsule">
         <div class="user-avatar-circle">AD</div>
         <span class="user-name-text">Buyer</span>
@@ -622,7 +678,7 @@
         </svg>
         <span>Ke Halaman Daftar Pesanan</span>
       </a>
-      <span class="dp-order-id-badge" id="orderIdBadge">#ORD-2026-103</span>
+      <span class="dp-order-id-badge" id="orderIdBadge">—</span>
     </div>
 
     <!-- Progres Pesanan -->
@@ -637,45 +693,41 @@
             <circle cx="12" cy="12" r="9"/>
             <path d="M12 7v5l3 3" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          Saat ini: Dikirim
+          <span id="saatIniText">Saat ini: Menunggu Pembayaran</span>
         </div>
       </div>
 
       <div class="dp-steps-row">
 
-        <!-- Step 1: Selesai -->
-        <div class="dp-step-card done">
+        <!-- Step 1 -->
+        <div class="dp-step-card active" id="step1">
           <div class="dp-step-top">
-            <div class="dp-step-check">
-              <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <span class="dp-step-status selesai">Selesai</span>
-          </div>
-          <div class="dp-step-label selesai-label">Menunggu Pembayaran</div>
-        </div>
-
-        <!-- Step 2: Selesai -->
-        <div class="dp-step-card done">
-          <div class="dp-step-top">
-            <div class="dp-step-check">
-              <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <span class="dp-step-status selesai">Selesai</span>
-          </div>
-          <div class="dp-step-label selesai-label">Diproses</div>
-        </div>
-
-        <!-- Step 3: Aktif -->
-        <div class="dp-step-card active">
-          <div class="dp-step-top">
-            <div class="dp-step-num active-num">3</div>
+            <div class="dp-step-num active-num">1</div>
             <span class="dp-step-status aktif">Aktif</span>
           </div>
-          <div class="dp-step-label aktif-label">Dikirim</div>
+          <div class="dp-step-label aktif-label">Menunggu Pembayaran</div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="dp-step-card pending" id="step2">
+          <div class="dp-step-top">
+            <div class="dp-step-num pending-num">2</div>
+            <span class="dp-step-status menunggu">Menunggu</span>
+          </div>
+          <div class="dp-step-label pending-label">Diproses</div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="dp-step-card pending" id="step3">
+          <div class="dp-step-top">
+            <div class="dp-step-num pending-num">3</div>
+            <span class="dp-step-status menunggu">Menunggu</span>
+          </div>
+          <div class="dp-step-label pending-label">Dikirim</div>
         </div>
 
         <!-- Step 4: Menunggu -->
-        <div class="dp-step-card pending">
+        <div class="dp-step-card pending" id="step4">
           <div class="dp-step-top">
             <div class="dp-step-num pending-num">4</div>
             <span class="dp-step-status menunggu">Menunggu</span>
@@ -695,34 +747,34 @@
 
         <div class="dp-info-row">
           <div class="dp-info-label">Supplier</div>
-          <div class="dp-info-value" id="supplierName">PT Telur Makmur</div>
+          <div class="dp-info-value" id="supplierName">—</div>
         </div>
 
         <div class="dp-info-row">
           <div class="dp-info-label">Produk</div>
-          <div class="dp-info-value" id="productName">Telur Ayam Ras Grade A</div>
+          <div class="dp-info-value" id="productName">—</div>
         </div>
 
         <div class="dp-info-row">
           <div class="dp-info-label">Jumlah</div>
-          <div class="dp-info-value" id="jumlahInfo">200 kg @ Rp 25.000 / kg</div>
+          <div class="dp-info-value" id="jumlahInfo">—</div>
         </div>
 
         <div class="dp-info-row">
           <div class="dp-info-label">Total Harga</div>
-          <div class="dp-info-value" id="totalHarga">Rp 5.000.000</div>
+          <div class="dp-info-value" id="totalHarga">—</div>
         </div>
       </div>
 
       <!-- Status Saat Ini -->
       <div class="dp-status-card">
         <div class="dp-status-title">Status Saat Ini</div>
-        <div class="dp-status-state">Barang dalam pengiriman</div>
-        <div class="dp-status-desc">Pesanan sedang dalam proses pengiriman. Periksa bukti kirim untuk memastikan pengiriman sudah benar.</div>
+        <div class="dp-status-state">Memuat…</div>
+        <div class="dp-status-desc">Memuat status pesanan…</div>
       </div>
 
-      <!-- Bukti Pengiriman dari Penjual -->
-      <div class="dp-bukti-card">
+      <!-- Bukti Pengiriman dari Penjual: hanya tampil kalau ada data pengiriman asli. -->
+      <div class="dp-bukti-card" id="buktiCard" style="display:none;">
         <div class="dp-bukti-header">
           <div class="dp-bukti-title">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -731,15 +783,13 @@
               <polyline points="21 15 16 10 5 21"/>
             </svg>
             Bukti Pengiriman dari Penjual
-            <span class="dp-bukti-badge">Diterima</span>
           </div>
-          <div class="dp-bukti-meta">Dikirim: 03 Nov 2026, 09.30</div>
+          <div class="dp-bukti-meta" id="buktiMeta">—</div>
         </div>
         <div class="dp-bukti-grid" style="grid-template-columns: 220px;">
-          <!-- Foto barang -->
           <div>
-            <div class="dp-bukti-thumb" onclick="bukaLightbox('img/bukti-kirim-telur.jpg', 'Foto barang — Telur siap kirim')">
-              <img src="../assets/img/bukti-kirim-telur.jpg" alt="Bukti pengiriman telur">
+            <div class="dp-bukti-thumb" id="buktiFotoThumb">
+              <img src="" alt="Bukti pengiriman" id="buktiFotoImg">
               <div class="dp-bukti-overlay">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -747,21 +797,40 @@
                 </svg>
               </div>
             </div>
-            <div class="dp-bukti-caption">Foto barang siap kirim</div>
+            <div class="dp-bukti-caption">Foto bukti pengiriman</div>
           </div>
         </div>
       </div>
 
     </div>
 
+      <!-- Ulasan Anda: hanya tampil kalau pesanan ini sudah diberi ulasan. -->
+      <div class="dp-info-card" id="ulasanCard" style="display:none; margin-top:1.25rem;">
+        <div class="dp-info-title">Ulasan Anda</div>
+        <div class="dp-info-row">
+          <div class="dp-info-label">Rating</div>
+          <div class="dp-info-value" id="ulasanBintang">—</div>
+        </div>
+        <div class="dp-info-row">
+          <div class="dp-info-label">Komentar</div>
+          <div class="dp-info-value" id="ulasanTeks">—</div>
+        </div>
+      </div>
+
     <!-- Ringkasan Pembayaran -->
     <div style="display: grid; grid-template-columns: 1fr 320px; gap: 1.25rem;">
       <div class="dp-ringkasan-card">
         <div class="dp-ringkasan-title">Ringkasan Pembayaran</div>
-        <div class="dp-ringkasan-value" id="ringkasanValue">Rp 5.000.000 [LUNAS via BCA]</div>
+        <div class="dp-ringkasan-value" id="ringkasanValue">—</div>
       </div>
       <!-- Spacer to align with right column above -->
       <div></div>
+    </div>
+
+    <!-- Riwayat Status Pesanan (diisi dari API order/detail.php; tampil hanya bila dibuka dengan ?id=) -->
+    <div class="dp-ringkasan-card" id="riwayatCard" style="display:none">
+      <div class="dp-ringkasan-title">Riwayat Status</div>
+      <div id="riwayatList"></div>
     </div>
 
   </div>
@@ -786,12 +855,21 @@
         </svg>
         Ajukan Dispute
       </button>
-      <button class="btn-konfirmasi-diterima" onclick="konfirmasiDiterima()">
+      <button class="btn-konfirmasi-diterima" id="btnTerima" style="display:none" onclick="konfirmasiDiterima()">
         <svg viewBox="0 0 24 24">
           <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
           <path d="M8 12l3 3 5-5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Konfirmasi Diterima
+      </button>
+      <button class="btn-konfirmasi-diterima" id="btnBayar" style="display:none" onclick="bayarPesanan()">
+        Bayar Sekarang
+      </button>
+      <button class="btn-dispute" id="btnBatalkan" style="display:none" onclick="batalkanPesanan()">
+        Batalkan Pesanan
+      </button>
+      <button class="btn-konfirmasi-diterima" id="btnUlasan" style="display:none" onclick="beriUlasan()">
+        Beri Ulasan
       </button>
     </div>
   </div>
@@ -800,40 +878,124 @@
 
   <script>
     const urlParams   = new URLSearchParams(window.location.search);
-    const sellerParam = urlParams.get('seller')   || '1';
-    const product     = urlParams.get('product')  || 'Telur Ayam Ras Grade A';
-    const qty         = urlParams.get('qty')       || '200 kg';
-    const price       = urlParams.get('price')     || 'Rp 25.000';
-    const subtotal    = urlParams.get('subtotal')  || 'Rp 5.000.000';
-
-    const sellersMap = {
-      '1': 'PT Telur Makmur',
-      '2': 'Mitra Unggas Sejahtera',
-      '3': 'Tunas Farm',
-      '4': 'Berkah Telur Utama',
-      '5': 'Ternak Mandiri',
-      '6': 'Sinar Jaya Poultry'
-    };
-
-    const company = sellersMap[sellerParam] || 'PT Telur Makmur';
-    const hasParams = urlParams.get('seller') || urlParams.get('product');
-
-    // Fill dynamic values
-    document.getElementById('supplierName').innerText = hasParams ? company : 'PT Telur Makmur';
-    document.getElementById('productName').innerText  = hasParams ? product : 'Telur Ayam Ras Grade A';
-
-    // Jumlah: "200 kg @ Rp 25.000 / kg"
-    const qtyClean = qty.replace(/\s*kg/i, '').trim() || '200';
-    document.getElementById('jumlahInfo').innerText  = hasParams
-      ? qtyClean + ' kg @ ' + price + ' / kg'
-      : '200 kg @ Rp 25.000 / kg';
-    document.getElementById('totalHarga').innerText  = hasParams ? subtotal : 'Rp 5.000.000';
-    const orderParam = urlParams.get('order');
-    if (orderParam) {
-      const badge = document.getElementById('orderIdBadge');
-      if (badge) badge.innerText = orderParam;
+    const orderIdParam = urlParams.get('id');
+    // Nilai diisi dari API (?id=); tanpa id, biarkan '—'.
+    // Progres pesanan mengikuti status asli dari database.
+    // Tahapan: 0 Menunggu Pembayaran, 1 Diproses, 2 Dikirim, 3 Diterima.
+    function updateProgress(status) {
+      var labelStatus = { menunggu_bayar: 'Menunggu Pembayaran', dibayar: 'Dibayar', diproses: 'Diproses', dikirim: 'Dikirim', diterima: 'Diterima', selesai: 'Selesai', dibatalkan: 'Dibatalkan' };
+      var tahap = { menunggu_bayar: 0, dibayar: 1, diproses: 1, dikirim: 2, diterima: 3, selesai: 4, dibatalkan: -1 };
+      var cur = (tahap[status] !== undefined) ? tahap[status] : 0;
+      var saatIni = document.getElementById('saatIniText');
+      if (saatIni) saatIni.innerText = 'Saat ini: ' + (labelStatus[status] || status);
+      var checkSvg = '<div class="dp-step-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+      for (var i = 1; i <= 4; i++) {
+        var card = document.getElementById('step' + i);
+        if (!card) continue;
+        var top = card.querySelector('.dp-step-top');
+        var label = card.querySelector('.dp-step-label');
+        if (cur === -1) {
+          // Pesanan dibatalkan: semua tahap berhenti dan ditandai Dibatalkan.
+          card.className = 'dp-step-card pending';
+          if (top) top.innerHTML = '<div class="dp-step-num pending-num">' + i + '</div><span class="dp-step-status batal">Dibatalkan</span>';
+          if (label) label.className = 'dp-step-label pending-label';
+        } else if (i > cur + 1) {
+          card.className = 'dp-step-card pending';
+          if (top) top.innerHTML = '<div class="dp-step-num pending-num">' + i + '</div><span class="dp-step-status menunggu">Menunggu</span>';
+          if (label) label.className = 'dp-step-label pending-label';
+        } else if (i === cur + 1 && cur < 4) {
+          card.className = 'dp-step-card active';
+          if (top) top.innerHTML = '<div class="dp-step-num active-num">' + i + '</div><span class="dp-step-status aktif">Aktif</span>';
+          if (label) label.className = 'dp-step-label aktif-label';
+        } else {
+          card.className = 'dp-step-card done';
+          if (top) top.innerHTML = checkSvg + '<span class="dp-step-status selesai">Selesai</span>';
+          if (label) label.className = 'dp-step-label selesai-label';
+        }
+      }
     }
-    document.getElementById('ringkasanValue').innerText = (hasParams ? subtotal : 'Rp 5.000.000') + ' [LUNAS via BCA]';
+
+    // Kalau dibuka dengan ?id=, ambil order asli dari database.
+    if (orderIdParam) {
+      fetch('../api/order/detail.php?id=' + encodeURIComponent(orderIdParam))
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) return;
+          var o = res.data.order;
+          updateProgress(o.status);
+          var badge = document.getElementById('orderIdBadge');
+          if (badge) badge.innerText = '#' + o.id;
+          document.getElementById('supplierName').innerText = o.nama_perusahaan || '—';
+          document.getElementById('productName').innerText = o.nama_produk;
+          document.getElementById('jumlahInfo').innerText = o.jumlah_kg + ' kg @ Rp ' + Number(o.harga_satuan).toLocaleString('id-ID') + ' / kg';
+          document.getElementById('totalHarga').innerText = 'Rp ' + Number(o.total_bayar).toLocaleString('id-ID');
+          document.getElementById('ringkasanValue').innerText = 'Rp ' + Number(o.total_bayar).toLocaleString('id-ID') + ' [' + o.status + ']';
+          var stateEl = document.querySelector('.dp-status-state');
+          if (stateEl) stateEl.innerText = 'Status: ' + o.status;
+          var descEl = document.querySelector('.dp-status-desc');
+          if (descEl) descEl.innerText = 'Pesanan #' + o.id + ' — ' + o.nama_produk + ' (' + o.jumlah_kg + ' kg). Total bayar Rp ' + Number(o.total_bayar).toLocaleString('id-ID') + '. Fee platform Rp ' + Number(o.fee).toLocaleString('id-ID') + ' dipotong dari dana perusahaan.';
+          var btnBayar = document.getElementById('btnBayar');
+          var btnBatal = document.getElementById('btnBatalkan');
+          var btnTerima = document.getElementById('btnTerima');
+          if (btnBayar && o.status === 'menunggu_bayar') btnBayar.style.display = '';
+          if (btnBatal && (o.status === 'menunggu_bayar' || o.status === 'dibayar')) btnBatal.style.display = '';
+          if (btnTerima && (o.status === 'dikirim' || o.status === 'diterima')) btnTerima.style.display = '';
+          var sudahUlas = o.rating !== null && o.rating !== undefined;
+          var btnUlasan = document.getElementById('btnUlasan');
+          if (btnUlasan && o.status === 'selesai' && !sudahUlas) btnUlasan.style.display = '';
+          // Ulasan yang sudah tersimpan: tampilkan di kartu, tombol disembunyikan.
+          var ulasanCard = document.getElementById('ulasanCard');
+          if (ulasanCard) {
+            if (sudahUlas) {
+              var bintang = '★'.repeat(o.rating) + '☆'.repeat(5 - o.rating);
+              document.getElementById('ulasanBintang').innerText = bintang + ' (' + o.rating + '/5)';
+              document.getElementById('ulasanTeks').innerText = o.ulasan ? o.ulasan : 'Tanpa komentar.';
+              ulasanCard.style.display = '';
+            } else {
+              ulasanCard.style.display = 'none';
+            }
+          }
+          // Bukti pengiriman berupa foto (wajib saat kirim): kartu hanya
+          // tampil kalau ada foto bukti asli.
+          var buktiCard = document.getElementById('buktiCard');
+          var buktiMeta = document.getElementById('buktiMeta');
+          if (buktiCard) {
+            if (o.foto_bukti) {
+              var srcFoto = '../' + o.foto_bukti;
+              var imgFoto = document.getElementById('buktiFotoImg');
+              if (imgFoto) imgFoto.src = srcFoto;
+              var thumbFoto = document.getElementById('buktiFotoThumb');
+              if (thumbFoto) thumbFoto.onclick = function () { bukaLightbox(srcFoto, 'Foto bukti pengiriman'); };
+              var meta = [o.jasa_kirim ? o.jasa_kirim : 'Dikirim langsung oleh perusahaan'];
+              if (o.resi) meta.push('No. Resi: ' + o.resi);
+              if (o.tanggal_kirim) meta.push('Dikirim: ' + new Date(o.tanggal_kirim + 'T00:00:00').toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }));
+              if (buktiMeta) buktiMeta.innerText = meta.join(' · ');
+              buktiCard.style.display = '';
+            } else {
+              buktiCard.style.display = 'none';
+            }
+          }
+          // Riwayat status dari API (field: status_lama, status_baru, created_at).
+          var riwayat = res.data.riwayat || [];
+          var riwayatCard = document.getElementById('riwayatCard');
+          var riwayatList = document.getElementById('riwayatList');
+          if (riwayatCard && riwayatList) {
+            var labelStatus = { menunggu_bayar: 'Menunggu Pembayaran', dibayar: 'Dibayar', diproses: 'Diproses', dikirim: 'Dikirim', diterima: 'Diterima', selesai: 'Selesai', dibatalkan: 'Dibatalkan' };
+            if (riwayat.length === 0) {
+              riwayatList.innerHTML = '<div class="dp-info-row"><div class="dp-info-value">Belum ada riwayat perubahan status.</div></div>';
+            } else {
+              riwayatList.innerHTML = riwayat.map(function (r) {
+                var lama = r.status_lama ? (labelStatus[r.status_lama] || r.status_lama) : 'Baru dibuat';
+                var baru = labelStatus[r.status_baru] || r.status_baru;
+                var waktu = r.created_at ? new Date(r.created_at.replace(' ', 'T')).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+                return '<div class="dp-info-row"><div class="dp-info-label">' + waktu + '</div><div class="dp-info-value">' + lama + ' &rarr; ' + baru + '</div></div>';
+              }).join('');
+            }
+            riwayatCard.style.display = 'block';
+          }
+        })
+        .catch(function () { /* biarkan tampilan statis kalau API gagal */ });
+    }
 
     // Back link — dinamis sesuai asal halaman
     const fromPage = urlParams.get('from');
@@ -841,14 +1003,7 @@
     if (fromPage === 'pesanan') {
       document.getElementById('backLink').href = 'pembeli/order_list.php';
     } else {
-      const backQ =
-        '?seller='   + encodeURIComponent(sellerParam) +
-        '&product='  + encodeURIComponent(product) +
-        '&qty='      + encodeURIComponent(qty) +
-        '&price='    + encodeURIComponent(price) +
-        '&subtotal=' + encodeURIComponent(subtotal);
-      fallbackDpes = 'invoice.php' + backQ;
-      document.getElementById('backLink').href = fallbackDpes;
+      document.getElementById('backLink').href = 'pembeli/order_list.php';
     }
 
     const dpesBackBtn = document.getElementById('backLink');
@@ -866,17 +1021,77 @@
     }
 
     // Actions
+    function beriUlasan() {
+      window.location.href = 'pembeli/ulasan.php?order_id=' + encodeURIComponent(orderIdParam);
+    }
+
     function ajukanDispute() {
-      window.location.href = 'pengajuan_dispute.php' +
-        '?seller='   + encodeURIComponent(sellerParam) +
-        '&product='  + encodeURIComponent(product) +
-        '&qty='      + encodeURIComponent(qty) +
-        '&price='    + encodeURIComponent(price) +
-        '&subtotal=' + encodeURIComponent(subtotal);
+      if (!orderIdParam) {
+        alert('Buka halaman ini dari Daftar Pesanan.');
+        return;
+      }
+      window.location.href = 'pengajuan_dispute.php?order_id=' + encodeURIComponent(orderIdParam);
+    }
+
+    function bayarPesanan() {
+      if (!orderIdParam) return;
+      var btn = document.getElementById('btnBayar');
+      if (btn) btn.disabled = true;
+      fetch('../api/order/bayar.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: Number(orderIdParam) })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) { alert(res.error || 'Pembayaran gagal.'); if (btn) btn.disabled = false; return; }
+          if (res.data && res.data.invoice_url) { window.location.href = res.data.invoice_url; return; }
+          window.location.reload();
+        })
+        .catch(function () { alert('Gagal menghubungi server.'); if (btn) btn.disabled = false; });
+    }
+
+    function batalkanPesanan() {
+      if (!orderIdParam) return;
+      // Buka modal konfirmasi (bukan confirm() native).
+      var modal = document.getElementById('dpConfirmBatal');
+      if (modal) modal.classList.add('open');
+    }
+
+    function tutupConfirmBatal() {
+      var modal = document.getElementById('dpConfirmBatal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    function konfirmasiBatalYa() {
+      if (!orderIdParam) return;
+      tutupConfirmBatal();
+      fetch('../api/order/batal.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: Number(orderIdParam), alasan: 'Dibatalkan pembeli' })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) { alert(res.error || 'Pembatalan gagal.'); return; }
+          window.location.reload();
+        })
+        .catch(function () { alert('Gagal menghubungi server.'); });
     }
 
     function konfirmasiDiterima() {
-      window.location.href = 'pembeli/dashboard_buyer.php';
+      if (!orderIdParam) return;
+      fetch('../api/order/terima.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: Number(orderIdParam) })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) { alert(res.error || 'Konfirmasi gagal.'); return; }
+          window.location.reload();
+        })
+        .catch(function () { alert('Gagal menghubungi server.'); });
     }
   
     // ---- Lightbox Bukti Pengiriman ----
@@ -908,5 +1123,42 @@
     <img id="dpLightboxImg" src="" alt="Bukti Pengiriman">
     <div class="dp-lightbox-caption" id="dpLightboxCaption"></div>
   </div>
+
+  <!-- Modal Konfirmasi Batalkan Pesanan -->
+  <div class="dp-confirm" id="dpConfirmBatal" onclick="if (event.target === this) tutupConfirmBatal()">
+    <div class="dp-confirm-card">
+      <div class="dp-confirm-title">Batalkan pesanan ini?</div>
+      <p class="dp-confirm-text">Pesanan yang sudah dibayar akan direfund ke rekening pembeli. Tindakan ini tidak bisa dibatalkan.</p>
+      <div class="dp-confirm-actions">
+        <button type="button" class="dp-confirm-btn tidak" onclick="tutupConfirmBatal()">Tidak</button>
+        <button type="button" class="dp-confirm-btn ya" onclick="konfirmasiBatalYa()">Ya, batalkan</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Badge lonceng asli: jumlah notifikasi belum dibaca dari API.
+    (function () {
+      var badge = document.getElementById('notifBadgeRed');
+      if (!badge) return;
+      fetch('../api/notifikasi.php').then(function (r) { return r.json(); }).then(function (res) {
+        if (!res || !res.ok || !res.data || !res.data.notifikasi) return;
+        var belum = 0;
+        res.data.notifikasi.forEach(function (n) { if (!n.dibaca) belum++; });
+        if (belum > 0) { badge.textContent = belum; badge.style.display = ''; }
+      }).catch(function () {});
+    })();
+  </script>
+  <script>
+    // Avatar & nama dari user yang sedang login (bukan "AD" hardcode).
+    (function () {
+      fetch('../api/auth/me.php').then(function (r) { return r.json(); }).then(function (res) {
+        if (!res || !res.ok || !res.data || !res.data.nama) return;
+        var nama = res.data.nama;
+        var inisial = nama.trim().split(/\s+/).map(function (w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
+        document.querySelectorAll('.user-avatar-circle, .ulasan-user-avatar, .pd-user-avatar').forEach(function (el) { el.textContent = inisial; });
+        document.querySelectorAll('.user-name-text').forEach(function (el) { el.textContent = nama; });
+      }).catch(function () {});
+    })();
+  </script>
 </body>
 </html>

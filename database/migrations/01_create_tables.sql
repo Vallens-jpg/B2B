@@ -1,3 +1,0 @@
--- TODO BE-1 - Migrasi 01: buat semua tabel (users, produk, orders, escrow, invoice, dispute, ulasan, riwayat_status).
--- Aturan: foreign key + RESTRICT supaya data tidak bisa dihapus sembarangan.
--- Ditulis & dijalankan BE; spek revisi dari Len.

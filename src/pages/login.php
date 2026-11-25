@@ -1,16 +1,14 @@
 <?php
+// Kalau sudah login, langsung ke dashboard sesuai role.
+// Login aslinya lewat ../api/auth/login.php (cek tabel users).
 session_start();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
-    $role = $_POST['role'] ?? 'pembeli';
-    
-    $_SESSION['user'] = [
-        'email' => $email ? $email : 'buyer@staplr.com',
-        'role' => $role,
-        'name' => 'Buyer'
-    ];
-    $dashboard = ($role === 'perusahaan') ? 'perusahaan/dashboard_perusahaan.php' : 'pembeli/dashboard_buyer.php';
+if (!empty($_SESSION['user'])) {
+    $role = $_SESSION['user']['role'] ?? 'pembeli';
+    // Admin ke dashboard admin, perusahaan ke dashboard perusahaan,
+    // pembeli (dan role lain) ke dashboard pembeli.
+    $dashboard = ($role === 'admin') ? 'admin/dashboard.php'
+        : (($role === 'perusahaan') ? 'perusahaan/dashboard_perusahaan.php' : 'pembeli/dashboard_buyer.php');
     header('Location: ' . $dashboard);
     exit;
 }
@@ -99,15 +97,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <!-- Login Form -->
-        <form action="pembeli/dashboard_buyer.php" method="GET" id="loginForm">
+        <form action="../api/auth/login.php" method="POST" id="loginForm">
+          <p id="loginError" style="display:none; color:#DC2626; font-size:0.85rem; margin:0 0 0.75rem;"></p>
           <div class="form-group">
             <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" class="form-input" placeholder="nama@email.com" name="email">
+            <input type="email" id="email" class="form-input" placeholder="nama@email.com" name="email" required>
           </div>
 
           <div class="form-group">
             <label for="password" class="form-label">Kata Sandi</label>
-            <input type="password" id="password" class="form-input" placeholder="••••••••" name="password">
+            <input type="password" id="password" class="form-input" placeholder="••••••••" name="password" required>
             <div class="forgot-wrapper">
               <a href="lupa_sandi.php" class="forgot-link">Lupa Kata Sandi?</a>
             </div>
@@ -117,8 +116,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="hidden" name="role" id="selectedRole" value="pembeli">
         </form>
 
+        <!-- Akun demo: password berbeda per akun (isi database/online_marketplace_v2_seed.sql) -->
+        <div style="margin-top:1rem; padding:0.9rem; border:1px dashed #CBD5E1; border-radius:0.75rem; background:#F8FAFC;">
+          <strong>Akun demo</strong><br>
+          Pembeli: <code>guest@staplr.com</code> / <code>guest123</code><br>
+          Perusahaan: <code>perusahaan@staplr.com</code> / <code>perusahaan123</code><br>
+          Admin: <code>admin@staplr.com</code> / <code>admin123</code> (ketik manual di form di atas)<br>
+          <button type="button" class="btn-submit-primary" id="guestLoginPembeliBtn" style="margin-top:0.6rem; width:100%;">Masuk sebagai Guest Demo Pembeli</button>
+          <button type="button" class="btn-submit-primary" id="guestLoginPerusahaanBtn" style="margin-top:0.6rem; width:100%;">Masuk sebagai Guest Demo Perusahaan</button>
+          <p style="font-size:0.8rem; color:#64748B; margin:0.5rem 0 0;">Pilih tombol sesuai peran yang mau dicoba, tidak perlu pindah tab role di atas. Hanya untuk demo di laptop sendiri. Akun demo dari <code>database/online_marketplace_v2_seed.sql</code>.</p>
+        </div>
+
         <div class="auth-footer">
-          Belum punya akun? <a href="#" class="link-highlight">Daftar</a>
+          Belum punya akun? <a href="daftar.php" class="link-highlight">Daftar</a>
         </div>
       </div>
     </div>
@@ -139,24 +149,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         btn.classList.add('active');
         const activeDot = btn.querySelector('.tab-dot');
         if (activeDot) activeDot.style.display = 'inline-block';
+        const roleInput = document.getElementById('selectedRole');
+        if (roleInput) roleInput.value = btn.dataset.role || 'pembeli';
       });
     });
 
-    // Handle Login redirect to dashboard
+    // Login lewat API asli (cek tabel users), lalu ke dashboard sesuai role.
     const loginForm = document.getElementById('loginForm');
-    const loginBtn = document.getElementById('loginBtn');
+    const loginError = document.getElementById('loginError');
 
-    function handleLogin(e) {
+    function showLoginError(msg) {
+      if (!loginError) return;
+      loginError.textContent = msg;
+      loginError.style.display = 'block';
+    }
+
+    async function doLogin(email, password) {
+      const res = await fetch('../api/auth/login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const result = await res.json().catch(() => null);
+      if (!res.ok || !result || !result.ok) {
+        showLoginError((result && result.error) || 'Login gagal. Coba lagi.');
+        return false;
+      }
+      const role = result.data && result.data.role ? result.data.role : 'pembeli';
+      // Admin ke dashboard admin, perusahaan ke dashboard perusahaan,
+      // pembeli ke dashboard pembeli (sebelumnya admin jatuh ke dashboard pembeli).
+      window.location.href = (role === 'admin') ? 'admin/dashboard.php'
+        : ((role === 'perusahaan') ? 'perusahaan/dashboard_perusahaan.php' : 'pembeli/dashboard_buyer.php');
+      return true;
+    }
+
+    async function handleLogin(e) {
       if (e) e.preventDefault();
-      const role = document.getElementById('selectedRole') ? document.getElementById('selectedRole').value : 'pembeli';
-      window.location.href = (role === 'perusahaan') ? 'perusahaan/dashboard_perusahaan.php' : 'pembeli/dashboard_buyer.php';
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      if (!email || !password) {
+        showLoginError('Email dan password wajib diisi.');
+        return;
+      }
+      try {
+        await doLogin(email, password);
+      } catch (err) {
+        showLoginError('Tidak bisa terhubung ke server. Pastikan Docker jalan.');
+      }
     }
 
     if (loginForm) {
       loginForm.addEventListener('submit', handleLogin);
     }
-    if (loginBtn) {
-      loginBtn.addEventListener('click', handleLogin);
+
+    // Tombol Guest Demo: dua tombol terpisah, masing-masing langsung masuk
+    // dengan akun demonya sendiri (tidak tergantung tab role di atas).
+    // Password demo berbeda per akun (isi database/online_marketplace_v2_seed.sql).
+    const DEMO_PASSWORD = {
+      'guest@staplr.com': 'guest123',
+      'perusahaan@staplr.com': 'perusahaan123'
+    };
+    async function guestLogin(email) {
+      const password = DEMO_PASSWORD[email] || 'guest123';
+      document.getElementById('email').value = email;
+      document.getElementById('password').value = password;
+      try {
+        await doLogin(email, password);
+      } catch (err) {
+        showLoginError('Tidak bisa terhubung ke server. Pastikan Docker jalan dan online_marketplace_v2.sql sudah dijalankan.');
+      }
+    }
+    const guestPembeliBtn = document.getElementById('guestLoginPembeliBtn');
+    if (guestPembeliBtn) {
+      guestPembeliBtn.addEventListener('click', function () { guestLogin('guest@staplr.com'); });
+    }
+    const guestPerusahaanBtn = document.getElementById('guestLoginPerusahaanBtn');
+    if (guestPerusahaanBtn) {
+      guestPerusahaanBtn.addEventListener('click', function () { guestLogin('perusahaan@staplr.com'); });
     }
   </script>
 </body>

@@ -2,6 +2,7 @@
 <html lang="id">
 
 <head>
+  <script src="../../assets/js/perusahaan-guard.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Perusahaan - Staplr B2B</title>
@@ -4751,8 +4752,8 @@
         <!-- Profile Dropdown -->
         <div class="profile-dropdown" id="profileDropdown">
           <div class="dropdown-header">
-            <div class="dropdown-user-name">CV Telur Makmur Bersama</div>
-            <div class="dropdown-user-role">Mitra Peternak Terverifikasi</div>
+            <div class="dropdown-user-name">-</div>
+            <div class="dropdown-user-role">Mitra Peternak</div>
           </div>
           <a href="#profil" class="dropdown-item" id="dropdownProfil" onclick="switchMainView('profil', event)">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -4761,7 +4762,7 @@
             </svg>
             Profil Akun
           </a>
-          <a href="../../index.html" class="dropdown-item logout">
+          <a href="../login.php" class="dropdown-item logout" onclick="event.preventDefault(); fetch('../../api/auth/logout.php').then(function(){ window.location.href='../login.php'; });">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
               <polyline points="16 17 21 12 16 7"></polyline>
@@ -4788,8 +4789,8 @@
               <span class="metric-label">Stok Produk</span>
               <span class="metric-active-dot"></span>
             </div>
-            <div class="metric-value">18.400</div>
-            <div class="metric-subtext">butir tersedia</div>
+            <div class="metric-value" id="metricStok">—</div>
+            <div class="metric-subtext">kg tersedia</div>
           </article>
 
           <!-- Card 2: Pesanan Baru (Figma S-2) -->
@@ -4798,7 +4799,7 @@
               <span class="metric-label">Pesanan Baru</span>
               <span class="metric-active-dot"></span>
             </div>
-            <div class="metric-value">60</div>
+            <div class="metric-value" id="metricPesananBaru">—</div>
             <div class="metric-subtext">pesanan minggu ini</div>
           </article>
 
@@ -4808,7 +4809,7 @@
               <span class="metric-label">Pesanan Diproses</span>
               <span class="metric-active-dot"></span>
             </div>
-            <div class="metric-value">12</div>
+            <div class="metric-value" id="metricDiproses">—</div>
             <div class="metric-subtext">sedang diproses</div>
           </article>
 
@@ -4818,7 +4819,7 @@
               <span class="metric-label">Pendapatan Minggu Ini</span>
               <span class="metric-active-dot"></span>
             </div>
-            <div class="metric-value">Rp 36.000.000</div>
+            <div class="metric-value" id="metricPendapatan">—</div>
             <div class="metric-subtext">7 hari terakhir</div>
           </article>
         </section>
@@ -4864,7 +4865,7 @@
           </div>
 
           <footer class="product-mgmt-footer">
-            <div class="product-count-info" id="productCountInfo">Menampilkan 1-3 dari 3 produk</div>
+            <div class="product-count-info" id="productCountInfo">Menampilkan 0 dari 0 produk</div>
           </footer>
         </div>
       </div>
@@ -4885,9 +4886,6 @@
               </svg>
               <input type="text" id="pesananSearchInput" placeholder="Cari ID Order / Nama Pembeli..." autocomplete="off" oninput="renderPesananTable()">
             </div>
-            <button class="btn-pesanan-new" type="button" onclick="openBuatPesanan()">
-              <span>+</span> Buat Pesanan Baru
-            </button>
           </div>
 
           <div class="pesanan-tabs">
@@ -4919,7 +4917,7 @@
             </div>
 
             <footer class="pesanan-list-footer">
-              <span class="pesanan-count" id="pesananCountInfo">Menampilkan 1-3 dari 3 pesanan</span>
+              <span class="pesanan-count" id="pesananCountInfo">Menampilkan 0 dari 0 pesanan</span>
             </footer>
           </section>
         </div>
@@ -4927,7 +4925,7 @@
         <!-- Sub-View 2: Form / Detail Pesanan -->
         <div id="pesananFormView" class="pesanan-form-view" style="display: none;">
           <header class="pesanan-form-head">
-            <h2 class="pesanan-form-title" id="pesananFormTitle">Detail Pesanan Baru</h2>
+            <h2 class="pesanan-form-title" id="pesananFormTitle">Detail Pesanan</h2>
             <button class="btn-pesanan-back" type="button" onclick="tutupFormPesanan()">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -4943,11 +4941,6 @@
               <section class="pesanan-card">
                 <label class="pesanan-label" for="pesananPembeli">Pembeli <span class="req">*</span></label>
                 <select class="pesanan-input" id="pesananPembeli">
-                  <option>Arga Dwi</option>
-                  <option>Rira W.</option>
-                  <option>Rania</option>
-                  <option>PT Boga Jaya</option>
-                  <option>CV Sembako</option>
                 </select>
               </section>
 
@@ -4974,8 +4967,8 @@
                   <div class="pesanan-field">
                     <label class="pesanan-label" for="pesananJadwal">Jadwal kirim <span class="req">*</span></label>
                     <div class="pesanan-date-wrap">
-                      <input class="pesanan-input pesanan-date-display" id="pesananJadwalDisplay" type="text" value="12 Okt 2027" readonly>
-                      <input class="pesanan-date-input" id="pesananJadwal" type="date" value="2027-10-12" onchange="syncTanggalPesanan()" onclick="bukaPickerTanggalPesanan(this)">
+                      <input class="pesanan-input pesanan-date-display" id="pesananJadwalDisplay" type="text" value="—" readonly>
+                      <input class="pesanan-date-input" id="pesananJadwal" type="date" value="" onchange="syncTanggalPesanan()" onclick="bukaPickerTanggalPesanan(this)">
                     </div>
                   </div>
                   <div class="pesanan-field">
@@ -4985,7 +4978,7 @@
                 </div>
                 <div class="pesanan-field">
                   <label class="pesanan-label" for="pesananCatatan">Catatan pesanan</label>
-                  <textarea class="pesanan-textarea" id="pesananCatatan">Kirim produk secepatnya</textarea>
+                  <textarea class="pesanan-textarea" id="pesananCatatan"></textarea>
                 </div>
               </section>
 
@@ -4999,18 +4992,17 @@
               </div>
               <div class="pesanan-summary-row">
                 <span>Jumlah item</span>
-                <strong id="pesananSummaryQty">2 produk</strong>
+                <strong id="pesananSummaryQty">—</strong>
               </div>
               <div class="pesanan-summary-row">
                 <span>Total pesanan</span>
-                <strong id="pesananSummaryTotal">Rp 500.000</strong>
+                <strong id="pesananSummaryTotal">Rp 0</strong>
               </div>
               <div class="pesanan-summary-divider"></div>
               <div class="pesanan-summary-row pembayaran">
                 <span>Pembayaran</span>
-                <strong id="pesananSummaryBayar">Rp 500.000</strong>
+                <strong id="pesananSummaryBayar">Rp 0</strong>
               </div>
-              <button class="btn-pesanan-proses" type="button" id="pesananProsesBtn" onclick="prosesPesananBaru()">Proses pesanan</button>
             </aside>
           </div>
         </div>
@@ -5024,11 +5016,11 @@
           <!-- Kartu Ringkasan Profil -->
           <aside class="profile-summary-card">
             <div class="profile-avatar-large"></div>
-            <div class="profile-summary-name">PT. Maju Jaya Abadi</div>
-            <div class="profile-summary-email">supplier@majuabadi.co.id</div>
+            <div class="profile-summary-name">-</div>
+            <div class="profile-summary-email">-</div>
             <span class="profile-verified-badge">
               <span class="profile-verified-dot"></span>
-              Supplier Terverifikasi
+              Mitra Peternak
             </span>
           </aside>
 
@@ -5039,23 +5031,23 @@
               <div class="profile-field-grid">
                 <div class="profile-field">
                   <label class="profile-label" for="profileNamaUsaha">Nama Usaha</label>
-                  <input class="profile-input" id="profileNamaUsaha" type="text" value="PT. Maju Jaya Abadi">
+                  <input class="profile-input" id="profileNamaUsaha" type="text" value="">
                 </div>
                 <div class="profile-field">
                   <label class="profile-label" for="profileEmail">Email</label>
-                  <input class="profile-input" id="profileEmail" type="email" value="supplier@majuabadi.co.id">
+                  <input class="profile-input" id="profileEmail" type="email" value="">
                 </div>
                 <div class="profile-field">
                   <label class="profile-label" for="profileTelepon">Nomor Telepon</label>
-                  <input class="profile-input" id="profileTelepon" type="text" value="+00000000">
+                  <input class="profile-input" id="profileTelepon" type="text" value="">
                 </div>
                 <div class="profile-field">
                   <label class="profile-label" for="profileKota">Kota</label>
-                  <input class="profile-input" id="profileKota" type="text" value="Jakarta Timur">
+                  <input class="profile-input" id="profileKota" type="text" value="">
                 </div>
                 <div class="profile-field full">
                   <label class="profile-label" for="profileAlamat">Alamat Lengkap</label>
-                  <input class="profile-input" id="profileAlamat" type="text" value="Jl. Raya Industri No. 123">
+                  <input class="profile-input" id="profileAlamat" type="text" value="">
                 </div>
                 <div class="profile-field">
                   <label class="profile-label" for="profileNibInput">NIB</label>
@@ -5068,7 +5060,7 @@
                       <line x1="10" y1="9" x2="8" y2="9"></line>
                     </svg>
                     <span id="profileNibName">File NIB</span>
-                    <input type="file" id="profileNibInput" hidden accept=".pdf,image/*" onchange="if(this.files[0]) document.getElementById('profileNibName').textContent = this.files[0].name">
+                    <input type="file" id="profileNibInput" hidden accept=".pdf,image/*" onchange="if(this.files[0]) { this.value=''; showToast('Upload NIB belum tersedia — dokumen belum tersimpan'); }">
                   </label>
                 </div>
                 <div class="profile-field">
@@ -5082,7 +5074,7 @@
                       <line x1="10" y1="9" x2="8" y2="9"></line>
                     </svg>
                     <span id="profileNpwpName">File NPWP</span>
-                    <input type="file" id="profileNpwpInput" hidden accept=".pdf,image/*" onchange="if(this.files[0]) document.getElementById('profileNpwpName').textContent = this.files[0].name">
+                    <input type="file" id="profileNpwpInput" hidden accept=".pdf,image/*" onchange="if(this.files[0]) { this.value=''; showToast('Upload NPWP belum tersedia — dokumen belum tersimpan'); }">
                   </label>
                 </div>
               </div>
@@ -5094,7 +5086,8 @@
                 <div class="profile-field">
                   <label class="profile-label" for="profileBank">Nama Bank</label>
                   <select class="profile-input" id="profileBank">
-                    <option selected>Bank Mandiri</option>
+                    <option value="" selected>— Pilih bank —</option>
+                    <option>Bank Mandiri</option>
                     <option>Bank BCA</option>
                     <option>Bank BNI</option>
                     <option>Bank BRI</option>
@@ -5103,11 +5096,11 @@
                 </div>
                 <div class="profile-field">
                   <label class="profile-label" for="profileNoRek">Nomor Rekening</label>
-                  <input class="profile-input" id="profileNoRek" type="text" value="00-000-00">
+                  <input class="profile-input" id="profileNoRek" type="text" value="">
                 </div>
                 <div class="profile-field full">
                   <label class="profile-label" for="profileAtasNama">Atas Nama Rekening</label>
-                  <input class="profile-input" id="profileAtasNama" type="text" value="PT. Maju Jaya Abadi">
+                  <input class="profile-input" id="profileAtasNama" type="text" value="">
                 </div>
               </div>
             </section>
@@ -5134,10 +5127,9 @@
 
           <div class="dispute-tabs">
             <button class="dispute-tab active" type="button" onclick="filterDispute('semua', this)">Semua</button>
-            <button class="dispute-tab" type="button" onclick="filterDispute('ditinjau', this)">Perlu Ditinjau (1)</button>
-            <button class="dispute-tab" type="button" onclick="filterDispute('menunggu', this)">Menunggu Barang</button>
-            <button class="dispute-tab" type="button" onclick="filterDispute('disetujui', this)">Disetujui</button>
-            <button class="dispute-tab" type="button" onclick="filterDispute('ditolak', this)">Ditolak</button>
+            <button class="dispute-tab" type="button" onclick="filterDispute('diajukan', this)">Diajukan</button>
+            <button class="dispute-tab" type="button" onclick="filterDispute('diproses', this)">Diproses</button>
+            <button class="dispute-tab" type="button" onclick="filterDispute('selesai', this)">Selesai</button>
           </div>
 
           <section class="dispute-table-card">
@@ -5159,7 +5151,7 @@
             </div>
 
             <footer class="dispute-list-footer">
-              <span class="dispute-list-count" id="disputeCountInfo">Menampilkan 1–3 dari 3 retur</span>
+              <span class="dispute-list-count" id="disputeCountInfo">Memuat dispute…</span>
             </footer>
           </section>
         </div>
@@ -5171,10 +5163,10 @@
         <header class="dispute-head">
           <div class="dispute-head-top">
             <div class="dispute-title-row">
-              <h2 class="dispute-title" id="disputeDetailTitle">Dispute #DSP-0012</h2>
+              <h2 class="dispute-title" id="disputeDetailTitle">Dispute —</h2>
               <span class="dispute-status-badge" id="disputeDetailBadge">
                 <span class="status-dot"></span>
-                <span id="disputeDetailBadgeText">Ditinjau Admin</span>
+                <span id="disputeDetailBadgeText">—</span>
               </span>
             </div>
             <button class="dispute-btn-back" type="button" onclick="showDisputeList(event)">
@@ -5188,7 +5180,7 @@
           <nav class="dispute-breadcrumb" aria-label="Breadcrumb">
             <a href="#dispute" onclick="showDisputeList(event)">Daftar Dispute</a>
             <span class="sep">/</span>
-            <a href="#pesanan" onclick="switchMainView('pesanan', event)" id="disputeBreadcrumbOrder">#ORD-2041</a>
+            <a href="#pesanan" onclick="switchMainView('pesanan', event)" id="disputeBreadcrumbOrder">—</a>
             <span class="sep">/</span>
             <span class="current">Dispute</span>
           </nav>
@@ -5198,19 +5190,19 @@
         <section class="dispute-summary">
           <div class="dispute-summary-item">
             <div class="dispute-summary-label">Buyer</div>
-            <div class="dispute-summary-value" id="disputeSummaryBuyer">Rira W.</div>
+            <div class="dispute-summary-value" id="disputeSummaryBuyer">—</div>
           </div>
           <div class="dispute-summary-item">
             <div class="dispute-summary-label">Perusahaan</div>
-            <div class="dispute-summary-value" id="disputeSummaryCompany">CV Telur Makmur Bersama</div>
+            <div class="dispute-summary-value" id="disputeSummaryCompany">—</div>
           </div>
           <div class="dispute-summary-item">
             <div class="dispute-summary-label">Nilai Pesanan</div>
-            <div class="dispute-summary-value" id="disputeSummaryValue">Rp 48.000.000</div>
+            <div class="dispute-summary-value" id="disputeSummaryValue">—</div>
           </div>
           <div class="dispute-summary-item">
             <div class="dispute-summary-label">Dana Dibekukan</div>
-            <div class="dispute-summary-value" id="disputeSummaryFrozen">Rp 24.000.000</div>
+            <div class="dispute-summary-value" id="disputeSummaryFrozen">—</div>
           </div>
         </section>
 
@@ -5221,61 +5213,11 @@
               <h3 class="dispute-card-title">Diskusi &amp; Bukti</h3>
 
               <div class="dispute-thread" id="disputeThread">
-                <article class="dispute-message">
-                  <div class="message-avatar avatar-buyer">B</div>
-                  <div class="message-body">
-                    <div class="message-head">
-                      <span class="message-name">CV Maju Jaya</span>
-                      <span class="message-role role-buyer">Buyer</span>
-                      <span class="message-time">8 Okt 2026, 14:20</span>
-                    </div>
-                    <p class="message-text">Sekitar 12% telur pecah saat diterima dari total pengiriman. Mohon ditindaklanjuti.</p>
-                    <div class="message-attachments">
-                      <span>Lampiran:</span>
-                      <span class="attachment-chip">foto_1.jpg</span>
-                      <span class="attachment-chip">foto_2.jpg</span>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="dispute-message">
-                  <div class="message-avatar avatar-seller">P</div>
-                  <div class="message-body">
-                    <div class="message-head">
-                      <span class="message-name">PT Telur Nusantara</span>
-                      <span class="message-role role-seller">Perusahaan</span>
-                      <span class="message-time">9 Okt 2026, 09:05</span>
-                    </div>
-                    <p class="message-text">Pengiriman sudah sesuai standar packing.</p>
-                    <div class="message-attachments">
-                      <span>Lampiran:</span>
-                      <span class="attachment-chip">foto_packing.jpg</span>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="dispute-message">
-                  <div class="message-avatar avatar-admin">A</div>
-                  <div class="message-body">
-                    <div class="message-head">
-                      <span class="message-name">Admin Sistem</span>
-                      <span class="message-role role-admin">Admin</span>
-                      <span class="message-time">12 Okt 2026, 10:30</span>
-                    </div>
-                    <p class="message-text">Buyer mohon unggah foto per rak dan nota penerimaan.</p>
-                  </div>
-                </article>
               </div>
 
               <form class="dispute-composer" onsubmit="kirimKomentarDispute(event)">
                 <textarea id="disputeCommentInput" placeholder="Tulis komentar Anda..." aria-label="Tulis komentar"></textarea>
-                <div class="dispute-attachment-preview" id="disputeAttachmentPreview" hidden>
-                  <span>Lampiran dipilih:</span>
-                  <span class="attachment-chip" id="disputeAttachmentName"></span>
-                </div>
-                <input type="file" id="disputeFileInput" accept="image/*,.pdf" hidden onchange="pilihLampiranDispute(this)">
                 <div class="dispute-composer-actions">
-                  <button type="button" class="btn-dispute-attach" onclick="document.getElementById('disputeFileInput').click()">Lampirkan Foto / Dokumen</button>
                   <button type="submit" class="btn-dispute-send">Kirim Komentar</button>
                 </div>
               </form>
@@ -5300,15 +5242,15 @@
               <dl class="dispute-detail-list">
                 <div class="dispute-detail-row">
                   <dt>Jenis</dt>
-                  <dd id="disputeDetailJenis">Barang tidak sesuai</dd>
+                  <dd id="disputeDetailJenis">—</dd>
                 </div>
                 <div class="dispute-detail-row">
                   <dt>Diajukan</dt>
-                  <dd id="disputeDetailDiajukan">8 Okt 2026, 14:20</dd>
+                  <dd id="disputeDetailDiajukan">—</dd>
                 </div>
                 <div class="dispute-detail-row">
                   <dt>Batas tanggapan Perusahaan</dt>
-                  <dd id="disputeDetailBatas">10 Okt 2026</dd>
+                  <dd id="disputeDetailBatas">—</dd>
                 </div>
               </dl>
             </section>
@@ -5317,7 +5259,7 @@
               <h3 class="dispute-card-title">Dana dibekukan</h3>
               <div class="dispute-fund-row">
                 <span class="label">Sisa pelunasan</span>
-                <span class="value" id="disputeFundValue">Rp 24.000.000</span>
+                <span class="value" id="disputeFundValue">—</span>
               </div>
               <div class="dispute-fund-row">
                 <span class="label">Status dana</span>
@@ -5349,7 +5291,7 @@
             </div>
             <div>
               <span class="balance-label">Saldo Siap Cair</span>
-              <div class="balance-value" id="saldoSiapCair">Rp 45.000.000</div>
+              <div class="balance-value" id="saldoSiapCair">Rp 0</div>
             </div>
           </div>
 
@@ -5362,7 +5304,7 @@
             </div>
             <div>
               <span class="balance-label">Saldo Tertahan</span>
-              <div class="balance-value" id="saldoTertahan">Rp 12.500.000</div>
+              <div class="balance-value" id="saldoTertahan">Rp 0</div>
             </div>
           </div>
         </section>
@@ -5377,8 +5319,8 @@
               <label class="pencairan-label">Rekening Tujuan</label>
               <div class="bank-account-box">
                 <div>
-                  <div class="bank-name">BCA••••1234</div>
-                  <div class="bank-owner">A/N Staplr Indonesia</div>
+                  <div class="bank-name">—</div>
+                  <div class="bank-owner">—</div>
                 </div>
                 <span class="badge-utama">
                   <span class="status-dot"></span>
@@ -5389,12 +5331,12 @@
               <div class="pencairan-field-grid">
                 <div class="pencairan-field">
                   <label class="pencairan-label" for="nominalPencairan">Nominal Pencairan</label>
-                  <input class="pencairan-input" id="nominalPencairan" type="text" value="Rp 10.000.000" oninput="updateRingkasanPencairan()" onblur="formatNominalPencairan()">
-                  <span class="field-hint" id="maksPencairanHint">Maks. Rp 45.000.000</span>
+                  <input class="pencairan-input" id="nominalPencairan" type="text" value="" oninput="updateRingkasanPencairan()" onblur="formatNominalPencairan()">
+                  <span class="field-hint" id="maksPencairanHint">Maks. Rp 0</span>
                 </div>
                 <div class="pencairan-field">
                   <label class="pencairan-label" for="catatanPencairan">Catatan</label>
-                  <input class="pencairan-input" id="catatanPencairan" type="text" value="Pencairan rutin mingguan">
+                  <input class="pencairan-input" id="catatanPencairan" type="text" value="">
                 </div>
               </div>
 
@@ -5410,11 +5352,15 @@
             <h2 class="ringkasan-pencairan-title">Ringkasan Pencairan</h2>
             <div class="ringkasan-row">
               <span class="label">Saldo siap cair</span>
-              <span class="value">Rp 45.000.000</span>
+              <span class="value" id="ringkasanSaldo">Rp 0</span>
+            </div>
+            <div class="ringkasan-row">
+              <span class="label">Sudah dicairkan</span>
+              <span class="value" id="ringkasanSudahCair">Rp 0</span>
             </div>
             <div class="ringkasan-row">
               <span class="label">Nominal pencairan</span>
-              <span class="value" id="ringkasanNominal">Rp 10.000.000</span>
+              <span class="value" id="ringkasanNominal">Rp 0</span>
             </div>
             <div class="ringkasan-row">
               <span class="label">Biaya admin</span>
@@ -5422,12 +5368,12 @@
             </div>
             <div class="ringkasan-row">
               <span class="label">Sisa saldo siap cair</span>
-              <span class="value" id="ringkasanSisa">Rp 35.000.000</span>
+              <span class="value" id="ringkasanSisa">Rp 0</span>
             </div>
             <div class="ringkasan-divider"></div>
             <div class="ringkasan-total">
               <span>Total pencairan</span>
-              <strong id="ringkasanTotal">Rp 10.000.000</strong>
+              <strong id="ringkasanTotal">Rp 0</strong>
             </div>
           </aside>
         </div>
@@ -5436,7 +5382,7 @@
         <section class="riwayat-pencairan-card" id="riwayatPencairanCard">
           <header class="riwayat-pencairan-header">
             <h2 class="riwayat-pencairan-title">Riwayat Pencairan</h2>
-            <button class="btn-unduh-laporan" type="button" onclick="showToast('Laporan pencairan berhasil diunduh')">Unduh Laporan</button>
+            <button class="btn-unduh-laporan" type="button" onclick="showToast('Belum ada riwayat pencairan untuk diunduh')">Unduh Laporan</button>
           </header>
 
           <div class="table-wrap">
@@ -5451,30 +5397,9 @@
                   <th>TANGGAL</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="riwayatPencairanBody">
                 <tr>
-                  <td class="order-code">PD-2027-014</td>
-                  <td>BCA •••• 1234</td>
-                  <td>Manual</td>
-                  <td class="order-amount">Rp 10.000.000</td>
-                  <td><span class="status-badge diproses">• Diproses</span></td>
-                  <td class="order-date">12 Okt 2027, 10:00</td>
-                </tr>
-                <tr>
-                  <td class="order-code">PD-2027-013</td>
-                  <td>BNI •••• 8891</td>
-                  <td>Manual</td>
-                  <td class="order-amount">Rp 5.000.000</td>
-                  <td><span class="status-badge selesai">• Berhasil</span></td>
-                  <td class="order-date">11 Okt 2027, 14:30</td>
-                </tr>
-                <tr>
-                  <td class="order-code">PD-2027-011</td>
-                  <td>Mandiri •••• 4421</td>
-                  <td>Manual</td>
-                  <td class="order-amount">Rp 3.000.000</td>
-                  <td><span class="status-badge gagal">• Gagal</span></td>
-                  <td class="order-date">09 Okt 2027, 16:45</td>
+                  <td colspan="6" style="text-align: center; color: var(--muted, #888);">Belum ada riwayat pencairan — pencairan belum dicatat di sistem.</td>
                 </tr>
               </tbody>
             </table>
@@ -5493,26 +5418,17 @@
             <div class="riwayat-filter-group">
               <span class="riwayat-filter-label">Rentang Tanggal:</span>
               <div class="riwayat-date-range">
-                <input class="riwayat-date-input" id="riwayatTanggalMulai" type="date" value="2026-09-01" max="2027-12-31" aria-label="Tanggal mulai" onchange="renderRiwayatTable()">
+                <input class="riwayat-date-input" id="riwayatTanggalMulai" type="date" max="2027-12-31" aria-label="Tanggal mulai" onchange="renderRiwayatTable()">
                 <span class="riwayat-date-sep">–</span>
-                <input class="riwayat-date-input" id="riwayatTanggalAkhir" type="date" value="2026-10-12" max="2027-12-31" aria-label="Tanggal akhir" onchange="renderRiwayatTable()">
+                <input class="riwayat-date-input" id="riwayatTanggalAkhir" type="date" max="2027-12-31" aria-label="Tanggal akhir" onchange="renderRiwayatTable()">
               </div>
-            </div>
-
-            <div class="riwayat-filter-group">
-              <label class="riwayat-filter-label" for="riwayatMetode">Metode Bayar:</label>
-              <select class="riwayat-select" id="riwayatMetode" onchange="renderRiwayatTable()">
-                <option value="semua">Semua</option>
-                <option value="Transfer Bank">Transfer Bank</option>
-                <option value="Virtual Account">Virtual Account</option>
-              </select>
             </div>
           </div>
 
           <div class="riwayat-tabs">
             <button class="riwayat-tab active" type="button" onclick="filterRiwayat('semua', this)">Semua Status</button>
-            <button class="riwayat-tab" type="button" onclick="filterRiwayat('selesai', this)">Selesai (177)</button>
-            <button class="riwayat-tab" type="button" onclick="filterRiwayat('dibatalkan', this)">Dibatalkan (7)</button>
+            <button class="riwayat-tab" type="button" onclick="filterRiwayat('selesai', this)">Selesai (0)</button>
+            <button class="riwayat-tab" type="button" onclick="filterRiwayat('dibatalkan', this)">Dibatalkan (0)</button>
           </div>
 
           <section class="riwayat-card">
@@ -5541,9 +5457,9 @@
             <div>
               <div class="riwayat-detail-title-row">
                 <h2 class="riwayat-detail-title" id="riwayatDetailTitle">Rincian Transaksi Selesai</h2>
-                <span class="riwayat-status-pill" id="riwayatDetailStatus">• Selesai · 11 Okt 2026</span>
+                <span class="riwayat-status-pill" id="riwayatDetailStatus">• —</span>
               </div>
-              <div class="riwayat-detail-id" id="riwayatDetailId">#TRX-2026-088</div>
+              <div class="riwayat-detail-id" id="riwayatDetailId">-</div>
             </div>
 
             <div class="riwayat-detail-actions">
@@ -5565,15 +5481,15 @@
                 <div class="riwayat-info-grid">
                   <div>
                     <div class="riwayat-info-label">Pembeli</div>
-                    <div class="riwayat-info-value" id="riwayatDetailPembeli">PT Boga Jaya</div>
+                    <div class="riwayat-info-value" id="riwayatDetailPembeli">-</div>
                   </div>
                   <div>
                     <div class="riwayat-info-label">Alamat Kirim</div>
-                    <div class="riwayat-info-value" id="riwayatDetailAlamat">Jl. Raya Semarang</div>
+                    <div class="riwayat-info-value" id="riwayatDetailAlamat">-</div>
                   </div>
                   <div>
                     <div class="riwayat-info-label">Tanggal Pesan</div>
-                    <div class="riwayat-info-value" id="riwayatDetailTanggalPesan">05 Okt 2026</div>
+                    <div class="riwayat-info-value" id="riwayatDetailTanggalPesan">-</div>
                   </div>
                 </div>
               </section>
@@ -5599,23 +5515,27 @@
                 <h3 class="riwayat-dcard-title">Ringkasan Pembayaran</h3>
                 <div class="riwayat-sum-row">
                   <span>Subtotal</span>
-                  <span class="value" id="riwayatDetailSubtotal">Rp 11.500.000</span>
+                  <span class="value" id="riwayatDetailSubtotal">Rp 0</span>
                 </div>
                 <div class="riwayat-sum-row">
                   <span>Ongkos Kirim</span>
-                  <span class="value" id="riwayatDetailOngkir">Rp 300.000</span>
+                  <span class="value" id="riwayatDetailOngkir">Rp 0</span>
+                </div>
+                <div class="riwayat-sum-row">
+                  <span>Biaya Layanan (2,5%)</span>
+                  <span class="value" id="riwayatDetailFee">Rp 0</span>
                 </div>
                 <div class="riwayat-sum-divider"></div>
                 <div class="riwayat-sum-total">
                   <span>Total Pembayaran</span>
-                  <strong id="riwayatDetailTotal">Rp 11.800.000</strong>
+                  <strong id="riwayatDetailTotal">Rp 0</strong>
                 </div>
               </section>
 
               <section class="riwayat-dcard">
                 <h3 class="riwayat-dcard-title">Catatan / Bukti Terima</h3>
                 <span class="riwayat-terima-badge" id="riwayatDetailTerimaBadge">• Terkirim &amp; diterima</span>
-                <p class="riwayat-terima-note" id="riwayatDetailTerima">Diterima oleh: Abi Supir pada 11/10/2026</p>
+                <p class="riwayat-terima-note" id="riwayatDetailTerima">-</p>
               </section>
             </aside>
           </div>
@@ -5646,15 +5566,15 @@
       <div class="pencairan-review-rows">
         <div class="pencairan-review-row">
           <span class="label">Rekening Tujuan</span>
-          <span class="value">BCA •••• 1234<small>A/N Staplr Indonesia</small></span>
+          <span class="value" id="pencairanReviewRekening">—</span>
         </div>
         <div class="pencairan-review-row">
           <span class="label">Nominal Pencairan</span>
-          <span class="value amount" id="pencairanReviewNominal">Rp 10.000.000</span>
+          <span class="value amount" id="pencairanReviewNominal">Rp 0</span>
         </div>
         <div class="pencairan-review-row">
           <span class="label">Catatan</span>
-          <span class="value" id="pencairanReviewCatatan">Pencairan rutin mingguan</span>
+          <span class="value" id="pencairanReviewCatatan">—</span>
         </div>
         <div class="pencairan-review-row">
           <span class="label">Biaya Admin</span>
@@ -5662,7 +5582,7 @@
         </div>
       </div>
 
-      <p class="pencairan-review-note">Pastikan rekening tujuan sudah benar. Pencairan yang sudah dikonfirmasi tidak dapat dibatalkan.</p>
+      <p class="pencairan-review-note">Pencairan belum dapat dicatat — belum ada API pencairan di sistem.</p>
 
       <div class="pencairan-review-actions">
         <button class="btn-pencairan-secondary" type="button" onclick="tutupTinjauPencairan()">Batal</button>
@@ -5684,9 +5604,9 @@
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
       </div>
-      <h2 class="pencairan-modal-title" id="pencairanModalTitle">Pencairan Dana Berhasil!</h2>
-      <div class="pencairan-modal-amount" id="pencairanModalNominal">Rp 10.000.000</div>
-      <p class="pencairan-modal-note">Dana akan diteruskan ke rekening <span id="pencairanModalRekening">BCA •••• 1234</span> dalam maksimal 1×24 jam kerja.</p>
+      <h2 class="pencairan-modal-title" id="pencairanModalTitle">Pencairan Belum Dapat Dicatat</h2>
+      <div class="pencairan-modal-amount" id="pencairanModalNominal">Rp 0</div>
+      <p class="pencairan-modal-note">Pencairan belum dapat dicatat — belum ada API pencairan di sistem.</p>
       <button class="btn-pencairan-modal-close" type="button" onclick="tutupModalPencairan()">Tutup</button>
     </div>
   </div>
@@ -5710,7 +5630,7 @@
         <!-- Hidden input for edit mode index -->
         <input type="hidden" id="editProductIndex" value="-1">
 
-        <!-- Row 1: Jenis Produk & Grade (Telur Bebek telah dihapus) -->
+        <!-- Row 1: Jenis Produk & Grade -->
         <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="inputJenisProduk">Jenis Produk</label>
@@ -5718,6 +5638,14 @@
               <option value="Telur Ayam Ras">Telur Ayam Ras</option>
               <option value="Telur Ayam Kampung">Telur Ayam Kampung</option>
               <option value="Telur Omega">Telur Omega</option>
+              <option value="Beras">Beras</option>
+              <option value="Gula Pasir">Gula Pasir</option>
+              <option value="Minyak Goreng">Minyak Goreng</option>
+              <option value="Tepung Terigu">Tepung Terigu</option>
+              <option value="Garam">Garam</option>
+              <option value="Kopi">Kopi</option>
+              <option value="Teh">Teh</option>
+              <option value="Lainnya">Lainnya</option>
             </select>
           </div>
 
@@ -5728,6 +5656,14 @@
               <option value="B">B</option>
               <option value="C">C</option>
             </select>
+          </div>
+        </div>
+
+        <!-- Row 1b: Nama jenis lain (tampil bila Jenis Produk = Lainnya) -->
+        <div class="form-row" id="rowJenisLain" style="display:none;">
+          <div class="form-group">
+            <label class="form-label" for="inputJenisLain">Nama Jenis Produk</label>
+            <input type="text" class="form-input" id="inputJenisLain" placeholder="Contoh: Beras Premium">
           </div>
         </div>
 
@@ -5748,7 +5684,7 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="inputMinOrder">Minimal Pembelian</label>
-            <input type="text" class="form-input" id="inputMinOrder" placeholder="10 kg" required>
+            <input type="text" class="form-input" id="inputMinOrder" placeholder="10 kg">
           </div>
 
           <div class="form-group">
@@ -5763,6 +5699,48 @@
           <button type="submit" class="btn-modal-submit" id="btnModalSubmit">Simpan Produk</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL KIRIM DENGAN FOTO BUKTI PENGIRIMAN
+       ========================================================================== -->
+  <div class="modal-overlay" id="kirimModalOverlay" onclick="if (event.target === this) tutupModalKirim()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title" id="kirimModalTitle">Kirim Pesanan</h2>
+        <p class="modal-subtitle" id="kirimModalSubtitle">Lampirkan foto bukti pengiriman, lalu kirim pesanan.</p>
+      </div>
+
+      <form class="modal-form" id="kirimForm" onsubmit="handleKirimFormSubmit(event)">
+        <div class="form-group">
+          <label class="form-label" for="inputFotoKirim">Foto bukti pengiriman (wajib)</label>
+          <input type="file" class="form-input" id="inputFotoKirim" accept="image/jpeg,image/png,image/webp" required>
+          <p class="modal-subtitle" style="margin-top:6px;">JPG, PNG, atau WebP, maksimal 5 MB.</p>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-modal-cancel" onclick="tutupModalKirim()">Batal</button>
+          <button type="submit" class="btn-modal-submit" id="btnKirimSubmit">Kirim Pesanan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL KONFIRMASI HAPUS PRODUK
+       ========================================================================== -->
+  <div class="modal-overlay" id="hapusModalOverlay" onclick="if (event.target === this) tutupModalHapus()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Hapus produk ini?</h2>
+        <p class="modal-subtitle" id="hapusModalLabel"></p>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-modal-cancel" onclick="tutupModalHapus()">Batal</button>
+        <button type="button" class="btn-modal-submit" onclick="konfirmasiHapusYa()">Ya, hapus</button>
+      </div>
     </div>
   </div>
 
@@ -5800,41 +5778,41 @@
             <div class="inv-brand">
               <img src="../../assets/img/logo-staplr-transparent.png" alt="Staplr">
               <div>
-                <div class="inv-brand-name">CV Telur Makmur Bersama</div>
-                <div class="inv-brand-tag">Mitra Peternak Terverifikasi</div>
+                <div class="inv-brand-name">-</div>
+                <div class="inv-brand-tag">Mitra Peternak</div>
               </div>
             </div>
             <div class="inv-doc">
               <div class="inv-doc-title">INVOICE</div>
-              <div class="inv-doc-no" id="invNomor">INV/2026/088</div>
+              <div class="inv-doc-no" id="invNomor">-</div>
             </div>
           </div>
 
           <div class="inv-meta">
             <div>
               <div class="inv-label">Tanggal Invoice</div>
-              <div class="inv-value" id="invTanggal">11 Okt 2026</div>
+              <div class="inv-value" id="invTanggal">-</div>
             </div>
             <div>
               <div class="inv-label">Metode Pembayaran</div>
-              <div class="inv-value" id="invMetode">Transfer Bank</div>
+              <div class="inv-value" id="invMetode">-</div>
             </div>
             <div>
               <div class="inv-label">Status Pembayaran</div>
-              <div class="inv-value"><span class="inv-status" id="invStatus">• Lunas</span></div>
+              <div class="inv-value"><span class="inv-status" id="invStatus">• —</span></div>
             </div>
           </div>
 
           <div class="inv-parties">
             <div class="inv-party-box">
               <div class="inv-label">Ditagihkan Kepada</div>
-              <div class="inv-party-name" id="invPembeli">PT Boga Jaya</div>
-              <div class="inv-party-line" id="invAlamat">Jl. Raya Semarang</div>
+              <div class="inv-party-name" id="invPembeli">-</div>
+              <div class="inv-party-line" id="invAlamat">-</div>
             </div>
             <div class="inv-party-box">
               <div class="inv-label">Penjual</div>
-              <div class="inv-party-name">CV Telur Makmur Bersama</div>
-              <div class="inv-party-line">Solo, Jawa Tengah<br>staplrindonesia@gmail.com &middot; +62 85666895</div>
+              <div class="inv-party-name">-</div>
+              <div class="inv-party-line">—</div>
             </div>
           </div>
 
@@ -5854,21 +5832,25 @@
             <div class="inv-summary-box">
               <div class="inv-summary-row">
                 <span>Subtotal</span>
-                <span id="invSubtotal">Rp 11.500.000</span>
+                <span id="invSubtotal">Rp 0</span>
               </div>
               <div class="inv-summary-row">
                 <span>Ongkos Kirim</span>
-                <span id="invOngkir">Rp 300.000</span>
+                <span id="invOngkir">Rp 0</span>
+              </div>
+              <div class="inv-summary-row">
+                <span>Biaya Layanan (2,5%)</span>
+                <span id="invFee">Rp 0</span>
               </div>
               <div class="inv-summary-divider"></div>
               <div class="inv-summary-total">
                 <span>Total Pembayaran</span>
-                <strong id="invTotal">Rp 11.800.000</strong>
+                <strong id="invTotal">Rp 0</strong>
               </div>
             </div>
           </div>
 
-          <div class="inv-note" id="invCatatan">Diterima oleh: Abi Supir pada 11/10/2026</div>
+          <div class="inv-note" id="invCatatan">-</div>
 
           <div class="inv-sign">
             <div class="inv-sign-note">
@@ -5878,7 +5860,7 @@
             <div class="inv-sign-box">
               <div class="inv-sign-label">Hormat kami,</div>
               <div class="inv-sign-space"></div>
-              <div class="inv-sign-name">CV Telur Makmur Bersama</div>
+              <div class="inv-sign-name">-</div>
             </div>
           </div>
         </div>
@@ -5906,81 +5888,47 @@
         type: 'single-chart',
         title: 'Stok produk',
         subtitle: 'Total stok tersedia',
-        total: '18.400 butir',
-        maxVal: 12000,
-        yTicks: [12000, 8000, 4000, 0],
+        total: '—',
+        maxVal: 1,
+        yTicks: [1, 0],
         formatY: (val) => val === 0 ? '0' : val.toLocaleString('id-ID'),
-        bars: [
-          { label: 'Telur Omega', value: 1400, displayVal: '1.400' },
-          { label: 'Telur A', value: 10000, displayVal: '10.000' },
-          { label: 'Telur B', value: 3000, displayVal: '3.000' },
-          { label: 'Telur C', value: 4000, displayVal: '4.000' }
-        ]
+        bars: []
       },
       'pesanan-baru': {
         type: 'single-chart',
         title: 'Pesanan baru per hari',
         subtitle: 'Jumlah pesanan',
-        total: '60 pesanan',
-        maxVal: 15,
-        yTicks: [15, 10, 5, 0],
+        total: '—',
+        maxVal: 1,
+        yTicks: [1, 0],
         formatY: (val) => val.toString(),
-        bars: [
-          { label: 'Senin', value: 8, displayVal: '8' },
-          { label: 'Selasa', value: 10, displayVal: '10' },
-          { label: 'Rabu', value: 12, displayVal: '12' },
-          { label: 'Kamis', value: 9, displayVal: '9' },
-          { label: 'Jumat', value: 11, displayVal: '11' },
-          { label: 'Sabtu', value: 6, displayVal: '6' },
-          { label: 'Minggu', value: 4, displayVal: '4' }
-        ]
+        bars: []
       },
       'pesanan-proses': {
         type: 'table',
         title: 'Pesanan Terbaru',
         buttonText: 'Lihat Semua',
-        orders: [
-          { id: '#ORD-2027-001', buyer: 'UD Lancar Jaya', product: 'Telur Ayam', total: 'Rp 707.000', date: '07 Jun 2027', status: 'Diproses', statusClass: 'diproses' },
-          { id: '#ORD-2027-002', buyer: 'Nina W', product: 'Telur Ayam', total: 'Rp 750.000', date: '07 Jun 2027', status: 'Baru', statusClass: 'baru' },
-          { id: '#ORD-2027-003', buyer: 'PT Boga Jaya', product: 'Telur Omega', total: 'Rp 1.430.000', date: '06 Jun 2027', status: 'Selesai', statusClass: 'selesai' },
-          { id: '#ORD-2027-004', buyer: 'CV Sembako', product: 'Telur Ayam B', total: 'Rp 980.000', date: '05 Jun 2027', status: 'Diproses', statusClass: 'diproses' }
-        ]
+        orders: []
       },
       'pendapatan': {
         type: 'dual-charts',
         chartLeft: {
-          title: 'Volume telur (butir)',
+          title: 'Volume produk (kg)',
           subtitle: 'Pendapatan minggu ini',
-          total: '18.000',
-          maxVal: 4000,
-          yTicks: [4000, 2000, 0],
+          total: '—',
+          maxVal: 1,
+          yTicks: [1, 0],
           formatY: (val) => val === 0 ? '0' : val.toLocaleString('id-ID'),
-          bars: [
-            { label: 'Sen', value: 2400, displayVal: '2.400' },
-            { label: 'Sel', value: 3100, displayVal: '3.100' },
-            { label: 'Rab', value: 3500, displayVal: '3.500' },
-            { label: 'Kam', value: 2700, displayVal: '2.700' },
-            { label: 'Jum', value: 1900, displayVal: '1.900' },
-            { label: 'Sab', value: 3600, displayVal: '3.600' },
-            { label: 'Min', value: 1200, displayVal: '1.200' }
-          ]
+          bars: []
         },
         chartRight: {
           title: 'Pendapatan (Rp juta)',
           subtitle: 'Pendapatan minggu ini',
-          total: 'Rp 36 jt',
-          maxVal: 8,
-          yTicks: [8, 6, 4, 2, 0],
+          total: '—',
+          maxVal: 1,
+          yTicks: [1, 0],
           formatY: (val) => val === 0 ? '0' : val.toString(),
-          bars: [
-            { label: 'Sen', value: 4.8, displayVal: '4,8' },
-            { label: 'Sel', value: 6.0, displayVal: '6,0' },
-            { label: 'Rab', value: 6.8, displayVal: '6,8' },
-            { label: 'Kam', value: 5.4, displayVal: '5,4' },
-            { label: 'Jum', value: 3.8, displayVal: '3,8' },
-            { label: 'Sab', value: 7.2, displayVal: '7,2' },
-            { label: 'Min', value: 2.4, displayVal: '2,4' }
-          ]
+          bars: []
         }
       }
     };
@@ -5988,11 +5936,50 @@
     /* --------------------------------------------------------------------------
        B. DATA PRODUK (Hanya Satuan kg)
        -------------------------------------------------------------------------- */
-    let PRODUCTS_DATA = [
-      { jenis: 'Telur Ayam Ras', grade: 'Grade A', gradeKey: 'A', harga: 'Rp 25.000', stok: '1.200 kg', minOrder: '10 kg', satuan: 'kg' },
-      { jenis: 'Telur Ayam Ras', grade: 'Grade B', gradeKey: 'B', harga: 'Rp 25.000', stok: '1.200 kg', minOrder: '10 kg', satuan: 'kg' },
-      { jenis: 'Telur Ayam Ras', grade: 'Grade C', gradeKey: 'C', harga: 'Rp 25.000', stok: '1.200 kg', minOrder: '10 kg', satuan: 'kg' }
-    ];
+    // Produk dari database (API katalog, hanya produk milik perusahaan yang login).
+    // Bentuk datanya disamakan dengan yang dipakai renderProductsTable().
+    let PRODUCTS_DATA = [];
+    function muatProdukPerusahaan() {
+      return fetch('../../api/katalog.php?perusahaan_id=saya')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.produk) { showToast('Gagal memuat produk: ' + (res.error || 'tidak diketahui')); return; }
+          PRODUCTS_DATA = res.data.produk.map(function (pr) {
+            var namaAsli = pr.nama || '';
+            var isTelur = /telur/i.test(namaAsli);
+            var gradeKey = '';
+            var jenis = namaAsli;
+            if (isTelur) {
+              // Produk telur: petakan nama ke jenis + grade seperti semula.
+              gradeKey = /grade b/i.test(namaAsli) ? 'B' : (/grade c/i.test(namaAsli) ? 'C' : 'A');
+              jenis = /kampung/i.test(namaAsli) ? 'Telur Ayam Kampung' : (/omega/i.test(namaAsli) ? 'Telur Omega' : 'Telur Ayam Ras');
+            } else {
+              // Bukan telur: jenis = nama apa adanya tanpa akhiran " Grade X".
+              jenis = namaAsli.replace(/\s+grade\s+[abc]\s*$/i, '');
+            }
+            return {
+              id: pr.id,
+              namaAsli: namaAsli,
+              deskripsi: pr.deskripsi || '',
+              jenis: jenis,
+              grade: gradeKey ? 'Grade ' + gradeKey : '—',
+              gradeKey: gradeKey,
+              harga: 'Rp ' + Number(pr.harga_per_kg).toLocaleString('id-ID'),
+              stok: Number(pr.stok_kg).toLocaleString('id-ID') + ' kg',
+              stokKg: Number(pr.stok_kg),
+              // Minimal order tidak ada kolomnya di tabel produk dan tidak
+              // disimpan api/produk/simpan.php, jadi ditampilkan '-' saja
+              // (sebelumnya '10 kg' karangan untuk semua produk).
+              minOrder: '—',
+              satuan: 'kg'
+            };
+          });
+          renderProductsTable();
+          bangunDashboard();
+        })
+        .catch(function () { /* biarkan tabel kosong kalau katalog gagal dimuat */ });
+    }
+    muatProdukPerusahaan();
 
     /* --------------------------------------------------------------------------
        C. VIEW SWITCHER (DASHBOARD VS PRODUK VS PESANAN)
@@ -6048,7 +6035,7 @@
         pageTitle.textContent = 'Dispute';
         if (disputeView) disputeView.style.display = 'flex';
         showDisputeList();
-        renderDisputeTable();
+        muatDisputePerusahaan();
         window.location.hash = 'dispute';
       } else if (viewName === 'keuangan') {
         if (navKeuangan) navKeuangan.classList.add('active');
@@ -6074,8 +6061,11 @@
     /* --------------------------------------------------------------------------
        D. DASHBOARD METRIC SELECTION (S-1, S-2, S-3, S-4)
        -------------------------------------------------------------------------- */
+    let metricAktif = 'stok';
+
     function selectMetric(metricKey) {
       if (!DASHBOARD_CONFIGS[metricKey]) return;
+      metricAktif = metricKey;
 
       document.querySelectorAll('.metric-card').forEach(card => {
         if (card.dataset.metric === metricKey) {
@@ -6086,6 +6076,169 @@
       });
 
       renderPanel(DASHBOARD_CONFIGS[metricKey]);
+    }
+
+    /* --------------------------------------------------------------------------
+       D2. DASHBOARD DARI DATA ASLI (produk & pesanan dari API)
+       -------------------------------------------------------------------------- */
+    function tujuhHariTerakhir() {
+      const namaHari = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+      const out = [];
+      const now = new Date();
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+        const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        out.push({ key: key, label: namaHari[d.getDay()] });
+      }
+      return out;
+    }
+
+    function batasAtasBagus(nilai) {
+      if (nilai <= 0) return 1;
+      const pangkat = Math.pow(10, Math.floor(Math.log10(nilai)));
+      const n = nilai / pangkat;
+      const bagus = n <= 1 ? 1 : (n <= 2 ? 2 : (n <= 5 ? 5 : 10));
+      return bagus * pangkat;
+    }
+
+    function setTeks(id, teks) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = teks;
+    }
+
+    function bangunDashboard() {
+      const hari7 = tujuhHariTerakhir();
+      const kunci7 = {};
+      hari7.forEach(function (h) { kunci7[h.key] = true; });
+
+      // --- Kartu metrik ---
+      let totalStok = 0;
+      PRODUCTS_DATA.forEach(function (pr) { totalStok += Number(pr.stokKg) || 0; });
+      setTeks('metricStok', totalStok.toLocaleString('id-ID'));
+
+      let baruMingguIni = 0;
+      let diproses = 0;
+      let pendapatan = 0;
+      const perHariPesanan = {};
+      const perHariKg = {};
+      const perHariRp = {};
+      hari7.forEach(function (h) { perHariPesanan[h.key] = 0; perHariKg[h.key] = 0; perHariRp[h.key] = 0; });
+      PESANAN_DATA.forEach(function (o) {
+        if (o.statusDb === 'diproses') diproses += 1;
+        const tgl = o.jadwal || '';
+        if (!kunci7[tgl]) return;
+        baruMingguIni += 1;
+        perHariPesanan[tgl] += 1;
+        (o.items || []).forEach(function (it) { perHariKg[tgl] += Number(it.qty) || 0; });
+        if (['dibayar', 'diproses', 'dikirim', 'diterima', 'selesai'].indexOf(o.statusDb) !== -1) {
+          pendapatan += Number(o.pembayaran) || 0;
+          perHariRp[tgl] += Number(o.pembayaran) || 0;
+        }
+      });
+      setTeks('metricPesananBaru', String(baruMingguIni));
+      setTeks('metricDiproses', String(diproses));
+      setTeks('metricPendapatan', 'Rp ' + pendapatan.toLocaleString('id-ID'));
+
+      // --- Panel stok: batang dari stok tiap produk ---
+      const stokBars = PRODUCTS_DATA.map(function (pr) {
+        const label = pr.namaAsli || pr.jenis;
+        const nilai = Number(pr.stokKg) || 0;
+        return { label: label, value: nilai, displayVal: nilai.toLocaleString('id-ID') };
+      });
+      const maksStok = batasAtasBagus(Math.max.apply(null, stokBars.map(function (b) { return b.value; }).concat([0])));
+      DASHBOARD_CONFIGS['stok'] = {
+        type: 'single-chart',
+        title: 'Stok produk',
+        subtitle: 'Total stok tersedia',
+        total: totalStok.toLocaleString('id-ID') + ' kg',
+        maxVal: maksStok,
+        yTicks: [maksStok, Math.round(maksStok * 2 / 3), Math.round(maksStok / 3), 0],
+        formatY: (val) => val === 0 ? '0' : val.toLocaleString('id-ID'),
+        bars: stokBars
+      };
+
+      // --- Panel pesanan baru: jumlah per hari, 7 hari terakhir ---
+      const baruBars = hari7.map(function (h) {
+        const n = perHariPesanan[h.key] || 0;
+        return { label: h.label, value: n, displayVal: String(n) };
+      });
+      const maksBaru = batasAtasBagus(Math.max.apply(null, baruBars.map(function (b) { return b.value; }).concat([0])));
+      DASHBOARD_CONFIGS['pesanan-baru'] = {
+        type: 'single-chart',
+        title: 'Pesanan baru per hari',
+        subtitle: 'Jumlah pesanan',
+        total: baruMingguIni + ' pesanan',
+        maxVal: maksBaru,
+        yTicks: [maksBaru, Math.round(maksBaru * 2 / 3), Math.round(maksBaru / 3), 0],
+        formatY: (val) => val.toString(),
+        bars: baruBars
+      };
+
+      // --- Panel pesanan terbaru: 5 pesanan terakhir yang asli ---
+      const petaStatus = {
+        'menunggu-pembayaran': ['Menunggu Bayar', 'baru'],
+        'menunggu-persetujuan': ['Menunggu Persetujuan', 'baru'],
+        'diproses': ['Diproses', 'diproses'],
+        'dikirim': ['Dikirim', 'diproses'],
+        'diterima': ['Diterima', 'selesai'],
+        'selesai': ['Selesai', 'selesai'],
+        'dibatalkan': ['Dibatalkan', 'gagal']
+      };
+      const terbaru = PESANAN_DATA.slice(0, 5).map(function (o) {
+        const st = petaStatus[o.status] || [o.status, 'baru'];
+        const item = (o.items && o.items[0]) || {};
+        return {
+          id: '#ORD-2026-' + String(o.orderId || '').padStart(3, '0'),
+          buyer: o.pembeli || 'Pembeli',
+          product: item.produk || '-',
+          total: 'Rp ' + (Number(o.pembayaran) || 0).toLocaleString('id-ID'),
+          date: o.jadwalLabel || o.jadwal || '-',
+          status: st[0],
+          statusClass: st[1]
+        };
+      });
+      DASHBOARD_CONFIGS['pesanan-proses'] = {
+        type: 'table',
+        title: 'Pesanan Terbaru',
+        buttonText: 'Lihat Semua',
+        orders: terbaru
+      };
+
+      // --- Panel pendapatan: volume (kg) & rupiah per hari ---
+      const volBars = hari7.map(function (h) {
+        const n = perHariKg[h.key] || 0;
+        return { label: h.label, value: n, displayVal: n.toLocaleString('id-ID') };
+      });
+      const rpBars = hari7.map(function (h) {
+        const jt = (perHariRp[h.key] || 0) / 1000000;
+        return { label: h.label, value: Math.round(jt * 10) / 10, displayVal: jt.toLocaleString('id-ID', { maximumFractionDigits: 1 }) };
+      });
+      const maksVol = batasAtasBagus(Math.max.apply(null, volBars.map(function (b) { return b.value; }).concat([0])));
+      const maksRp = batasAtasBagus(Math.max.apply(null, rpBars.map(function (b) { return b.value; }).concat([0])));
+      const totalKg = volBars.reduce(function (s, b) { return s + b.value; }, 0);
+      DASHBOARD_CONFIGS['pendapatan'] = {
+        type: 'dual-charts',
+        chartLeft: {
+          title: 'Volume produk (kg)',
+          subtitle: 'Pendapatan minggu ini',
+          total: totalKg.toLocaleString('id-ID') + ' kg',
+          maxVal: maksVol,
+          yTicks: [maksVol, Math.round(maksVol * 2 / 3), Math.round(maksVol / 3), 0],
+          formatY: (val) => val === 0 ? '0' : val.toLocaleString('id-ID'),
+          bars: volBars
+        },
+        chartRight: {
+          title: 'Pendapatan (Rp juta)',
+          subtitle: 'Pendapatan minggu ini',
+          total: 'Rp ' + (pendapatan / 1000000).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' jt',
+          maxVal: maksRp,
+          yTicks: [maksRp, Math.round(maksRp * 2 / 3 * 10) / 10, Math.round(maksRp / 3 * 10) / 10, 0],
+          formatY: (val) => val === 0 ? '0' : val.toString(),
+          bars: rpBars
+        }
+      };
+
+      renderPanel(DASHBOARD_CONFIGS[metricAktif]);
     }
 
     function renderPanel(config) {
@@ -6274,11 +6427,14 @@
 
       PRODUCTS_DATA.forEach((prod, index) => {
         const gradeClass = prod.gradeKey === 'A' ? 'grade-a' : (prod.gradeKey === 'B' ? 'grade-b' : 'grade-c');
+        const gradeCell = prod.gradeKey
+          ? `<span class="grade-badge ${gradeClass}">• Grade ${prod.gradeKey}</span>`
+          : '—';
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td><strong>${prod.jenis}</strong></td>
+          <td><strong>${prod.namaAsli || prod.jenis}</strong></td>
           <td>
-            <span class="grade-badge ${gradeClass}">• Grade ${prod.gradeKey}</span>
+            ${gradeCell}
           </td>
           <td>${prod.harga}</td>
           <td>${prod.stok}</td>
@@ -6299,13 +6455,40 @@
       syncFillScroll();
     }
 
+    let hapusProdukIndex = null;
+
     function handleDeleteProduct(index) {
       const item = PRODUCTS_DATA[index];
-      if (confirm(`Apakah Anda yakin ingin menghapus "${item.jenis} (Grade ${item.gradeKey})"?`)) {
-        PRODUCTS_DATA.splice(index, 1);
-        renderProductsTable();
-        showToast('Produk berhasil dihapus');
-      }
+      if (!item || !item.id) { showToast('Produk ini belum tersimpan di database'); return; }
+      const labelHapus = item.gradeKey ? (item.jenis + ' (Grade ' + item.gradeKey + ')') : (item.namaAsli || item.jenis);
+      hapusProdukIndex = index;
+      document.getElementById('hapusModalLabel').textContent = 'Produk "' + labelHapus + '" akan dihapus.';
+      document.getElementById('hapusModalOverlay').classList.add('show');
+    }
+
+    function tutupModalHapus() {
+      document.getElementById('hapusModalOverlay').classList.remove('show');
+      hapusProdukIndex = null;
+    }
+
+    function konfirmasiHapusYa() {
+      const index = hapusProdukIndex;
+      tutupModalHapus();
+      if (index === null || index === undefined) { return; }
+      const item = PRODUCTS_DATA[index];
+      if (!item || !item.id) { return; }
+      fetch('../../api/produk/hapus.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ produk_id: item.id })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) { showToast('Gagal menghapus: ' + (res.error || 'tidak diketahui')); return; }
+          muatProdukPerusahaan();
+          showToast('Produk berhasil dihapus');
+        })
+        .catch(function () { showToast('Gagal menghapus produk. Pastikan sudah login sebagai perusahaan.'); });
     }
 
     /* --------------------------------------------------------------------------
@@ -6325,33 +6508,40 @@
     const inputSatuan = document.getElementById('inputSatuan');
 
     // Dynamic Grade Options: Telur Ayam Kampung & Telur Omega only have Grade A
+    // Setiap jenis produk punya grade A, B, dan C — bukan hanya A.
     function updateGradeOptions(selectedGrade = 'A') {
-      const jenis = inputJenis.value;
       inputGrade.innerHTML = '';
 
-      if (jenis === 'Telur Ayam Kampung' || jenis === 'Telur Omega') {
+      ['A', 'B', 'C'].forEach(g => {
         const opt = document.createElement('option');
-        opt.value = 'A';
-        opt.textContent = 'A';
+        opt.value = g;
+        opt.textContent = g;
         inputGrade.appendChild(opt);
-        inputGrade.value = 'A';
+      });
+      if (['A', 'B', 'C'].includes(selectedGrade)) {
+        inputGrade.value = selectedGrade;
       } else {
-        ['A', 'B', 'C'].forEach(g => {
-          const opt = document.createElement('option');
-          opt.value = g;
-          opt.textContent = g;
-          inputGrade.appendChild(opt);
-        });
-        if (['A', 'B', 'C'].includes(selectedGrade)) {
-          inputGrade.value = selectedGrade;
-        } else {
-          inputGrade.value = 'A';
-        }
+        inputGrade.value = 'A';
       }
     }
 
     // Listen to Jenis Produk changes to adjust Grade options
+    // Jenis yang memakai grade hanya produk telur; jenis lain bebas
+    // (Beras, Gula Pasir, dst.) dan tidak memakai grade.
+    const JENIS_TELUR = ['Telur Ayam Ras', 'Telur Ayam Kampung', 'Telur Omega'];
+    const JENIS_TETAP = JENIS_TELUR.concat(['Beras', 'Gula Pasir', 'Minyak Goreng', 'Tepung Terigu', 'Garam', 'Kopi', 'Teh']);
+
+    // Nonaktifkan pilihan grade untuk jenis non-telur, dan tampilkan isian
+    // "Nama Jenis Produk" bila Jenis Produk = Lainnya.
+    function sesuaikanGradeDenganJenis() {
+      const isTelur = JENIS_TELUR.indexOf(inputJenis.value) !== -1;
+      inputGrade.disabled = !isTelur;
+      const rowLain = document.getElementById('rowJenisLain');
+      if (rowLain) rowLain.style.display = inputJenis.value === 'Lainnya' ? '' : 'none';
+    }
+
     inputJenis.addEventListener('change', () => {
+      sesuaikanGradeDenganJenis();
       updateGradeOptions(inputGrade.value);
     });
 
@@ -6362,12 +6552,18 @@
       btnModalSubmit.textContent = 'Simpan Produk';
       editIndexInput.value = '-1';
 
-      // Reset form default
+      // Reset form: kolom isian dikosongkan supaya tidak ada angka karangan
+      // yang ikut tersimpan (placeholder di HTML hanya contoh format).
+      // Jenis/grade tetap pada pilihan pertama karena itu pilihan select,
+      // bukan isian angka; satuan selalu KG.
       inputJenis.value = 'Telur Ayam Ras';
       updateGradeOptions('A');
-      inputHarga.value = 'Rp 25.000';
-      inputStok.value = '1.200 kg';
-      inputMinOrder.value = '10 kg';
+      sesuaikanGradeDenganJenis();
+      const inputLainBaru = document.getElementById('inputJenisLain');
+      if (inputLainBaru) inputLainBaru.value = '';
+      inputHarga.value = '';
+      inputStok.value = '';
+      inputMinOrder.value = '';
       inputSatuan.value = 'KG';
 
       modalOverlay.classList.add('show');
@@ -6383,11 +6579,22 @@
       btnModalSubmit.textContent = 'Simpan Perubahan';
       editIndexInput.value = index;
 
-      inputJenis.value = prod.jenis;
+      // Jenis yang tidak ada di daftar pilihan tetap dibuka lewat "Lainnya"
+      // dengan nama aslinya di isian nama jenis.
+      if (JENIS_TETAP.indexOf(prod.jenis) !== -1) {
+        inputJenis.value = prod.jenis;
+      } else {
+        inputJenis.value = 'Lainnya';
+        const inputLainEdit = document.getElementById('inputJenisLain');
+        if (inputLainEdit) inputLainEdit.value = prod.namaAsli || prod.jenis;
+      }
       updateGradeOptions(prod.gradeKey);
+      sesuaikanGradeDenganJenis();
       inputHarga.value = prod.harga;
       inputStok.value = prod.stok;
-      inputMinOrder.value = prod.minOrder;
+      // Minimal order tidak tersimpan di database: jangan isi '-' ke
+      // dalam input, biarkan kosong.
+      inputMinOrder.value = (prod.minOrder && prod.minOrder !== '—') ? prod.minOrder : '';
       inputSatuan.value = 'KG';
 
       modalOverlay.classList.add('show');
@@ -6410,27 +6617,65 @@
       const index = parseInt(editIndexInput.value, 10);
       const gradeSelected = inputGrade.value;
 
+      const jenisDipilih = inputJenis.value;
+      const isTelur = JENIS_TELUR.indexOf(jenisDipilih) !== -1;
+      const jenisLain = ((document.getElementById('inputJenisLain') || {}).value || '').trim();
+      // Nama jenis: telur pakai pilihan; "Lainnya" pakai isian bebas;
+      // pilihan tetap non-telur (Beras, Gula, dst.) pakai namanya sendiri.
+      const jenisProduk = isTelur ? jenisDipilih : (jenisDipilih === 'Lainnya' ? jenisLain : jenisDipilih);
+      if (!jenisProduk) { showToast('Isi dulu nama jenis produknya.'); return; }
+
       const productPayload = {
-        jenis: inputJenis.value,
-        grade: `Grade ${gradeSelected}`,
-        gradeKey: gradeSelected,
+        jenis: jenisProduk,
+        grade: isTelur ? ('Grade ' + gradeSelected) : '—',
+        gradeKey: isTelur ? gradeSelected : '',
         harga: inputHarga.value,
         stok: inputStok.value,
         minOrder: inputMinOrder.value,
         satuan: 'KG'
       };
 
-      if (index >= 0 && index < PRODUCTS_DATA.length) {
-        // Edit existing product
-        PRODUCTS_DATA[index] = productPayload;
-        showToast('Detail produk berhasil diperbarui');
+      // Nama produk: skema telur seperti semula (Ras selalu pakai grade;
+      // Kampung/Omega tanpa grade untuk A, pakai grade untuk B/C);
+      // produk non-telur memakai nama jenisnya apa adanya.
+      var namaProduk;
+      if (jenisDipilih === 'Telur Ayam Ras') {
+        namaProduk = 'Telur Ayam Grade ' + gradeSelected;
+      } else if (!isTelur) {
+        namaProduk = jenisProduk;
+      } else if (gradeSelected === 'A') {
+        namaProduk = jenisProduk;
       } else {
-        // Add new product
-        PRODUCTS_DATA.push(productPayload);
-        showToast('Produk baru berhasil ditambahkan');
+        namaProduk = jenisProduk + ' Grade ' + gradeSelected;
       }
+      var produkId = (index >= 0 && index < PRODUCTS_DATA.length && PRODUCTS_DATA[index].id) ? PRODUCTS_DATA[index].id : 0;
+      // Edit: pertahankan deskripsi lama dari database (modal tidak punya
+      // kolom deskripsi) supaya edit tidak menghapusnya jadi kosong.
+      var deskripsiLama = (produkId && PRODUCTS_DATA[index] && PRODUCTS_DATA[index].deskripsi) ? PRODUCTS_DATA[index].deskripsi : '';
+      var hargaNum = parseInt(String(productPayload.harga).replace(/[^0-9]/g, ''), 10) || 0;
+      // Stok tampil format Indonesia ("1.200 kg"): hapus titik pemisah ribuan
+      // DULU sebelum parseFloat — kalau tidak, "1.200" terbaca 1,2 kg.
+      var stokNum = parseFloat(String(productPayload.stok).replace(/\./g, '').replace(',', '.').replace(/[^0-9.]/g, '')) || 0;
+      fetch('../../api/produk/simpan.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: produkId,
+          nama: namaProduk,
+          deskripsi: deskripsiLama,
+          harga_per_kg: hargaNum,
+          stok_kg: stokNum,
+          satuan: 'kg'
+        })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) { showToast('Gagal menyimpan: ' + (res.error || 'tidak diketahui')); return; }
+          showToast(produkId ? 'Detail produk berhasil diperbarui' : 'Produk baru berhasil ditambahkan');
+          muatProdukPerusahaan();
+        })
+        .catch(function () { showToast('Gagal menyimpan produk. Pastikan sudah login sebagai perusahaan.'); });
 
-      renderProductsTable();
       closeProductModal();
     }
 
@@ -6448,24 +6693,85 @@
     /* --------------------------------------------------------------------------
        F2. PROFIL AKUN LOGIC
        -------------------------------------------------------------------------- */
-    const PROFILE_DEFAULTS = {
-      profileNamaUsaha: 'PT. Maju Jaya Abadi',
-      profileEmail: 'supplier@majuabadi.co.id',
-      profileTelepon: '+00000000',
-      profileKota: 'Jakarta Timur',
-      profileAlamat: 'Jl. Raya Industri No. 123',
-      profileBank: 'Bank Mandiri',
-      profileNoRek: '00-000-00',
-      profileAtasNama: 'PT. Maju Jaya Abadi'
-    };
+    // Profil dari database (api/auth/me.php): nama, email, telepon, kota,
+    // alamat, bank, nomor rekening, dan atas nama tersimpan di tabel
+    // perusahaan (skema v2) dan dimuat di sini.
+    const PROFILE_FIELD_IDS = [
+      'profileNamaUsaha',
+      'profileEmail',
+      'profileTelepon',
+      'profileKota',
+      'profileAlamat',
+      'profileBank',
+      'profileNoRek',
+      'profileAtasNama'
+    ];
 
     // Nilai profil yang tersimpan (dipakai saat tombol Batal ditekan)
-    let profileSaved = { ...PROFILE_DEFAULTS };
+    let profileSaved = {};
+    PROFILE_FIELD_IDS.forEach(function (id) {
+      const el = document.getElementById(id);
+      profileSaved[id] = el ? el.value : '';
+    });
+
+    // Nama perusahaan tampil di beberapa tempat: kartu ringkasan profil,
+    // menu pengguna, dan nama penjual di invoice.
+    function terapkanNamaPerusahaan(nama) {
+      const dropdownNama = document.querySelector('.dropdown-user-name');
+      if (dropdownNama) dropdownNama.textContent = nama;
+      document.querySelectorAll('.inv-brand-name, .inv-sign-name').forEach(function (el) {
+        el.textContent = nama;
+      });
+      const penjualInvoice = document.querySelectorAll('.inv-party-name');
+      // Penjual adalah kotak pihak kedua di modal invoice.
+      if (penjualInvoice.length > 1) penjualInvoice[1].textContent = nama;
+    }
+
+    function muatProfilPerusahaan() {
+      return fetch('../../api/auth/me.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data) {
+            if (res && res.error) showToast('Gagal memuat profil: ' + res.error);
+            return;
+          }
+          const nama = res.data.nama || '';
+          const email = res.data.email || '';
+          const isi = function (id, nilai) {
+            const el = document.getElementById(id);
+            if (el) el.value = nilai;
+            profileSaved[id] = nilai;
+          };
+          isi('profileNamaUsaha', nama);
+          isi('profileEmail', email);
+          isi('profileTelepon', res.data.telepon || '');
+          isi('profileKota', res.data.kota || '');
+          isi('profileAlamat', res.data.alamat || '');
+          isi('profileBank', res.data.nama_bank || '');
+          isi('profileNoRek', res.data.no_rekening || '');
+          isi('profileAtasNama', res.data.atas_nama || nama);
+          terapkanRekening(res.data.nama_bank || '', res.data.no_rekening || '', res.data.atas_nama || nama);
+          applyProfileSummary();
+          terapkanNamaPerusahaan(nama);
+        })
+        .catch(function () { /* biarkan form kosong kalau API gagal dimuat */ });
+    }
+    muatProfilPerusahaan();
+
+    // Rekening tujuan pencairan: tampil di kotak rekening + baris tinjauan.
+    function terapkanRekening(bank, noRek, atasNama) {
+      const namaBankEl = document.querySelector('.bank-account-box .bank-name');
+      if (namaBankEl) namaBankEl.textContent = (bank && noRek) ? (bank + ' · ' + noRek) : (bank || noRek || '—');
+      const pemilikEl = document.querySelector('.bank-account-box .bank-owner');
+      if (pemilikEl) pemilikEl.textContent = atasNama || '—';
+      const tinjauEl = document.getElementById('pencairanReviewRekening');
+      if (tinjauEl) tinjauEl.textContent = (bank && noRek) ? (bank + ' · ' + noRek + (atasNama ? ' (' + atasNama + ')' : '')) : '—';
+    }
 
     function resetProfileForm() {
-      Object.keys(PROFILE_DEFAULTS).forEach(id => {
+      PROFILE_FIELD_IDS.forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.value = profileSaved[id];
+        if (el) el.value = profileSaved[id] || '';
       });
       const nibName = document.getElementById('profileNibName');
       const npwpName = document.getElementById('profileNpwpName');
@@ -6478,8 +6784,8 @@
     function applyProfileSummary() {
       const summaryName = document.querySelector('.profile-summary-name');
       const summaryEmail = document.querySelector('.profile-summary-email');
-      if (summaryName) summaryName.textContent = profileSaved.profileNamaUsaha;
-      if (summaryEmail) summaryEmail.textContent = profileSaved.profileEmail;
+      if (summaryName) summaryName.textContent = profileSaved.profileNamaUsaha || '-';
+      if (summaryEmail) summaryEmail.textContent = profileSaved.profileEmail || '-';
     }
 
     function simpanProfile() {
@@ -6498,142 +6804,103 @@
         return;
       }
 
-      Object.keys(PROFILE_DEFAULTS).forEach(id => {
+      // Semua kolom profil tersimpan lewat api/auth/update.php
+      // (nama, email, telepon, kota, alamat, bank, nomor rekening, atas nama).
+      const ambil = function (id) {
         const el = document.getElementById(id);
-        if (el) profileSaved[id] = el.value.trim();
-      });
+        return el ? el.value.trim() : '';
+      };
+      fetch('../../api/auth/update.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nama: namaEl.value.trim(),
+          email: emailEl.value.trim(),
+          telepon: ambil('profileTelepon'),
+          kota: ambil('profileKota'),
+          alamat: ambil('profileAlamat'),
+          nama_bank: ambil('profileBank'),
+          no_rekening: ambil('profileNoRek'),
+          atas_nama: ambil('profileAtasNama')
+        })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) {
+            showToast(res.error || 'Gagal menyimpan profil');
+            return;
+          }
+          profileSaved.profileNamaUsaha = res.data.nama;
+          profileSaved.profileEmail = res.data.email;
+          profileSaved.profileAtasNama = namaEl.value.trim();
+          const atasNamaEl = document.getElementById('profileAtasNama');
+          if (atasNamaEl) atasNamaEl.value = profileSaved.profileAtasNama;
+          PROFILE_FIELD_IDS.forEach(function (id) {
+            const el = document.getElementById(id);
+            if (el) profileSaved[id] = el.value;
+          });
+          terapkanRekening(ambil('profileBank'), ambil('profileNoRek'), ambil('profileAtasNama'));
 
-      applyProfileSummary();
-      showToast('Perubahan profil berhasil disimpan');
+          applyProfileSummary();
+          terapkanNamaPerusahaan(res.data.nama);
+          showToast('Perubahan profil berhasil disimpan');
 
-      // Kembali otomatis ke Dashboard setelah perubahan tersimpan
-      setTimeout(() => {
-        switchMainView('dashboard');
-      }, 800);
+          // Kembali otomatis ke Dashboard setelah perubahan tersimpan
+          setTimeout(() => {
+            switchMainView('dashboard');
+          }, 800);
+        })
+        .catch(function () { showToast('Gagal menyimpan profil'); });
     }
 
     /* --------------------------------------------------------------------------
        F3. DISPUTE LOGIC
        -------------------------------------------------------------------------- */
-    const DISPUTE_DATA = [
-      {
-        id: '#RET-2026-001',
-        disputeId: '#DSP-0012',
-        order: '#ORD-2041',
-        tanggal: '11 Okt 2026',
-        pembeli: 'Rira W.',
-        pembeliDetail: 'Rira W. (PT Rira Pangan)',
-        perusahaan: 'CV Telur Makmur Bersama',
-        kategori: 'Barang Rusak/Pecah',
-        bukti: '2 Foto dan 1 Video',
-        keputusan: 'ditinjau',
-        keputusanLabel: 'Pending',
-        jenis: 'Barang tidak sesuai',
-        nilai: 48000000,
-        dana: 24000000,
-        diajukan: '8 Okt 2026, 14:20',
-        batas: '10 Okt 2026',
-        stepDone: 2,
-        stepCurrent: 2,
-        messages: [
-          {
-            role: 'buyer', name: 'Rira W.', initial: 'R', time: '8 Okt 2026, 14:20',
-            text: 'Sekitar 12% telur pecah saat diterima dari total pengiriman. Mohon ditindaklanjuti.',
-            attachments: ['foto_1.jpg', 'foto_2.jpg']
-          },
-          {
-            role: 'seller', name: 'CV Telur Makmur Bersama', initial: 'C', time: '9 Okt 2026, 09:05',
-            text: 'Pengiriman sudah sesuai standar packing.',
-            attachments: ['foto_packing.jpg']
-          },
-          {
-            role: 'admin', name: 'Admin Sistem', initial: 'A', time: '12 Okt 2026, 10:30',
-            text: 'Buyer mohon unggah foto per rak dan nota penerimaan.',
-            attachments: []
-          }
-        ]
-      },
-      {
-        id: '#RET-2026-002',
-        disputeId: '#DSP-0011',
-        order: '#ORD-2038',
-        tanggal: '09 Okt 2026',
-        pembeli: 'PT Boga Jaya',
-        pembeliDetail: 'PT Boga Jaya',
-        perusahaan: 'CV Telur Makmur Bersama',
-        kategori: 'Kuantitas Kurang',
-        bukti: '1 Foto',
-        keputusan: 'disetujui',
-        keputusanLabel: 'Disetujui',
-        jenis: 'Kuantitas kurang',
-        nilai: 23000000,
-        dana: 1840000,
-        diajukan: '9 Okt 2026, 09:15',
-        batas: '11 Okt 2026',
-        stepDone: 4,
-        stepCurrent: 3,
-        messages: [
-          {
-            role: 'buyer', name: 'PT Boga Jaya', initial: 'B', time: '9 Okt 2026, 09:15',
-            text: 'Dari 500 kg yang dipesan, hanya 460 kg yang diterima. Selisih 40 kg mohon dikembalikan.',
-            attachments: ['surat_jalan.jpg']
-          },
-          {
-            role: 'seller', name: 'CV Telur Makmur Bersama', initial: 'C', time: '9 Okt 2026, 13:40',
-            text: 'Kami sudah cek ulang timbangan dan nota. Selisih 40 kg akan dikembalikan.',
-            attachments: []
-          },
-          {
-            role: 'admin', name: 'Admin Sistem', initial: 'A', time: '10 Okt 2026, 11:00',
-            text: 'Dispute disetujui. Pengembalian dana Rp 1.840.000 akan diproses ke rekening pembeli.',
-            attachments: []
-          }
-        ]
-      },
-      {
-        id: '#RET-2026-003',
-        disputeId: '#DSP-0010',
-        order: '#ORD-2031',
-        tanggal: '05 Okt 2026',
-        pembeli: 'CV Sembako',
-        pembeliDetail: 'CV Sembako',
-        perusahaan: 'CV Telur Makmur Bersama',
-        kategori: 'Tidak Sesuai Specs',
-        bukti: '3 Foto',
-        keputusan: 'ditolak',
-        keputusanLabel: 'Ditolak',
-        jenis: 'Tidak sesuai spesifikasi',
-        nilai: 14500000,
-        dana: 0,
-        diajukan: '5 Okt 2026, 10:05',
-        batas: '7 Okt 2026',
-        stepDone: 5,
-        stepCurrent: 4,
-        messages: [
-          {
-            role: 'buyer', name: 'CV Sembako', initial: 'S', time: '5 Okt 2026, 10:05',
-            text: 'Telur yang diterima ukurannya lebih kecil dari spesifikasi grade A yang disepakati.',
-            attachments: ['foto_ukuran_1.jpg', 'foto_ukuran_2.jpg', 'foto_nota.jpg']
-          },
-          {
-            role: 'seller', name: 'CV Telur Makmur Bersama', initial: 'C', time: '6 Okt 2026, 08:30',
-            text: 'Produk yang dikirim sudah sesuai grade A. Terlampir hasil sortir sebelum pengiriman.',
-            attachments: ['hasil_sortir.jpg']
-          },
-          {
-            role: 'admin', name: 'Admin Sistem', initial: 'A', time: '7 Okt 2026, 15:10',
-            text: 'Berdasarkan bukti yang diunggah kedua pihak, komplain ditolak karena produk sesuai spesifikasi.',
-            attachments: []
-          }
-        ]
-      }
-    ];
+    let DISPUTE_DATA = [];
+
+    function muatDisputePerusahaan() {
+      return fetch('../../api/dispute/list.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.dispute) return;
+          DISPUTE_DATA = res.data.dispute.map(function (d) {
+            let keputusan = 'ditinjau';
+            let label = 'Diajukan';
+            if (d.status === 'diproses') { keputusan = 'ditinjau'; label = 'Diproses'; }
+            else if (d.status === 'selesai' && d.putusan === 'uang_kembali') { keputusan = 'disetujui'; label = 'Disetujui'; }
+            else if (d.status === 'selesai') { keputusan = 'ditolak'; label = 'Ditolak'; }
+            const tgl = (d.created_at || '').slice(0, 10);
+            return {
+              id: '#DSP-' + String(d.id).padStart(4, '0'),
+              disputeId: d.id,
+              order: '#ORD-2026-' + String(d.order_id).padStart(3, '0'),
+              orderId: d.order_id,
+              tanggal: tgl ? new Date(tgl + 'T00:00:00').toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-',
+              pembeli: d.nama_buyer || 'Pembeli',
+              pembeliDetail: d.nama_buyer || 'Pembeli',
+              perusahaan: d.nama_perusahaan || '—',
+              kategori: d.judul || '-',
+              bukti: '—',
+              keputusan: keputusan,
+              keputusanLabel: label,
+              status: d.status,
+              putusan: d.putusan,
+              judul: d.judul,
+              nama_produk: d.nama_produk,
+              total_bayar: d.total_bayar,
+              jumlah_kg: d.jumlah_kg
+            };
+          });
+          renderDisputeTable();
+        })
+        .catch(function () { /* biarkan tabel kosong kalau API gagal dimuat */ });
+    }
 
     let disputeFilter = 'semua';
     let disputeAktifId = null;
 
     function disputeSesuaiFilter() {
-      return DISPUTE_DATA.filter(item => disputeFilter === 'semua' || item.keputusan === disputeFilter);
+      return DISPUTE_DATA.filter(item => disputeFilter === 'semua' || item.status === disputeFilter);
     }
 
     function renderDisputeTable() {
@@ -6703,72 +6970,102 @@
       if (scroller) scroller.scrollTop = 0;
     }
 
-    function bukaThreadDispute(item) {
+    function escapeHtmlDispute(nilai) {
+      return String(nilai == null ? '' : nilai).replace(/[&<>"']/g, function (ch) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+      });
+    }
+
+    function formatTanggalDispute(iso) {
+      if (!iso) return '—';
+      const d = new Date(String(iso).replace(' ', 'T'));
+      if (isNaN(d.getTime())) return String(iso).slice(0, 10);
+      return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function bukaThreadDispute(item, detail, pesanList) {
       const list = document.getElementById('disputeListView');
-      const detail = document.getElementById('disputeDetailView');
+      const detailView = document.getElementById('disputeDetailView');
       if (list) list.style.display = 'none';
-      if (detail) detail.style.display = 'flex';
+      if (detailView) detailView.style.display = 'flex';
 
       const setText = (elId, value) => {
         const el = document.getElementById(elId);
         if (el) el.textContent = value;
       };
 
-      setText('disputeDetailTitle', `Dispute ${item.disputeId}`);
-      setText('disputeDetailBadgeText', item.keputusan === 'ditinjau' ? 'Ditinjau Admin' : item.keputusanLabel);
+      const esc = detail.escrow || null;
+      const danaDitahan = esc ? Math.max(0, (Number(esc.jumlah_ditahan) || 0) - (Number(esc.dp_cair) || 0) - (Number(esc.sisa_cair) || 0)) : 0;
+
+      setText('disputeDetailTitle', 'Dispute ' + item.id);
+      setText('disputeDetailBadgeText', item.keputusanLabel);
       setText('disputeBreadcrumbOrder', item.order);
-      setText('disputeSummaryBuyer', item.pembeli);
-      setText('disputeSummaryCompany', item.perusahaan);
-      setText('disputeSummaryValue', formatRupiah(item.nilai));
-      setText('disputeSummaryFrozen', formatRupiah(item.dana));
-      setText('disputeDetailJenis', item.jenis);
-      setText('disputeDetailDiajukan', item.diajukan);
-      setText('disputeDetailBatas', item.batas);
-      setText('disputeFundValue', formatRupiah(item.dana));
+      setText('disputeSummaryBuyer', detail.nama_buyer || '—');
+      setText('disputeSummaryCompany', detail.nama_perusahaan || '—');
+      setText('disputeSummaryValue', formatRupiah(detail.total_bayar || 0));
+      setText('disputeSummaryFrozen', formatRupiah(danaDitahan));
+      setText('disputeDetailJenis', detail.judul || '—');
+      setText('disputeDetailDiajukan', formatTanggalDispute(detail.created_at));
+      setText('disputeDetailBatas', '—');
+      setText('disputeFundValue', formatRupiah(danaDitahan));
 
       const badge = document.getElementById('disputeDetailBadge');
       if (badge) {
         badge.className = 'dispute-status-badge' + (item.keputusan === 'ditinjau' ? '' : ' ' + item.keputusan);
       }
 
-      const langkah = ['Dibuka', 'Menunggu Tanggapan', 'Ditinjau Admin', 'Diputuskan', 'Ditutup'];
+      // Alur asli dispute: Dibuka -> Diproses -> Diputuskan
+      const langkah = ['Dibuka', 'Diproses', 'Diputuskan'];
+      let stepDone = 0;
+      let stepCurrent = 0;
+      if (detail.status === 'diproses') { stepDone = 1; stepCurrent = 1; }
+      else if (detail.status === 'selesai') { stepDone = 3; stepCurrent = -1; }
       const steps = document.getElementById('disputeSteps');
       if (steps) {
         steps.innerHTML = langkah.map((label, index) => {
           let cls = 'dispute-step';
-          if (index < item.stepDone) cls += ' done';
-          if (index === item.stepCurrent) cls += ' current';
+          if (index < stepDone) cls += ' done';
+          if (index === stepCurrent) cls += ' current';
           return `<li class="${cls}"><span class="dispute-step-dot"></span>${label}</li>`;
         }).join('');
       }
 
-      const thread = document.getElementById('disputeThread');
-      if (thread) {
-        thread.innerHTML = item.messages.map(msg => `
+      // Diskusi: pesan pembuka (deskripsi pembeli) + balasan dari API
+      const peran = { 'pembeli': ['buyer', 'Buyer'], 'perusahaan': ['seller', 'Perusahaan'], 'admin': ['admin', 'Admin'] };
+      function artikelPesan(nama, role, waktu, teks, lampiran) {
+        const p = peran[role] || ['buyer', 'Buyer'];
+        const inisial = (nama || '?').trim().charAt(0).toUpperCase();
+        return `
           <article class="dispute-message">
-            <div class="message-avatar avatar-${msg.role}">${msg.initial}</div>
+            <div class="message-avatar avatar-${p[0]}">${escapeHtmlDispute(inisial)}</div>
             <div class="message-body">
               <div class="message-head">
-                <span class="message-name">${msg.name}</span>
-                <span class="message-role role-${msg.role}">${msg.role === 'buyer' ? 'Buyer' : msg.role === 'seller' ? 'Perusahaan' : 'Admin'}</span>
-                <span class="message-time">${msg.time}</span>
+                <span class="message-name">${escapeHtmlDispute(nama)}</span>
+                <span class="message-role role-${p[0]}">${p[1]}</span>
+                <span class="message-time">${escapeHtmlDispute(waktu)}</span>
               </div>
-              <p class="message-text">${msg.text}</p>
-              ${msg.attachments && msg.attachments.length ? `
+              <p class="message-text">${escapeHtmlDispute(teks)}</p>
+              ${lampiran ? `
                 <div class="message-attachments">
                   <span>Lampiran:</span>
-                  ${msg.attachments.map(file => `<span class="attachment-chip">${file}</span>`).join('')}
+                  <span class="attachment-chip">${escapeHtmlDispute(lampiran)}</span>
                 </div>
               ` : ''}
             </div>
           </article>
-        `).join('');
+        `;
+      }
+      const thread = document.getElementById('disputeThread');
+      if (thread) {
+        let html = artikelPesan(detail.nama_buyer || 'Pembeli', 'pembeli', formatTanggalDispute(detail.created_at), detail.deskripsi || '', detail.bukti_foto || '');
+        (pesanList || []).forEach(function (ps) {
+          html += artikelPesan(ps.nama || '', ps.role || 'pembeli', formatTanggalDispute(ps.created_at), ps.pesan || '', '');
+        });
+        thread.innerHTML = html;
       }
 
       const composerInput = document.getElementById('disputeCommentInput');
       if (composerInput) composerInput.value = '';
-      const preview = document.getElementById('disputeAttachmentPreview');
-      if (preview) preview.hidden = true;
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -6777,20 +7074,21 @@
       const item = DISPUTE_DATA.find(row => row.id === id);
       if (!item) return;
       disputeAktifId = id;
-      bukaThreadDispute(item);
+      Promise.all([
+        fetch('../../api/dispute/detail.php?id=' + encodeURIComponent(item.disputeId)).then(function (r) { return r.json(); }),
+        fetch('../../api/dispute/pesan.php?dispute_id=' + encodeURIComponent(item.disputeId)).then(function (r) { return r.json(); })
+      ]).then(function (hasil) {
+        const detailRes = hasil[0];
+        const pesanRes = hasil[1];
+        if (!detailRes.ok || !detailRes.data) {
+          showToast('Gagal memuat dispute: ' + (detailRes.error || 'tidak diketahui'));
+          return;
+        }
+        const pesanList = (pesanRes.ok && pesanRes.data && pesanRes.data.pesan) ? pesanRes.data.pesan : [];
+        bukaThreadDispute(item, detailRes.data, pesanList);
+      }).catch(function () { showToast('Gagal memuat dispute.'); });
     }
 
-    function pilihLampiranDispute(input) {
-      const preview = document.getElementById('disputeAttachmentPreview');
-      const nameEl = document.getElementById('disputeAttachmentName');
-
-      if (input.files && input.files.length > 0) {
-        nameEl.textContent = input.files[0].name;
-        preview.hidden = false;
-      } else {
-        preview.hidden = true;
-      }
-    }
 
     function kirimKomentarDispute(event) {
       if (event) event.preventDefault();
@@ -6804,72 +7102,25 @@
         return;
       }
 
-      const thread = document.getElementById('disputeThread');
-      const fileInput = document.getElementById('disputeFileInput');
-      const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+      const aktif = DISPUTE_DATA.find(item => item.id === disputeAktifId);
+      if (!aktif) return;
 
-      const article = document.createElement('article');
-      article.className = 'dispute-message';
-
-      const avatar = document.createElement('div');
-      avatar.className = 'message-avatar avatar-seller';
-      avatar.textContent = 'C';
-
-      const body = document.createElement('div');
-      body.className = 'message-body';
-
-      const head = document.createElement('div');
-      head.className = 'message-head';
-      head.innerHTML = '<span class="message-name">CV Telur Makmur Bersama</span>' +
-        '<span class="message-role role-seller">Perusahaan</span>' +
-        '<span class="message-time">Baru saja</span>';
-
-      const messageText = document.createElement('p');
-      messageText.className = 'message-text';
-      messageText.textContent = text;
-
-      body.appendChild(head);
-      body.appendChild(messageText);
-
-      if (file) {
-        const attachments = document.createElement('div');
-        attachments.className = 'message-attachments';
-
-        const label = document.createElement('span');
-        label.textContent = 'Lampiran:';
-
-        const chip = document.createElement('span');
-        chip.className = 'attachment-chip';
-        chip.textContent = file.name;
-
-        attachments.appendChild(label);
-        attachments.appendChild(chip);
-        body.appendChild(attachments);
-      }
-
-      article.appendChild(avatar);
-      article.appendChild(body);
-      if (thread) thread.appendChild(article);
-
-      const disputeAktif = DISPUTE_DATA.find(item => item.id === disputeAktifId);
-      if (disputeAktif) {
-        disputeAktif.messages.push({
-          role: 'seller',
-          name: 'CV Telur Makmur Bersama',
-          initial: 'C',
-          time: 'Baru saja',
-          text,
-          attachments: file ? [file.name] : []
-        });
-      }
-
-      input.value = '';
-      if (fileInput) fileInput.value = '';
-
-      const preview = document.getElementById('disputeAttachmentPreview');
-      if (preview) preview.hidden = true;
-
-      showToast('Komentar berhasil dikirim');
+      fetch('../../api/dispute/pesan.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dispute_id: aktif.disputeId, pesan: text })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) {
+            showToast('Gagal mengirim: ' + (res.error || 'tidak diketahui'));
+            return;
+          }
+          if (input) input.value = '';
+          showToast('Komentar berhasil dikirim');
+          openDisputeDetail(disputeAktifId);
+        })
+        .catch(function () { showToast('Gagal mengirim komentar.'); });
     }
 
     /* --------------------------------------------------------------------------
@@ -6878,43 +7129,70 @@
     const PESANAN_STATUS = {
       'menunggu-persetujuan': { label: 'Menunggu Persetujuan', cls: 'menunggu-persetujuan' },
       'menunggu-pembayaran': { label: 'Menunggu Pembayaran', cls: 'menunggu-pembayaran' },
+      'diproses': { label: 'Diproses', cls: 'menunggu-pembayaran' },
+      'diterima': { label: 'Diterima', cls: 'dikirim' },
       'dikirim': { label: 'Dikirim', cls: 'dikirim' },
       'selesai': { label: 'Selesai', cls: 'selesai' },
       'dibatalkan': { label: 'Dibatalkan', cls: 'dibatalkan' }
     };
 
-    let PESANAN_DATA = [
-      {
-        id: '#ORD-2027-001',
-        pembeli: 'Rira W.',
-        jadwal: '2027-10-12',
-        jadwalLabel: '12 Okt 2027',
-        status: 'menunggu-persetujuan',
-        catatan: 'Kirim produk secepatnya',
-        pembayaran: 500000,
-        items: [{ produk: 'Telur Ayam', qty: 2, harga: 250000 }]
-      },
-      {
-        id: '#ORD-2027-003',
-        pembeli: 'Rira W.',
-        jadwal: '2027-10-12',
-        jadwalLabel: '12 Okt 2027',
-        status: 'menunggu-persetujuan',
-        catatan: 'Kirim sebelum jam 10 pagi',
-        pembayaran: 500000,
-        items: [{ produk: 'Telur Ayam', qty: 2, harga: 250000 }]
-      },
-      {
-        id: '#ORD-2027-002',
-        pembeli: 'Rania',
-        jadwal: '2027-10-17',
-        jadwalLabel: '17 Okt 2027',
-        status: 'dikirim',
-        catatan: 'Telur dipisah per rak',
-        pembayaran: 900000,
-        items: [{ produk: 'Telur Ayam', qty: 3, harga: 300000 }]
-      }
-    ];
+    // Pesanan dari database (API order/list) — order yang sama yang dibuat
+    // pembeli, dilihat dari sisi perusahaan. Status database dipetakan ke
+    // status halaman ini: menunggu_bayar -> menunggu-pembayaran,
+    // dibayar -> menunggu-persetujuan (perlu diproses), diproses -> diproses,
+    // dikirim -> dikirim, diterima -> diterima, selesai -> selesai.
+    let PESANAN_DATA = [];
+    let PENCARIAN_ROWS = [];
+    function muatPesananPerusahaan() {
+      return fetch('../../api/order/list.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.orders) return;
+          var petaStatus = {
+            'menunggu_bayar': 'menunggu-pembayaran',
+            'dibayar': 'menunggu-persetujuan',
+            'diproses': 'diproses',
+            'dikirim': 'dikirim',
+            'diterima': 'diterima',
+            'selesai': 'selesai',
+            'dibatalkan': 'dibatalkan'
+          };
+          PESANAN_DATA = res.data.orders.map(function (o) {
+            var tgl = (o.created_at || '').slice(0, 10);
+            return {
+              id: '#' + o.id,
+              orderId: o.id,
+              pembeli: o.nama_buyer || 'Pembeli',
+              jadwal: tgl,
+              jadwalLabel: tgl ? formatTanggalPesanan(tgl) : '-',
+              status: petaStatus[o.status] || o.status,
+              statusDb: o.status,
+              catatan: 'Total bayar Rp ' + Number(o.total_bayar).toLocaleString('id-ID'),
+              pembayaran: o.total_bayar,
+              // Data escrow dari api/order/list.php (dihitung dari pencairan tahap 1/2).
+              // Dipakai hitungSaldoEscrow() untuk saldo pencairan.
+              escrow: (o.jumlah_ditahan != null) ? {
+                jumlah_ditahan: Number(o.jumlah_ditahan) || 0,
+                dp_cair: Number(o.dp_cair) || 0,
+                sisa_cair: Number(o.sisa_cair) || 0,
+                dp_pending: (o.dp_pending != null) ? Number(o.dp_pending) : null,
+                sisa_pending: (o.sisa_pending != null) ? Number(o.sisa_pending) : null,
+                sudah_cair: Number(o.sudah_cair) || 0,
+                status: o.escrow_status || null
+              } : null,
+              items: [{ produk: o.nama_produk, qty: o.jumlah_kg, harga: o.harga_satuan }]
+            };
+          });
+          renderPesananTable();
+          bangunDashboard();
+          bangunRiwayatDariPesanan();
+          hitungSaldoEscrow();
+          PENCARIAN_ROWS = res.data.pencairan || [];
+          renderRiwayatPencairan();
+        })
+        .catch(function () { /* biarkan tabel kosong kalau API gagal dimuat */ });
+    }
+    muatPesananPerusahaan();
 
     let pesananFilter = 'semua';
     let pesananMode = 'list';
@@ -6987,7 +7265,9 @@
         const aksi = order.status === 'menunggu-persetujuan'
           ? '<button class="btn-pesanan-tolak" type="button" onclick="aksiPesanan(\'' + order.id + '\', \'tolak\')">Tolak</button>' +
             '<button class="btn-pesanan-setujui" type="button" onclick="aksiPesanan(\'' + order.id + '\', \'setujui\')">Setujui</button>'
-          : '<button class="btn-pesanan-detail" type="button" onclick="aksiPesanan(\'' + order.id + '\', \'detail\')">Detail</button>';
+          : (order.status === 'diproses'
+            ? '<button class="btn-pesanan-setujui" type="button" onclick="aksiPesanan(\'' + order.id + '\', \'kirim\')">Kirim</button>'
+            : '<button class="btn-pesanan-detail" type="button" onclick="aksiPesanan(\'' + order.id + '\', \'detail\')">Detail</button>');
 
         return '<tr>' +
           '<td class="pesanan-id">' + escapeHtmlPesanan(order.id) + '</td>' +
@@ -7039,7 +7319,7 @@
       const harga = Number(item.harga) || 0;
 
       return '<div class="pesanan-item-row">' +
-        '<input class="pesanan-input pesanan-item-produk" type="text" value="' + escapeHtmlPesanan(item.produk || '') + '" placeholder="Telur ayam" oninput="hitungPesanan()">' +
+        '<input class="pesanan-input pesanan-item-produk" type="text" value="' + escapeHtmlPesanan(item.produk || '') + '" placeholder="Nama produk" oninput="hitungPesanan()">' +
         '<div class="pesanan-qty-wrap">' +
           '<input class="pesanan-item-qty" type="number" min="1" step="1" value="' + qty + '" oninput="hitungPesanan()">' +
           '<span>Kg</span>' +
@@ -7117,13 +7397,13 @@
       if (!container) return;
 
       const lastRow = container.querySelector('.pesanan-item-row:last-child');
-      const produk = lastRow ? lastRow.querySelector('.pesanan-item-produk').value : 'Telur Ayam';
-      const harga = lastRow ? parseRupiah(lastRow.querySelector('.pesanan-item-harga').value) : 250000;
+      const produk = lastRow ? lastRow.querySelector('.pesanan-item-produk').value : '';
+      const harga = lastRow ? parseRupiah(lastRow.querySelector('.pesanan-item-harga').value) : 0;
 
       container.insertAdjacentHTML('beforeend', itemPesananRowHTML({
         produk: produk,
         qty: 1,
-        harga: harga > 0 ? harga : 250000
+        harga: harga > 0 ? harga : 0
       }));
 
       hitungPesanan();
@@ -7176,40 +7456,6 @@
       if (prosesBtn) prosesBtn.hidden = readonly;
     }
 
-    function openBuatPesanan(event) {
-      if (event) event.preventDefault();
-
-      pesananMode = 'baru';
-      pesananAktifId = null;
-
-      const title = document.getElementById('pesananFormTitle');
-      const pembeli = document.getElementById('pesananPembeli');
-      const jadwal = document.getElementById('pesananJadwal');
-      const pembayaran = document.getElementById('pesananPembayaran');
-      const catatan = document.getElementById('pesananCatatan');
-      const items = document.getElementById('pesananItems');
-
-      if (title) title.textContent = 'Detail Pesanan Baru';
-      if (pembeli) pembeli.value = 'Arga Dwi';
-      if (jadwal) jadwal.value = '2027-10-12';
-      syncTanggalPesanan();
-      if (pembayaran) pembayaran.value = '';
-      if (catatan) catatan.value = 'Kirim produk secepatnya';
-      if (items) {
-        items.innerHTML = itemPesananRowHTML({ produk: 'Telur ayam', qty: 2, harga: 250000 });
-      }
-
-      setPesananFormReadonly(false);
-      setStatusPesananSummary('menunggu-persetujuan', 'Status awal pesanan');
-
-      const list = document.getElementById('pesananListView');
-      const form = document.getElementById('pesananFormView');
-      if (list) list.style.display = 'none';
-      if (form) form.style.display = 'flex';
-
-      hitungPesanan();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
 
     function openDetailPesanan(id) {
       const order = PESANAN_DATA.find(function (row) { return row.id === id; });
@@ -7265,125 +7511,136 @@
 
     function aksiPesanan(id, aksi) {
       const order = PESANAN_DATA.find(function (row) { return row.id === id; });
-      if (!order) return;
+      if (!order) { showToast('Pesanan tidak ditemukan. Muat ulang halaman.'); return; }
 
       if (aksi === 'detail') {
         openDetailPesanan(id);
         return;
       }
 
+      // Setujui = proses order yang sudah dibayar; Tolak = batalkan;
+      // Kirim = kirim order yang sedang diproses (DP 50% cair).
+      var orderIdNum = order.orderId || parseInt(String(id).replace(/[^0-9]/g, ''), 10) || 0;
+      function panggilOrderApi(namaFile, pesanSukses) {
+        fetch('../../api/order/' + namaFile + '.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order_id: orderIdNum })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.ok) { showToast('Gagal: ' + (res.error || 'tidak diketahui')); return; }
+            showToast(pesanSukses);
+            muatPesananPerusahaan();
+          })
+          .catch(function () { showToast('Gagal menghubungi server. Pastikan sudah login sebagai perusahaan.'); });
+      }
       if (aksi === 'setujui') {
-        order.status = 'menunggu-pembayaran';
-        renderPesananTable();
-        showToast('Pesanan ' + id + ' disetujui');
+        panggilOrderApi('proses', 'Pesanan ' + id + ' disetujui dan diproses');
         return;
       }
 
       if (aksi === 'tolak') {
-        order.status = 'dibatalkan';
-        renderPesananTable();
-        showToast('Pesanan ' + id + ' ditolak');
+        panggilOrderApi('batal', 'Pesanan ' + id + ' ditolak');
+        return;
+      }
+
+      if (aksi === 'kirim') {
+        // Bukti pengiriman berupa foto (wajib): buka modal kirim dengan
+        // input file yang terlihat, supaya pemilih foto selalu bisa dibuka.
+        bukaModalKirim(id, orderIdNum);
+        return;
       }
     }
 
-    function prosesPesananBaru() {
-      const pembeliEl = document.getElementById('pesananPembeli');
-      const jadwalEl = document.getElementById('pesananJadwal');
-      const pembayaranEl = document.getElementById('pesananPembayaran');
-      const catatanEl = document.getElementById('pesananCatatan');
-
-      const pembeli = pembeliEl ? pembeliEl.value : '';
-      const jadwal = jadwalEl ? jadwalEl.value : '';
-      const catatan = catatanEl ? catatanEl.value.trim() : '';
-
-      if (!pembeli) {
-        showToast('Pembeli wajib dipilih');
-        if (pembeliEl) pembeliEl.focus();
-        return;
-      }
-
-      if (!jadwal) {
-        showToast('Jadwal kirim wajib diisi');
-        if (jadwalEl) jadwalEl.focus();
-        return;
-      }
-
-      const items = [];
-      const rows = Array.from(document.querySelectorAll('#pesananItems .pesanan-item-row'));
-
-      for (let i = 0; i < rows.length; i += 1) {
-        const row = rows[i];
-        const produkInput = row.querySelector('.pesanan-item-produk');
-        const qtyInput = row.querySelector('.pesanan-item-qty');
-        const hargaInput = row.querySelector('.pesanan-item-harga');
-        const produk = produkInput ? produkInput.value.trim() : '';
-        const qty = parseInt(qtyInput ? qtyInput.value : '', 10) || 0;
-        const harga = parseRupiah(hargaInput ? hargaInput.value : '');
-
-        if (!produk) {
-          showToast('Produk pada item ' + (i + 1) + ' wajib diisi');
-          if (produkInput) produkInput.focus();
-          return;
-        }
-
-        if (qty <= 0) {
-          showToast('Qty pada item ' + (i + 1) + ' harus lebih dari 0');
-          if (qtyInput) qtyInput.focus();
-          return;
-        }
-
-        if (harga <= 0) {
-          showToast('Harga satuan pada item ' + (i + 1) + ' wajib diisi');
-          if (hargaInput) hargaInput.focus();
-          return;
-        }
-
-        items.push({ produk: produk, qty: qty, harga: harga });
-      }
-
-      if (!items.length) {
-        showToast('Tambahkan minimal satu item pesanan');
-        return;
-      }
-
-      const total = items.reduce(function (sum, item) { return sum + item.qty * item.harga; }, 0);
-      const pembayaran = parseRupiah(pembayaranEl ? pembayaranEl.value : '');
-
-      const nomorTerbesar = PESANAN_DATA.reduce(function (max, order) {
-        const nomor = parseInt(String(order.id).split('-').pop(), 10) || 0;
-        return Math.max(max, nomor);
-      }, 0);
-
-      const orderBaru = {
-        id: '#ORD-2027-' + String(nomorTerbesar + 1).padStart(3, '0'),
-        pembeli: pembeli,
-        jadwal: jadwal,
-        jadwalLabel: formatTanggalPesanan(jadwal),
-        status: 'menunggu-persetujuan',
-        catatan: catatan,
-        pembayaran: pembayaran > 0 ? pembayaran : total,
-        items: items
-      };
-
-      PESANAN_DATA.unshift(orderBaru);
-
-      pesananFilter = 'semua';
-      document.querySelectorAll('.pesanan-tab').forEach(function (tab, index) {
-        tab.classList.toggle('active', index === 0);
-      });
-
-      const searchInput = document.getElementById('pesananSearchInput');
-      if (searchInput) searchInput.value = '';
-
-      showPesananList();
-      showToast('Pesanan baru berhasil dibuat');
+    // Modal kirim: input file terlihat di dalam modal (bukan input
+    // tersembunyi yang dipicu lewat .click(), yang tidak membuka pemilih
+    // foto di beberapa browser).
+    var kirimOrderId = null;
+    var kirimOrderIdNum = 0;
+    function bukaModalKirim(id, orderIdNum) {
+      kirimOrderId = id;
+      kirimOrderIdNum = orderIdNum;
+      var input = document.getElementById('inputFotoKirim');
+      if (input) input.value = '';
+      var overlay = document.getElementById('kirimModalOverlay');
+      if (overlay) overlay.classList.add('show');
     }
+    function tutupModalKirim() {
+      var overlay = document.getElementById('kirimModalOverlay');
+      if (overlay) overlay.classList.remove('show');
+      kirimOrderId = null;
+    }
+    function handleKirimFormSubmit(event) {
+      event.preventDefault();
+      var input = document.getElementById('inputFotoKirim');
+      var file = input && input.files && input.files[0];
+      if (!file) { showToast('Pilih foto bukti pengiriman dulu'); return; }
+      if (file.size > 5 * 1024 * 1024) { showToast('Ukuran foto maksimal 5 MB'); return; }
+      var data = new FormData();
+      data.append('order_id', kirimOrderIdNum);
+      data.append('foto', file);
+      fetch('../../api/order/kirim.php', { method: 'POST', body: data })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) { showToast('Gagal: ' + (res.error || 'tidak diketahui')); return; }
+          var doneId = kirimOrderId;
+          tutupModalKirim();
+          showToast('Pesanan ' + doneId + ' dikirim (DP 50% cair)');
+          muatPesananPerusahaan();
+        })
+        .catch(function () { showToast('Gagal menghubungi server. Pastikan sudah login sebagai perusahaan.'); });
+    }
+
 
     /* --------------------------------------------------------------------------
        F4. KEUANGAN / PENCAIRAN DANA LOGIC
        -------------------------------------------------------------------------- */
-    const SALDO_SIAP_CAIR = 45000000;
+    // Saldo pencairan dari tabel pencairan (api/order/list.php, dipakai ulang
+    // dari PESANAN_DATA). Aturannya sama dengan api/order/kirim.php dan
+    // terima.php: pencairan tahap 1 dibuat saat dikirim, tahap 2 saat selesai.
+    // Siap cair = baris tahap 1/2 yang masih 'pending' (belum dicatat cair
+    // admin). Sudah dicairkan = baris yang statusnya 'berhasil'.
+    // Tertahan = jumlah yang masih ditahan
+    // (jumlah_ditahan - dp_cair - sisa_cair) untuk order yang sudah dibayar
+    // dan dananya belum dikembalikan. Order 'menunggu_bayar' belum dibayar
+    // jadi tidak dihitung; escrow 'kembali' (dibatalkan / putusan uang
+    // kembali) dananya sudah kembali ke pembeli.
+    let saldoSiapCair = 0;
     let nominalPencairanAktif = 0;
+
+    function hitungSaldoEscrow() {
+      var siap = 0;
+      var tertahan = 0;
+      var sudahCair = 0;
+      PESANAN_DATA.forEach(function (o) {
+        if (!o.escrow || o.statusDb === 'menunggu_bayar') return;
+        var ditahan = Number(o.escrow.jumlah_ditahan) || 0;
+        var dp = Number(o.escrow.dp_cair) || 0;
+        var sisa = Number(o.escrow.sisa_cair) || 0;
+        var dpPending = (o.escrow.dp_pending != null) ? Number(o.escrow.dp_pending) : dp;
+        var sisaPending = (o.escrow.sisa_pending != null) ? Number(o.escrow.sisa_pending) : sisa;
+        siap += dpPending + sisaPending;
+        sudahCair += Number(o.escrow.sudah_cair) || 0;
+        if (o.escrow.status === 'ditahan' || o.escrow.status === 'cair_dp') {
+          tertahan += Math.max(0, ditahan - dp - sisa);
+        }
+      });
+      saldoSiapCair = Math.round(siap);
+      tertahan = Math.round(tertahan);
+      sudahCair = Math.round(sudahCair);
+      var elSiap = document.getElementById('saldoSiapCair');
+      if (elSiap) elSiap.textContent = formatRupiah(saldoSiapCair);
+      var elTertahan = document.getElementById('saldoTertahan');
+      if (elTertahan) elTertahan.textContent = formatRupiah(tertahan);
+      var elSudah = document.getElementById('ringkasanSudahCair');
+      if (elSudah) elSudah.textContent = formatRupiah(sudahCair);
+      var elRingkasan = document.getElementById('ringkasanSaldo');
+      if (elRingkasan) elRingkasan.textContent = formatRupiah(saldoSiapCair);
+      var elMaks = document.getElementById('maksPencairanHint');
+      if (elMaks) elMaks.textContent = 'Maks. ' + formatRupiah(saldoSiapCair);
+      updateRingkasanPencairan();
+    }
 
     function formatRupiah(nilai) {
       return 'Rp ' + Number(nilai || 0).toLocaleString('id-ID');
@@ -7399,7 +7656,7 @@
       if (!input) return;
 
       const nominal = parseRupiah(input.value);
-      const sisa = Math.max(SALDO_SIAP_CAIR - nominal, 0);
+      const sisa = Math.max(saldoSiapCair - nominal, 0);
 
       const elNominal = document.getElementById('ringkasanNominal');
       const elSisa = document.getElementById('ringkasanSisa');
@@ -7429,7 +7686,7 @@
         return;
       }
 
-      if (nominal > SALDO_SIAP_CAIR) {
+      if (nominal > saldoSiapCair) {
         showToast('Nominal melebihi saldo siap cair');
         if (input) input.focus();
         return;
@@ -7479,23 +7736,40 @@
       document.body.style.overflow = '';
     }
 
-    function konfirmasiPencairan() {
-      const nominal = nominalPencairanAktif;
-
-      if (nominal <= 0) {
-        showToast('Nominal pencairan tidak valid');
+    function renderRiwayatPencairan() {
+      var body = document.getElementById('riwayatPencairanBody');
+      if (!body) return;
+      body.innerHTML = '';
+      if (!PENCARIAN_ROWS.length) {
+        body.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--muted, #888);">Belum ada riwayat pencairan — pencairan belum dicatat di sistem.</td></tr>';
         return;
       }
+      PENCARIAN_ROWS.forEach(function (p) {
+        var tr = document.createElement('tr');
+        var tanggal = p.tanggal_cair || p.created_at || '';
+        var tgl = tanggal.slice(0, 10);
+        var jam = tanggal.length > 10 ? tanggal.slice(11, 16) : '';
+        var labelTahap = p.tahap === 1 ? 'DP 50%' : (p.tahap === 2 ? 'Pelunasan' : 'Tahap ' + p.tahap);
+        var rekening = (p.nama_bank || '—') + ' · ' + (p.no_rekening || '—');
+        var status = p.status === 'berhasil' ? 'Sudah dicairkan' : 'Menunggu transfer';
+        tr.innerHTML = '<td>' + (p.external_id || ('#' + p.id)) + '</td>' +
+          '<td>' + rekening + '</td>' +
+          '<td>' + labelTahap + ' — Order #' + p.order_id + '</td>' +
+          '<td>' + formatRupiah(Math.round(Number(p.nominal || 0))) + '</td>' +
+          '<td>' + status + '</td>' +
+          '<td>' + (tgl ? formatTanggalPesanan(tgl) : '-') + (jam ? ' ' + jam : '') + '</td>';
+        body.appendChild(tr);
+      });
+    }
 
+    function konfirmasiPencairan() {
+      // Pencairan dicatat oleh admin (api/admin/pencairan.php); perusahaan
+      // tidak bisa mencatat sendiri, jadi jangan tampilkan modal sukses palsu.
       const reviewOverlay = document.getElementById('pencairanReviewOverlay');
       if (reviewOverlay) reviewOverlay.classList.remove('show');
-
-      const modalNominal = document.getElementById('pencairanModalNominal');
-      if (modalNominal) modalNominal.textContent = formatRupiah(nominal);
-
-      const modal = document.getElementById('pencairanModalOverlay');
-      if (modal) modal.classList.add('show');
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = '';
+      nominalPencairanAktif = 0;
+      showToast('Pencairan dicatat oleh admin. Hubungi admin untuk mencairkan dana.');
     }
 
     function tutupModalPencairan() {
@@ -7505,7 +7779,7 @@
 
       nominalPencairanAktif = 0;
       kembaliKeDetailPencairan();
-      showToast('Pencairan dana berhasil diajukan');
+      showToast('Pencairan belum dicatat. Hubungi admin untuk mencairkan dana.');
     }
 
     document.addEventListener('keydown', event => {
@@ -7519,92 +7793,81 @@
     /* --------------------------------------------------------------------------
        F5. RIWAYAT PENJUALAN LOGIC
        -------------------------------------------------------------------------- */
-    let RIWAYAT_DATA = [
-      {
-        id: '#TRX-2026-088', iso: '2026-10-11', tglSelesai: '11 Okt 2026', pembeli: 'PT Boga Jaya', alamat: 'Jl. Raya Semarang',
-        tglPesan: '05 Okt 2026', metode: 'Transfer Bank', status: 'selesai',
-        items: [{ produk: 'Telur Ayam', qty: 500, harga: 23000 }],
-        ongkir: 300000, totalAkhir: 'Rp 11.500.000',
-        terima: 'Diterima oleh: Abi Supir pada 11/10/2026'
-      },
-      {
-        id: '#TRX-2026-085', iso: '2026-10-10', tglSelesai: '10 Okt 2026', pembeli: 'Rira W.', alamat: 'Jl. Kebon Jeruk No. 4, Jakarta Barat',
-        tglPesan: '04 Okt 2026', metode: 'Transfer Bank', status: 'selesai',
-        items: [{ produk: 'Telur Ayam', qty: 500, harga: 24000 }],
-        ongkir: 300000, totalAkhir: 'Rp 12.000.000',
-        terima: 'Diterima oleh: Rina pada 10/10/2026'
-      },
-      {
-        id: '#TRX-2026-079', iso: '2026-10-05', tglSelesai: '05 Okt 2026', pembeli: 'CV Sembako', alamat: 'Jl. Pasar Minggu No. 8, Jakarta Selatan',
-        tglPesan: '29 Sep 2026', metode: 'Transfer Bank', status: 'selesai',
-        items: [{ produk: 'Telur Ayam A', qty: 700, harga: 25000 }],
-        ongkir: 300000, totalAkhir: 'Rp 17.500.000',
-        terima: 'Diterima oleh: Pak Hasan pada 05/10/2026'
-      },
-      {
-        id: '#TRX-2026-070', iso: '2026-10-01', tglSelesai: '01 Okt 2026', pembeli: 'Rania', alamat: 'Jl. Cibubur No. 21, Depok',
-        tglPesan: '26 Sep 2026', metode: 'Transfer Bank', status: 'selesai',
-        items: [{ produk: 'Telur Ayam', qty: 280, harga: 25000 }],
-        ongkir: 300000, totalAkhir: 'Rp 7.000.000',
-        terima: 'Diterima oleh: Abi Supir pada 01/10/2026'
-      },
-      {
-        id: '#TRX-2026-064', iso: '2026-09-24', tglSelesai: '24 Sep 2026', pembeli: 'UD Lancar Jaya', alamat: 'Jl. Raya Bekasi Km. 18, Jakarta Timur',
-        tglPesan: '20 Sep 2026', metode: 'Virtual Account', status: 'dibatalkan',
-        items: [{ produk: 'Telur Omega', qty: 80, harga: 32000 }],
-        ongkir: 0, totalAkhir: 'Rp 2.560.000',
-        terima: 'Dibatalkan oleh pembeli pada 22/09/2026'
-      },
-      {
-        id: '#TRX-2026-058', iso: '2026-09-18', tglSelesai: '18 Sep 2026', pembeli: 'Toko Makmur', alamat: 'Jl. Merdeka No. 10, Bogor',
-        tglPesan: '14 Sep 2026', metode: 'Transfer Bank', status: 'dibatalkan',
-        items: [{ produk: 'Telur Ayam Kampung', qty: 40, harga: 45000 }],
-        ongkir: 0, totalAkhir: 'Rp 1.800.000',
-        terima: 'Dibatalkan karena stok tidak tersedia'
-      },
-      {
-        id: '#TRX-2026-052', iso: '2026-09-15', tglSelesai: '15 Sep 2026', pembeli: 'PT Sinar Boga', alamat: 'Jl. Industri Raya No. 5, Bekasi',
-        tglPesan: '11 Sep 2026', metode: 'Transfer Bank', status: 'selesai',
-        items: [{ produk: 'Telur Omega', qty: 120, harga: 32000 }],
-        ongkir: 300000, totalAkhir: 'Rp 3.840.000',
-        terima: 'Diterima oleh: Budi pada 15/09/2026'
-      },
-      {
-        id: '#TRX-2026-049', iso: '2026-09-12', tglSelesai: '12 Sep 2026', pembeli: 'Warung Bu Sri', alamat: 'Jl. Anggrek No. 3, Depok',
-        tglPesan: '09 Sep 2026', metode: 'Virtual Account', status: 'selesai',
-        items: [{ produk: 'Telur Ayam', qty: 60, harga: 24000 }],
-        ongkir: 300000, totalAkhir: 'Rp 1.440.000',
-        terima: 'Diterima oleh: Bu Sri pada 12/09/2026'
-      },
-      {
-        id: '#TRX-2026-045', iso: '2026-09-09', tglSelesai: '09 Sep 2026', pembeli: 'CV Mitra Pangan', alamat: 'Jl. Soekarno Hatta No. 88, Bandung',
-        tglPesan: '05 Sep 2026', metode: 'Transfer Bank', status: 'selesai',
-        items: [{ produk: 'Telur Ayam B', qty: 200, harga: 26000 }],
-        ongkir: 300000, totalAkhir: 'Rp 5.200.000',
-        terima: 'Diterima oleh: Pak Anton pada 09/09/2026'
-      },
-      {
-        id: '#TRX-2026-041', iso: '2026-09-07', tglSelesai: '07 Sep 2026', pembeli: 'Resto Rasa Ibu', alamat: 'Jl. Ahmad Yani No. 17, Surabaya',
-        tglPesan: '03 Sep 2026', metode: 'Virtual Account', status: 'dibatalkan',
-        items: [{ produk: 'Telur Ayam Kampung', qty: 30, harga: 45000 }],
-        ongkir: 0, totalAkhir: 'Rp 1.350.000',
-        terima: 'Dibatalkan oleh pembeli pada 06/09/2026'
-      },
-      {
-        id: '#TRX-2026-036', iso: '2026-09-03', tglSelesai: '03 Sep 2026', pembeli: 'Toko Sumber Rejeki', alamat: 'Jl. Diponegoro No. 42, Semarang',
-        tglPesan: '30 Agu 2026', metode: 'Transfer Bank', status: 'selesai',
-        items: [{ produk: 'Telur Ayam', qty: 150, harga: 23000 }],
-        ongkir: 300000, totalAkhir: 'Rp 3.450.000',
-        terima: 'Diterima oleh: Pak Joko pada 03/09/2026'
-      },
-      {
-        id: '#TRX-2026-031', iso: '2026-09-01', tglSelesai: '01 Sep 2026', pembeli: 'PT Boga Jaya', alamat: 'Jl. Raya Semarang',
-        tglPesan: '28 Agu 2026', metode: 'Virtual Account', status: 'selesai',
-        items: [{ produk: 'Telur Omega', qty: 90, harga: 32000 }],
-        ongkir: 300000, totalAkhir: 'Rp 2.880.000',
-        terima: 'Diterima oleh: Abi Supir pada 01/09/2026'
-      }
-    ];
+    // Riwayat penjualan dari database: order milik perusahaan ini yang sudah
+    // selesai atau dibatalkan (api/order/list.php, dipakai ulang dari
+    // PESANAN_DATA). Order yang masih berjalan tetap di tampilan Pesanan.
+    // Beberapa kolom tidak tersimpan di database: alamat pembeli (tabel users
+    // tidak punya kolom alamat), metode bayar, dan ongkir — ditampilkan '-'
+    // atau 0, bukan dikarang.
+    let RIWAYAT_DATA = [];
+
+    function nomorInvoiceOrder(orderId, isoTanggal) {
+      // Format yang sama dengan api/order/create.php: INV-YYYYMMDD-000001.
+      var ymd = String(isoTanggal || '').slice(0, 10).replace(/-/g, '');
+      return 'INV-' + ymd + '-' + String(orderId).padStart(6, '0');
+    }
+
+    function petakanRiwayat(o) {
+      var tglPesan = String(o.jadwal || '').slice(0, 10);
+      var item = (o.items && o.items[0]) || { produk: '-', qty: 0, harga: 0 };
+      var totalBarang = (Number(item.qty) || 0) * (Number(item.harga) || 0);
+      var totalBayar = Number(o.pembayaran) || totalBarang;
+      var fee = totalBayar - totalBarang;
+      var selesai = o.statusDb === 'selesai';
+      return {
+        orderId: o.orderId,
+        id: '#TRX-' + o.orderId,
+        invoiceNomor: nomorInvoiceOrder(o.orderId, tglPesan),
+        iso: tglPesan,
+        tglSelesai: tglPesan ? formatTanggalPesanan(tglPesan) : '-',
+        pembeli: o.pembeli || 'Pembeli',
+        alamat: '-',
+        tglPesan: tglPesan ? formatTanggalPesanan(tglPesan) : '-',
+        metode: '-',
+        status: selesai ? 'selesai' : 'dibatalkan',
+        items: [{ produk: item.produk || '-', qty: Number(item.qty) || 0, harga: Number(item.harga) || 0 }],
+        ongkir: 0,
+        fee: fee,
+        totalBarang: totalBarang,
+        totalBayar: totalBayar,
+        totalAkhir: formatRupiah(totalBayar),
+        terima: selesai ? 'Selesai pada ' + (tglPesan ? formatTanggalPesanan(tglPesan) : '-') : 'Dibatalkan'
+      };
+    }
+
+    // Lengkapi tanggal selesai/batal yang sebenarnya dari riwayat status
+    // order (api/order/detail.php) beserta alasan pembatalan.
+    function perkayaRiwayat(trx) {
+      return fetch('../../api/order/detail.php?id=' + trx.orderId)
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok || !res.data || !res.data.order) return;
+          var order = res.data.order;
+          var riwayat = res.data.riwayat || [];
+          var cari = trx.status === 'selesai' ? 'selesai' : 'dibatalkan';
+          var entri = null;
+          for (var i = riwayat.length - 1; i >= 0; i--) {
+            if (riwayat[i].status_baru === cari) { entri = riwayat[i]; break; }
+          }
+          var tgl = entri ? String(entri.created_at || '').slice(0, 10)
+            : (order.updated_at ? String(order.updated_at).slice(0, 10) : trx.iso);
+          trx.iso = tgl;
+          trx.tglSelesai = formatTanggalPesanan(tgl);
+          if (trx.status === 'selesai') {
+            trx.terima = 'Selesai pada ' + trx.tglSelesai;
+          } else if (order.alasan_batal) {
+            trx.terima = order.alasan_batal;
+          }
+        })
+        .catch(function () { /* biarkan tanggal order kalau detail gagal dimuat */ });
+    }
+
+    function bangunRiwayatDariPesanan() {
+      var selesai = PESANAN_DATA.filter(function (o) { return o.statusDb === 'selesai' || o.statusDb === 'dibatalkan'; });
+      RIWAYAT_DATA = selesai.map(petakanRiwayat);
+      renderRiwayatTable();
+      Promise.all(RIWAYAT_DATA.map(perkayaRiwayat)).then(function () { renderRiwayatTable(); });
+    }
 
     let riwayatFilter = 'semua';
     let riwayatAktifId = null;
@@ -7614,9 +7877,9 @@
     }
 
     function riwayatSesuaiFilter() {
-      const metode = document.getElementById('riwayatMetode');
-      const metodeDipilih = metode ? metode.value : 'semua';
-
+      // Filter Metode Bayar dihapus: metode bayar tidak tersimpan di
+      // database (trx.metode selalu '-'), jadi pilihannya tidak pernah
+      // bisa cocok. Tersisa filter status dan rentang tanggal.
       const mulaiEl = document.getElementById('riwayatTanggalMulai');
       const akhirEl = document.getElementById('riwayatTanggalAkhir');
       const mulai = mulaiEl ? mulaiEl.value : '';
@@ -7624,9 +7887,8 @@
 
       return RIWAYAT_DATA.filter(trx => {
         const cocokStatus = riwayatFilter === 'semua' || trx.status === riwayatFilter;
-        const cocokMetode = metodeDipilih === 'semua' || trx.metode === metodeDipilih;
         const cocokTanggal = (!mulai || (trx.iso && trx.iso >= mulai)) && (!akhir || (trx.iso && trx.iso <= akhir));
-        return cocokStatus && cocokMetode && cocokTanggal;
+        return cocokStatus && cocokTanggal;
       });
     }
 
@@ -7652,6 +7914,12 @@
       if (!tbody) return;
 
       const data = riwayatSesuaiFilter();
+
+      // Jumlah tab mengikuti data asli.
+      const tabSelesai = document.querySelector('.riwayat-tab[onclick*="\'selesai\'"]');
+      if (tabSelesai) tabSelesai.textContent = 'Selesai (' + RIWAYAT_DATA.filter(function (t) { return t.status === 'selesai'; }).length + ')';
+      const tabBatal = document.querySelector('.riwayat-tab[onclick*="\'dibatalkan\'"]');
+      if (tabBatal) tabBatal.textContent = 'Dibatalkan (' + RIWAYAT_DATA.filter(function (t) { return t.status === 'dibatalkan'; }).length + ')';
 
       if (!data.length) {
         tbody.innerHTML = `
@@ -7751,10 +8019,12 @@
 
       const subtotal = hitungSubtotalRiwayat(trx);
       const ongkir = trx.ongkir || 0;
+      const fee = trx.fee || 0;
 
       setText('riwayatDetailSubtotal', formatRupiah(subtotal));
       setText('riwayatDetailOngkir', formatRupiah(ongkir));
-      setText('riwayatDetailTotal', formatRupiah(subtotal + ongkir));
+      setText('riwayatDetailFee', formatRupiah(fee));
+      setText('riwayatDetailTotal', formatRupiah(subtotal + fee + ongkir));
 
       const badgeEl = document.getElementById('riwayatDetailTerimaBadge');
       if (badgeEl) {
@@ -7772,10 +8042,6 @@
     /* --------------------------------------------------------------------------
        F6. CETAK INVOICE
        -------------------------------------------------------------------------- */
-    function nomorInvoiceRiwayat(id) {
-      return String(id).replace('#TRX-', 'INV/').replace('-', '/');
-    }
-
     function bukaInvoice(id) {
       const trx = RIWAYAT_DATA.find(item => item.id === (id || riwayatAktifId));
       if (!trx) {
@@ -7788,6 +8054,7 @@
 
       const subtotal = hitungSubtotalRiwayat(trx);
       const ongkir = trx.ongkir || 0;
+      const fee = trx.fee || 0;
       const isSelesai = trx.status === 'selesai';
 
       const setText = (elId, value) => {
@@ -7795,14 +8062,15 @@
         if (el) el.textContent = value;
       };
 
-      setText('invNomor', nomorInvoiceRiwayat(trx.id));
+      setText('invNomor', trx.invoiceNomor || '-');
       setText('invTanggal', trx.tglSelesai);
       setText('invMetode', trx.metode);
       setText('invPembeli', trx.pembeli);
       setText('invAlamat', trx.alamat);
       setText('invSubtotal', formatRupiah(subtotal));
       setText('invOngkir', formatRupiah(ongkir));
-      setText('invTotal', formatRupiah(subtotal + ongkir));
+      setText('invFee', formatRupiah(fee));
+      setText('invTotal', formatRupiah(trx.totalBayar != null ? trx.totalBayar : subtotal + fee + ongkir));
       setText('invCatatan', trx.terima);
 
       const statusEl = document.getElementById('invStatus');

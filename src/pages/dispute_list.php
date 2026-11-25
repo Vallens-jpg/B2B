@@ -339,7 +339,7 @@
           <svg class="bell-icon" viewBox="0 0 24 24">
             <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
           </svg>
-          <span class="notification-badge-red" id="notifBadgeRed">3</span>
+          <span class="notification-badge-red" id="notifBadgeRed" style="display:none">0</span>
         </button>
         <a href="profil.php" class="user-profile-capsule">
           <div class="user-avatar-circle">AD</div>
@@ -353,59 +353,8 @@
             <button type="button" class="notif-mark-read" onclick="markAllAsRead(event)">Tandai semua dibaca</button>
           </div>
 
-          <div class="notif-list">
-            <!-- Item 1: Permintaan Disetujui -->
-            <a href="pembeli/permintaan_disetujui.php" class="notif-item unread">
-              <div class="notif-icon-circle green">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                  <polyline points="9 15 12 18 15 15"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title">Permintaan Disetujui</span>
-                  <span class="notif-time">· 5m</span>
-                </div>
-                <p class="notif-item-body">Permintaan pengadaan telur dari PT Telur Makmur telah disetujui.</p>
-              </div>
-            </a>
-
-            <!-- Item 2: Pesan Baru di Dispute #DSP-9021 -->
-            <a href="dispute_detail.php" class="notif-item unread">
-              <div class="notif-icon-circle green">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                  <line x1="9" y1="9" x2="15" y2="9"/>
-                  <line x1="9" y1="13" x2="13" y2="13"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title">Pesan Baru di Dispute #DSP-9021</span>
-                  <span class="notif-item-badge-red" id="notifBadgeItem">1</span>
-                </div>
-                <p class="notif-item-body">Seller: "Kami sudah mengirim bukti foto ulang..."</p>
-              </div>
-            </a>
-
-            <!-- Item 3: Dispute Disetujui -->
-            <a href="dispute_list.php" class="notif-item">
-              <div class="notif-icon-circle yellow">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                  <circle cx="12" cy="12" r="10" stroke="#111827"/>
-                  <line x1="12" y1="8" x2="12" y2="12" stroke="#111827"/>
-                  <line x1="12" y1="16" x2="12.01" y2="16" stroke="#111827"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title dark">Dispute Disetujui · 3j</span>
-                </div>
-                <p class="notif-item-body">Dispute #DSP-8812 telah disetujui. Dana pengembalian sedang diproses.</p>
-              </div>
-            </a>
+          <div class="notif-list" id="ddNotifList">
+            <div class="notif-item"><div class="notif-content"><p class="notif-item-body">Memuat notifikasi…</p></div></div>
           </div>
 
           <div class="notif-footer">
@@ -443,82 +392,15 @@
 
     <!-- Filter Pills -->
     <div class="dispute-filter-row">
-      <button type="button" class="dispute-filter-pill active" onclick="setFilter('dibuka', this)">Dibuka</button>
-      <button type="button" class="dispute-filter-pill" onclick="setFilter('menunggu_tanggapan', this)">Menunggu Tanggapan</button>
-      <button type="button" class="dispute-filter-pill" onclick="setFilter('ditinjau_admin', this)">Ditinjau Admin</button>
-      <button type="button" class="dispute-filter-pill" onclick="setFilter('diputuskan', this)">Diputuskan</button>
-      <button type="button" class="dispute-filter-pill" onclick="setFilter('ditutup', this)">Ditutup</button>
+      <button type="button" class="dispute-filter-pill active" onclick="setFilter('semua', this)">Semua</button>
+      <button type="button" class="dispute-filter-pill" onclick="setFilter('diajukan', this)">Diajukan</button>
+      <button type="button" class="dispute-filter-pill" onclick="setFilter('diproses', this)">Diproses</button>
+      <button type="button" class="dispute-filter-pill" onclick="setFilter('selesai', this)">Selesai</button>
     </div>
 
     <!-- Dispute Cards List -->
     <div class="dispute-cards-list" id="disputeCardsContainer">
-
-      <!-- Card 1: #ORD-8921 -->
-      <article class="dispute-card" data-order="#ORD-8921" data-seller="PT Telur Makmur" data-status="menunggu_tanggapan">
-        <div class="dispute-card-left">
-          <div class="dispute-order-header">
-            <span class="dispute-order-id">#ORD-8921</span>
-            <span class="dispute-badge dispute-badge-amber">MENUNGGU TANGGAPAN</span>
-          </div>
-          <div class="dispute-card-seller">Penjual: PT Telur Makmur</div>
-          <div class="dispute-card-date">Dibuat: 12 Oktober 2023 • 14:30 WIB</div>
-        </div>
-
-        <div class="dispute-card-right">
-          <div class="dispute-amount-group">
-            <span class="dispute-amount-val">Rp 1.250.000</span>
-            <span class="dispute-amount-label">Total Dispute</span>
-          </div>
-          <a href="dispute_detail.php?order=ORD-8921&amount=Rp%201.250.000&seller=PT%20Telur%20Makmur" class="btn-dispute-diskusi">
-            Diskusi
-          </a>
-        </div>
-      </article>
-
-      <!-- Card 2: #ORD-8910 -->
-      <article class="dispute-card" data-order="#ORD-8910" data-seller="Mitra Unggas Sejahtera" data-status="dibuka">
-        <div class="dispute-card-left">
-          <div class="dispute-order-header">
-            <span class="dispute-order-id">#ORD-8910</span>
-            <span class="dispute-badge dispute-badge-blue">DALAM PROSES</span>
-          </div>
-          <div class="dispute-card-seller">Penjual: Mitra Unggas Sejahtera</div>
-          <div class="dispute-card-date">Dibuat: 10 Oktober 2023 • 09:15 WIB</div>
-        </div>
-
-        <div class="dispute-card-right">
-          <div class="dispute-amount-group">
-            <span class="dispute-amount-val">Rp 850.000</span>
-            <span class="dispute-amount-label">Total Dispute</span>
-          </div>
-          <a href="dispute_detail.php?order=ORD-8910&amount=Rp%20850.000&seller=Mitra%20Unggas%20Sejahtera" class="btn-dispute-diskusi">
-            Diskusi
-          </a>
-        </div>
-      </article>
-
-      <!-- Card 3: #ORD-8895 -->
-      <article class="dispute-card" data-order="#ORD-8895" data-seller="Tunas Farm" data-status="ditutup">
-        <div class="dispute-card-left">
-          <div class="dispute-order-header">
-            <span class="dispute-order-id">#ORD-8895</span>
-            <span class="dispute-badge dispute-badge-green">SELESAI</span>
-          </div>
-          <div class="dispute-card-seller">Penjual: Tunas Farm</div>
-          <div class="dispute-card-date">Dibuat: 05 Oktober 2023 • 11:40 WIB</div>
-        </div>
-
-        <div class="dispute-card-right">
-          <div class="dispute-amount-group">
-            <span class="dispute-amount-val">Rp 450.000</span>
-            <span class="dispute-amount-label">Total Dispute</span>
-          </div>
-          <a href="dispute_detail.php?order=ORD-8895&amount=Rp%20450.000&seller=Tunas%20Farm" class="btn-dispute-diskusi">
-            Diskusi
-          </a>
-        </div>
-      </article>
-
+      <p style="text-align:center;padding:1rem;color:#6B7280;">Memuat dispute…</p>
     </div>
 
   </main>
@@ -526,7 +408,7 @@
   <!-- Floating Navigation for Prototype Walkthrough -->
 
   <script>
-    let activeFilter = 'dibuka';
+    let activeFilter = 'semua';
 
     function setFilter(filter, btnEl) {
       activeFilter = filter;
@@ -534,6 +416,58 @@
       btnEl.classList.add('active');
       filterDisputes();
     }
+
+    // ---- Daftar dispute asli dari API ----
+    (function () {
+      var container = document.getElementById('disputeCardsContainer');
+      function rupiah(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); }
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      function tanggalId(waktu) {
+        var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        var p = String(waktu || '').split(' ');
+        var d = (p[0] || '').split('-');
+        if (d.length < 3) return waktu || '';
+        return parseInt(d[2], 10) + ' ' + bulan[parseInt(d[1], 10) - 1] + ' ' + d[0] + ' • ' + String(p[1] || '').slice(0, 5) + ' WIB';
+      }
+      function badge(status) {
+        if (status === 'diajukan') return '<span class="dispute-badge dispute-badge-blue">DIAJUKAN</span>';
+        if (status === 'diproses') return '<span class="dispute-badge dispute-badge-amber">DIPROSES</span>';
+        return '<span class="dispute-badge dispute-badge-green">SELESAI</span>';
+      }
+      fetch('../api/dispute/list.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!container) return;
+          if (!res || !res.ok || !res.data || !res.data.dispute) {
+            container.innerHTML = '<p style="text-align:center;padding:1rem;color:#6B7280;">Gagal memuat dispute. Periksa koneksi atau login kembali.</p>';
+            return;
+          }
+          var items = res.data.dispute;
+          if (!items.length) {
+            container.innerHTML = '<p style="text-align:center;padding:1rem;color:#6B7280;">Belum ada dispute.</p>';
+            return;
+          }
+          container.innerHTML = items.map(function (d) {
+            var nomor = '#ORD-2026-' + String(d.order_id).padStart(3, '0');
+            return '<article class="dispute-card" data-order="' + nomor + '" data-seller="' + escapeHtml(d.nama_perusahaan || '') + '" data-status="' + d.status + '">'
+              + '<div class="dispute-card-left">'
+              + '<div class="dispute-order-header"><span class="dispute-order-id">' + nomor + '</span>' + badge(d.status) + '</div>'
+              + '<div class="dispute-card-seller">Penjual: ' + escapeHtml(d.nama_perusahaan || '-') + '</div>'
+              + '<div class="dispute-card-date">Dibuat: ' + tanggalId(d.created_at) + '</div>'
+              + '</div>'
+              + '<div class="dispute-card-right">'
+              + '<div class="dispute-amount-group"><span class="dispute-amount-val">' + rupiah(d.total_bayar) + '</span><span class="dispute-amount-label">Total Dispute</span></div>'
+              + '<a href="dispute_detail.php?id=' + d.id + '" class="btn-dispute-diskusi">Diskusi</a>'
+              + '</div></article>';
+          }).join('');
+          filterDisputes();
+        })
+        .catch(function () {
+          if (container) container.innerHTML = '<p style="text-align:center;padding:1rem;color:#6B7280;">Gagal memuat dispute. Periksa koneksi atau login kembali.</p>';
+        });
+    })();
 
     function filterDisputes() {
       const q = document.getElementById('disputeSearchInput').value.toLowerCase().trim();
@@ -547,7 +481,7 @@
         let matchesSearch = !q || orderId.includes(q) || seller.includes(q);
         // By default show matching search
         let matchesFilter = true;
-        if (activeFilter !== 'dibuka') {
+        if (activeFilter !== 'semua') {
           matchesFilter = (status === activeFilter);
         }
 
@@ -572,6 +506,8 @@
         e.preventDefault();
         e.stopPropagation();
       }
+      // Simpan ke database supaya tidak kembali setelah muat ulang.
+      fetch('../api/notifikasi/tandai-dibaca.php', { method: 'POST' }).catch(function () {});
       const badgeRed = document.getElementById('notifBadgeRed');
       if (badgeRed) badgeRed.style.display = 'none';
 
@@ -583,6 +519,43 @@
       });
     }
 
+    // ---- Dropdown lonceng dari API notifikasi (riwayat_status) ----
+    (function () {
+      var ddList = document.getElementById('ddNotifList');
+      var badge = document.getElementById('notifBadgeRed');
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      fetch('../api/notifikasi.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!ddList) return;
+          if (!res || !res.ok || !res.data || !res.data.notifikasi || !res.data.notifikasi.length) {
+            ddList.innerHTML = '<div class="notif-item"><div class="notif-content"><p class="notif-item-body">Belum ada notifikasi.</p></div></div>';
+            if (badge) badge.style.display = 'none';
+            return;
+          }
+          var items = res.data.notifikasi;
+          ddList.innerHTML = items.slice(0, 3).map(function (n) {
+            return '<a href="order_detail.php?id=' + n.order_id + '" class="notif-item' + (n.dibaca ? '' : ' unread') + '">'
+              + '<div class="notif-icon-circle green"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg></div>'
+              + '<div class="notif-content"><div class="notif-item-top"><span class="notif-item-title">' + escapeHtml(n.judul) + '</span></div>'
+              + '<p class="notif-item-body">' + escapeHtml(n.isi) + '</p></div></a>';
+          }).join('');
+          var belum = 0;
+          items.forEach(function (n) { if (!n.dibaca) belum++; });
+          if (badge) {
+            if (belum > 0) {
+              badge.innerText = belum;
+              badge.style.display = '';
+            } else {
+              badge.style.display = 'none';
+            }
+          }
+        })
+        .catch(function () { /* biarkan placeholder bila API gagal */ });
+    })();
+
     document.addEventListener('click', function (e) {
       const dd = document.getElementById('notifDropdown');
       const btn = document.getElementById('notifBellBtn');
@@ -592,6 +565,18 @@
         }
       }
     });
+  </script>
+  <script>
+    // Avatar & nama dari user yang sedang login (bukan "AD" hardcode).
+    (function () {
+      fetch('../api/auth/me.php').then(function (r) { return r.json(); }).then(function (res) {
+        if (!res || !res.ok || !res.data || !res.data.nama) return;
+        var nama = res.data.nama;
+        var inisial = nama.trim().split(/\s+/).map(function (w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
+        document.querySelectorAll('.user-avatar-circle, .ulasan-user-avatar, .pd-user-avatar').forEach(function (el) { el.textContent = inisial; });
+        document.querySelectorAll('.user-name-text').forEach(function (el) { el.textContent = nama; });
+      }).catch(function () {});
+    })();
   </script>
 </body>
 </html>

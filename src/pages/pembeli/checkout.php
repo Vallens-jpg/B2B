@@ -1,49 +1,3 @@
-<?php
-session_start();
-
-$sellersMap = [
-    '1' => 'PT Telur Makmur',
-    '2' => 'Mitra Unggas Sejahtera',
-    '3' => 'Tunas Farm',
-    '4' => 'Berkah Telur Utama',
-    '5' => 'Ternak Mandiri',
-    '6' => 'Sinar Jaya Poultry'
-];
-
-// Self-handling: proses form POST di halaman yang sama
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $sellerId = $_POST['seller'] ?? '1';
-    $company = $_POST['seller_name'] ?? ($sellersMap[$sellerId] ?? 'PT Telur Makmur');
-    $product = $_POST['product'] ?? 'Telur Ayam Ras Grade A';
-    $price = $_POST['price'] ?? 'Rp 28.000';
-    $qty = $_POST['qty'] ?? '2 kg';
-    $subtotal = $_POST['subtotal'] ?? 'Rp 56.000';
-    $notes = $_POST['notes'] ?? '';
-
-    $_SESSION['active_order'] = [
-        'order_id' => '#ORD-2026-' . rand(100, 999),
-        'seller_id' => $sellerId,
-        'seller' => $company,
-        'product' => $product,
-        'price' => $price,
-        'qty' => $qty,
-        'subtotal' => $subtotal,
-        'notes' => $notes,
-        'status' => 'pending',
-        'created_at' => date('d M Y, H:i')
-    ];
-
-    // PRG Pattern: Redirect ke status_pesanan.php
-    header('Location: status_pesanan.php');
-    exit;
-}
-
-$sellerId = $_GET['seller'] ?? '1';
-$product = $_GET['product'] ?? 'Telur Ayam Ras Grade A';
-$price = $_GET['price'] ?? 'Rp 28.000';
-$qty = $_GET['qty'] ?? '2 kg';
-$sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -296,12 +250,12 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
     </a>
     <h1 class="detail-page-heading">Ajukan Pesanan</h1>
     <div class="navbar-actions">
-      <button type="button" class="notification-bell-btn" aria-label="Notifikasi">
+      <a href="../notifikasi.php" class="notification-bell-btn" aria-label="Notifikasi">
         <svg class="bell-icon" viewBox="0 0 24 24">
           <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
         </svg>
-        <span class="notification-badge-red">3</span>
-      </button>
+        <span class="notification-badge-red" id="checkoutBellBadge" style="display:none">0</span>
+      </a>
       <div class="user-profile-capsule">
         <div class="user-avatar-circle">AD</div>
         <span class="user-name-text">Buyer</span>
@@ -314,11 +268,11 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
     <div class="ajukan-card">
       <h2 class="ajukan-card-title">Ajukan Pesanan</h2>
 
-      <form action="#" method="POST" id="ajukanPesananForm">
+      <form action="#" method="POST" id="ajukanPesananForm" onsubmit="return false;">
         <!-- Perusahaan -->
         <div class="form-group" style="margin-bottom: 1.75rem;">
           <label class="field-label-sm">Perusahaan :</label>
-          <input type="text" id="companyInput" class="input-readonly" value="PT Telur Makmur" readonly>
+          <input type="text" id="companyInput" class="input-readonly" value="" readonly>
         </div>
 
         <div class="section-divider"></div>
@@ -337,12 +291,11 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
         <div class="item-row-grid">
           <div class="select-wrapper">
             <select class="form-select" id="productSelect">
-              <option value="Telur ayam">Telur ayam</option>
-              <option value="Telur Omega">Telur Omega</option>
+              <option value="Telur Ayam Grade A">Telur Ayam Grade A</option>
+              <option value="Telur Ayam Grade B">Telur Ayam Grade B</option>
+              <option value="Telur Ayam Grade C">Telur Ayam Grade C</option>
               <option value="Telur Ayam Kampung">Telur Ayam Kampung</option>
-              <option value="Telur Ayam Ras Grade A">Telur Ayam Ras Grade A</option>
-              <option value="Telur Ayam Ras Grade B">Telur Ayam Ras Grade B</option>
-              <option value="Telur Ayam Ras Grade C">Telur Ayam Ras Grade C</option>
+              <option value="Telur Omega">Telur Omega</option>
             </select>
             <svg class="select-arrow" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
           </div>
@@ -350,10 +303,10 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
             <input type="text" id="qtyInput" class="form-input-qty" value="2 kg">
           </div>
           <div>
-            <input type="text" id="priceInput" class="form-input-price" value="Rp 250.000">
+            <input type="text" id="priceInput" class="form-input-price" value="">
           </div>
           <div>
-            <span id="subtotalText" class="subtotal-text">Rp 500.000</span>
+            <span id="subtotalText" class="subtotal-text">Rp 0</span>
           </div>
           <div>
             <button type="button" class="btn-delete-row" aria-label="Hapus item">
@@ -382,13 +335,6 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
 
   <!-- Action Footer Button (tunggal, di tengah) -->
   <form method="POST" action="checkout.php" id="orderSubmitForm">
-        <input type="hidden" name="seller" id="postSeller" value="<?= htmlspecialchars($sellerId) ?>">
-        <input type="hidden" name="seller_name" id="postSellerName" value="<?= htmlspecialchars($sellerName) ?>">
-        <input type="hidden" name="product" id="postProduct" value="<?= htmlspecialchars($product) ?>">
-        <input type="hidden" name="price" id="postPrice" value="<?= htmlspecialchars($price) ?>">
-        <input type="hidden" name="qty" id="postQty" value="<?= htmlspecialchars($qty) ?>">
-        <input type="hidden" name="subtotal" id="postSubtotal" value="Rp 56.000">
-        <input type="hidden" name="notes" id="postNotes" value="">
         <div class="action-footer-single">
     <button type="button" id="ajukanPesananBtn" class="btn-ajukan-primary">Ajukan Pesanan</button>
   </div>
@@ -398,30 +344,17 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
   <script>
     // Data dibawa dari halaman Status Pesanan (setelah penjual menyetujui)
     const urlParams = new URLSearchParams(window.location.search);
+    const produkIdParam = urlParams.get('id');
     const sellerId = urlParams.get('seller') || '1';
     const productName = urlParams.get('product');
     const productPrice = urlParams.get('price');
     const qtyParam = urlParams.get('qty');
     const subtotalParam = urlParams.get('subtotal');
 
-    const sellersMap = {
-      '1': 'PT Telur Makmur',
-      '2': 'Mitra Unggas Sejahtera',
-      '3': 'Tunas Farm',
-      '4': 'Berkah Telur Utama',
-      '5': 'Ternak Mandiri',
-      '6': 'Sinar Jaya Poultry'
-    };
-
-    if (sellersMap[sellerId]) {
-      document.getElementById('companyInput').value = sellersMap[sellerId];
-    }
-
-    // Tombol kembali -> Detail Produk (dengan data yang sama)
-    const backToProduct = 'produk_detail.php' +
-      '?seller=' + encodeURIComponent(sellerId) +
-      (productName ? '&product=' + encodeURIComponent(productName) : '') +
-      (productPrice ? '&price=' + encodeURIComponent(productPrice) : '');
+    // Tombol kembali -> Detail Produk (bila datang dari sana) atau Dashboard.
+    const backToProduct = produkIdParam
+      ? ('produk_detail.php?id=' + encodeURIComponent(produkIdParam))
+      : 'dashboard_buyer.php';
     document.getElementById('backLink').href = backToProduct;
 
     function handleSmartBackApes() {
@@ -468,13 +401,6 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
       }
     }
 
-    if (productPrice) {
-      document.getElementById('priceInput').value = productPrice;
-    }
-    if (qtyParam) {
-      document.getElementById('qtyInput').value = qtyParam;
-    }
-
     // Format rupiah otomatis & hitung subtotal
     const qtyInput = document.getElementById('qtyInput');
     const priceInput = document.getElementById('priceInput');
@@ -515,12 +441,11 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
       row.innerHTML = `
         <div class="select-wrapper">
           <select class="form-select">
-            <option>Telur ayam</option>
-            <option>Telur Omega</option>
+            <option>Telur Ayam Grade A</option>
+            <option>Telur Ayam Grade B</option>
+            <option>Telur Ayam Grade C</option>
             <option>Telur Ayam Kampung</option>
-            <option>Telur Ayam Ras Grade A</option>
-            <option>Telur Ayam Ras Grade B</option>
-            <option>Telur Ayam Ras Grade C</option>
+            <option>Telur Omega</option>
           </select>
           <svg class="select-arrow" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
         </div>
@@ -563,22 +488,122 @@ $sellerName = $sellersMap[$sellerId] ?? 'PT Telur Makmur';
       });
     }
 
-    // Ajukan Pesanan -> masuk ke pending menunggu persetujuan penjual
-    document.getElementById('ajukanPesananBtn').addEventListener('click', function () {
-      const firstRow = document.querySelector('.item-row-grid');
-      const product = firstRow.querySelector('.form-select').value;
-      const qty = firstRow.querySelector('.form-input-qty').value || '2 kg';
-      const subtotalValue = firstRow.querySelector('.subtotal-text').innerText;
-      const notes = document.querySelector('.textarea-notes').value;
+    // Nama perusahaan asli dari API (kolom Perusahaan diisi dari produk yang dipilih).
+    var penjualNamaById = {};
+    function isiPerusahaan() {
+      var select = document.getElementById('productSelect');
+      var pr = select ? produkByName[select.value] : null;
+      var nama = (pr && penjualNamaById[pr.perusahaan_id]) || '';
+      if (nama) document.getElementById('companyInput').value = nama;
+    }
+    fetch('../../api/penjual.php')
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res || !res.ok || !res.data || !res.data.penjual) return;
+        res.data.penjual.forEach(function (s) { penjualNamaById[s.id] = s.nama; });
+        isiPerusahaan();
+      })
+      .catch(function () {});
 
-      window.location.href = 'status_pesanan.php' +
-        '?seller=' + encodeURIComponent(sellerId) +
-        '&product=' + encodeURIComponent(product) +
-        '&qty=' + encodeURIComponent(qty) +
-        '&price=' + encodeURIComponent(document.getElementById('priceInput').value) +
-        '&subtotal=' + encodeURIComponent(subtotalValue) +
-        '&notes=' + encodeURIComponent(notes);
+    // Isi daftar produk dari database (API katalog), supaya harga & id produk asli.
+    var produkByName = {};
+    fetch('../../api/katalog.php')
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res.ok || !res.data || !res.data.produk) return;
+        var select = document.getElementById('productSelect');
+        select.innerHTML = '';
+        res.data.produk.forEach(function (pr) {
+          produkByName[pr.nama] = pr;
+          var opt = document.createElement('option');
+          opt.value = pr.nama;
+          opt.text = pr.nama + ' — Rp ' + Number(pr.harga_per_kg).toLocaleString('id-ID') + '/kg';
+          opt.dataset.id = pr.id;
+          opt.dataset.harga = pr.harga_per_kg;
+          select.appendChild(opt);
+        });
+        var target = null;
+        if (produkIdParam) target = res.data.produk.find(function (pr) { return String(pr.id) === String(produkIdParam); });
+        if (!target && productName) target = produkByName[productName];
+        if (target) {
+          select.value = target.nama;
+          document.getElementById('priceInput').value = 'Rp ' + Number(target.harga_per_kg).toLocaleString('id-ID');
+          recalcSubtotal();
+          isiPerusahaan();
+        }
+        select.addEventListener('change', function () {
+          var pr = produkByName[select.value];
+          if (pr) {
+            document.getElementById('priceInput').value = 'Rp ' + Number(pr.harga_per_kg).toLocaleString('id-ID');
+            recalcSubtotal();
+            isiPerusahaan();
+          }
+        });
+      })
+      .catch(function () { /* biarkan opsi statis kalau katalog gagal dimuat */ });
+
+    // Ajukan Pesanan -> buat order asli lewat API, lalu ke detail pesanan.
+    document.getElementById('ajukanPesananBtn').addEventListener('click', function () {
+      var firstRow = document.querySelector('.item-row-grid');
+      var select = firstRow.querySelector('.form-select');
+      var product = select.value;
+      var qtyKg = parseNumber(firstRow.querySelector('.form-input-qty').value) || 0;
+      var btn = this;
+      btn.disabled = true;
+      btn.innerText = 'Memproses...';
+      function kirim(produkId) {
+        fetch('../../api/order/create.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ produk_id: produkId, jumlah_kg: qtyKg })
+        })
+          .then(function (r) {
+            // Baca jawaban sebagai teks dulu: bila server menjawab bukan
+            // JSON (misalnya halaman error), jangan tuduh sesi login.
+            return r.text().then(function (t) { return { status: r.status, body: t }; });
+          })
+          .then(function (x) {
+            var res = null;
+            try { res = JSON.parse(x.body); } catch (e) { res = null; }
+            if (!res) { alert('Gagal membuat pesanan: server tidak menjawab dengan benar (HTTP ' + x.status + '). Coba lagi.'); btn.disabled = false; btn.innerText = 'Ajukan Pesanan'; return; }
+            if (!res.ok) { alert('Gagal membuat pesanan: ' + (res.error || 'tidak diketahui')); btn.disabled = false; btn.innerText = 'Ajukan Pesanan'; return; }
+            window.location.href = '../order_detail.php?id=' + res.data.order_id;
+          })
+          .catch(function () { alert('Gagal membuat pesanan: tidak bisa menghubungi server. Periksa koneksi lalu coba lagi.'); btn.disabled = false; btn.innerText = 'Ajukan Pesanan'; });
+      }
+      var opt = select.options[select.selectedIndex];
+      if (opt && opt.dataset && opt.dataset.id) { kirim(parseInt(opt.dataset.id, 10)); return; }
+      fetch('../../api/katalog.php').then(function (r) { return r.json(); }).then(function (res) {
+        var pr = (res.data && res.data.produk || []).find(function (x) { return x.nama === product; });
+        if (!pr) { alert('Produk tidak ditemukan di katalog.'); btn.disabled = false; btn.innerText = 'Ajukan Pesanan'; return; }
+        kirim(pr.id);
+      }).catch(function () { alert('Gagal memuat katalog.'); btn.disabled = false; btn.innerText = 'Ajukan Pesanan'; });
     });
+    // Badge lonceng: jumlah notifikasi belum dibaca.
+    (function () {
+      var badge = document.getElementById('checkoutBellBadge');
+      fetch('../../api/notifikasi.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!badge || !res || !res.ok || !res.data || !res.data.notifikasi) return;
+          var belum = 0;
+          res.data.notifikasi.forEach(function (n) { if (!n.dibaca) belum++; });
+          if (belum > 0) { badge.innerText = belum; badge.style.display = ''; }
+        })
+        .catch(function () {});
+    })();
+  </script>
+  <script>
+    // Avatar & nama dari user yang sedang login (bukan "AD" hardcode).
+    (function () {
+      fetch('../../api/auth/me.php').then(function (r) { return r.json(); }).then(function (res) {
+        if (!res || !res.ok || !res.data || !res.data.nama) return;
+        var nama = res.data.nama;
+        var inisial = nama.trim().split(/\s+/).map(function (w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
+        document.querySelectorAll('.user-avatar-circle, .ulasan-user-avatar, .pd-user-avatar').forEach(function (el) { el.textContent = inisial; });
+        document.querySelectorAll('.user-name-text').forEach(function (el) { el.textContent = nama; });
+      }).catch(function () {});
+    })();
   </script>
 </body>
 </html>

@@ -277,7 +277,7 @@
           <svg class="bell-icon" viewBox="0 0 24 24">
             <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
           </svg>
-          <span class="notification-badge-red" id="notifBadgeRed">3</span>
+          <span class="notification-badge-red" id="notifBadgeRed" style="display:none">0</span>
         </button>
         <a href="profil.php" class="user-profile-capsule" style="text-decoration: none;">
           <div class="user-avatar-circle">AD</div>
@@ -291,53 +291,8 @@
             <button type="button" class="notif-mark-read" onclick="markAllAsRead(event)">Tandai semua dibaca</button>
           </div>
 
-          <div class="notif-list">
-            <a href="pembeli/permintaan_disetujui.php" class="notif-item unread">
-              <div class="notif-icon-circle green">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title">Permintaan Disetujui</span>
-                  <span class="notif-time">· 5m</span>
-                </div>
-                <p class="notif-item-body">Permintaan pengadaan telur dari PT Telur Makmur telah disetujui.</p>
-              </div>
-            </a>
-
-            <a href="dispute_detail.php" class="notif-item unread">
-              <div class="notif-icon-circle green">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title">Pesan Baru di Dispute #DSP-9021</span>
-                  <span class="notif-item-badge-red">1</span>
-                </div>
-                <p class="notif-item-body">Seller: "Kami sudah mengirim bukti foto ulang..."</p>
-              </div>
-            </a>
-
-            <a href="dispute_list.php" class="notif-item">
-              <div class="notif-icon-circle yellow">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <circle cx="12" cy="12" r="10" stroke="#111827"/>
-                  <line x1="12" y1="8" x2="12" y2="12" stroke="#111827"/>
-                  <line x1="12" y1="16" x2="12.01" y2="16" stroke="#111827"/>
-                </svg>
-              </div>
-              <div class="notif-content">
-                <div class="notif-item-top">
-                  <span class="notif-item-title dark">Dispute Disetujui · 3j</span>
-                </div>
-                <p class="notif-item-body">Dispute #DSP-8812 telah disetujui. Dana pengembalian sedang diproses.</p>
-              </div>
-            </a>
+          <div class="notif-list" id="ddNotifList">
+            <div class="notif-item"><div class="notif-content"><p class="notif-item-body">Memuat notifikasi…</p></div></div>
           </div>
 
           <div class="notif-footer">
@@ -355,8 +310,9 @@
       <!-- Left Column: Avatar & Business Summary Card -->
       <aside class="profil-avatar-card">
         <div class="profil-gradient-circle"></div>
-        <h2 class="profil-business-name" id="displayBusinessName">Catering Berkah</h2>
-        <p class="profil-business-email" id="displayEmail">buyer@gmail.com</p>
+        <h2 class="profil-business-name" id="displayBusinessName">Memuat…</h2>
+        <p class="profil-business-email" id="displayEmail">—</p>
+        <p class="profil-business-email" id="displayRole">—</p>
       </aside>
 
       <!-- Right Column: Form Sections & Actions -->
@@ -369,62 +325,55 @@
           <div class="form-row-two-col">
             <div class="form-group-item">
               <label for="namaUsaha" class="profil-input-label">Nama Usaha</label>
-              <input type="text" id="namaUsaha" class="profil-input-field" value="Catering Berkah">
+              <input type="text" id="namaUsaha" class="profil-input-field" value="">
             </div>
             <div class="form-group-item">
               <label for="emailUsaha" class="profil-input-label">Email</label>
-              <input type="email" id="emailUsaha" class="profil-input-field" value="buyer@gmail.com">
+              <input type="email" id="emailUsaha" class="profil-input-field" value="">
             </div>
           </div>
 
-          <div class="form-row-two-col">
+          <div class="form-row-two-col" id="nibNpwpRow" style="display:none;">
             <div class="form-group-item">
-              <label for="nomorTelepon" class="profil-input-label">Nomor Telepon</label>
-              <input type="text" id="nomorTelepon" class="profil-input-field" value="+00000000">
+              <label for="nibUsaha" class="profil-input-label">NIB</label>
+              <input type="text" id="nibUsaha" class="profil-input-field" value="" placeholder="Nomor Induk Berusaha" maxlength="30">
             </div>
             <div class="form-group-item">
-              <label for="kotaUsaha" class="profil-input-label">Kota</label>
-              <input type="text" id="kotaUsaha" class="profil-input-field" value="Jakarta Timur">
+              <label for="npwpUsaha" class="profil-input-label">NPWP</label>
+              <input type="text" id="npwpUsaha" class="profil-input-field" value="" placeholder="NPWP perusahaan" maxlength="20">
             </div>
           </div>
 
-          <div class="form-group-item full-width">
-            <label for="alamatLengkap" class="profil-input-label">Alamat Lengkap</label>
-            <input type="text" id="alamatLengkap" class="profil-input-field" value="Jl. Raya Industri No. 123">
           </div>
+
         </div>
 
-        <!-- 2. Pengaturan Rekening Bank Card -->
-        <div class="profil-card">
-          <h2 class="profil-section-heading">Pengaturan Rekening Bank</h2>
+        <!-- 2. Rekening Bank Card (tujuan refund/pencairan; hanya pembeli & perusahaan) -->
+        <div class="profil-card" id="rekeningCard" style="display:none;">
+          <h2 class="profil-section-heading">Rekening Bank</h2>
+          <p style="color:#64748b; font-size:.9rem; margin:.25rem 0 1rem;">Rekening tujuan pengembalian dana (refund) bila pesanan dibatalkan atau dispute diputuskan uang kembali, dan pencairan dana perusahaan.</p>
 
           <div class="form-row-two-col">
             <div class="form-group-item">
               <label for="namaBank" class="profil-input-label">Nama Bank</label>
-              <div class="profil-select-wrap">
-                <select id="namaBank" class="profil-select-field">
-                  <option value="Bank BCA" selected>Bank BCA</option>
-                  <option value="Bank Mandiri">Bank Mandiri</option>
-                  <option value="Bank BNI">Bank BNI</option>
-                  <option value="Bank BRI">Bank BRI</option>
-                </select>
-                <svg class="profil-select-arrow" viewBox="0 0 24 24">
-                  <polyline points="6 9 12 15 18 9"/>
-                </svg>
-              </div>
+              <input type="text" id="namaBank" class="profil-input-field" value="" placeholder="Contoh: BCA">
             </div>
-
             <div class="form-group-item">
-              <label for="nomorRekening" class="profil-input-label">Nomor Rekening</label>
-              <input type="text" id="nomorRekening" class="profil-input-field" value="00-000-00">
+              <label for="noRekening" class="profil-input-label">Nomor Rekening</label>
+              <input type="text" id="noRekening" class="profil-input-field" value="" placeholder="Contoh: 1234567890">
             </div>
           </div>
 
-          <div class="form-group-item full-width">
-            <label for="atasNamaRekening" class="profil-input-label">Atas Nama Rekening</label>
-            <input type="text" id="atasNamaRekening" class="profil-input-field" value="Catering Berkah">
+          <div class="form-row-two-col">
+            <div class="form-group-item">
+              <label for="atasNama" class="profil-input-label">Atas Nama</label>
+              <input type="text" id="atasNama" class="profil-input-field" value="" placeholder="Nama pemilik rekening">
+            </div>
           </div>
+
         </div>
+
+        <div id="profilMsg" style="display:none; margin-bottom:1rem; padding:.75rem 1rem; border-radius:8px; font-weight:600;"></div>
 
         <!-- Bottom Action Buttons -->
         <div class="profil-action-buttons">
@@ -442,18 +391,109 @@
   <!-- Floating Navigation for Prototype Walkthrough -->
 
   <script>
+    // ---- Profil asli dari API me.php ----
+    (function () {
+      const labelRole = { pembeli: 'Pembeli', perusahaan: 'Perusahaan', admin: 'Admin' };
+      fetch('../api/auth/me.php')
+        .then(function (r) {
+          if (r.status === 401) { window.location.href = 'login.php'; return null; }
+          return r.json();
+        })
+        .then(function (res) {
+          if (!res || !res.ok || !res.data) return;
+          const u = res.data;
+          if (u.nama) {
+            document.getElementById('displayBusinessName').innerText = u.nama;
+            const namaUsaha = document.getElementById('namaUsaha');
+            if (namaUsaha) namaUsaha.value = u.nama;
+            document.querySelectorAll('.user-name-text').forEach(function (el) { el.innerText = u.nama; });
+            const avatar = document.querySelector('.user-avatar-circle');
+            if (avatar) {
+              const inisial = u.nama.trim().split(/\s+/).slice(0, 2).map(function (w) { return w.charAt(0).toUpperCase(); }).join('');
+              avatar.innerText = inisial || 'U';
+            }
+          }
+          if (u.email) {
+            document.getElementById('displayEmail').innerText = u.email;
+            const emailUsaha = document.getElementById('emailUsaha');
+            if (emailUsaha) emailUsaha.value = u.email;
+          }
+          if (u.role) {
+            const roleEl = document.getElementById('displayRole');
+            if (roleEl) roleEl.innerText = labelRole[u.role] || u.role;
+          }
+          // Rekening bank: tampil hanya untuk pembeli & perusahaan
+          // (admin tidak punya rekening di database).
+          if (u.role === 'pembeli' || u.role === 'perusahaan') {
+            const rk = document.getElementById('rekeningCard');
+            if (rk) rk.style.display = '';
+            const nb = document.getElementById('namaBank');
+            if (nb) nb.value = u.nama_bank || '';
+            const nr = document.getElementById('noRekening');
+            if (nr) nr.value = u.no_rekening || '';
+            const an = document.getElementById('atasNama');
+            if (an) an.value = u.atas_nama || '';
+          }
+          // NIB/NPWP: hanya perusahaan.
+          if (u.role === 'perusahaan') {
+            const nn = document.getElementById('nibNpwpRow');
+            if (nn) nn.style.display = '';
+            const nibEl = document.getElementById('nibUsaha');
+            if (nibEl) nibEl.value = u.nib || '';
+            const npwpEl = document.getElementById('npwpUsaha');
+            if (npwpEl) npwpEl.value = u.npwp || '';
+          }
+        })
+        .catch(function () { /* biarkan nilai netral bila API gagal */ });
+    })();
+
+    // Pesan di halaman (bukan alert bawaan browser, supaya selalu terlihat).
+    function tampilkanPesanProfil(teks, sukses) {
+      var el = document.getElementById('profilMsg');
+      if (!el) return;
+      el.innerText = teks;
+      el.style.display = 'block';
+      el.style.background = sukses ? '#dcfce7' : '#fee2e2';
+      el.style.color = sukses ? '#166534' : '#991b1b';
+    }
+
+    // Simpan profil ke database lewat API (bukan hanya ubah tampilan).
     function simpanProfil() {
       const nama = document.getElementById('namaUsaha').value.trim();
       const email = document.getElementById('emailUsaha').value.trim();
-
-      if (nama) {
-        document.getElementById('displayBusinessName').innerText = nama;
+      if (!nama || !email) {
+        tampilkanPesanProfil('Nama dan email wajib diisi.', false);
+        return;
       }
-      if (email) {
-        document.getElementById('displayEmail').innerText = email;
+      const payload = { nama: nama, email: email };
+      const rk = document.getElementById('rekeningCard');
+      if (rk && rk.style.display !== 'none') {
+        payload.nama_bank = document.getElementById('namaBank').value.trim();
+        payload.no_rekening = document.getElementById('noRekening').value.trim();
+        payload.atas_nama = document.getElementById('atasNama').value.trim();
       }
-
-      alert('Perubahan profil berhasil disimpan!');
+      const nn = document.getElementById('nibNpwpRow');
+      if (nn && nn.style.display !== 'none') {
+        payload.nib = document.getElementById('nibUsaha').value.trim();
+        payload.npwp = document.getElementById('npwpUsaha').value.trim();
+      }
+      fetch('../api/auth/update.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) {
+            tampilkanPesanProfil(res.error || 'Gagal menyimpan profil.', false);
+            return;
+          }
+          document.getElementById('displayBusinessName').innerText = res.data.nama;
+          document.getElementById('displayEmail').innerText = res.data.email;
+          document.querySelectorAll('.user-name-text').forEach(function (el) { el.innerText = res.data.nama; });
+          tampilkanPesanProfil('Perubahan profil berhasil disimpan!', true);
+        })
+        .catch(function () { tampilkanPesanProfil('Gagal menghubungi server.', false); });
     }
 
     // Dropdown notification helpers
@@ -470,13 +510,55 @@
         e.preventDefault();
         e.stopPropagation();
       }
+      // Simpan ke database supaya tidak kembali setelah muat ulang.
+      fetch('../api/notifikasi/tandai-dibaca.php', { method: 'POST' }).catch(function () {});
       const badgeRed = document.getElementById('notifBadgeRed');
       if (badgeRed) badgeRed.style.display = 'none';
+
+      const badgeItem = document.getElementById('notifBadgeItem');
+      if (badgeItem) badgeItem.style.display = 'none';
 
       document.querySelectorAll('.notif-item.unread').forEach(item => {
         item.classList.remove('unread');
       });
     }
+
+    // ---- Dropdown lonceng dari API notifikasi (riwayat_status) ----
+    (function () {
+      var ddList = document.getElementById('ddNotifList');
+      var badge = document.getElementById('notifBadgeRed');
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      fetch('../api/notifikasi.php')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!ddList) return;
+          if (!res || !res.ok || !res.data || !res.data.notifikasi || !res.data.notifikasi.length) {
+            ddList.innerHTML = '<div class="notif-item"><div class="notif-content"><p class="notif-item-body">Belum ada notifikasi.</p></div></div>';
+            if (badge) badge.style.display = 'none';
+            return;
+          }
+          var items = res.data.notifikasi;
+          ddList.innerHTML = items.slice(0, 3).map(function (n) {
+            return '<a href="order_detail.php?id=' + n.order_id + '" class="notif-item' + (n.dibaca ? '' : ' unread') + '">'
+              + '<div class="notif-icon-circle green"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg></div>'
+              + '<div class="notif-content"><div class="notif-item-top"><span class="notif-item-title">' + escapeHtml(n.judul) + '</span></div>'
+              + '<p class="notif-item-body">' + escapeHtml(n.isi) + '</p></div></a>';
+          }).join('');
+          var belum = 0;
+          items.forEach(function (n) { if (!n.dibaca) belum++; });
+          if (badge) {
+            if (belum > 0) {
+              badge.innerText = belum;
+              badge.style.display = '';
+            } else {
+              badge.style.display = 'none';
+            }
+          }
+        })
+        .catch(function () { /* biarkan placeholder bila API gagal */ });
+    })();
 
     document.addEventListener('click', function (e) {
       const dd = document.getElementById('notifDropdown');
@@ -487,6 +569,18 @@
         }
       }
     });
+  </script>
+  <script>
+    // Avatar & nama dari user yang sedang login (bukan "AD" hardcode).
+    (function () {
+      fetch('../api/auth/me.php').then(function (r) { return r.json(); }).then(function (res) {
+        if (!res || !res.ok || !res.data || !res.data.nama) return;
+        var nama = res.data.nama;
+        var inisial = nama.trim().split(/\s+/).map(function (w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
+        document.querySelectorAll('.user-avatar-circle, .ulasan-user-avatar, .pd-user-avatar').forEach(function (el) { el.textContent = inisial; });
+        document.querySelectorAll('.user-name-text').forEach(function (el) { el.textContent = nama; });
+      }).catch(function () {});
+    })();
   </script>
 </body>
 </html>

@@ -18,12 +18,12 @@
     </a>
     <h1 class="detail-page-heading">Detail Produk</h1>
     <div class="navbar-actions">
-      <button type="button" class="notification-bell-btn" aria-label="Notifikasi">
+      <a href="../notifikasi.php" class="notification-bell-btn" aria-label="Notifikasi" style="text-decoration:none">
         <svg class="bell-icon" viewBox="0 0 24 24">
           <path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 14h14a1 1 0 0 0 .707-1.707L18 11.586V8a6 6 0 0 0-6-6zM10 18a2 2 0 0 0 4 0h-4z"/>
         </svg>
-        <span class="notification-badge-red">3</span>
-      </button>
+        <span class="notification-badge-red" id="notifBadgeRed" style="display:none"></span>
+      </a>
       <div class="user-profile-capsule">
         <div class="user-avatar-circle">AD</div>
         <span class="user-name-text">Buyer</span>
@@ -41,8 +41,9 @@
     <!-- Right: Product Info -->
     <div class="dp-info-column">
       <span class="dp-badge-pill">Detail Produk</span>
-      <h2 id="productTitle" class="dp-product-title">Telur Ayam Grade A</h2>
-      <div id="productPrice" class="dp-product-price">Rp 50.000 <span>/ kg</span></div>
+      <h2 id="productTitle" class="dp-product-title">Memuat…</h2>
+      <div id="productPrice" class="dp-product-price">—</div>
+      <div id="productRating" style="margin-top:.25rem; font-weight:600; color:#b45309;">—</div>
 
       <!-- Tentang Produk Card -->
       <div class="dp-card">
@@ -153,7 +154,7 @@
                 <rect id="svgBadgeRect" x="180" y="15" width="160" height="26" rx="13" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
                 <circle id="svgBadgeCircle" cx="196" cy="28" r="6" fill="#15803d"/>
                 <path id="svgBadgeCheck" d="M193.5 28 L195.5 30 L198.5 26.5" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                <text id="svgSellerBadgeText" x="207" y="31.5" fill="#0f172a" font-size="9" font-weight="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">PT Telur Makmur</text>
+                <text id="svgSellerBadgeText" x="207" y="31.5" fill="#0f172a" font-size="9" font-weight="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">—</text>
               </g>
             </g>
           </svg>
@@ -189,16 +190,24 @@
           </div>
         </div>
         <div class="dp-seller-row">
-          <div id="sellerInitial" class="dp-seller-avatar">U</div>
+          <div id="sellerInitial" class="dp-seller-avatar">?</div>
           <div>
-            <div class="dp-seller-label">Lokasi penjual</div>
-            <div id="sellerAddress" class="dp-seller-address">Jl. Peternakan Raya No. 12</div>
+            <div class="dp-seller-label">Penjual</div>
+            <div id="sellerAddress" class="dp-seller-address">—</div>
           </div>
         </div>
       </div>
 
       <!-- Order Button -->
-      <a id="rfqLink" href="checkout.php?seller=1" class="btn-rfq-primary">Ajukan Pesanan</a>
+      <a id="rfqLink" href="#" class="btn-rfq-primary" style="display:none">Ajukan Pesanan</a>
+      <!-- Buat pesanan langsung dari database (butuh ?id= produk) -->
+      <div id="orderBox" style="margin-top: 1rem; display: none; gap: .5rem; align-items: center; flex-wrap: wrap;">
+        <label style="font-weight: 700;">Jumlah (kg):
+          <input id="qtyKg" type="number" min="1" value="2" style="width: 90px; padding: .5rem; border: 1px solid #e2e8f0; border-radius: 8px;">
+        </label>
+        <button id="buatPesananBtn" type="button" class="btn-rfq-primary" style="border: none; cursor: pointer;">Buat Pesanan</button>
+      </div>
+      <p id="orderMsg" style="margin-top: .5rem;"></p>
     </div>
   </main>
 
@@ -206,44 +215,11 @@
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const sellerId = urlParams.get('seller') || urlParams.get('id') || '1';
-    const productName = urlParams.get('product') || 'Telur Ayam Ras Grade A';
-    const productPrice = urlParams.get('price') || 'Rp 28.000';
+    const produkId = urlParams.get('id');
+    var penjualNama = '';
 
-    const sellersInfo = {
-      '1': { name: 'PT Telur Makmur', address: 'Jl. Peternakan Raya No. 12', initial: 'U' },
-      '2': { name: 'Mitra Unggas Sejahtera', address: 'Jl. Raya Blitar No. 45', initial: 'U' },
-      '3': { name: 'Tunas Farm', address: 'Jl. Peternakan Dramaga No. 7', initial: 'U' },
-      '4': { name: 'Berkah Telur Utama', address: 'Jl. Kenanga No. 21', initial: 'U' },
-      '5': { name: 'Ternak Mandiri', address: 'Jl. Puncak Raya No. 3', initial: 'U' },
-      '6': { name: 'Sinar Jaya Poultry', address: 'Jl. Cihampelas No. 88', initial: 'U' }
-    };
-
-    // Nama tampil di halaman detail (Title Case rapi)
-    const displayTitle = productName
-      .split(' ')
-      .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-      .join(' ');
-
-    const productImages = {
-      'Telur Omega': 'images/prod_omega.png',
-      'Telur Ayam Kampung': 'images/prod_kampung.png',
-      'Telur Ayam Ras Grade A': 'images/prod_grade_a.png',
-      'Telur Ayam Ras Grade B': 'images/prod_grade_b.png',
-      'Telur Ayam Ras Grade C': 'images/prod_grade_c.png',
-      'Telur ayam': 'images/prod_grade_a.png'
-    };
-
-    const seller = sellersInfo[sellerId] || sellersInfo['1'];
-
-    document.getElementById('productTitle').innerText = displayTitle;
-    document.getElementById('productPrice').innerHTML = `${productPrice} <span>/ kg</span>`;
-    document.getElementById('productImg').src = productImages[productName] || 'images/prod_grade_a.png';
-    document.getElementById('productImg').alt = displayTitle;
-    document.getElementById('sellerAddress').innerText = seller.address;
-    document.getElementById('sellerInitial').innerText = seller.initial;
-    const fallbackBackUrl = `detail_penjual.php?id=${sellerId}`;
     const backBtn = document.getElementById('backLink');
+    const fallbackBackUrl = 'dashboard_buyer.php';
     if (backBtn) {
       backBtn.href = fallbackBackUrl;
       backBtn.addEventListener('click', function(e) {
@@ -258,47 +234,112 @@
       });
     }
 
-    document.getElementById('rfqLink').href =
-      `checkout.php?seller=${sellerId}` +
-      `&product=${encodeURIComponent(productName)}` +
-      `&price=${encodeURIComponent(productPrice)}`;
-
-    // Update peta sesuai lokasi penjual
-    const mapRoad = document.getElementById('svgMainRoadName');
-    const mapBadge = document.getElementById('svgSellerBadgeText');
-    const badgeRect = document.getElementById('svgBadgeRect');
-    const openMapsBtn = document.getElementById('btnOpenGoogleMaps');
-    const mapBox = document.getElementById('dpMapBox');
-
-    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(seller.name + ', ' + seller.address)}`;
-
-    if (mapRoad) {
-      const streetOnly = seller.address.split(' No.')[0];
-      mapRoad.textContent = streetOnly;
+    // Kalau dibuka dengan ?id=, ambil data produk asli dari database.
+    if (produkId) {
+      var orderBox = document.getElementById('orderBox');
+      if (orderBox) orderBox.style.display = 'flex';
+      fetch(`../../api/produk/detail.php?id=${encodeURIComponent(produkId)}`)
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.ok) { document.getElementById('orderMsg').innerText = res.error || 'Produk tidak ditemukan.'; return; }
+          var pr = res.data;
+          document.getElementById('productTitle').innerText = pr.nama;
+          document.getElementById('productPrice').innerHTML = `Rp ${Number(pr.harga_per_kg).toLocaleString('id-ID')} <span>/ kg</span>`;
+          var ratingEl = document.getElementById('productRating');
+          if (ratingEl) {
+            if (pr.jumlah_ulasan > 0) {
+              ratingEl.innerText = '★ ' + Number(pr.rating).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' (' + pr.jumlah_ulasan + ' ulasan)';
+            } else {
+              ratingEl.innerText = 'Belum ada ulasan';
+            }
+          }
+          var desc = document.querySelector('.dp-about-desc');
+          if (desc && pr.deskripsi) desc.innerText = pr.deskripsi;
+          var stokRow = document.querySelectorAll('.dp-info-value')[0];
+          if (stokRow) stokRow.innerText = 'Stok ' + pr.stok_kg + ' kg';
+          var img = document.getElementById('productImg');
+          if (pr.gambar) img.src = '../../assets/img/' + pr.gambar;
+          img.onerror = function () { img.src = '../../assets/img/prod_grade_a.png'; };
+          img.alt = pr.nama;
+          // Penjual asli dari database.
+          penjualNama = pr.nama_perusahaan || '';
+          var sellerEl = document.getElementById('sellerAddress');
+          if (sellerEl) sellerEl.innerText = penjualNama || '—';
+          var initEl = document.getElementById('sellerInitial');
+          if (initEl) initEl.innerText = (penjualNama || '?').trim().charAt(0).toUpperCase();
+          isiPetaPenjual();
+          if (backBtn && pr.perusahaan_id) backBtn.href = 'detail_penjual.php?id=' + pr.perusahaan_id;
+          var rfq = document.getElementById('rfqLink');
+          if (rfq) {
+            rfq.href = 'checkout.php?id=' + encodeURIComponent(produkId);
+            rfq.style.display = '';
+          }
+        })
+        .catch(function () { document.getElementById('orderMsg').innerText = 'Gagal memuat detail produk dari database.'; });
+      var buatBtn = document.getElementById('buatPesananBtn');
+      if (buatBtn) {
+        buatBtn.addEventListener('click', function () {
+          var qty = parseFloat(document.getElementById('qtyKg').value) || 0;
+          var msg = document.getElementById('orderMsg');
+          msg.innerText = 'Membuat pesanan...';
+          fetch('../../api/order/create.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ produk_id: parseInt(produkId, 10), jumlah_kg: qty })
+          })
+            .then(function (r) {
+              // Baca jawaban sebagai teks dulu: bila server menjawab bukan
+              // JSON (misalnya halaman error), jangan tuduh sesi login.
+              return r.text().then(function (t) { return { status: r.status, body: t }; });
+            })
+            .then(function (x) {
+              var res = null;
+              try { res = JSON.parse(x.body); } catch (e) { res = null; }
+              if (!res) { msg.innerText = 'Gagal membuat pesanan: server tidak menjawab dengan benar (HTTP ' + x.status + '). Coba lagi.'; return; }
+              if (!res.ok) { msg.innerText = 'Gagal: ' + (res.error || 'tidak diketahui'); return; }
+              msg.innerHTML = 'Pesanan #' + res.data.order_id + ' dibuat! Total bayar Rp ' + Number(res.data.total_bayar).toLocaleString('id-ID')
+                + ' (fee Rp ' + Number(res.data.fee).toLocaleString('id-ID') + '). Status: menunggu_bayar. '
+                + '<a href="../order_detail.php?id=' + res.data.order_id + '">Lihat detail pesanan &rarr;</a>';
+            })
+            .catch(function () { msg.innerText = 'Gagal membuat pesanan: tidak bisa menghubungi server. Periksa koneksi lalu coba lagi.'; });
+        });
+      }
+    } else {
+      document.getElementById('orderMsg').innerText = 'Produk tidak ditemukan. Buka halaman ini dari Detail Penjual atau Dashboard.';
     }
-    if (mapBadge) {
-      mapBadge.textContent = seller.name;
-      const badgeWidth = Math.max(140, Math.min(240, seller.name.length * 8.5 + 44));
-      if (badgeRect) {
-        badgeRect.setAttribute('width', badgeWidth);
-        badgeRect.setAttribute('x', 260 - badgeWidth / 2);
-        const circle = document.getElementById('svgBadgeCircle');
-        const check = document.getElementById('svgBadgeCheck');
-        if (circle) circle.setAttribute('cx', 260 - badgeWidth / 2 + 16);
-        if (check) check.setAttribute('transform', `translate(${260 - badgeWidth / 2 - 177.5}, 0)`);
-        mapBadge.setAttribute('x', 260 - badgeWidth / 2 + 27);
+
+    // Peta: badge + tautan Maps dari nama penjual asli.
+    function isiPetaPenjual() {
+      const mapBadge = document.getElementById('svgSellerBadgeText');
+      const badgeRect = document.getElementById('svgBadgeRect');
+      const openMapsBtn = document.getElementById('btnOpenGoogleMaps');
+      const mapBox = document.getElementById('dpMapBox');
+      const googleMapsUrl = penjualNama ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(penjualNama)}` : '#';
+      if (mapBadge) {
+        mapBadge.textContent = penjualNama || '—';
+        const badgeWidth = Math.max(140, Math.min(240, (penjualNama || '').length * 8.5 + 44));
+        if (badgeRect) {
+          badgeRect.setAttribute('width', badgeWidth);
+          badgeRect.setAttribute('x', 260 - badgeWidth / 2);
+          const circle = document.getElementById('svgBadgeCircle');
+          const check = document.getElementById('svgBadgeCheck');
+          if (circle) circle.setAttribute('cx', 260 - badgeWidth / 2 + 16);
+          if (check) check.setAttribute('transform', `translate(${260 - badgeWidth / 2 - 177.5}, 0)`);
+          mapBadge.setAttribute('x', 260 - badgeWidth / 2 + 27);
+        }
+      }
+      if (openMapsBtn) {
+        openMapsBtn.href = googleMapsUrl;
+      }
+      if (mapBox) {
+        mapBox.addEventListener('click', (e) => {
+          if (!e.target.closest('.dp-map-zoom-controls') && !e.target.closest('.dp-map-open-btn')) {
+            window.open(googleMapsUrl, '_blank', 'noopener,noreferrer');
+          }
+        });
       }
     }
-    if (openMapsBtn) {
-      openMapsBtn.href = googleMapsUrl;
-    }
-    if (mapBox) {
-      mapBox.addEventListener('click', (e) => {
-        if (!e.target.closest('.dp-map-zoom-controls') && !e.target.closest('.dp-map-open-btn')) {
-          window.open(googleMapsUrl, '_blank', 'noopener,noreferrer');
-        }
-      });
-    }
+    isiPetaPenjual();
 
     // Kontrol Zoom Peta
     let currentZoom = 1;
@@ -324,6 +365,31 @@
         }
       });
     }
+  </script>
+  <script>
+    // Badge lonceng asli: jumlah notifikasi belum dibaca dari API.
+    (function () {
+      var badge = document.getElementById('notifBadgeRed');
+      if (!badge) return;
+      fetch('../../api/notifikasi.php').then(function (r) { return r.json(); }).then(function (res) {
+        if (!res || !res.ok || !res.data || !res.data.notifikasi) return;
+        var belum = 0;
+        res.data.notifikasi.forEach(function (n) { if (!n.dibaca) belum++; });
+        if (belum > 0) { badge.textContent = belum; badge.style.display = ''; }
+      }).catch(function () {});
+    })();
+  </script>
+  <script>
+    // Avatar & nama dari user yang sedang login (bukan "AD" hardcode).
+    (function () {
+      fetch('../../api/auth/me.php').then(function (r) { return r.json(); }).then(function (res) {
+        if (!res || !res.ok || !res.data || !res.data.nama) return;
+        var nama = res.data.nama;
+        var inisial = nama.trim().split(/\s+/).map(function (w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
+        document.querySelectorAll('.user-avatar-circle, .ulasan-user-avatar, .pd-user-avatar').forEach(function (el) { el.textContent = inisial; });
+        document.querySelectorAll('.user-name-text').forEach(function (el) { el.textContent = nama; });
+      }).catch(function () {});
+    })();
   </script>
 </body>
 </html>
