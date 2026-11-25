@@ -25,6 +25,10 @@ if (!empty($_SESSION['user'])) {
     .otp-step { display: none; margin-top: 0.5rem; }
     .otp-step.tampil { display: block; }
     .otp-step .otp-email { font-weight: 700; margin: 0 0 0.9rem; font-size: 0.95rem; }
+    /* Banner mode tes (pola verifikasi_otp.php): kode OTP tampil di layar. */
+    .banner-tes { display: none; width: 100%; background: #fffbeb; border: 1px solid #fde68a; color: #92400e; font-size: 14px; border-radius: 10px; padding: 10px 14px; text-align: left; margin: 0 0 0.9rem; }
+    .banner-tes.tampil { display: block; }
+    .banner-tes strong { font-size: 18px; letter-spacing: 2px; }
     .otp-inputs { display: flex; gap: 8px; justify-content: center; margin-bottom: 0.9rem; }
     .otp-box { width: 46px; height: 54px; background: #F8FAFC; border: 1.5px solid #E2E8F0; border-radius: 10px; text-align: center; font-size: 22px; font-weight: 700; color: #0F2A4A; }
     .otp-box:focus { outline: none; border: 2px solid #0F2A4A; background: #FFFFFF; }
@@ -135,6 +139,7 @@ if (!empty($_SESSION['user'])) {
         <div class="otp-step" id="otpStep">
           <p style="margin:0 0 0.25rem; font-weight:700;">Verifikasi OTP</p>
           <p class="otp-email" id="otpEmailTersamar"></p>
+          <div class="banner-tes" id="bannerTes"></div>
           <p class="otp-error" id="otpError"></p>
           <div class="otp-inputs" id="otpInputs">
             <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code">
@@ -221,7 +226,7 @@ if (!empty($_SESSION['user'])) {
       if (result.data && result.data.butuh_otp) {
         loginEmail = email;
         loginPassword = password;
-        tampilkanOtpStep(result.data.email_tersamar || email);
+        tampilkanOtpStep(result.data.email_tersamar || email, result.data.kode_uji);
         return true;
       }
       const role = result.data && result.data.role ? result.data.role : 'pembeli';
@@ -265,9 +270,23 @@ if (!empty($_SESSION['user'])) {
       otpError.classList.remove('tampil');
     }
 
-    function tampilkanOtpStep(emailTersamar) {
+    // MODE TES: tampilkan kode OTP di layar (hanya bila server mengirim kode_uji).
+    function tampilkanBannerTes(kodeUji) {
+      const banner = document.getElementById('bannerTes');
+      if (!banner) return;
+      if (kodeUji) {
+        banner.innerHTML = 'Mode tes &mdash; kode OTP Anda: <strong>' + kodeUji + '</strong>';
+        banner.classList.add('tampil');
+      } else {
+        banner.textContent = '';
+        banner.classList.remove('tampil');
+      }
+    }
+
+    function tampilkanOtpStep(emailTersamar, kodeUji) {
       document.getElementById('otpEmailTersamar').textContent =
         'Masukkan 6 digit kode yang dikirim ke ' + emailTersamar;
+      tampilkanBannerTes(kodeUji);
       document.getElementById('loginForm').style.display = 'none';
       otpStep.classList.add('tampil');
       sembunyiOtpError();
@@ -372,6 +391,7 @@ if (!empty($_SESSION['user'])) {
           return;
         }
         bersihkanKotakOtp();
+        tampilkanBannerTes(hasil.data && hasil.data.kode_uji);
         mulaiJedaUlang();
       } catch (err) {
         tampilOtpError('Tidak bisa terhubung ke server. Coba lagi.');
