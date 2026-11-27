@@ -96,13 +96,14 @@ File `.env` berisi **kata sandi dan nama database untuk laptopmu sendiri**. File
      cp .env.example .env
      ```
 2. **Jangan buat file `.env` manual lewat Notepad.** Windows sering menyimpannya sebagai `.env.txt` (akhiran `.txt` disembunyikan), dan Docker tidak akan mengenalinya — hasilnya error `.env not found` walau filenya terlihat ada. Selalu pakai perintah salin di atas.
-3. **Ubah tiga baris ini di `.env`** (buka dengan Notepad atau editor teks apa saja, lalu simpan):
+3. **Ubah dua baris ini di `.env`** (buka dengan Notepad atau editor teks apa saja, lalu simpan):
 
    | Baris di `.env` | Isi yang benar | Kenapa |
    |---|---|---|
-   | `DB_NAME=app_db` | `DB_NAME=staplr` | **Paling penting.** File contoh masih tertulis `app_db`, harus diganti `staplr` (huruf kecil semua). Kalau tidak diganti, database `staplr` tidak terbentuk dan import di langkah 7 gagal dengan error `#1044 Access denied`. |
    | `DEMO_MODE=false` | `DEMO_MODE=true` | Supaya tombol Bayar langsung menandai pesanan dibayar tanpa Xendit. Tim tidak perlu akun Xendit dan tidak perlu ngrok. |
    | `OTP_TEST_MODE=false` | `OTP_TEST_MODE=true` | Supaya kode OTP tampil di layar saat login. Tim tidak perlu email asli. |
+
+   `DB_NAME` sudah benar (`staplr`) dari file contoh, tidak perlu diubah.
 
    Baris lain tidak perlu diubah. Yang Xendit (`XENDIT_SECRET_KEY`, `XENDIT_WEBHOOK_TOKEN`) dikosongkan saja — cuma perlu kalau mau tes bayar Xendit beneran, tanya PM dulu.
 4. Cek file `.env` sudah ada:
