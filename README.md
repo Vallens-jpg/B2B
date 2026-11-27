@@ -18,8 +18,8 @@ Dokumen ini untuk semua anggota tim (BE, FE, PM + QA). Ikuti langkahnya **urut d
 |---|---|---|
 | Website Staplr | http://localhost:8080 | Halaman utama, login, katalog, dan semua halaman lain |
 | Tes koneksi database | http://localhost:8080/api/health.php | Tulisan "Koneksi DB berhasil" kalau database tersambung |
-| phpMyAdmin | http://localhost:8081 | Alat untuk melihat isi database lewat browser (user: `app_user`, password: `app_pass`) |
-| Database MySQL | Port 3307 (di dalam Docker namanya `db`) | Datanya nanti diisi migrasi Sprint 1 |
+| phpMyAdmin | http://localhost:8081 | Alat untuk melihat isi database lewat browser. Login `root` / `rootpass` untuk import database, login `app_user` / `app_pass` untuk melihat data |
+| Database MySQL | Port 3307 (di dalam Docker namanya `db`) | Database `staplr` (huruf kecil semua), 19 tabel + data demo |
 
 Angka 8080, 8081, dan 3307 itu nomor "pintu" di laptopmu. Kalau ada aplikasi lain yang sudah memakai nomor itu, setup akan error — lihat bagian "Kalau error" nomor 3.
 
@@ -72,16 +72,15 @@ Buka Task Manager (Ctrl+Shift+Esc) → tab Performance:
    git clone https://github.com/Vallens-jpg/B2B.git
    cd B2B
    ```
-3. Cek kamu sudah di branch `main` dan filenya lengkap:
+3. Cek kamu sudah di branch `main`:
    ```
-   git branch
-   git status
+   git branch --show-current
    ```
-   `git branch` harus menampilkan `* main`. `git status` harus menampilkan `nothing to commit, working tree clean`. Kalau di folder ada file `README.md`, `docker-compose.yml`, dan folder `src/`, berarti clone berhasil.
+   Harus menampilkan `main`. Kalau di folder ada file `README.md`, `docker-compose.yml`, dan folder `src/`, berarti clone berhasil.
 
 ## 5. Siapkan konfigurasi (.env)
 
-File `.env` berisi **kata sandi dan nama database untuk laptopmu sendiri**. File ini **tidak boleh dikirim ke GitHub** (sudah masuk `.gitignore`), karena tiap anggota tim memakai database lokalnya masing-masing.
+File `.env` berisi **kata sandi dan nama database untuk laptopmu sendiri**. File ini **tidak boleh dikirim ke GitHub** (sudah masuk `.gitignore`), karena tiap anggota tim memakai database lokalnya masing-masing. **Jangan copy file `.env` orang lain — tiap laptop pakai `.env` sendiri.**
 
 1. Masih di folder `B2B`, salin file contoh menjadi file `.env`:
    - Command Prompt:
@@ -97,22 +96,22 @@ File `.env` berisi **kata sandi dan nama database untuk laptopmu sendiri**. File
      cp .env.example .env
      ```
 2. **Jangan buat file `.env` manual lewat Notepad.** Windows sering menyimpannya sebagai `.env.txt` (akhiran `.txt` disembunyikan), dan Docker tidak akan mengenalinya — hasilnya error `.env not found` walau filenya terlihat ada. Selalu pakai perintah salin di atas.
-3. Isinya tidak perlu diubah. Supaya tahu, ini arti tiap barisnya:
+3. **Ubah tiga baris ini di `.env`** (buka dengan Notepad atau editor teks apa saja, lalu simpan):
 
-   | Baris di `.env` | Artinya |
-   |---|---|
-   | `DB_ROOT_PASSWORD=root_pass` | Password akun root MySQL (hanya dipakai Docker, bukan untuk login aplikasi) |
-   | `DB_NAME=app_db` | Nama database Staplr |
-   | `DB_USER=app_user` | Username yang dipakai aplikasi untuk bicara ke database |
-   | `DB_PASSWORD=app_pass` | Password username tersebut (juga dipakai untuk login phpMyAdmin) |
+   | Baris di `.env` | Isi yang benar | Kenapa |
+   |---|---|---|
+   | `DB_NAME=app_db` | `DB_NAME=staplr` | **Paling penting.** File contoh masih tertulis `app_db`, harus diganti `staplr` (huruf kecil semua). Kalau tidak diganti, database `staplr` tidak terbentuk dan import di langkah 7 gagal dengan error `#1044 Access denied`. |
+   | `DEMO_MODE=false` | `DEMO_MODE=true` | Supaya tombol Bayar langsung menandai pesanan dibayar tanpa Xendit. Tim tidak perlu akun Xendit dan tidak perlu ngrok. |
+   | `OTP_TEST_MODE=false` | `OTP_TEST_MODE=true` | Supaya kode OTP tampil di layar saat login. Tim tidak perlu email asli. |
 
-   Password di atas hanya untuk pengembangan di laptop sendiri. **Jangan dipakai untuk server asli nanti.**
-
-3. Cek file `.env` sudah ada:
+   Baris lain tidak perlu diubah. Yang Xendit (`XENDIT_SECRET_KEY`, `XENDIT_WEBHOOK_TOKEN`) dikosongkan saja — cuma perlu kalau mau tes bayar Xendit beneran, tanya PM dulu.
+4. Cek file `.env` sudah ada:
    ```
    dir .env
    ```
    Harus muncul nama file `.env`. Kalau muncul "File Not Found", ulangi langkah 1 (pastikan kamu masih di folder `B2B`).
+
+**Catatan penting:** `.env` cuma dibaca waktu container pertama dibuat. Kalau `.env` diubah sesudah container jalan, harus buat ulang containernya (`docker compose down` lalu `docker compose up -d`, tanpa `-v`) supaya setting baru kebaca. Lihat juga "Kalau error" nomor 10.
 
 ## 6. Jalankan untuk pertama kali
 
@@ -130,27 +129,46 @@ File `.env` berisi **kata sandi dan nama database untuk laptopmu sendiri**. File
    docker compose ps
    ```
    Harus ada 3 baris (web, db, phpmyadmin) dengan status **Up** atau **running**. Contoh nama container-nya: `b2b-web-1`, `b2b-db-1`, `b2b-phpmyadmin-1` (awalan `b2b` bisa berbeda di laptopmu, tidak masalah).
-4. **Catatan penting:** MySQL butuh 10–30 detik untuk siap pertama kali. Kalau langkah 7 langsung dicek dan gagal, tunggu 30 detik lalu coba lagi, jangan langsung mengira setup rusak.
+4. **Catatan penting:** MySQL butuh 10–30 detik untuk siap pertama kali. Kalau langkah 8 langsung dicek dan gagal, tunggu 30 detik lalu coba lagi, jangan langsung mengira setup rusak.
 
-## 7. Cek hasilnya (semua harus centang)
+## 7. Import database
+
+1. Buka phpMyAdmin di http://localhost:8081, login sebagai **root** dengan password **rootpass**. (Bukan `app_user` — `app_user` tidak punya hak membuat database baru, jadi import akan ditolak.)
+2. Klik tab **Import**, pilih file `database/online_marketplace_v2.sql` (di folder `B2B`), lalu klik **Kirim**. Tunggu sampai muncul tulisan berhasil. File ini membuat database `staplr` beserta 19 tabelnya.
+3. Klik tab **Import** lagi, pilih file `database/online_marketplace_v2_seed.sql`, lalu klik **Kirim**. File ini mengisi data demo: 3 akun demo, 3 produk telur, dan stoknya.
+4. Cek di panel kiri phpMyAdmin: database `staplr` sudah muncul dengan 19 tabel, termasuk `pengguna` dan `otp_kode`.
+
+**Catatan:** kedua file di atas sudah berisi perintah `USE staplr`, jadi tidak perlu memilih database dulu sebelum import. Jangan import file di folder `database/arsip-fork/` — itu arsip skema lama, tidak dipakai. File `database/otp_kode_login.sql` juga tidak perlu — itu hanya untuk database lama yang sudah ada sebelum OTP login, sedangkan database baru sudah berisi perubahannya.
+
+## 8. Cek hasilnya (semua harus centang)
 
 Buka satu per satu di browser dan cocokkan dengan tabel ini:
 
 | # | Yang dicek | Alamat | Hasil yang benar | Kalau tidak seperti itu |
 |---|---|---|---|---|
 | 1 | Halaman utama | http://localhost:8080 | Muncul halaman utama Staplr (logo + menu) | Lihat "Kalau error" nomor 5 |
-| 2 | Halaman login | http://localhost:8080/pages/login.php | Muncul form login (email + password) | Lihat "Kalau error" nomor 5 |
+| 2 | Halaman login | http://localhost:8080/pages/login.php | Muncul form login (email + password). Habis isi password, muncul langkah OTP (6 kotak) dengan kodenya tampil di layar | Lihat "Kalau error" nomor 11 |
 | 3 | Koneksi database | http://localhost:8080/api/health.php | Tulisan **"Koneksi DB berhasil"** | Tunggu 30 detik, refresh; kalau masih gagal, lihat "Kalau error" nomor 4 |
-| 4 | phpMyAdmin | http://localhost:8081 | Bisa login dengan user `app_user`, password `app_pass`, lalu terlihat database `app_db` | Lihat "Kalau error" nomor 8 |
+| 4 | phpMyAdmin | http://localhost:8081 | Bisa login dengan user `root`, password `rootpass`, lalu terlihat database `staplr` dengan 19 tabel | Lihat "Kalau error" nomor 8 dan 10 |
+| 5 | Login demo | Login sebagai `guest@staplr.com` / `guest123` | Masuk ke dashboard pembeli | Lihat "Kalau error" nomor 11 |
 
-**Dua hal yang perlu dipahami dari hasil cek ini:**
+**Akun demo (dari data seed):**
 
-- **Login di langkah 2 masih pura-pura** (menerima email apa saja). Itu normal. Login asli yang tersambung ke database dibuat di Sprint 1. Yang penting sekarang halamannya muncul.
-- **Database `app_db` di langkah 4 masih kosong** (belum ada tabel). Itu juga normal. Tabel dibuat dari file migrasi di Sprint 1.
+| Peran | Email | Password | Masuk ke |
+|---|---|---|---|
+| Pembeli | `guest@staplr.com` | `guest123` | Dashboard pembeli |
+| Perusahaan | `perusahaan@staplr.com` | `perusahaan123` | Dashboard perusahaan |
+| Admin | `admin@staplr.com` | `admin123` | Dashboard admin |
 
-Kalau keempat cek di atas berhasil, **setup selesai**. Simpan alamat-alamat di atas, kamu akan sering membukanya.
+**Tiga hal yang perlu dipahami dari hasil cek ini:**
 
-## 8. Perintah harian
+- **Login sudah asli** (dicek ke database), bukan pura-pura lagi. Habis login dan OTP, aplikasi otomatis pindah ke dashboard sesuai peranmu. Halaman tiap peran terkunci: kalau membuka halaman peran lain tanpa login yang sesuai, kamu dilempar ke halaman login.
+- **Pembayaran di laptop tim itu simulasi** karena `DEMO_MODE=true`: klik Bayar Sekarang, pesanan langsung jadi Dibayar tanpa halaman Xendit. Alur sesudahnya (setujui, kirim foto, terima, escrow, dispute, pencairan) jalan persis sama seperti aslinya.
+- **Database `staplr` sudah berisi data demo** (3 akun, 3 produk, stok). Pesanan yang kamu buat di laptopmu hanya ada di laptopmu — tiap anggota punya database sendiri-sendiri.
+
+Kalau kelima cek di atas berhasil, **setup selesai**. Simpan alamat-alamat di atas, kamu akan sering membukanya.
+
+## 9. Perintah harian
 
 Semua perintah di bawah dijalankan dari folder `B2B` (tempat file `docker-compose.yml` berada).
 
@@ -165,9 +183,9 @@ Semua perintah di bawah dijalankan dari folder `B2B` (tempat file `docker-compos
 | Restart satu layanan saja | `docker compose restart web` |
 | Mengambil kode terbaru dari GitHub (lakukan SEBELUM mulai kerja tiap hari) | `git pull origin main` |
 
-**Jangan jalankan `docker compose down -v`.** Perintah itu menghapus **semua data database** di laptopmu. Pakai `docker compose down` biasa saja. Satu-satunya pengecualian: untuk memperbaiki database yang rusak seperti di "Kalau error" nomor 10.
+**Jangan jalankan `docker compose down -v`.** Perintah itu menghapus **semua data database** di laptopmu. Pakai `docker compose down` biasa saja. Satu-satunya pengecualian: untuk memperbaiki database yang rusak seperti di "Kalau error" nomor 10 — dan hanya di laptop yang datanya memang boleh hilang.
 
-## 9. Kalau tidak pakai Docker (cara cadangan)
+## 10. Kalau tidak pakai Docker (cara cadangan)
 
 Kalau Docker bermasalah dan belum sempat diperbaiki, website bisa dijalankan sementara dengan cara ini:
 
@@ -177,7 +195,7 @@ Kalau Docker bermasalah dan belum sempat diperbaiki, website bisa dijalankan sem
 
 **Batasan cara ini:** hanya websitenya yang jalan, database tidak jalan. Jadi halaman utama dan login tetap muncul, tapi cek `api/health.php` akan menampilkan error koneksi. Cara ini hanya untuk melihat tampilan sementara. **Kabari PM** kalau kamu terpaksa memakai cara ini, supaya masalah Docker-nya dibantu.
 
-## 10. Kalau error (cari errormu di tabel ini)
+## 11. Kalau error (cari errormu di tabel ini)
 
 | # | Gejala | Penyebab | Perbaikan |
 |---|---|---|---|
@@ -188,9 +206,13 @@ Kalau Docker bermasalah dan belum sempat diperbaiki, website bisa dijalankan sem
 | 5 | `localhost:8080` tidak bisa dibuka (`refused to connect`) | Container `web` tidak jalan | Jalankan `docker compose ps`. Kalau `web` tidak ada atau statusnya Exited, cek `docker compose logs web`, lalu jalankan `docker compose up -d` lagi. |
 | 6 | `Virtualization is not enabled` saat membuka Docker | Virtualisasi mati di BIOS | Aktifkan di BIOS (SVM Mode untuk AMD, Intel VT-x untuk Intel). Kalau ragu, minta bantuan PM. |
 | 7 | File `.env` tidak ditemukan saat `up` | Langkah 5 terlewat, salah folder, atau file-nya sebenarnya bernama `.env.txt` | Pastikan kamu di folder `B2B`, ulangi langkah 5. Kalau file terlihat ada tapi tetap error, cek dengan `dir` — kalau yang muncul `.env.txt`, ganti namanya: `ren .env.txt .env`. |
-| 8 | phpMyAdmin tidak bisa login | Username/password salah | Pakai user `app_user` dan password `app_pass` (dari `.env`), **bukan** password root. |
+| 8 | phpMyAdmin tidak bisa login | Username/password salah | Untuk import database pakai user `root`, password `rootpass`. Untuk melihat data pakai user `app_user`, password `app_pass` (dari `.env`). |
 | 9 | Laptop jadi sangat lambat saat Docker jalan | RAM kurang atau terlalu banyak aplikasi terbuka | Tutup aplikasi berat. RAM minimal 8 GB (lihat langkah 1). |
-| 10 | `Access denied for user 'app_user'` di `api/health.php` | Database dibuat pertama kali saat `.env` belum ada atau isinya salah, jadi user dan database tidak terbentuk dengan benar. Data lama tersimpan di volume Docker dan tidak berubah sendiri walau `.env` sudah diperbaiki | Hapus data database yang rusak (masih kosong, jadi aman): `docker compose down -v`. Lalu samakan `.env` dengan contoh (`Copy-Item .env.example .env -Force` di PowerShell) dan nyalakan lagi: `docker compose up -d`. Tunggu 30 detik, refresh `health.php` — harus muncul "Koneksi DB berhasil". |
+| 10 | `#1044 Access denied for user 'app_user'` saat import, atau database `staplr` tidak muncul di phpMyAdmin | Dua kemungkinan: (a) import login sebagai `app_user`, padahal yang boleh membuat database baru cuma `root`; (b) `DB_NAME` di `.env` masih `app_db`, jadi container pertama membuat database `app_db`, bukan `staplr` | (a) Keluar dari phpMyAdmin, login lagi sebagai `root` / `rootpass`, lalu import ulang. (b) Kalau `staplr` tetap tidak muncul: ubah `DB_NAME` jadi `staplr` di `.env`, lalu `docker compose down -v` dan `docker compose up -d`, tunggu 30 detik, import ulang sebagai root. **Awas:** `down -v` menghapus isi database — cuma boleh di laptop baru yang datanya memang boleh hilang, jangan di laptop yang sudah ada pesanan tesnya. |
+| 11 | Kode OTP tidak muncul saat login | `OTP_TEST_MODE` belum `true`, atau container masih jalan dengan setting lama | Cek `.env`, pastikan ada baris `OTP_TEST_MODE=true`. Kalau sudah benar tapi kode tetap tidak muncul, buat ulang containernya: `docker compose down` lalu `docker compose up -d` (tanpa `-v`), lalu login lagi. |
+| 12 | Tombol Bayar error atau membuka halaman Xendit | `DEMO_MODE` masih `false`, jadi pembayaran mencari Xendit beneran | Ubah `DEMO_MODE` jadi `true` di `.env`, lalu `docker compose down` dan `docker compose up -d` (tanpa `-v`). |
+| 13 | Buka alamat `/pages/dashboard.php` → 404 | File itu tidak ada — dashboard sudah dipisah per peran | Jangan ketik alamat itu. Buka `localhost:8080` saja lalu login; aplikasi otomatis pindah ke dashboard yang sesuai akunmu. |
+| 14 | Di phpMyAdmin ada database `Staplr` huruf besar, selain `staplr` huruf kecil | MySQL membedakan huruf besar dan kecil — itu dua database yang berbeda | Yang dipakai aplikasi adalah `staplr` huruf kecil. Abaikan yang huruf besar. Kalau mau rapi, hapus yang huruf besar setelah tanya PM. |
 
 Kalau errormu tidak ada di tabel ini, kirim ke grup **tiga hal ini**:
 1. Screenshot error-nya.
@@ -199,20 +221,18 @@ Kalau errormu tidak ada di tabel ini, kirim ke grup **tiga hal ini**:
 
 ## Daftar halaman dan cara membukanya
 
-Semua halaman bisa dibuka langsung dengan mengetik alamatnya di browser (belum ada login, jadi tidak ada halaman yang terkunci). Alamat dasarnya `http://localhost:8080`.
-
-**Yang perlu dipahami dulu:** tombol-tombol di dalam halaman ini kebanyakan masih **preview** — hanya pindah halaman atau menampilkan data contoh, belum menyimpan apa pun ke database. Fungsi aslinya dibuat di Sprint 1 dan seterusnya. Jadi kalau kamu klik "Simpan" lalu datanya tidak tersimpan, itu normal, bukan error.
+Semua halaman bisa dibuka dengan mengetik alamatnya di browser, dengan alamat dasar `http://localhost:8080`. **Login sudah asli dan halaman tiap peran terkunci:** halaman buyer hanya bisa dibuka akun pembeli, halaman perusahaan hanya akun perusahaan, halaman admin hanya akun admin. Kalau membuka halaman peran lain, kamu dilempar ke halaman login.
 
 ### Halaman utama dan akun
 
 | Halaman | Alamat | Gunanya |
 |---|---|---|
 | Halaman utama | `/` | Halaman pertama yang muncul; berisi penjelasan Staplr dan tombol masuk/daftar |
-| Masuk (login) | `/pages/login.php` | Form login. **Masih pura-pura:** email apa saja diterima, belum dicek ke database |
-| Daftar akun | `/pages/daftar.php` | Form pendaftaran akun baru (buyer/perusahaan) |
-| Lupa kata sandi | `/pages/lupa_sandi.php` | Form minta reset kata sandi |
-| Verifikasi OTP email | `/pages/verifikasi_otp.php` | Masukkan kode OTP dari email saat daftar |
-| Profil pengguna | `/pages/profil.php` | Melihat dan mengubah profil |
+| Masuk (login) | `/pages/login.php` | Form login (email + password), lalu langkah OTP 6 kotak |
+| Daftar akun | `/pages/daftar.php` | Form pendaftaran akun baru (buyer/perusahaan), lalu verifikasi OTP |
+| Lupa kata sandi | `/pages/lupa_sandi.php` | Form minta reset kata sandi lewat OTP email |
+| Verifikasi OTP email | `/pages/verifikasi_otp.php` | Masukkan kode OTP saat daftar atau reset kata sandi |
+| Profil pengguna | `/pages/profil.php` | Melihat dan mengubah profil, termasuk rekening bank (pembeli/perusahaan) dan NIB/NPWP (perusahaan) |
 | Semua notifikasi | `/pages/notifikasi.php` | Daftar pemberitahuan (pesanan baru, status berubah, dll) |
 
 ### Halaman buyer (pembeli)
@@ -226,8 +246,6 @@ Semua halaman bisa dibuka langsung dengan mengetik alamatnya di browser (belum a
 | Status pesanan | `/pages/pembeli/order_list.php` | Daftar semua pesanan buyer beserta statusnya |
 | Detail pesanan | `/pages/order_detail.php` | Detail satu pesanan + riwayat status + tombol yang boleh ditekan |
 | Konfirmasi pesanan | `/pages/pembeli/konfirmasi_pesanan.php` | Halaman konfirmasi setelah pesanan dibuat |
-| Pembayaran transfer bank | `/pages/pembeli/pembayaran.php` | Upload bukti transfer bank |
-| Invoice pembayaran | `/pages/invoice.php` | Tampilan invoice satu pesanan |
 | Status pesanan (varian) | `/pages/pembeli/status_pesanan.php` | Sama seperti order_list (judul sama), sisa dari branch lama |
 | Ajukan permintaan | `/pages/pembeli/ajukan_permintaan.php` | Buyer mengajukan permintaan barang ke perusahaan |
 | Permintaan disetujui | `/pages/pembeli/permintaan_disetujui.php` | Daftar permintaan yang disetujui |
@@ -237,7 +255,7 @@ Semua halaman bisa dibuka langsung dengan mengetik alamatnya di browser (belum a
 
 | Halaman | Alamat | Gunanya |
 |---|---|---|
-| Dashboard perusahaan | `/pages/perusahaan/dashboard_perusahaan.php` | Ringkasan untuk perusahaan: produk, pesanan masuk, stok |
+| Dashboard perusahaan | `/pages/perusahaan/dashboard_perusahaan.php` | Ringkasan untuk perusahaan: produk, pesanan masuk, stok, keuangan escrow (Siap Cair / Tertahan / Sudah dicairkan) |
 
 ### Halaman dispute dan ulasan
 
@@ -250,17 +268,20 @@ Semua halaman bisa dibuka langsung dengan mengetik alamatnya di browser (belum a
 
 ### Halaman admin
 
-Semua halaman admin ada di `/pages/admin/`. **Catatan:** beberapa halaman admin ada kembarannya (nama file beda, isi mirip) — sisa dari penggabungan branch admin dulu. Jangan hapus dulu sebelum dicek isinya satu per satu.
+Semua halaman admin ada di `/pages/admin/`.
 
 | Halaman | Alamat | Gunanya |
 |---|---|---|
 | Dashboard admin | `/pages/admin/dashboard.php` | Ringkasan admin |
 | Manajemen user | `/pages/admin/manajemen-user.php` | Daftar dan kelola pengguna |
-| Verifikasi perusahaan | `/pages/admin/verifikasi.php` (kembar: `detail-verifikasi.php`) | Verifikasi perusahaan baru |
-| Verifikasi dispute | `/pages/admin/verifikasi-dispute.php` (kembar: `admin-verifikasi-dispute.php`) | Admin memeriksa dan memverifikasi dispute |
-| Pencairan dana | `/pages/admin/keuangan.php` (kembar: `admin-keuangan.php`) | Melihat dan memproses pencairan dana escrow |
-| Riwayat transaksi | `/pages/admin/riwayat.php` (kembar: `admin-riwayat.php`, `detail-riwayat.php`, `admin-detail-riwayat.php`) | Riwayat semua transaksi |
-| Daftar dispute | `/pages/admin/dispute.php` (kembar: `daftar-dispute.php`, `detail-dispute.php`, `admin-detail-dispute.php`) | Daftar dan detail tiket dispute |
+| Verifikasi perusahaan | `/pages/admin/verifikasi.php` | Verifikasi perusahaan baru |
+| Detail verifikasi | `/pages/admin/detail-verifikasi.php` | Detail satu perusahaan yang diverifikasi |
+| Verifikasi dispute | `/pages/admin/verifikasi-dispute.php` | Admin memeriksa dan memverifikasi dispute |
+| Pencairan dana | `/pages/admin/keuangan.php` | Melihat dan mencatat pencairan dana escrow |
+| Riwayat transaksi | `/pages/admin/riwayat.php` | Riwayat semua transaksi |
+| Detail riwayat | `/pages/admin/detail-riwayat.php` | Detail satu riwayat transaksi |
+| Daftar dispute | `/pages/admin/dispute.php` | Daftar tiket dispute |
+| Detail dispute | `/pages/admin/detail-dispute.php` | Detail satu tiket dispute + diskusi + putusan |
 
 ## Aturan penting
 
@@ -268,6 +289,8 @@ Semua halaman admin ada di `/pages/admin/`. **Catatan:** beberapa halaman admin 
 - Jangan commit file `.env`. File itu sudah masuk `.gitignore`.
 - Kerja di branch sendiri dari `main`, jangan langsung ke `main`.
 - Sebelum mulai kerja tiap hari: `git pull origin main` dulu, supaya kodemu tidak ketinggalan dari teman lain.
+- Kalau mengubah `.env` sesudah container jalan, buat ulang containernya (`docker compose down` lalu `docker compose up -d`, tanpa `-v`) supaya setting baru kebaca.
+- Jangan jalankan `docker compose down -v` di laptop yang datanya mau disimpan — perintah itu menghapus semua isi database.
 
 ## Struktur folder
 
@@ -277,13 +300,17 @@ Semua halaman admin ada di `/pages/admin/`. **Catatan:** beberapa halaman admin 
   - `src/templates/` — bagian yang dipakai ulang (header, footer)
   - `src/assets/css/` dan `src/assets/img/` — tampilan dan gambar
   - `src/api/` — endpoint BE (auth, produk, order, webhook, invoice, dispute, ulasan, admin)
-  - `src/lib/` — kode bersama BE (koneksi DB, cek login, format jawaban standar; helper Xendit/escrow ditambah nanti bila perlu)
+  - `src/lib/` — kode bersama BE (koneksi DB, cek login, format jawaban standar, helper OTP, Xendit/escrow)
   - `src/uploads/` — bukti upload (jangan commit isinya)
-- `database/migrations/` — file SQL migrasi (ditulis BE dari spesifikasi PM)
-- `docs/` — referensi desain (screenshot Figma, file hi-fi)
+- `database/` — file SQL
+  - `database/online_marketplace_v2.sql` — skema database `staplr` (19 tabel)
+  - `database/online_marketplace_v2_seed.sql` — data demo (3 akun, 3 produk, stok)
+  - `database/otp_kode_login.sql` — hanya untuk database lama (database baru tidak perlu)
+  - `database/arsip-fork/` — arsip skema lama, tidak dipakai
+- `docs/` — referensi desain (screenshot Figma, file hi-fi, catatan Xendit)
 
 ## Aturan kerja
 
 - Satu branch per fitur dari `main`, contoh: `be-1/auth-login`, `fe-1/login`.
 - Satu file, satu pemilik. File bersama hanya diubah lewat PR yang disetujui pemiliknya.
-- Branch role (`pembeli`, `perusahaan`, `admin`) sudah digabung dan ditutup. Jangan kerjakan fitur baru di sana.
+- Branch lama sudah dihapus, yang tersisa `main` dan `pembeli`. Branch `pembeli` disimpan sebagai catatan saja — jangan kerjakan fitur baru di sana, kerja dari `main`.
